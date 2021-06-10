@@ -12,6 +12,7 @@ import io.spine.internal.dependency.Gson
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Spine
 import io.spine.internal.dependency.Truth
 
 plugins {
@@ -30,7 +31,15 @@ configurations.all {
             Gson.lib,
             JavaX.annotations,
             Protobuf.libs,
-            Truth.libs
+            Truth.libs,
+            Spine.base,
+            Spine.core,
+            Spine.server,
+            Spine.client,
+            Spine.Test.base,
+            Spine.Test.core,
+            Spine.Test.server,
+            Spine.Test.client
         )
     }
 }
