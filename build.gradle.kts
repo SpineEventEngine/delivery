@@ -16,13 +16,9 @@ allprojects {
     group = "io.spine.message-delivery"
     version = extra["messageDeliveryVersion"]!!
 
-    apply {
-        plugin("idea")
-    }
+    apply<IdeaPlugin>()
 }
 
 subprojects {
-    apply {
-        plugin("java-library")
-    }
+    apply<JavaConventionPlugin>()
 }

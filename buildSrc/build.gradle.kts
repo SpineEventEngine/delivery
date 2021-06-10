@@ -14,6 +14,11 @@ repositories {
     gradlePluginPortal()
 }
 
+dependencies {
+    implementation("net.ltgt.gradle:gradle-errorprone-plugin:2.0.1")
+    implementation("com.google.protobuf:protobuf-gradle-plugin:0.8.16")
+}
+
 kotlinDslPluginOptions {
     experimentalWarning.set(false)
 }
