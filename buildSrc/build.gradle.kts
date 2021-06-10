@@ -31,6 +31,8 @@ val spineBaseVersion = "2.0.0-SNAPSHOT.34"
 dependencies {
     implementation("net.ltgt.gradle:gradle-errorprone-plugin:2.0.1")
     implementation("com.google.protobuf:protobuf-gradle-plugin:0.8.16")
+    //TODO:2021-06-10:yuri-sergiichuk: remove the `plugin-base` dependency as soon as
+    // https://github.com/SpineEventEngine/base/pull/649 is merged.
     implementation("io.spine.tools:spine-plugin-base:${spineBaseVersion}")
     implementation("io.spine.tools:spine-mc-java:${spineBaseVersion}")
 }
