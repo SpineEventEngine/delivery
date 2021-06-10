@@ -21,4 +21,5 @@ allprojects {
 
 subprojects {
     apply<JavaConventionPlugin>()
+    apply<DependencyManagementPlugin>()
 }
