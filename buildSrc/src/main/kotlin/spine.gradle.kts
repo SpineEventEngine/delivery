@@ -5,6 +5,7 @@
  */
 
 import io.spine.internal.dependency.Protobuf
+import io.spine.internal.dependency.Spine
 import io.spine.tools.protoc.MessageSelectorFactory.suffix
 
 plugins {
@@ -15,6 +16,8 @@ plugins {
 
 dependencies {
     Protobuf.libs.forEach { implementation(it) }
+    implementation(Spine.base)
+    testImplementation(Spine.Test.base)
 }
 
 modelCompiler {
