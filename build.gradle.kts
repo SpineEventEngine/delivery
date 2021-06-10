@@ -8,18 +8,21 @@ plugins {
     java
 }
 
-group = "io.spine"
+group = "io.spine.message-delivery"
 version = "0.1.0"
 
-repositories {
-    mavenCentral()
+allprojects {
+    apply(from = "$rootDir/version.gradle.kts")
+    group = "io.spine.message-delivery"
+    version = extra["messageDeliveryVersion"]!!
+
+    apply {
+        plugin("idea")
+    }
 }
 
-dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-}
-
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
+subprojects {
+    apply {
+        plugin("java-library")
+    }
 }

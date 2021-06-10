@@ -5,3 +5,23 @@
  */
 
 rootProject.name = "message-delivery"
+include("model")
+include("server")
+include("client")
+
+dependencyResolutionManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+    }
+}
+
+pluginManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+        gradlePluginPortal()
+    }
+}
