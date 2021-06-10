@@ -34,5 +34,16 @@ pluginManagement {
         mavenCentral()
         google()
         gradlePluginPortal()
+        maven("https://spine.mycloudrepo.io/public/repositories/releases") {
+            content {
+                includeGroup("io.spine")
+                includeGroup("io.spine.tools")
+                includeGroup("io.spine.gcloud")
+            }
+            mavenContent {
+                releasesOnly()
+            }
+        }
+        maven("https://spine.mycloudrepo.io/public/repositories/snapshots")
     }
 }
