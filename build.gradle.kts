@@ -4,13 +4,6 @@
  * Use is subject to license terms.
  */
 
-plugins {
-    java
-}
-
-group = "io.spine.message-delivery"
-version = "0.1.0"
-
 allprojects {
     apply(from = "$rootDir/version.gradle.kts")
     group = "io.spine.message-delivery"
