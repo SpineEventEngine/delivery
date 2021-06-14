@@ -27,6 +27,7 @@ checkstyle {
     // The build is going to fail in case of violations.
     isIgnoreFailures = false
 
+    configDirectory.set(file("${rootDir}/buildSrc/src/main/resources"))
     configFile = file("${rootDir}/buildSrc/src/main/resources/checkstyle.xml")
 
     reportsDir = file("build/reports/checkstyle")
