@@ -4,3 +4,8 @@
  * Use is subject to license terms.
  */
 
+import io.spine.internal.dependency.Spine
+
+dependencies {
+    api(Spine.Proto.server)
+}
