@@ -25,11 +25,11 @@
     <rule ref="category/java/bestpractices.xml/ReplaceVectorWithList"/>
     <rule ref="category/java/bestpractices.xml/SwitchStmtsShouldHaveDefault"/>
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
-    <rule ref="category/java/bestpractices.xml/UnusedImports"/>
     <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
     <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
 
     <!-- Code Style -->
+    <rule ref="category/java/codestyle.xml/UnnecessaryImport" />
     <rule ref="category/java/codestyle.xml/CallSuperInConstructor"/>
     <rule ref="category/java/codestyle.xml/ClassNamingConventions">
         <properties>
@@ -38,7 +38,6 @@
         </properties>
     </rule>
     <rule ref="category/java/codestyle.xml/ControlStatementBraces"/>
-    <rule ref="category/java/codestyle.xml/DontImportJavaLang"/>
     <rule ref="category/java/codestyle.xml/ExtendsObject"/>
     <rule ref="category/java/codestyle.xml/FieldDeclarationsShouldBeAtStartOfClass"/>
     <rule ref="category/java/codestyle.xml/GenericsNaming"/>
