@@ -18,5 +18,6 @@ object JUnit {
         "org.junit.jupiter:junit-jupiter-api",
         "org.junit.jupiter:junit-jupiter-params"
     )
+    val engine = "org.junit.jupiter:junit-jupiter-engine"
     const val bom = "org.junit:junit-bom:${version}"
 }

@@ -38,6 +38,7 @@ dependencies {
     testImplementation(enforcedPlatform(JUnit.bom))
     JUnit.api.forEach { testImplementation(it) }
     Truth.libs.forEach { testImplementation(it) }
+    testRuntimeOnly(JUnit.engine)
 }
 
 tasks.test {
