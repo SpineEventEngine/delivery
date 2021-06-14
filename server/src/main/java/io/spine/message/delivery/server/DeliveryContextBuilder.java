@@ -25,10 +25,21 @@ public final class DeliveryContextBuilder {
     }
 
     /**
+     * Initializes the {@code BoundedContext}.
+     */
+    public BoundedContext build(){
+        var contextBuilder = contextBuilder();
+        return contextBuilder.build();
+    }
+
+    /**
      * Returns a fully-initialized instance of the Delivery {@code BoundedContextBuilder}.
      */
     @VisibleForTesting
-    public BoundedContextBuilder builder() {
-        return BoundedContext.singleTenant(DeliveryContext.NAME);
+    public BoundedContextBuilder contextBuilder() {
+        return BoundedContext
+                .singleTenant(DeliveryContext.NAME)
+                .add(InboxStorageState.class)
+                .addCommandDispatcher(new InboxWriter());
     }
 }
