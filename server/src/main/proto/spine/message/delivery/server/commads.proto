@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery.server.command";
+option java_outer_classname = "CommandsProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "google/protobuf/duration.proto";
+
+import "spine/server/delivery/inbox.proto";
+import "spine/server/delivery/delivery.proto";
+import "spine/server/server_environment.proto";
+
+// Write a new message to a particular Inbox.
+message WriteMessage {
+
+    // The ID of the Inbox to which the message is written to.
+    spine.server.delivery.InboxId inbox = 1 [(required) = true];
+
+    // The message to be written to the Inbox.
+    spine.server.delivery.InboxMessage message = 2 [(required) = true];
+}
+
+// Picks up the shard for processing.
+message PickUpShard {
+
+    // The shard to pick up work from.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
+    // The node that is going to perform the work.
+    spine.server.NodeId worker = 2 [(required) = true];
+}
+
+// Releases the shard which has been previously picked up.
+message ReleaseShard {
+
+    // The shard to release.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
+    // The node that was performing the work.
+    spine.server.NodeId worker = 2 [(required) = true];
+}
+
+// Releases the sharded work sessions that were picked up before the configured
+// inactivity period.
+message ReleaseExpiredSessions {
+
+    // The duration of the period after which the shard delivery session is considered expired.
+    google.protobuf.Duration inactivity_period = 1 [(required) = true];
+}

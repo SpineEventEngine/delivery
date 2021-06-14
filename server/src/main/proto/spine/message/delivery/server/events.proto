@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery.server.event";
+option java_outer_classname = "EventsProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "google/protobuf/timestamp.proto";
+
+import "spine/server/delivery/inbox.proto";
+import "spine/server/delivery/delivery.proto";
+import "spine/server/server_environment.proto";
+
+// A new message was written to a particular Inbox.
+message MessageWritten {
+
+    // The ID of the Inbox to which the message was written to.
+    spine.server.delivery.InboxId inbox = 1 [(required) = true];
+
+    // The message that was written to the Inbox.
+    spine.server.delivery.InboxMessage message = 2 [(required) = true];
+}
+
+// A shard has been picked up by a worker.
+message ShardPickedUp {
+
+    // The shard in which the worker has picked up work from.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
+    // The node that picked up the work.
+    spine.server.NodeId picked_by = 2 [(required) = true];
+
+    // The time when the `worker` has picked up the shard.
+    google.protobuf.Timestamp when_picked = 3 [(required) = true];
+}
+
+// A shard has been released by a worker.
+message ShardReleased {
+
+    // The shard that was released.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
+    // The node that released the shard.
+    spine.server.NodeId picked_by = 2 [(required) = true];
+
+    // The time when the `worker` has released the shard.
+    google.protobuf.Timestamp when_released = 3 [(required) = true];
+}
