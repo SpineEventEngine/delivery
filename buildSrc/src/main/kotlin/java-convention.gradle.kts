@@ -80,7 +80,7 @@ tasks.compileJava {
     )
 
     options.errorprone {
-        option("NullAway:AnnotatedPackages", "io.spine.message-delivery")
+        option("NullAway:AnnotatedPackages", "io.spine.message.delivery")
         disableWarningsInGeneratedCode.set(true)
     }
 }
