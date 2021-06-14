@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery.server.command";
+option java_outer_classname = "CommandsProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "spine/server/delivery/inbox.proto";
+
+// Request to write a new message to a particular Inbox.
+message WriteMessage {
+
+    // The ID of the Inbox to which the message is written to.
+    spine.server.delivery.InboxId inbox = 1 [(required) = true];
+
+    // The message to be written to the Inbox.
+    spine.server.delivery.InboxMessage message = 2 [(required) = true];
+}

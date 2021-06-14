@@ -4,3 +4,6 @@
  * Use is subject to license terms.
  */
 
+dependencies {
+    implementation(project(":model"))
+}

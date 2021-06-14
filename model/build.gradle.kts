@@ -4,3 +4,16 @@
  * Use is subject to license terms.
  */
 
+import io.spine.internal.dependency.Grpc
+import io.spine.internal.dependency.Spine
+
+dependencies {
+    Spine.apply {
+        api(core)
+        api(server)
+    }
+    Grpc.apply {
+        api(protobuf)
+        api(core)
+    }
+}

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery.server.event";
+option java_outer_classname = "EventsProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "spine/server/delivery/inbox.proto";
+
+// A new message was written to a particular Inbox.
+message MessageWritten {
+
+    // The ID of the Inbox to which the message was written to.
+    spine.server.delivery.InboxId inbox = 1 [(required) = true];
+
+    // The message that was written to the Inbox.
+    spine.server.delivery.InboxMessage message = 2 [(required) = true];
+}

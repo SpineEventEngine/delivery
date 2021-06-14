@@ -17,7 +17,7 @@ plugins {
 dependencies {
     Protobuf.libs.forEach { implementation(it) }
     implementation(Spine.base)
-//    testImplementation(Spine.Test.base)
+    testImplementation(Spine.Test.base)
 }
 
 modelCompiler {
