@@ -85,3 +85,7 @@ tasks.compileJava {
         disableWarningsInGeneratedCode.set(true)
     }
 }
+
+tasks.compileTestJava {
+    options.errorprone.isEnabled.set(false)
+}
