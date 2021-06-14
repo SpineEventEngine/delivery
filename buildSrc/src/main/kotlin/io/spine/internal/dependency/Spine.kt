@@ -17,7 +17,7 @@ object Spine {
     const val core = "io.spine:spine-core:${coreVersion}"
 
     object Test {
-        const val base = "io.spine.tools:spine-testutil-base:${baseVersion}"
+        const val base = "io.spine.tools:spine-testlib:${baseVersion}"
         const val client = "io.spine.tools:spine-testutil-client:${coreVersion}"
         const val server = "io.spine.tools:spine-testutil-server:${coreVersion}"
         const val core = "io.spine.tools:spine-testutil-core:${coreVersion}"
