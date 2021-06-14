@@ -22,8 +22,4 @@ object Spine {
         const val server = "io.spine.tools:spine-testutil-server:${coreVersion}"
         const val core = "io.spine.tools:spine-testutil-core:${coreVersion}"
     }
-
-    object Proto {
-        const val server = "${Spine.server}:proto"
-    }
 }
