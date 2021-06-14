@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery.server.command";
+option java_outer_classname = "InboxStorageProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "google/protobuf/timestamp.proto";
+
+import "spine/server/delivery/delivery.proto";
+import "spine/server/server_environment.proto";
+
+// A registry of shard session.
+//
+// The registry tracks who and when has picked up some work and guards the shard
+// from being picked up by multiple workers.
+//
+message ShardSessionRegistry {
+
+    // The index of the shard this registry is guarding.
+    spine.server.delivery.ShardIndex id = 1;
+
+    // The node ID of the worker who picked up work from the shard.
+    //
+    // The value may be empty indicating that no one is currently working with the shard.
+    //
+    spine.server.NodeId picked_by = 2;
+
+    // The time when the `worker` has picked up the shard.
+    //
+    // Must be empty when `worker` is also empty.
+    //
+    google.protobuf.Timestamp when_picked = 3;
+}
