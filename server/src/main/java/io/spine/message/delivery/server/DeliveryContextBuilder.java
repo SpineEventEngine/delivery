@@ -27,7 +27,7 @@ public final class DeliveryContextBuilder {
     /**
      * Initializes the {@code BoundedContext}.
      */
-    public BoundedContext build(){
+    public BoundedContext build() {
         var contextBuilder = contextBuilder();
         return contextBuilder.build();
     }
@@ -39,7 +39,7 @@ public final class DeliveryContextBuilder {
     public BoundedContextBuilder contextBuilder() {
         return BoundedContext
                 .singleTenant(DeliveryContext.NAME)
-                .add(InboxStorageState.class)
+                .add(new InboxStorageRepo())
                 .addCommandDispatcher(new InboxWriter());
     }
 }
