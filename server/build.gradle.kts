@@ -8,4 +8,5 @@ import io.spine.internal.dependency.Spine
 
 dependencies {
     implementation(Spine.server)
+    testImplementation(Spine.Test.server)
 }
