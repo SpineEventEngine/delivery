@@ -4,6 +4,8 @@
  * Use is subject to license terms.
  */
 
+import io.spine.internal.dependency.Spine
+
 dependencies {
-    implementation(project(":model"))
+    implementation(Spine.server)
 }

@@ -5,7 +5,6 @@
  */
 
 rootProject.name = "message-delivery"
-include("model")
 include("server")
 include("client")
 
