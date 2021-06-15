@@ -26,6 +26,12 @@ import io.spine.server.delivery.ShardIndex;
 import static io.spine.message.delivery.server.rejection.Rejections.UnableToReleaseShard.Reason;
 import static java.lang.String.format;
 
+/**
+ * Guards shard delivery sessions.
+ *
+ * <p>The registry keeps track of the shard workers and prevents the shard from being picked up
+ * by more than one worker at time.
+ */
 final class SessionRegistry
         extends Aggregate<ShardIndex, ShardSessionRegistry, ShardSessionRegistry.Builder>
         implements Logging {
