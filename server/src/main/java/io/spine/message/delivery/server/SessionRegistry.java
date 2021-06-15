@@ -111,7 +111,10 @@ final class SessionRegistry
     }
 
     @Apply
-    @SuppressWarnings("ResultOfMethodCallIgnored") // that's OK. We're clearing state fields
+    @SuppressWarnings({
+            "ResultOfMethodCallIgnored" /* that's OK. We're clearing state fields */,
+            "PMD.UnusedFormalParameter"
+    })
     private void on(ShardReleased e) {
         builder().clearPickedBy()
                  .clearWhenPicked();
