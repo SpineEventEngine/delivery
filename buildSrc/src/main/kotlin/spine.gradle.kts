@@ -25,12 +25,12 @@ val generatedTestSpineDir = file("${generatedRootDir}/test/spine")
 sourceSets {
     main {
         java {
-            srcDirs.add(generatedSpineDir)
+            srcDir(generatedSpineDir)
         }
     }
     test {
         java {
-            srcDirs.add(generatedTestSpineDir)
+            srcDir(generatedTestSpineDir)
         }
     }
 }
