@@ -10,7 +10,6 @@ include("client")
 
 dependencyResolutionManagement {
     repositories {
-        mavenLocal()
         mavenCentral()
         google()
         maven("https://spine.mycloudrepo.io/public/repositories/releases") {
@@ -29,7 +28,6 @@ dependencyResolutionManagement {
 
 pluginManagement {
     repositories {
-        mavenLocal()
         mavenCentral()
         google()
         gradlePluginPortal()
