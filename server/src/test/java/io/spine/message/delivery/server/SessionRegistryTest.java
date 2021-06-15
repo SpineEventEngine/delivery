@@ -10,7 +10,9 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
 import io.spine.base.Time;
 import io.spine.message.delivery.server.command.PickUpShard;
+import io.spine.message.delivery.server.command.ReleaseShard;
 import io.spine.message.delivery.server.event.ShardPickedUp;
+import io.spine.message.delivery.server.event.ShardReleased;
 import io.spine.message.delivery.server.rejection.Rejections;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.ShardIndex;
@@ -87,6 +89,90 @@ final class SessionRegistryTest extends DeliveryTest {
                 var expected = Rejections.ShardAlreadyPickedUp.newBuilder()
                         .setShard(shard)
                         .setWorker(worker)
+                        .vBuild();
+                context().assertEvent(expected);
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("handle `ReleaseShard` command")
+    final class HandleReleaseShard {
+
+        private final Timestamp time = Time.currentTime();
+        private final ReleaseShard releaseShard = ReleaseShard.newBuilder()
+                .setShard(shard)
+                .setWorker(worker)
+                .vBuild();
+
+        @BeforeEach
+        void releaseShard() {
+            Time.setProvider(new FrozenMadHatterParty(time));
+            var pickUpShard = PickUpShard.newBuilder()
+                    .setShard(shard)
+                    .setWorker(worker)
+                    .vBuild();
+            context().receivesCommand(pickUpShard)
+                     .receivesCommand(releaseShard);
+        }
+
+        @AfterEach
+        void resetTime() {
+            Time.resetProvider();
+        }
+
+        @Test
+        @DisplayName("updating aggregate state")
+        void state() {
+            var expected = ShardSessionRegistry.newBuilder()
+                    .setId(shard)
+                    .vBuild();
+            context().assertState(shard, expected);
+        }
+
+        @Test
+        @DisplayName("producing `ShardReleased` event")
+        void event() {
+            var expected = ShardReleased.newBuilder()
+                    .setShard(shard)
+                    .setWhenReleased(time)
+                    .setPickedBy(worker)
+                    .vBuild();
+            context().assertEvent(expected);
+        }
+
+        @Nested
+        @DisplayName("throwing `UnableToReleaseShard` rejection when")
+        class Throwing {
+
+            @Test
+            @DisplayName("shard was not previously picked up")
+            void notPickedUp() {
+                context().receivesCommand(releaseShard);
+                var expected = Rejections.UnableToReleaseShard.newBuilder()
+                        .setShard(shard)
+                        .setWorker(worker)
+                        .setReason(SessionRegistry.shardNotPickedUp())
+                        .vBuild();
+                context().assertEvent(expected);
+            }
+
+            @Test
+            @DisplayName("shard is picked up by another worker")
+            void pickedUpByAnotherWorker() {
+                var anotherWorker = NodeId.newBuilder()
+                        .setValue(Identifier.newUuid())
+                        .vBuild();
+                var pickUpShard = PickUpShard.newBuilder()
+                        .setShard(shard)
+                        .setWorker(anotherWorker)
+                        .vBuild();
+                context().receivesCommand(pickUpShard)
+                         .receivesCommand(releaseShard);
+                var expected = Rejections.UnableToReleaseShard.newBuilder()
+                        .setShard(shard)
+                        .setWorker(worker)
+                        .setReason(SessionRegistry.shardPickedUpByOtherWorker(anotherWorker))
                         .vBuild();
                 context().assertEvent(expected);
             }
