@@ -8,7 +8,7 @@ import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
 import io.spine.tools.protoc.MessageSelectorFactory.suffix
 import org.gradle.plugins.ide.idea.model.Module
-import org.gradle.plugins.ide.idea.model.ModuleDependency
+import org.gradle.plugins.ide.idea.model.ModuleLibrary
 
 plugins {
     `java-library`
@@ -46,7 +46,7 @@ idea {
             })
             whenMerged(Action<Module> {
                 dependencies.forEach {
-                    (it as ModuleDependency).isExported = true
+                    (it as ModuleLibrary).isExported = true
                 }
             })
         }
