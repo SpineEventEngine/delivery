@@ -40,6 +40,7 @@ public final class DeliveryContextBuilder {
         return BoundedContext
                 .singleTenant(DeliveryContext.NAME)
                 .add(new InboxStorageRepo())
+                .add(SessionRegistry.class)
                 .addCommandDispatcher(new InboxWriter());
     }
 }

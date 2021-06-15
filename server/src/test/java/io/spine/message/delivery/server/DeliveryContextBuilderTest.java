@@ -20,5 +20,7 @@ final class DeliveryContextBuilderTest {
         var boundedContext = new DeliveryContextBuilder().build();
         assertThat(boundedContext.hasEntitiesWithState(InboxStorage.class))
                 .isTrue();
+        assertThat(boundedContext.hasEntitiesWithState(ShardSessionRegistry.class))
+                .isTrue();
     }
 }
