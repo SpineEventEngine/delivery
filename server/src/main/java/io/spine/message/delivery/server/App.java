@@ -7,8 +7,8 @@
 package io.spine.message.delivery.server;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.flogger.FluentLogger;
 import io.spine.environment.Production;
+import io.spine.logging.Logging;
 import io.spine.server.GrpcContainer;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.Delivery;
@@ -23,9 +23,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * Starts the {@code Delivery} gRPC server.
  */
-public final class App {
-
-    private static final FluentLogger log = FluentLogger.forEnclosingClass();
+public final class App implements Logging {
 
     /**
      * A host to use for gRPC server.
@@ -66,8 +64,7 @@ public final class App {
         } catch (IOException e) {
             throw newIllegalStateException(e, "Unable to start gRPC server at %s:%d.", HOST, PORT);
         }
-        log.atInfo()
-           .log("gRPC server started at %s:%d", HOST, PORT);
+        _info().log("gRPC server started at %s:%d", HOST, PORT);
         grpc.awaitTermination();
     }
 
