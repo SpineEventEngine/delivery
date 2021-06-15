@@ -7,7 +7,6 @@
 package io.spine.message.delivery.server;
 
 import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
-import io.spine.message.delivery.server.command.InboxStorage;
 import io.spine.message.delivery.server.event.MessageWritten;
 import io.spine.server.delivery.InboxId;
 import io.spine.server.projection.ProjectionRepository;

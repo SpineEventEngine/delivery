@@ -6,7 +6,6 @@
 
 package io.spine.message.delivery.server;
 
-import io.spine.message.delivery.server.command.InboxStorage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -8,7 +8,6 @@ package io.spine.message.delivery.server;
 
 import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
-import io.spine.message.delivery.server.command.InboxStorage;
 import io.spine.message.delivery.server.event.MessageWritten;
 import io.spine.server.delivery.InboxId;
 import io.spine.server.projection.Projection;
