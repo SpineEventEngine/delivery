@@ -18,7 +18,7 @@ final class DeliveryContextBuilderTest {
     @Test
     @DisplayName("have private constructor")
     void havePrivateConstructor() {
-        assertHasPrivateParameterlessCtor(DeliveryContext.class);
+        assertHasPrivateParameterlessCtor(DeliveryContext.DeliveryContextBuilder.class);
     }
 
     @Test
