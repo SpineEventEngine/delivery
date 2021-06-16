@@ -6,12 +6,13 @@
 
 package io.spine.message.delivery.server;
 
-import com.google.common.collect.Ordering;
 import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
 import io.spine.message.delivery.server.event.MessageWritten;
 import io.spine.server.delivery.InboxMessageComparator;
 import io.spine.server.projection.Projection;
+
+import java.util.stream.Collectors;
 
 //TODO:2021-06-16:yuri-sergiichuk: add docs.
 final class ShardedInboxStorageState
@@ -22,12 +23,12 @@ final class ShardedInboxStorageState
     //TODO:2021-06-16:yuri-sergiichuk: add tests.
     @Subscribe
     void on(MessageWritten e, EventContext context) {
-        var messages = builder()
+        var sortedMessages = builder()
                 .addMessage(e.getMessage())
-                .getMessageList();
-        var sortedMessages =
-                Ordering.from(InboxMessageComparator.chronologically)
-                        .sortedCopy(messages);
+                .getMessageList()
+                .stream()
+                .sorted(InboxMessageComparator.chronologically)
+                .collect(Collectors.toList());
         builder().clearMessage()
                  .addAllMessage(sortedMessages);
     }
