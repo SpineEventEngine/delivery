@@ -7,6 +7,7 @@
 package io.spine.message.delivery.server;
 
 import io.spine.client.Client;
+import io.spine.environment.Environment;
 import io.spine.server.ServerEnvironment;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +27,7 @@ final class AppTest {
 
     @AfterAll
     static void afterAll() {
+        Environment.instance().reset();
         ServerEnvironment.instance().reset();
     }
 
