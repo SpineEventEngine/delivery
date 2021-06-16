@@ -11,6 +11,8 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "spine/server/delivery/inbox.proto";
+import "spine/server/delivery/delivery.proto";
+import "spine/message/delivery/server/identifiers.proto";
 
 // The storage of an Inbox.
 message InboxStorage {
@@ -20,5 +22,22 @@ message InboxStorage {
     spine.server.delivery.InboxId id = 1;
 
     // Messages stored in the storage.
+    repeated spine.server.delivery.InboxMessage message = 2;
+}
+
+// The storage of Inbox messages grouped by shards for a tenant.
+//
+// Each tenant has its own set of storages for every shard.
+//
+message ShardedInboxStorage {
+    option (entity).kind = PROJECTION;
+
+    // The ID of the storage.
+    ShardedStorageId id = 1;
+
+    // Messages stored in the storage.
+    //
+    // The messages are always stored sorted in chronologically order.
+    //
     repeated spine.server.delivery.InboxMessage message = 2;
 }
