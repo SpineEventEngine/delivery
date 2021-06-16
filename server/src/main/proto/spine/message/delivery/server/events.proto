@@ -22,8 +22,11 @@ message MessageWritten {
     // The ID of the Inbox to which the message was written to.
     spine.server.delivery.InboxId inbox = 1 [(required) = true];
 
+    // The ID of the tenant on behalf of which the message was written.
+    spine.server.delivery.InboxId tenant = 2 [(required) = true];
+
     // The message that was written to the Inbox.
-    spine.server.delivery.InboxMessage message = 2 [(required) = true];
+    spine.server.delivery.InboxMessage message = 3 [(required) = true];
 }
 
 // A shard has been picked up by a worker.

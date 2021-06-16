@@ -22,8 +22,11 @@ message WriteMessage {
     // The ID of the Inbox to which the message is written to.
     spine.server.delivery.InboxId inbox = 1 [(required) = true];
 
+    // The ID of the tenant on behalf of which the message is written.
+    spine.server.delivery.InboxId tenant = 2 [(required) = true];
+
     // The message to be written to the Inbox.
-    spine.server.delivery.InboxMessage message = 2 [(required) = true];
+    spine.server.delivery.InboxMessage message = 3 [(required) = true];
 }
 
 // Picks up the shard for processing.
