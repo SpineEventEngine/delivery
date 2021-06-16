@@ -27,6 +27,7 @@ final class InboxWriter extends AbstractCommandHandler implements Logging {
         return MessageWritten
                 .newBuilder()
                 .setInbox(c.getInbox())
+                .setTenant(c.getTenant())
                 .setMessage(c.getMessage())
                 .vBuild();
     }

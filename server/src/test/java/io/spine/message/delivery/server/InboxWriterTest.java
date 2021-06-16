@@ -7,6 +7,7 @@
 package io.spine.message.delivery.server;
 
 import io.spine.base.Identifier;
+import io.spine.core.TenantId;
 import io.spine.message.delivery.server.command.WriteMessage;
 import io.spine.message.delivery.server.event.MessageWritten;
 import io.spine.message.delivery.server.given.TestInboxMessages;
@@ -27,11 +28,15 @@ final class InboxWriterTest extends DeliveryTest {
 
         private final InboxMessage message = TestInboxMessages
                 .toDeliver(Identifier.newUuid(), TypeUrl.of(Something.class));
+        private final TenantId tenant = TenantId.newBuilder()
+                .setValue(Identifier.newUuid())
+                .vBuild();
 
         @BeforeEach
         void writeMessage() {
             var writeMessage = WriteMessage.newBuilder()
                     .setMessage(message)
+                    .setTenant(tenant)
                     .setInbox(message.getInboxId())
                     .vBuild();
             context().receivesCommand(writeMessage);
@@ -42,6 +47,7 @@ final class InboxWriterTest extends DeliveryTest {
         void event() {
             var messageWritten = MessageWritten.newBuilder()
                     .setMessage(message)
+                    .setTenant(tenant)
                     .setInbox(message.getInboxId())
                     .vBuild();
             context().assertEvent(messageWritten);
