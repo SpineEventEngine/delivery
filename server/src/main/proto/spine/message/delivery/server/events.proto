@@ -12,6 +12,7 @@ option java_generate_equals_and_hash = true;
 
 import "google/protobuf/timestamp.proto";
 
+import "spine/core/tenant_id.proto";
 import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
 import "spine/server/server_environment.proto";
@@ -23,7 +24,7 @@ message MessageWritten {
     spine.server.delivery.InboxId inbox = 1 [(required) = true];
 
     // The ID of the tenant on behalf of which the message was written.
-    spine.server.delivery.InboxId tenant = 2 [(required) = true];
+    spine.core.TenantId tenant = 2 [(required) = true];
 
     // The message that was written to the Inbox.
     spine.server.delivery.InboxMessage message = 3 [(required) = true];
