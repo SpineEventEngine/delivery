@@ -15,6 +15,5 @@ allprojects {
 subprojects {
     apply<JavaConventionPlugin>()
     apply<DependencyManagementPlugin>()
-    apply<SpinePlugin>()
     apply<CodeQualityPlugin>()
 }

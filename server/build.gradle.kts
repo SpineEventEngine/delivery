@@ -7,6 +7,10 @@
 import io.spine.internal.dependency.Grpc
 import io.spine.internal.dependency.Spine
 
+plugins {
+    spine
+}
+
 dependencies {
     runtimeOnly(Grpc.nettyShaded)
 
