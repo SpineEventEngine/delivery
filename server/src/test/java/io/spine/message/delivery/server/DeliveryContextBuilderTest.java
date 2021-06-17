@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertHasPrivateParameterlessCtor;
 
-@DisplayName("`Builder` should")
+@DisplayName("`DeliveryContext.Builder` should")
 final class DeliveryContextBuilderTest {
 
     @Test
