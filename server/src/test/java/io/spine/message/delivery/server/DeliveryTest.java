@@ -18,6 +18,6 @@ abstract class DeliveryTest extends ContextAwareTest {
     @Override
     protected BoundedContextBuilder contextBuilder() {
         return DeliveryContext.newBuilder()
-                .contextBuilder();
+                .context();
     }
 }
