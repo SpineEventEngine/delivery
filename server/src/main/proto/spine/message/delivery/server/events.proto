@@ -12,6 +12,7 @@ option java_generate_equals_and_hash = true;
 
 import "google/protobuf/timestamp.proto";
 
+import "spine/core/tenant_id.proto";
 import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
 import "spine/server/server_environment.proto";
@@ -19,11 +20,8 @@ import "spine/server/server_environment.proto";
 // A new message was written to a particular Inbox.
 message MessageWritten {
 
-    // The ID of the Inbox to which the message was written to.
-    spine.server.delivery.InboxId inbox = 1 [(required) = true];
-
     // The message that was written to the Inbox.
-    spine.server.delivery.InboxMessage message = 2 [(required) = true];
+    spine.server.delivery.InboxMessage message = 1 [(required) = true];
 }
 
 // A shard has been picked up by a worker.

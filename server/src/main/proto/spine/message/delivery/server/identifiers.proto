@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery.server";
+option java_outer_classname = "IdentifiersProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "spine/core/tenant_id.proto";
+import "spine/server/delivery/delivery.proto";
+
+// The ID of a multi-tenant storage which holds messages grouped by the shard index.
+message ShardedStorageId {
+
+    // The tenant this storage holds inbox messages for.
+    spine.core.TenantId tenant = 1 [(required) = true];
+
+    // The shard this storage holds inbox messages for.
+    spine.server.delivery.ShardIndex shard = 2 [(required) = true];
+}

@@ -11,14 +11,18 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "spine/server/delivery/inbox.proto";
+import "spine/server/delivery/delivery.proto";
 
-// The storage of an Inbox.
-message InboxStorage {
+// The Inbox messages grouped by the delivery shard.
+message MessagesInShard {
     option (entity).kind = PROJECTION;
 
-    // The ID of the Inbox this storage is linked to.
-    spine.server.delivery.InboxId id = 1;
+    // The shard the message batch belongs to.
+    spine.server.delivery.ShardIndex id = 1;
 
     // Messages stored in the storage.
+    //
+    // The messages are always stored sorted in chronologically order.
+    //
     repeated spine.server.delivery.InboxMessage message = 2;
 }

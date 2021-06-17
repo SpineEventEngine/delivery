@@ -23,7 +23,7 @@ final class InboxWriterTest extends DeliveryTest {
 
     @Nested
     @DisplayName("handle a `WriteMessage` command")
-    class HandleWriteMessage {
+    final class HandleWriteMessage {
 
         private final InboxMessage message = TestInboxMessages
                 .toDeliver(Identifier.newUuid(), TypeUrl.of(Something.class));
@@ -32,7 +32,6 @@ final class InboxWriterTest extends DeliveryTest {
         void writeMessage() {
             var writeMessage = WriteMessage.newBuilder()
                     .setMessage(message)
-                    .setInbox(message.getInboxId())
                     .vBuild();
             context().receivesCommand(writeMessage);
         }
@@ -42,7 +41,6 @@ final class InboxWriterTest extends DeliveryTest {
         void event() {
             var messageWritten = MessageWritten.newBuilder()
                     .setMessage(message)
-                    .setInbox(message.getInboxId())
                     .vBuild();
             context().assertEvent(messageWritten);
         }

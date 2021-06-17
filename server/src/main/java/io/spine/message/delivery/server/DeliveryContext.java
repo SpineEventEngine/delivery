@@ -11,6 +11,7 @@ import io.spine.server.BoundedContext;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
+import io.spine.server.SubscriptionService;
 
 /**
  * Defines a bounded context for the Delivery application.
@@ -50,6 +51,15 @@ public final class DeliveryContext {
     }
 
     /**
+     * Creates a new instance of a {@code SubscriptionService} with this context.
+     */
+    public SubscriptionService subscriptionService(){
+        return SubscriptionService.newBuilder()
+                .add(context)
+                .build();
+    }
+
+    /**
      * Creates a new builder of this context.
      */
     public static DeliveryContextBuilder newBuilder() {
@@ -82,7 +92,7 @@ public final class DeliveryContext {
         public BoundedContextBuilder contextBuilder() {
             return BoundedContext
                     .singleTenant(NAME)
-                    .add(new InboxStorageRepo())
+                    .add(new ShardedInboxStorageRepo())
                     .add(SessionRegistry.class)
                     .addCommandDispatcher(new InboxWriter());
         }

@@ -22,12 +22,13 @@ final class InboxWriter extends AbstractCommandHandler implements Logging {
 
     @Assign
     MessageWritten handle(WriteMessage c, CommandContext context) {
-        _debug().log("Writing a new message for Inbox `%s` on `%s` request.",
-                     Identifier.toString(c.getInbox()), context.actor());
-        return MessageWritten
-                .newBuilder()
-                .setInbox(c.getInbox())
-                .setMessage(c.getMessage())
+        var message = c.getMessage();
+        _debug().log(
+                "Writing a new message for Inbox `%s` in Shard `%s` on `%s` request.",
+                Identifier.toString(message.getInboxId()), message.shardIndex(), context.actor()
+        );
+        return MessageWritten.newBuilder()
+                .setMessage(message)
                 .vBuild();
     }
 }
