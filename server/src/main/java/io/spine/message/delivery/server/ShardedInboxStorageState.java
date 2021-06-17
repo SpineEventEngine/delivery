@@ -14,7 +14,12 @@ import io.spine.server.projection.Projection;
 
 import java.util.stream.Collectors;
 
-//TODO:2021-06-16:yuri-sergiichuk: add docs.
+/**
+ * Holds state of all inbox messages which belong to a particular {@linkplain io.spine.core.TenantId
+ * tenant} and {@linkplain io.spine.server.delivery.ShardIndex shard}.
+ *
+ * <p>The messages are stored {@linkplain InboxMessageComparator#chronologically chronologically}.
+ */
 final class ShardedInboxStorageState
         extends Projection<ShardedStorageId, ShardedInboxStorage, ShardedInboxStorage.Builder> {
 
