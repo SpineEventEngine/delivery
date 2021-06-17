@@ -27,6 +27,7 @@ import org.junit.jupiter.api.parallel.Isolated;
 
 import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
@@ -90,7 +91,7 @@ final class AppTest {
                   shardPickedUp.countDown();
               })
               .post();
-        shardPickedUp.await();
+        shardPickedUp.await(3, TimeUnit.SECONDS);
         client.shutdown();
     }
 
@@ -119,7 +120,7 @@ final class AppTest {
                   messageWritten.countDown();
               })
               .post();
-        messageWritten.await();
+        messageWritten.await(10, TimeUnit.SECONDS);
         client.shutdown();
     }
 
