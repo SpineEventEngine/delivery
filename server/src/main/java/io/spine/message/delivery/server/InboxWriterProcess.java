@@ -11,14 +11,16 @@ import io.spine.core.CommandContext;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.server.command.WriteMessage;
 import io.spine.message.delivery.server.event.MessageWritten;
-import io.spine.server.command.AbstractCommandHandler;
 import io.spine.server.command.Assign;
+import io.spine.server.procman.ProcessManager;
 
 /**
- * Handles {@link WriteMessage} commands to store new {@link io.spine.server.delivery.Inbox Inbox}
- * messages.
+ * Handles {@link WriteMessage} commands to store new
+ * {@link io.spine.server.delivery.Inbox Inbox} messages.
  */
-final class InboxWriter extends AbstractCommandHandler implements Logging {
+final class InboxWriterProcess
+        extends ProcessManager<InboxWriterId, InboxWriter, InboxWriter.Builder>
+        implements Logging {
 
     @Assign
     MessageWritten handle(WriteMessage c, CommandContext context) {

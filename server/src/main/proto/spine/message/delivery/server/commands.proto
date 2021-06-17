@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2000-2021 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+
 syntax = "proto3";
 
 package spine.message.delivery;
@@ -12,7 +18,6 @@ option java_generate_equals_and_hash = true;
 
 import "google/protobuf/duration.proto";
 
-import "spine/core/tenant_id.proto";
 import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
 import "spine/server/server_environment.proto";

@@ -15,6 +15,8 @@ import io.spine.server.projection.Projection;
 
 import java.util.stream.Collectors;
 
+import static io.spine.server.delivery.InboxMessageComparator.chronologically;
+
 /**
  * Holds state of all inbox messages which belong to a particular {@linkplain ShardIndex shard}.
  *
@@ -29,7 +31,7 @@ final class ShardedInboxStorage
                 .addMessage(e.getMessage())
                 .getMessageList()
                 .stream()
-                .sorted(InboxMessageComparator.chronologically)
+                .sorted(chronologically)
                 .collect(Collectors.toList());
         builder().clearMessage()
                  .addAllMessage(sortedMessages);

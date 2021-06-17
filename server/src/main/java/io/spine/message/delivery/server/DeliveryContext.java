@@ -53,7 +53,7 @@ public final class DeliveryContext {
     /**
      * Creates a new instance of a {@code SubscriptionService} with this context.
      */
-    public SubscriptionService subscriptionService(){
+    public SubscriptionService subscriptionService() {
         return SubscriptionService.newBuilder()
                 .add(context)
                 .build();
@@ -62,26 +62,26 @@ public final class DeliveryContext {
     /**
      * Creates a new builder of this context.
      */
-    public static DeliveryContextBuilder newBuilder() {
-        return new DeliveryContextBuilder();
+    public static Builder newBuilder() {
+        return new Builder();
     }
 
     /**
      * The builder of the Delivery {@link BoundedContext}.
      */
-    public static final class DeliveryContextBuilder {
+    public static final class Builder {
 
         /**
          * Creates a new builder instance.
          */
-        private DeliveryContextBuilder() {
+        private Builder() {
         }
 
         /**
          * Initializes the {@code BoundedContext}.
          */
         public DeliveryContext build() {
-            var contextBuilder = contextBuilder();
+            var contextBuilder = context();
             return new DeliveryContext(contextBuilder.build());
         }
 
@@ -89,12 +89,12 @@ public final class DeliveryContext {
          * Returns a fully-initialized instance of the Delivery {@code BoundedContextBuilder}.
          */
         @VisibleForTesting
-        public BoundedContextBuilder contextBuilder() {
+        public BoundedContextBuilder context() {
             return BoundedContext
                     .singleTenant(NAME)
                     .add(new ShardedInboxStorageRepo())
                     .add(SessionRegistry.class)
-                    .addCommandDispatcher(new InboxWriter());
+                    .add(new InboxWriterRepo());
         }
     }
 }

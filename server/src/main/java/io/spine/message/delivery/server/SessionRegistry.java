@@ -16,7 +16,6 @@ import io.spine.message.delivery.server.event.ShardPickedUp;
 import io.spine.message.delivery.server.event.ShardReleased;
 import io.spine.message.delivery.server.rejection.ShardAlreadyPickedUp;
 import io.spine.message.delivery.server.rejection.UnableToReleaseShard;
-import io.spine.protobuf.Messages;
 import io.spine.server.NodeId;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
@@ -24,6 +23,7 @@ import io.spine.server.command.Assign;
 import io.spine.server.delivery.ShardIndex;
 
 import static io.spine.message.delivery.server.rejection.Rejections.UnableToReleaseShard.Reason;
+import static io.spine.protobuf.Messages.isDefault;
 import static java.lang.String.format;
 
 /**
@@ -81,7 +81,7 @@ final class SessionRegistry
     private void checkCanRelease(ReleaseShard c) throws UnableToReleaseShard {
         var state = state();
         var currentWorker = state.getPickedBy();
-        if (Messages.isDefault(currentWorker)) {
+        if (isDefault(currentWorker)) {
             throw unableToRelease(c, shardNotPickedUp());
         }
         if (!currentWorker.equals(c.getWorker())) {

@@ -27,7 +27,7 @@ final class DeliveryContextTest {
     @DisplayName("expose the context builder")
     void exposeBuilder() {
         assertThat(DeliveryContext.newBuilder())
-                .isInstanceOf(DeliveryContext.DeliveryContextBuilder.class);
+                .isInstanceOf(DeliveryContext.Builder.class);
     }
 
     @Test

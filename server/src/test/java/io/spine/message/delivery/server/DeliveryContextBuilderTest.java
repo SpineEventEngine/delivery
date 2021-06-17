@@ -12,24 +12,26 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.testing.Assertions.assertHasPrivateParameterlessCtor;
 
-@DisplayName("`DeliveryContextBuilder` should")
+@DisplayName("`DeliveryContext.Builder` should")
 final class DeliveryContextBuilderTest {
 
     @Test
     @DisplayName("have private constructor")
     void havePrivateConstructor() {
-        assertHasPrivateParameterlessCtor(DeliveryContext.DeliveryContextBuilder.class);
+        assertHasPrivateParameterlessCtor(DeliveryContext.Builder.class);
     }
 
     @Test
     @DisplayName("initialize `BoundedContext`")
     void initContext() {
         var boundedContext = DeliveryContext.newBuilder()
-                .contextBuilder()
+                .context()
                 .build();
         assertThat(boundedContext.hasEntitiesWithState(MessagesInShard.class))
                 .isTrue();
         assertThat(boundedContext.hasEntitiesWithState(ShardSessionRegistry.class))
+                .isTrue();
+        assertThat(boundedContext.hasEntitiesWithState(InboxWriter.class))
                 .isTrue();
     }
 }
