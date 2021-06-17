@@ -8,20 +8,26 @@ package io.spine.message.delivery.server;
 
 import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
 import io.spine.message.delivery.server.event.MessageWritten;
-import io.spine.server.delivery.InboxId;
+import io.spine.server.delivery.ShardIndex;
 import io.spine.server.projection.ProjectionRepository;
 import io.spine.server.route.EventRouting;
 
 /**
- * A repository of {@link InboxStorageState}s.
+ * A repository of {@link ShardedInboxStorage}s.
  */
-final class InboxStorageRepo
-        extends ProjectionRepository<InboxId, InboxStorageState, InboxStorage> {
+final class ShardedInboxStorageRepo
+        extends ProjectionRepository<ShardIndex, ShardedInboxStorage, MessagesInShard> {
 
     @Override
     @OverridingMethodsMustInvokeSuper
-    protected void setupEventRouting(EventRouting<InboxId> routing) {
+    protected void setupEventRouting(EventRouting<ShardIndex> routing) {
         super.setupEventRouting(routing);
-        routing.unicast(MessageWritten.class, MessageWritten::getInbox);
+        routing.unicast(MessageWritten.class, ShardedInboxStorageRepo::routeMessage);
+    }
+
+    private static ShardIndex routeMessage(MessageWritten event) {
+        return event
+                .getMessage()
+                .shardIndex();
     }
 }

@@ -17,17 +17,11 @@ import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
 import "spine/server/server_environment.proto";
 
-// Write a new message to a particular Inbox.
+// Writes a new message to the Inbox.
 message WriteMessage {
 
-    // The ID of the Inbox to which the message is written to.
-    spine.server.delivery.InboxId inbox = 1 [(required) = true];
-
-    // The ID of the tenant on behalf of which the message is written.
-    spine.core.TenantId tenant = 2 [(required) = true];
-
     // The message to be written to the Inbox.
-    spine.server.delivery.InboxMessage message = 3 [(required) = true];
+    spine.server.delivery.InboxMessage message = 1 [(required) = true];
 }
 
 // Picks up the shard for processing.

@@ -12,28 +12,13 @@ option java_generate_equals_and_hash = true;
 
 import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
-import "spine/message/delivery/server/identifiers.proto";
 
-// The storage of an Inbox.
-message InboxStorage {
+// The Inbox messages grouped by the delivery shard.
+message MessagesInShard {
     option (entity).kind = PROJECTION;
 
-    // The ID of the Inbox this storage is linked to.
-    spine.server.delivery.InboxId id = 1;
-
-    // Messages stored in the storage.
-    repeated spine.server.delivery.InboxMessage message = 2;
-}
-
-// The storage of Inbox messages grouped by shards for a tenant.
-//
-// Each tenant has its own set of storages for every shard.
-//
-message ShardedInboxStorage {
-    option (entity).kind = PROJECTION;
-
-    // The ID of the storage.
-    ShardedStorageId id = 1;
+    // The shard the message batch belongs to.
+    spine.server.delivery.ShardIndex id = 1;
 
     // Messages stored in the storage.
     //

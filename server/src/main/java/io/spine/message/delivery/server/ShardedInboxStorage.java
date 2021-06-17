@@ -10,18 +10,18 @@ import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
 import io.spine.message.delivery.server.event.MessageWritten;
 import io.spine.server.delivery.InboxMessageComparator;
+import io.spine.server.delivery.ShardIndex;
 import io.spine.server.projection.Projection;
 
 import java.util.stream.Collectors;
 
 /**
- * Holds state of all inbox messages which belong to a particular {@linkplain io.spine.core.TenantId
- * tenant} and {@linkplain io.spine.server.delivery.ShardIndex shard}.
+ * Holds state of all inbox messages which belong to a particular {@linkplain ShardIndex shard}.
  *
  * <p>The messages are stored {@linkplain InboxMessageComparator#chronologically chronologically}.
  */
-final class ShardedInboxStorageState
-        extends Projection<ShardedStorageId, ShardedInboxStorage, ShardedInboxStorage.Builder> {
+final class ShardedInboxStorage
+        extends Projection<ShardIndex, MessagesInShard, MessagesInShard.Builder> {
 
     //TODO:2021-06-16:yuri-sergiichuk: add repo and routing.
 

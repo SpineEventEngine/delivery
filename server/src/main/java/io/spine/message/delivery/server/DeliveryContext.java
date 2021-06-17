@@ -82,7 +82,7 @@ public final class DeliveryContext {
         public BoundedContextBuilder contextBuilder() {
             return BoundedContext
                     .singleTenant(NAME)
-                    .add(new InboxStorageRepo())
+                    .add(new ShardedInboxStorageRepo())
                     .add(SessionRegistry.class)
                     .addCommandDispatcher(new InboxWriter());
         }
