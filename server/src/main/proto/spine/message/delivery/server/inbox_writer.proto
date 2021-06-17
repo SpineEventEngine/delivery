@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery.server";
+option java_outer_classname = "InboxWriterProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "google/protobuf/timestamp.proto";
+
+import "spine/server/delivery/delivery.proto";
+import "spine/server/server_environment.proto";
+
+// A process of handling writes to inboxes.
+message InboxWriter {
+    option (entity).kind = PROCESS_MANAGER;
+
+    // The ID of the writer.
+    InboxWriterId id = 1;
+}
+
+// The writer identifier.
+//
+// There is only one instance of the writer across the context.
+//
+message InboxWriterId {
+
+    string value = 1 [(required) = true];
+}

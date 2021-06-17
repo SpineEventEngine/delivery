@@ -53,7 +53,7 @@ public final class DeliveryContext {
     /**
      * Creates a new instance of a {@code SubscriptionService} with this context.
      */
-    public SubscriptionService subscriptionService(){
+    public SubscriptionService subscriptionService() {
         return SubscriptionService.newBuilder()
                 .add(context)
                 .build();
@@ -94,7 +94,7 @@ public final class DeliveryContext {
                     .singleTenant(NAME)
                     .add(new ShardedInboxStorageRepo())
                     .add(SessionRegistry.class)
-                    .addCommandDispatcher(new InboxWriter());
+                    .add(new InboxWriterRepo());
         }
     }
 }

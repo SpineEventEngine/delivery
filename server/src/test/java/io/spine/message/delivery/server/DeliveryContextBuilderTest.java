@@ -31,5 +31,7 @@ final class DeliveryContextBuilderTest {
                 .isTrue();
         assertThat(boundedContext.hasEntitiesWithState(ShardSessionRegistry.class))
                 .isTrue();
+        assertThat(boundedContext.hasEntitiesWithState(InboxWriter.class))
+                .isTrue();
     }
 }
