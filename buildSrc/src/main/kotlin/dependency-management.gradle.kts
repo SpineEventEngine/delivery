@@ -31,7 +31,10 @@ configurations.all {
             Gson.lib,
             JavaX.annotations,
             Protobuf.libs,
-            Truth.libs,
+            Truth.libs
+            // we currently support different versions of Spine in our source code, so we cannot
+            // enforce specific version here.
+            /*
             Spine.base,
             Spine.core,
             Spine.server,
@@ -40,6 +43,7 @@ configurations.all {
             Spine.Test.core,
             Spine.Test.server,
             Spine.Test.client
+             */
         )
     }
 }
