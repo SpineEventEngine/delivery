@@ -23,9 +23,6 @@ import java.util.stream.Collectors;
 final class ShardedInboxStorage
         extends Projection<ShardIndex, MessagesInShard, MessagesInShard.Builder> {
 
-    //TODO:2021-06-16:yuri-sergiichuk: add repo and routing.
-
-    //TODO:2021-06-16:yuri-sergiichuk: add tests.
     @Subscribe
     void on(MessageWritten e, EventContext context) {
         var sortedMessages = builder()

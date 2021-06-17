@@ -156,6 +156,26 @@ public final class TestInboxMessages {
 
     /**
      * Generates a new {@code InboxMessage} in
+     * {@link InboxMessageStatus#TO_DELIVER TO_DELIVER} status and
+     * the receiving time specified in the specified {@code shard}.
+     *
+     * @param whenReceived
+     *         the message receiving time to set
+     * @param shard
+     *         the shard the message belongs to
+     * @return an instance of the generated message
+     */
+    public static InboxMessage toDeliver(Timestamp whenReceived, ShardIndex shard) {
+        var message = newMessage(Identifier.newUuid(), TypeUrl.of(Something.class), TO_DELIVER);
+        return message
+                .toBuilder()
+                .setWhenReceived(whenReceived)
+                .setId(message.getId().toBuilder().setIndex(shard))
+                .vBuild();
+    }
+
+    /**
+     * Generates a new {@code InboxMessage} in
      * {@link InboxMessageStatus#DELIVERED DELIVERED} status.
      *
      * @param targetId
