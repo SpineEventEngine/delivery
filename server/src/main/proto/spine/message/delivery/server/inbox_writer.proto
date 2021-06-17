@@ -10,11 +10,6 @@ option java_outer_classname = "InboxWriterProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "google/protobuf/timestamp.proto";
-
-import "spine/server/delivery/delivery.proto";
-import "spine/server/server_environment.proto";
-
 // A process of handling writes to inboxes.
 message InboxWriter {
     option (entity).kind = PROCESS_MANAGER;
