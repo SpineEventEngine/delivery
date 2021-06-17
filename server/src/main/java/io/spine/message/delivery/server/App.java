@@ -57,6 +57,7 @@ public final class App implements Logging {
                 .atPort(PORT)
                 .addService(deliveryContext.commandService())
                 .addService(deliveryContext.queryService())
+                .addService(deliveryContext.subscriptionService())
                 .build();
         grpc.addShutdownHook();
         try {

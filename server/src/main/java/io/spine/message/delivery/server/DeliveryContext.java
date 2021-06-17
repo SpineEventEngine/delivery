@@ -11,6 +11,7 @@ import io.spine.server.BoundedContext;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
+import io.spine.server.SubscriptionService;
 
 /**
  * Defines a bounded context for the Delivery application.
@@ -45,6 +46,15 @@ public final class DeliveryContext {
      */
     public QueryService queryService() {
         return QueryService.newBuilder()
+                .add(context)
+                .build();
+    }
+
+    /**
+     * Creates a new instance of a {@code SubscriptionService} with this context.
+     */
+    public SubscriptionService subscriptionService(){
+        return SubscriptionService.newBuilder()
                 .add(context)
                 .build();
     }
