@@ -32,14 +32,16 @@ configurations.all {
             JavaX.annotations,
             Protobuf.libs,
             Truth.libs,
-            Spine.base,
-            Spine.core,
-            Spine.server,
-            Spine.client,
-            Spine.Test.base,
-            Spine.Test.core,
-            Spine.Test.server,
-            Spine.Test.client
+            Spine.Stable.base,
+            Spine.Stable.core,
+            Spine.Stable.server,
+            Spine.Stable.client,
+            Spine.Stable.time,
+            Spine.Stable.Test.base,
+            Spine.Stable.Test.core,
+            Spine.Stable.Test.server,
+            Spine.Stable.Test.client,
+            Spine.Stable.Test.time
         )
     }
 }

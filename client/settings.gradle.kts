@@ -4,9 +4,8 @@
  * Use is subject to license terms.
  */
 
-rootProject.name = "message-delivery"
-include("server")
-includeBuild("client")
+rootProject.name = "message-delivery-client"
+includeBuild("..")
 
 dependencyResolutionManagement {
     repositories {

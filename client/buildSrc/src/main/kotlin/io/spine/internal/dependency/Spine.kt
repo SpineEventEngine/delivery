@@ -24,7 +24,7 @@ object Spine {
     }
 
     object Stable {
-        
+
         const val version = "1.7.4"
         const val timeVersion = "1.7.1"
 
