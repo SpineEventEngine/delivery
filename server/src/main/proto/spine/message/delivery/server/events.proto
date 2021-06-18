@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2000-2021 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+
 syntax = "proto3";
 
 package spine.message.delivery;
@@ -19,11 +25,8 @@ import "spine/server/server_environment.proto";
 // A new message was written to a particular Inbox.
 message MessageWritten {
 
-    // The ID of the Inbox to which the message was written to.
-    spine.server.delivery.InboxId inbox = 1 [(required) = true];
-
     // The message that was written to the Inbox.
-    spine.server.delivery.InboxMessage message = 2 [(required) = true];
+    spine.server.delivery.InboxMessage message = 1 [(required) = true];
 }
 
 // A shard has been picked up by a worker.

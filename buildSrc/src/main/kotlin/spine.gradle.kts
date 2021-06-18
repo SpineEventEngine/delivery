@@ -7,11 +7,50 @@
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
 import io.spine.tools.protoc.MessageSelectorFactory.suffix
+import org.gradle.plugins.ide.idea.model.Module
+import org.gradle.plugins.ide.idea.model.ModuleLibrary
 
 plugins {
     `java-library`
+    idea
     id("com.google.protobuf")
     id("io.spine.mc-java")
+}
+
+
+val generatedRootDir = "${projectDir}/generated"
+val generatedSpineDir = file("${generatedRootDir}/main/spine")
+val generatedTestSpineDir = file("${generatedRootDir}/test/spine")
+
+sourceSets {
+    main {
+        java {
+            srcDir(generatedSpineDir)
+        }
+    }
+    test {
+        java {
+            srcDir(generatedTestSpineDir)
+        }
+    }
+}
+
+idea {
+    module {
+        sourceDirs.add(generatedSpineDir)
+        generatedSourceDirs.add(generatedSpineDir)
+        testSourceDirs.add(generatedTestSpineDir)
+        iml {
+            beforeMerged(Action<Module> {
+                dependencies.clear()
+            })
+            whenMerged(Action<Module> {
+                dependencies.forEach {
+                    (it as ModuleLibrary).isExported = true
+                }
+            })
+        }
+    }
 }
 
 dependencies {

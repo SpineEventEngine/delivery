@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2000-2021 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+
 syntax = "proto3";
 
 package spine.message.delivery;
@@ -5,7 +11,7 @@ package spine.message.delivery;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.message.delivery.server.command";
+option java_package = "io.spine.message.delivery.server";
 option java_outer_classname = "ShardSessionRegistryProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
@@ -21,6 +27,7 @@ import "spine/server/server_environment.proto";
 // from being picked up by multiple workers.
 //
 message ShardSessionRegistry {
+    option (entity).kind = AGGREGATE;
 
     // The index of the shard this registry is guarding.
     spine.server.delivery.ShardIndex id = 1;
