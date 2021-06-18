@@ -10,7 +10,7 @@ package io.spine.internal.dependency
 object Spine {
     const val spineReleaseVersion = "1.7.4"
     private const val baseVersion = "2.0.0-SNAPSHOT.35"
-    private const val coreVersion = "2.0.0-SNAPSHOT.25"
+    private const val coreVersion = "2.0.0-SNAPSHOT.26"
 
     const val base = "io.spine:spine-base:${baseVersion}"
     const val client = "io.spine:spine-client:${coreVersion}"
