@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [ '*' ]
+    branches: [ 'master' ]
   pull_request:
     branches: [ '*' ]
   workflow_dispatch:
@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java: [ 11, 15 ]
+        java: [ 11 ]
         os: [ ubuntu-latest ]
 
     runs-on: ${{ matrix.os }}
