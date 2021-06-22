@@ -4,6 +4,7 @@
  * Use is subject to license terms.
  */
 
+import com.google.protobuf.gradle.protoc
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
 import io.spine.tools.protoc.MessageSelectorFactory.suffix
@@ -92,4 +93,8 @@ modelCompiler {
         )
         generateFor(messages().entityState(), markAs("io.spine.query.EntityStateField"))
     }
+}
+
+protobuf.protobuf.protoc {
+    artifact = Protobuf.compiler
 }
