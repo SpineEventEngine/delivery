@@ -7,7 +7,8 @@
 package io.spine.message.delivery.server;
 
 import com.google.errorprone.annotations.OverridingMethodsMustInvokeSuper;
-import io.spine.message.delivery.server.event.MessageWritten;
+import io.spine.message.delivery.MessagesInShard;
+import io.spine.message.delivery.event.MessageWritten;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.projection.ProjectionRepository;
 import io.spine.server.route.EventRouting;

@@ -8,7 +8,8 @@ package io.spine.message.delivery.server;
 
 import io.spine.core.EventContext;
 import io.spine.core.Subscribe;
-import io.spine.message.delivery.server.event.MessageWritten;
+import io.spine.message.delivery.MessagesInShard;
+import io.spine.message.delivery.event.MessageWritten;
 import io.spine.server.delivery.InboxMessageComparator;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.projection.Projection;

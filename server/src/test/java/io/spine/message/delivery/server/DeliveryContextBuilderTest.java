@@ -6,6 +6,9 @@
 
 package io.spine.message.delivery.server;
 
+import io.spine.message.delivery.InboxWriter;
+import io.spine.message.delivery.MessagesInShard;
+import io.spine.message.delivery.ShardSessionRegistry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
