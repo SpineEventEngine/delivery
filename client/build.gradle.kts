@@ -20,5 +20,15 @@ version = extra["messageDeliveryVersion"]!!
 dependencies {
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)
-    protobuf("io.spine.message-delivery:model:${version}")
+}
+
+// We're explicitly copying protos to ensure rejections are generated.
+// See https://github.com/SpineEventEngine/base/issues/650 for details.
+val copyExternalProtos = tasks.create<Copy>("copyExternalProtos") {
+    from("../model/src/main/proto")
+    into("./src/main/proto")
+}
+
+tasks.withType<com.google.protobuf.gradle.GenerateProtoTask> {
+    dependsOn(copyExternalProtos)
 }
