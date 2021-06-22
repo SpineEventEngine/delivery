@@ -6,6 +6,10 @@
 
 import io.spine.internal.dependency.Spine
 
+plugins {
+    id("com.google.protobuf")
+}
+
 dependencies {
     api(Spine.server)
 }
