@@ -11,5 +11,5 @@ plugins {
 }
 
 dependencies {
-    api(Spine.server)
+    runtimeOnly(Spine.server)
 }
