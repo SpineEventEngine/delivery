@@ -16,4 +16,5 @@ subprojects {
     apply<JavaConventionPlugin>()
     apply<DependencyManagementPlugin>()
     apply<CodeQualityPlugin>()
+    apply<SpinePlugin>()
 }
