@@ -4,6 +4,10 @@
  * Use is subject to license terms.
  */
 
+plugins {
+    spine
+}
+
 import io.spine.internal.dependency.Grpc
 import io.spine.internal.dependency.Spine
 
