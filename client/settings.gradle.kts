@@ -5,7 +5,11 @@
  */
 
 rootProject.name = "message-delivery-client"
-includeBuild("..")
+includeBuild("..") {
+    dependencySubstitution {
+        substitute(module("io.spine.message-delivery:model")).using(project(":model"))
+    }
+}
 
 dependencyResolutionManagement {
     repositories {

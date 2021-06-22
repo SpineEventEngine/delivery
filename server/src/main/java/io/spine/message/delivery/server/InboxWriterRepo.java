@@ -6,7 +6,9 @@
 
 package io.spine.message.delivery.server;
 
-import io.spine.message.delivery.server.command.WriteMessage;
+import io.spine.message.delivery.InboxWriter;
+import io.spine.message.delivery.InboxWriterId;
+import io.spine.message.delivery.command.WriteMessage;
 import io.spine.server.procman.ProcessManagerRepository;
 import io.spine.server.route.CommandRouting;
 

@@ -7,8 +7,8 @@
 package io.spine.message.delivery.server;
 
 import io.spine.base.Identifier;
-import io.spine.message.delivery.server.command.WriteMessage;
-import io.spine.message.delivery.server.event.MessageWritten;
+import io.spine.message.delivery.command.WriteMessage;
+import io.spine.message.delivery.event.MessageWritten;
 import io.spine.message.delivery.server.given.TestInboxMessages;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.test.message.delivery.server.Something;

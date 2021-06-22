@@ -6,6 +6,7 @@
 
 rootProject.name = "message-delivery"
 include("server")
+include("model")
 includeBuild("client")
 
 dependencyResolutionManagement {

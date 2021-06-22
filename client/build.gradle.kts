@@ -1,18 +1,16 @@
-import io.spine.internal.dependency.Protobuf
-
 /*
  * Copyright (c) 2000-2021 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
+import io.spine.internal.dependency.Spine
 
 plugins {
     idea
     `java-convention`
     `dependency-management`
     `code-quality`
-    id("com.google.protobuf")
-    id("io.spine.tools.gradle.bootstrap") version "1.7.1"
+    spine
 }
 
 apply(from = "$rootDir/../version.gradle.kts")
@@ -20,6 +18,7 @@ group = "io.spine.message-delivery"
 version = extra["messageDeliveryVersion"]!!
 
 dependencies {
-    Protobuf.libs.forEach { implementation(it) }
-    protobuf("io.spine.message-delivery:server:${version}")
+    implementation(Spine.Stable.server)
+    implementation(Spine.Stable.client)
+    protobuf("io.spine.message-delivery:model:${version}")
 }
