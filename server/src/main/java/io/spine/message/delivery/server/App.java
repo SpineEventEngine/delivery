@@ -18,12 +18,15 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.IOException;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Starts the {@code Delivery} gRPC server.
  */
 public final class App implements Logging {
+
+    private static final int DEFAULT_PORT = 8484;
 
     /**
      * A host to use for gRPC server.
@@ -35,7 +38,7 @@ public final class App implements Logging {
      * A port to use for gRPC server.
      */
     @VisibleForTesting
-    static final int PORT = 8484;
+    static final int PORT = port();
 
     private @MonotonicNonNull DeliveryContext deliveryContext;
     private @MonotonicNonNull GrpcContainer grpc;
@@ -91,6 +94,15 @@ public final class App implements Logging {
                 .use(InMemoryStorageFactory.newInstance())
                 .use(InMemoryTransportFactory.newInstance())
                 .use(Delivery.localAsync());
+    }
+
+    private static int port() {
+        @SuppressWarnings("CallToSystemGetenv")
+        String port = System.getenv("PORT");
+        if (isNullOrEmpty(port)) {
+            return DEFAULT_PORT;
+        }
+        return Integer.parseInt(port);
     }
 
     /**
