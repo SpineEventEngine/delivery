@@ -14,18 +14,22 @@ import io.spine.client.Client;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseShard;
+import io.spine.message.delivery.command.WriteMessage;
+import io.spine.message.delivery.event.MessageWritten;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
 import io.spine.server.NodeId;
+import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.util.Preconditions2.checkPositive;
 
-final class DeliveryClient implements SessionRegistryClient, Logging {
+final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
 
     private final Client client;
 
@@ -58,7 +62,19 @@ final class DeliveryClient implements SessionRegistryClient, Logging {
     }
 
     @Override
+    public Optional<MessageWritten> writeMessage(InboxMessage message) {
+        checkNotDefaultArg(message);
+        var writeMessage = WriteMessage.newBuilder()
+                .setMessage(message)
+                .vBuild();
+        var result = postCommand(writeMessage, MessageWritten.class);
+        return result;
+    }
+
+    @Override
     public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, NodeId worker) {
+        checkNotDefaultArg(shard);
+        checkNotDefaultArg(worker);
         var pickUpShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
@@ -69,6 +85,8 @@ final class DeliveryClient implements SessionRegistryClient, Logging {
 
     @Override
     public Optional<ShardReleased> releaseShard(ShardIndex shard, NodeId worker) {
+        checkNotDefaultArg(shard);
+        checkNotDefaultArg(worker);
         var releaseShard = ReleaseShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)

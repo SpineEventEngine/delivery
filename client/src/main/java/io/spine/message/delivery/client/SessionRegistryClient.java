@@ -14,7 +14,7 @@ import io.spine.server.delivery.ShardIndex;
 import java.util.Optional;
 
 /**
- * A client library for working with the delivery session registry.
+ * A client for working with the delivery session registry.
  */
 interface SessionRegistryClient {
 
