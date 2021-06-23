@@ -11,6 +11,8 @@ plugins {
     `dependency-management`
     `code-quality`
     spine
+    war
+    id("com.google.cloud.tools.appengine-appyaml")
 }
 
 apply(from = "$rootDir/../version.gradle.kts")
