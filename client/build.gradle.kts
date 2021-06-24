@@ -44,6 +44,6 @@ tasks.withType<com.google.protobuf.gradle.GenerateProtoTask> {
 appengine {
     deploy {
         projectId = gcpProject
-        version = "1.0"
+        version = "1"
     }
 }
