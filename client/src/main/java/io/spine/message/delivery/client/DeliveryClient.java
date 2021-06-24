@@ -6,6 +6,8 @@
 
 package io.spine.message.delivery.client;
 
+import com.google.appengine.api.ThreadManager;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -26,6 +28,9 @@ import io.spine.server.delivery.ShardIndex;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
@@ -44,6 +49,7 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     /**
      * Creates a new delivery client which connects to a local gRPC server on port {@code 8484}.
      */
+    @VisibleForTesting
     static DeliveryClient local() {
         return create("127.0.0.1", 8484);
     }
@@ -71,8 +77,11 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
      */
     static DeliveryClient create(String target) {
         checkNotEmptyOrBlank(target);
+        ThreadFactory threads = ThreadManager.currentRequestThreadFactory();
+        ExecutorService executor = Executors.newCachedThreadPool(threads);
         ManagedChannel channel = ManagedChannelBuilder
                 .forTarget(target)
+                .executor(executor)
                 .build();
         return new DeliveryClient(channel);
     }
