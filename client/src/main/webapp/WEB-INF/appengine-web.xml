@@ -9,4 +9,7 @@
     <threadsafe>true</threadsafe>
     <service>message-delivery-client</service>
     <instance-class>F2</instance-class>
+    <automatic-scaling>
+        <max-instances>1</max-instances>
+    </automatic-scaling>
 </appengine-web-app>
