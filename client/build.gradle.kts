@@ -3,6 +3,7 @@
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
+import io.spine.internal.dependency.Grpc
 import io.spine.internal.dependency.Spine
 
 plugins {
@@ -24,6 +25,7 @@ group = "io.spine.message-delivery"
 version = extra["messageDeliveryVersion"]!!
 
 dependencies {
+    runtimeOnly(Grpc.nettyShaded)
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)
     implementation("com.google.appengine:appengine-api-1.0-sdk:+")  // Latest App Engine Api's
