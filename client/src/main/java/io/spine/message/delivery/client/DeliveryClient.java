@@ -6,11 +6,13 @@
 
 package io.spine.message.delivery.client;
 
+import com.google.common.collect.ImmutableSet;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.client.Client;
+import io.spine.client.Subscription;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseShard;
@@ -27,7 +29,6 @@ import java.util.concurrent.CompletableFuture;
 
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
-import static io.spine.util.Preconditions2.checkPositive;
 
 final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
 
@@ -51,9 +52,10 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
      * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
      * and {@code port}.
      */
+    @SuppressWarnings("CanIgnore")
     static DeliveryClient create(String host, int port) {
         checkNotEmptyOrBlank(host);
-        checkPositive(port);
+//        checkPositive(port);
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(host, port)
                 .usePlaintext()
@@ -61,13 +63,27 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
         return new DeliveryClient(channel);
     }
 
+    /**
+     * Creates a new delivery client which connects to a gRPC server on the specified
+     * {@code target}.
+     *
+     * <p>It is assumed that the target is using a secure connection.
+     */
+    static DeliveryClient create(String target) {
+        checkNotEmptyOrBlank(target);
+        ManagedChannel channel = ManagedChannelBuilder
+                .forTarget(target)
+                .build();
+        return new DeliveryClient(channel);
+    }
+
     @Override
     public Optional<MessageWritten> writeMessage(InboxMessage message) {
         checkNotDefaultArg(message);
-        var writeMessage = WriteMessage.newBuilder()
+        WriteMessage writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        var result = postCommand(writeMessage, MessageWritten.class);
+        Optional<MessageWritten> result = postCommand(writeMessage, MessageWritten.class);
         return result;
     }
 
@@ -75,11 +91,11 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, NodeId worker) {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
-        var pickUpShard = PickUpShard.newBuilder()
+        PickUpShard pickUpShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        var result = postCommand(pickUpShard, ShardPickedUp.class);
+        Optional<ShardPickedUp> result = postCommand(pickUpShard, ShardPickedUp.class);
         return result;
     }
 
@@ -87,11 +103,11 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     public Optional<ShardReleased> releaseShard(ShardIndex shard, NodeId worker) {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
-        var releaseShard = ReleaseShard.newBuilder()
+        ReleaseShard releaseShard = ReleaseShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        var result = postCommand(releaseShard, ShardReleased.class);
+        Optional<ShardReleased> result = postCommand(releaseShard, ShardReleased.class);
         return result;
     }
 
@@ -99,8 +115,8 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     postCommand(C command, Class<E> event) {
         _trace().log("Posting command `%s` and waiting for a response event `%s`.",
                      command.getClass(), event);
-        var future = new CompletableFuture<Optional<E>>();
-        var subscriptions =
+        CompletableFuture<Optional<E>> future = new CompletableFuture<Optional<E>>();
+        ImmutableSet<Subscription> subscriptions =
                 client.asGuest()
                       .command(command)
                       .observe(event, e -> {
@@ -119,7 +135,7 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
                       })
                       .onStreamingError(future::completeExceptionally)
                       .post();
-        var result = future.join();
+        Optional<E> result = future.join();
         subscriptions.forEach(client.subscriptions()::cancel);
         return result;
     }

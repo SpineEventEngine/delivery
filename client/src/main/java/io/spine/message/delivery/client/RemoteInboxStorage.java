@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.util.Exceptions.newIllegalStateException;
 
 final class RemoteInboxStorage
         extends AbstractStorage<InboxMessageId, InboxMessage, InboxReadRequest>
@@ -47,13 +46,16 @@ final class RemoteInboxStorage
         );
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     public void write(InboxMessage message) {
         client.get()
-              .writeMessage(message)
-              .orElseThrow(
-                      () -> newIllegalStateException("Unable to write a message to the inbox.")
-              );
+              .writeMessage(message);
+//        client.get()
+//              .writeMessage(message)
+//              .orElseThrow(
+//                      () -> newIllegalStateException("Unable to write a message to the inbox.")
+//              );
     }
 
     @Override

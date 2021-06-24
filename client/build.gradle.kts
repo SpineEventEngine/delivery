@@ -12,8 +12,12 @@ plugins {
     `code-quality`
     spine
     war
-    id("com.google.cloud.tools.appengine-appyaml")
+    id("com.google.cloud.tools.appengine-appenginewebxml")
 }
+
+/** The GCP project ID used for deployment of the application. **/
+//val gcpProject: String by project
+val gcpProject = "bko-dev-firestore"
 
 apply(from = "$rootDir/../version.gradle.kts")
 group = "io.spine.message-delivery"
@@ -22,6 +26,8 @@ version = extra["messageDeliveryVersion"]!!
 dependencies {
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)
+    implementation("com.google.appengine:appengine-api-1.0-sdk:+")  // Latest App Engine Api's
+    providedCompile("javax.servlet:javax.servlet-api:3.1.0")
 }
 
 // We're explicitly copying protos to ensure rejections are generated.
@@ -33,4 +39,11 @@ val copyExternalProtos = tasks.create<Copy>("copyExternalProtos") {
 
 tasks.withType<com.google.protobuf.gradle.GenerateProtoTask> {
     dependsOn(copyExternalProtos)
+}
+
+appengine {
+    deploy {
+        projectId = gcpProject
+        version = "1.0"
+    }
 }

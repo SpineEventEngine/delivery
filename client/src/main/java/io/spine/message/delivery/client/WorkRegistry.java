@@ -47,8 +47,8 @@ public class WorkRegistry implements ShardedWorkRegistry, Logging {
     }
 
     private void releaseShard(ShardSessionRecord session) {
-        var worker = session.getPickedBy();
-        var shard = session.getIndex();
+        NodeId worker = session.getPickedBy();
+        ShardIndex shard = session.getIndex();
         client.get()
               .releaseShard(shard, worker)
               .ifPresent(released -> _debug()
