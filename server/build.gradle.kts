@@ -11,12 +11,11 @@ import io.spine.internal.dependency.Spine
 plugins {
     id("com.google.cloud.tools.jib")
     id("com.github.johnrengelman.shadow")
-    id("application")
 }
 
 /** The GCP project ID used for deployment of the application. **/
 //val gcpProject: String by project
-val gcpProject = ""
+val gcpProject = "bko-dev-firestore"
 
 dependencies {
     runtimeOnly(Grpc.nettyShaded)
@@ -25,17 +24,15 @@ dependencies {
     testImplementation(Spine.Test.server)
 }
 
-val shadowJar: ShadowJar by tasks
-shadowJar.apply {
+val appClassName = "io.spine.message.delivery.server.App"
+
+tasks.withType<ShadowJar> {
     mergeServiceFiles()
     mergeServiceFiles("desc.ref")
     manifest {
         attributes["Multi-Release"] = "true" // https://github.com/johnrengelman/shadow/issues/449
+        attributes["Main-Class"] = appClassName
     }
-}
-
-application {
-    mainClass.set("io.spine.message.delivery.server.App")
 }
 
 jib {
@@ -44,7 +41,7 @@ jib {
         tags = setOf("latest")
     }
     container {
-        mainClass = application.mainClass.get()
+        mainClass = appClassName
         ports = listOf("8080", "8484")
     }
 }
