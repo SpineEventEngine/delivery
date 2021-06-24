@@ -26,6 +26,10 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  */
 public final class App implements Logging {
 
+    static {
+        useLog4j2FloggerBackend();
+    }
+
     private static final int DEFAULT_PORT = 8484;
 
     /**
@@ -111,5 +115,15 @@ public final class App implements Logging {
     public static void main(String[] args) {
         var app = new App();
         app.initAndStart();
+    }
+
+    /**
+     * Configures Log4j2 as the <a href="https://github.com/google/flogger">Flogger</a> backend.
+     */
+    private static void useLog4j2FloggerBackend() {
+        System.setProperty(
+                "flogger.backend_factory",
+                "com.google.common.flogger.backend.log4j2.Log4j2BackendFactory#getInstance"
+        );
     }
 }

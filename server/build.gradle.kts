@@ -5,7 +5,9 @@
  */
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Grpc
+import io.spine.internal.dependency.Log4j2
 import io.spine.internal.dependency.Spine
 
 plugins {
@@ -19,6 +21,10 @@ val gcpProject = "bko-dev-firestore"
 
 dependencies {
     runtimeOnly(Grpc.nettyShaded)
+    runtimeOnly(Log4j2.slf4jBridge)
+    runtimeOnly(Log4j2.core)
+    runtimeOnly(Flogger.Runtime.log4J2)
+    implementation(Log4j2.api)
     implementation(project(":model"))
     implementation(Spine.server)
     testImplementation(Spine.Test.server)
