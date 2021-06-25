@@ -20,8 +20,12 @@ import io.spine.message.delivery.event.MessageWritten;
 import io.spine.message.delivery.event.MessagesRemoved;
 import io.spine.message.delivery.event.MessagesWritten;
 import io.spine.server.command.Assign;
+import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.server.event.React;
 import io.spine.server.procman.ProcessManager;
+
+import java.util.stream.Collectors;
 
 /**
  * Handles commands to modify {@link io.spine.server.delivery.Inbox Inbox} messages.
@@ -56,6 +60,20 @@ final class InboxModifierProcess
                 .vBuild();
     }
 
+    @React
+    Iterable<MessageWritten> on(MessagesWritten e) {
+        return e.getMessageList()
+                .stream()
+                .map(InboxModifierProcess::writtenMessage)
+                .collect(Collectors.toList());
+    }
+
+    private static MessageWritten writtenMessage(InboxMessage message) {
+        return MessageWritten.newBuilder()
+                .setMessage(message)
+                .vBuild();
+    }
+
     @Assign
     MessageRemoved handle(RemoveMessage c, CommandContext context) {
         var message = c.getMessage();
@@ -81,4 +99,19 @@ final class InboxModifierProcess
                 .setShard(shard)
                 .vBuild();
     }
+
+    @React
+    Iterable<MessageRemoved> on(MessagesRemoved e) {
+        return e.getMessageList()
+                .stream()
+                .map(InboxModifierProcess::removedMessage)
+                .collect(Collectors.toList());
+    }
+
+    private static MessageRemoved removedMessage(InboxMessage message) {
+        return MessageRemoved.newBuilder()
+                .setMessage(message)
+                .vBuild();
+    }
+
 }
