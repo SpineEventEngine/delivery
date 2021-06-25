@@ -29,6 +29,27 @@ message WriteMessage {
     spine.server.delivery.InboxMessage message = 1 [(required) = true];
 }
 
+// Writes new messages to the Inbox.
+message WriteMessages {
+
+    // The messages to be written to the Inbox.
+    repeated spine.server.delivery.InboxMessage message = 1 [(required) = true];
+}
+
+// Removes a message from the Inbox.
+message RemoveMessage {
+
+    // The message to be removed from the Inbox.
+    spine.server.delivery.InboxMessage message = 1 [(required) = true];
+}
+
+// Removes messages from the Inbox.
+message RemoveMessages {
+
+    // The messages to be removed from the Inbox.
+    repeated spine.server.delivery.InboxMessage message = 1 [(required) = true];
+}
+
 // Picks up the shard for processing.
 message PickUpShard {
 
