@@ -6,6 +6,7 @@
 
 package io.spine.message.delivery.client;
 
+import io.spine.message.delivery.event.MessageRemoved;
 import io.spine.message.delivery.event.MessageWritten;
 import io.spine.server.delivery.InboxMessage;
 
@@ -20,4 +21,9 @@ public interface InboxClient {
      * Tries to write a new {@code message} to the inbox.
      */
     Optional<MessageWritten> writeMessage(InboxMessage message);
+
+    /**
+     * Tries to remove a {@code message} from the inbox.
+     */
+    Optional<MessageRemoved> removeMessage(InboxMessage message);
 }

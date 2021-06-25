@@ -14,7 +14,9 @@ import io.spine.client.Client;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseShard;
+import io.spine.message.delivery.command.RemoveMessage;
 import io.spine.message.delivery.command.WriteMessage;
+import io.spine.message.delivery.event.MessageRemoved;
 import io.spine.message.delivery.event.MessageWritten;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
@@ -73,9 +75,13 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     }
 
     @Override
-    public Optional<MessageWritten> removeMessage(InboxMessage message) {
+    public Optional<MessageRemoved> removeMessage(InboxMessage message) {
         checkNotDefaultArg(message);
-        return Optional.empty();
+        var removeMessage = RemoveMessage.newBuilder()
+                .setMessage(message)
+                .vBuild();
+        var result = postCommand(removeMessage, MessageRemoved.class);
+        return result;
     }
 
     @Override
