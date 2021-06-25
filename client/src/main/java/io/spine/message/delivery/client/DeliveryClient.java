@@ -51,6 +51,7 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
      * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
      * and {@code port}.
      */
+    @SuppressWarnings("CheckReturnValue" /* We're fine to just `check` args. */)
     static DeliveryClient create(String host, int port) {
         checkNotEmptyOrBlank(host);
         checkPositive(port);
@@ -69,6 +70,12 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
                 .vBuild();
         var result = postCommand(writeMessage, MessageWritten.class);
         return result;
+    }
+
+    @Override
+    public Optional<MessageWritten> removeMessage(InboxMessage message) {
+        checkNotDefaultArg(message);
+        return Optional.empty();
     }
 
     @Override

@@ -48,6 +48,7 @@ final class RemoteInboxStorage
     }
 
     @Override
+    @SuppressWarnings("ReturnValueIgnored" /* It's OK to just throw the exception. */)
     public void write(InboxMessage message) {
         client.get()
               .writeMessage(message)
