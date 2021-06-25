@@ -32,8 +32,11 @@ message MessageWritten {
 // New messages were written to a particular Inbox.
 message MessagesWritten {
 
+    // A shard into which the messages are written.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
     // The messages that were written to the Inbox.
-    repeated spine.server.delivery.InboxMessage message = 1 [(required) = true];
+    repeated spine.server.delivery.InboxMessage message = 2 [(required) = true];
 }
 
 // A message was removed from a particular Inbox.
@@ -46,8 +49,11 @@ message MessageRemoved {
 // Messages were removed from a particular Inbox.
 message MessagesRemoved {
 
+    // A shard from which the messages are removed.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
     // The messages that were removed from the Inbox.
-    repeated spine.server.delivery.InboxMessage message = 1 [(required) = true];
+    repeated spine.server.delivery.InboxMessage message = 2 [(required) = true];
 }
 
 // A shard has been picked up by a worker.
