@@ -81,3 +81,27 @@ message ShardReleased {
     // The time when the `worker` has released the shard.
     google.protobuf.Timestamp when_released = 3 [(required) = true];
 }
+
+
+// Sharded work sessions that were picked up before the specified inactivity period were released.
+message ExpiredShardsReleased {
+
+    // The shards that were released if any.
+    repeated ExpiredShard shard = 1;
+}
+
+// The expired sharded work session .
+message ExpiredShard {
+
+    // The shard that was released.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
+    // The node that released the shard.
+    spine.server.NodeId picked_by = 2 [(required) = true];
+
+    // The time when the `worker` has picked up the shard.
+    google.protobuf.Timestamp when_picked = 3 [(required) = true];
+
+    // The time when the `worker` has released the shard.
+    google.protobuf.Timestamp when_released = 4 [(required) = true];
+}
