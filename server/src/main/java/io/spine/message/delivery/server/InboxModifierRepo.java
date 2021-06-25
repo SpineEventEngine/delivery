@@ -8,7 +8,10 @@ package io.spine.message.delivery.server;
 
 import io.spine.message.delivery.InboxModifier;
 import io.spine.message.delivery.InboxModifierId;
+import io.spine.message.delivery.command.RemoveMessage;
+import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
+import io.spine.message.delivery.command.WriteMessages;
 import io.spine.server.procman.ProcessManagerRepository;
 import io.spine.server.route.CommandRouting;
 
@@ -27,6 +30,9 @@ final class InboxModifierRepo
 
     @Override
     protected void setupCommandRouting(CommandRouting<InboxModifierId> routing) {
-        routing.route(WriteMessage.class, (message, context) -> writer);
+        routing.route(WriteMessage.class, (message, context) -> writer)
+               .route(WriteMessages.class, (message, context) -> writer)
+               .route(RemoveMessage.class, (message, context) -> writer)
+               .route(RemoveMessages.class, (message, context) -> writer);
     }
 }
