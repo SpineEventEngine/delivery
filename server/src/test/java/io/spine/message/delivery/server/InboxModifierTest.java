@@ -18,8 +18,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("`InboxWriterProcess` should")
-final class InboxWriterTest extends DeliveryTest {
+@DisplayName("`InboxModifierProcess` should")
+final class InboxModifierTest extends DeliveryTest {
 
     @Nested
     @DisplayName("handle a `WriteMessage` command")

@@ -9,8 +9,8 @@ package io.spine.message.delivery.server;
 import io.spine.base.Identifier;
 import io.spine.core.CommandContext;
 import io.spine.logging.Logging;
-import io.spine.message.delivery.InboxWriter;
-import io.spine.message.delivery.InboxWriterId;
+import io.spine.message.delivery.InboxModifier;
+import io.spine.message.delivery.InboxModifierId;
 import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.event.MessageWritten;
 import io.spine.server.command.Assign;
@@ -20,8 +20,8 @@ import io.spine.server.procman.ProcessManager;
  * Handles {@link WriteMessage} commands to store new
  * {@link io.spine.server.delivery.Inbox Inbox} messages.
  */
-final class InboxWriterProcess
-        extends ProcessManager<InboxWriterId, InboxWriter, InboxWriter.Builder>
+final class InboxModifierProcess
+        extends ProcessManager<InboxModifierId, InboxModifier, InboxModifier.Builder>
         implements Logging {
 
     @Assign

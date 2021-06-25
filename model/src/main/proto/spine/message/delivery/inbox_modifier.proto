@@ -16,19 +16,19 @@ option java_outer_classname = "InboxWriterProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-// A process of handling writes to inboxes.
-message InboxWriter {
+// A process of handling inboxes modification commands.
+message InboxModifier {
     option (entity).kind = PROCESS_MANAGER;
 
     // The ID of the writer.
-    InboxWriterId id = 1;
+    InboxModifierId id = 1;
 }
 
-// The writer identifier.
+// The modifier identifier.
 //
-// There is only one instance of the writer across the context.
+// There is only one instance of the modifier across the context.
 //
-message InboxWriterId {
+message InboxModifierId {
 
     string value = 1 [(required) = true];
 }

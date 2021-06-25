@@ -6,7 +6,7 @@
 
 package io.spine.message.delivery.server;
 
-import io.spine.message.delivery.InboxWriter;
+import io.spine.message.delivery.InboxModifier;
 import io.spine.message.delivery.MessagesInShard;
 import io.spine.message.delivery.ShardSessionRegistry;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +34,7 @@ final class DeliveryContextBuilderTest {
                 .isTrue();
         assertThat(boundedContext.hasEntitiesWithState(ShardSessionRegistry.class))
                 .isTrue();
-        assertThat(boundedContext.hasEntitiesWithState(InboxWriter.class))
+        assertThat(boundedContext.hasEntitiesWithState(InboxModifier.class))
                 .isTrue();
     }
 }
