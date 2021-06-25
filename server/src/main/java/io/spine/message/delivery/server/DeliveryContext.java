@@ -94,7 +94,8 @@ public final class DeliveryContext {
                     .singleTenant(NAME)
                     .add(new ShardedInboxStorageRepo())
                     .add(SessionRegistry.class)
-                    .add(new InboxModifierRepo());
+                    .add(new InboxModifierRepo())
+                    .add(new MessageHolderRepo());
         }
     }
 }
