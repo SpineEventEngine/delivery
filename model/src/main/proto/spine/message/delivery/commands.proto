@@ -24,6 +24,7 @@ import "spine/server/server_environment.proto";
 
 // Writes a new message to the Inbox.
 message WriteMessage {
+    option (is).java_type = "io.spine.message.delivery.WithInboxMessage";
 
     // The message to be written to the Inbox.
     spine.server.delivery.InboxMessage message = 1 [(required) = true];
@@ -41,6 +42,7 @@ message WriteMessages {
 
 // Removes a message from the Inbox.
 message RemoveMessage {
+    option (is).java_type = "io.spine.message.delivery.WithInboxMessage";
 
     // The message to be removed from the Inbox.
     spine.server.delivery.InboxMessage message = 1 [(required) = true];

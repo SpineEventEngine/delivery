@@ -24,6 +24,7 @@ import "spine/server/server_environment.proto";
 
 // A new message was written to a particular Inbox.
 message MessageWritten {
+    option (is).java_type = "io.spine.message.delivery.WithInboxMessage";
 
     // The message that was written to the Inbox.
     spine.server.delivery.InboxMessage message = 1 [(required) = true];
@@ -41,6 +42,7 @@ message MessagesWritten {
 
 // A message was removed from a particular Inbox.
 message MessageRemoved {
+    option (is).java_type = "io.spine.message.delivery.WithInboxMessage";
 
     // The message that was removed from the Inbox.
     spine.server.delivery.InboxMessage message = 1 [(required) = true];

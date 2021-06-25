@@ -12,7 +12,7 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.message.delivery";
-option java_outer_classname = "InboxMessageProto";
+option java_outer_classname = "InboxMessageHolderProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
@@ -22,7 +22,7 @@ import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
 
 // A holder of an inbox message.
-message MessageHolder {
+message InboxMessageHolder {
     option (entity).kind = PROJECTION;
 
     spine.server.delivery.InboxMessageId id = 1;
@@ -49,7 +49,7 @@ message MessageHolder {
     spine.server.delivery.InboxLabel label = 8 [(column) = true];
 
     // The status of the delivery for this inbox message.
-    spine.server.delivery.InboxLabel status = 9 [(column) = true];
+    spine.server.delivery.InboxMessageStatus status = 9 [(column) = true];
 
     // A point in time when the message was received by the `Inbox` instance.
     google.protobuf.Timestamp received_at = 10 [(column) = true];
