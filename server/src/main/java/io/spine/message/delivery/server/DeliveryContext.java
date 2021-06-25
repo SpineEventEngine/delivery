@@ -92,7 +92,6 @@ public final class DeliveryContext {
         public BoundedContextBuilder context() {
             return BoundedContext
                     .singleTenant(NAME)
-                    .add(new ShardedInboxStorageRepo())
                     .add(SessionRegistry.class)
                     .add(new InboxModifierRepo())
                     .add(new MessageHolderRepo());
