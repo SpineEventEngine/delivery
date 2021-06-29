@@ -91,7 +91,9 @@ final class RemoteInboxStorage
 
     @Override
     public Iterator<InboxMessageId> index() {
-        throw new UnsupportedOperationException("`index()` method is not yet implemented.");
+        throw newIllegalStateException(
+                "The `index` method is called from within the Inbox Storage."
+        );
     }
 
     @Override
