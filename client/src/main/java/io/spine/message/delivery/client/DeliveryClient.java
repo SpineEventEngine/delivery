@@ -17,9 +17,13 @@ import io.spine.logging.Logging;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseShard;
 import io.spine.message.delivery.command.RemoveMessage;
+import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
+import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.MessageRemoved;
 import io.spine.message.delivery.event.MessageWritten;
+import io.spine.message.delivery.event.MessagesRemoved;
+import io.spine.message.delivery.event.MessagesWritten;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
 import io.spine.server.NodeId;
@@ -78,12 +82,38 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     }
 
     @Override
+    public Optional<MessagesWritten>
+    writeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
+        checkNotDefaultArg(shard);
+        checkNotNull(messages);
+        WriteMessages writeMessages = WriteMessages.newBuilder()
+                .setShard(shard)
+                .addAllMessage(messages)
+                .vBuild();
+        Optional<MessagesWritten> result = postCommand(writeMessages, MessagesWritten.class);
+        return result;
+    }
+
+    @Override
     public Optional<MessageRemoved> removeMessage(InboxMessage message) {
         checkNotDefaultArg(message);
         RemoveMessage removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
         Optional<MessageRemoved> result = postCommand(removeMessage, MessageRemoved.class);
+        return result;
+    }
+
+    @Override
+    public Optional<MessagesRemoved>
+    removeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
+        checkNotDefaultArg(shard);
+        checkNotNull(messages);
+        RemoveMessages removeMessages = RemoveMessages.newBuilder()
+                .setShard(shard)
+                .addAllMessage(messages)
+                .vBuild();
+        Optional<MessagesRemoved> result = postCommand(removeMessages, MessagesRemoved.class);
         return result;
     }
 
