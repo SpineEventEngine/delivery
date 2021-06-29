@@ -20,12 +20,16 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.getFirst;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * An {@code InboxStorage} based on a remotely-stored Inbox state.
+ */
 final class RemoteInboxStorage
         extends AbstractStorage<InboxMessageId, InboxMessage, InboxReadRequest>
         implements InboxStorage, Logging {
@@ -33,6 +37,11 @@ final class RemoteInboxStorage
     private final Supplier<InboxClient> clientSupplier;
     private @MonotonicNonNull InboxClient client;
 
+    /**
+     * Creates a new storage instance with the configured {@code clientSupplier}.
+     *
+     * <p>The supplier is lazily evaluated and memoized.
+     */
     RemoteInboxStorage(Supplier<InboxClient> clientSupplier) {
         super(false);
         this.clientSupplier = checkNotNull(clientSupplier);
@@ -40,21 +49,21 @@ final class RemoteInboxStorage
 
     @Override
     public Page<InboxMessage> readAll(ShardIndex index, int pageSize) {
-        throw new UnsupportedOperationException(
-                "`readAll()` method is not yet implemented."
-        );
+        checkNotDefaultArg(index);
+        checkArgument(pageSize > 0);
+        return client().readAll(index, pageSize);
     }
 
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex index) {
-        throw new UnsupportedOperationException(
-                "`newestMessageToDeliver()` method is not yet implemented."
-        );
+        checkNotDefaultArg(index);
+        return client().newestMessageToDeliver(index);
     }
 
     @Override
     @SuppressWarnings("ReturnValueIgnored" /* It's OK to just throw the exception. */)
     public void write(InboxMessage message) {
+        checkNotDefaultArg(message);
         client().writeMessage(message)
                 .orElseThrow(
                         () -> newIllegalStateException("Unable to write a message to the inbox.")
@@ -98,11 +107,14 @@ final class RemoteInboxStorage
 
     @Override
     public Optional<InboxMessage> read(InboxReadRequest request) {
-        throw new UnsupportedOperationException("`read()` method is not yet implemented.");
+        checkNotNull(request);
+        return client().find(request.recordId());
     }
 
     @Override
     public void write(InboxMessageId id, InboxMessage record) {
+        checkNotDefaultArg(id);
+        checkNotDefaultArg(record);
         write(record);
     }
 

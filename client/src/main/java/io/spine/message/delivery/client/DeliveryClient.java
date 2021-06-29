@@ -54,6 +54,11 @@ import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.util.Preconditions2.checkPositive;
 
+/**
+ * A client for working with the Message Delivery server.
+ *
+ * <p>Provides APIs for modifying and querying the remote state of the Message Delivery context.
+ */
 final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
 
     private final Client client;
