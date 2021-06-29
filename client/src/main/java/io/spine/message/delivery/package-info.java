@@ -4,10 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client;
-
 /**
- * A client for working with the inbox.
+ * Root package of the Message Delivery application.
  */
-interface InboxClient extends InboxModifier, InboxReader {
-}
+package io.spine.message.delivery;

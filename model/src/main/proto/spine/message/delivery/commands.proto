@@ -24,9 +24,38 @@ import "spine/server/server_environment.proto";
 
 // Writes a new message to the Inbox.
 message WriteMessage {
+    option (is).java_type = "io.spine.message.delivery.WithInboxMessage";
 
     // The message to be written to the Inbox.
     spine.server.delivery.InboxMessage message = 1 [(required) = true];
+}
+
+// Writes new messages to the Inbox.
+message WriteMessages {
+
+    // A shard into which the messages are written.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
+    // The messages to be written to the Inbox.
+    repeated spine.server.delivery.InboxMessage message = 2 [(required) = true];
+}
+
+// Removes a message from the Inbox.
+message RemoveMessage {
+    option (is).java_type = "io.spine.message.delivery.WithInboxMessage";
+
+    // The message to be removed from the Inbox.
+    spine.server.delivery.InboxMessage message = 1 [(required) = true];
+}
+
+// Removes messages from the Inbox.
+message RemoveMessages {
+
+    // A shard from which the messages are removed.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
+    // The messages to be removed from the Inbox.
+    repeated spine.server.delivery.InboxMessage message = 2 [(required) = true];
 }
 
 // Picks up the shard for processing.

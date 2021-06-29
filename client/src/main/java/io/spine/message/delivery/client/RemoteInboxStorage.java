@@ -14,72 +14,114 @@ import io.spine.server.delivery.InboxStorage;
 import io.spine.server.delivery.Page;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.storage.AbstractStorage;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Iterables.getFirst;
+import static io.spine.util.Exceptions.newIllegalStateException;
+import static io.spine.util.Preconditions2.checkNotDefaultArg;
+import static java.util.Objects.requireNonNull;
 
+/**
+ * An {@code InboxStorage} based on a remotely-stored Inbox state.
+ */
 final class RemoteInboxStorage
         extends AbstractStorage<InboxMessageId, InboxMessage, InboxReadRequest>
         implements InboxStorage, Logging {
 
-    private final Supplier<InboxClient> client;
+    private final Supplier<InboxClient> clientSupplier;
+    private @MonotonicNonNull InboxClient client;
 
-    RemoteInboxStorage(Supplier<InboxClient> client) {
+    /**
+     * Creates a new storage instance with the configured {@code clientSupplier}.
+     *
+     * <p>The supplier is lazily evaluated and memoized.
+     */
+    RemoteInboxStorage(Supplier<InboxClient> clientSupplier) {
         super(false);
-        this.client = checkNotNull(client);
+        this.clientSupplier = checkNotNull(clientSupplier);
     }
 
     @Override
     public Page<InboxMessage> readAll(ShardIndex index, int pageSize) {
-        throw new UnsupportedOperationException(
-                "`readAll()` method is not yet implemented."
-        );
+        checkNotDefaultArg(index);
+        checkArgument(pageSize > 0);
+        return client().readAll(index, pageSize);
     }
 
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex index) {
-        throw new UnsupportedOperationException(
-                "`newestMessageToDeliver()` method is not yet implemented."
-        );
+        checkNotDefaultArg(index);
+        return client().newestMessageToDeliver(index);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
+    @SuppressWarnings("ReturnValueIgnored" /* It's OK to just throw the exception. */)
     public void write(InboxMessage message) {
-        client.get()
-              .writeMessage(message);
-//        client.get()
-//              .writeMessage(message)
-//              .orElseThrow(
-//                      () -> newIllegalStateException("Unable to write a message to the inbox.")
-//              );
+        checkNotDefaultArg(message);
+        client().writeMessage(message)
+                .orElseThrow(
+                        () -> newIllegalStateException("Unable to write a message to the inbox.")
+                );
     }
 
     @Override
     public void writeAll(Iterable<InboxMessage> messages) {
-        throw new UnsupportedOperationException("`writeAll()` method is not yet implemented.");
+        checkNotNull(messages);
+        InboxMessage message = requireNonNull(
+                getFirst(messages, InboxMessage.getDefaultInstance())
+        );
+        checkNotDefaultArg(message);
+        ShardIndex shard = message.shardIndex();
+        client().writeMessages(shard, messages)
+                .orElseThrow(() -> newIllegalStateException(
+                        "Unable to write messages to the inbox shard `%s`.", shard
+                ));
     }
 
     @Override
     public void removeAll(Iterable<InboxMessage> messages) {
-        throw new UnsupportedOperationException("`removeAll()` method is not yet implemented.");
+        checkNotNull(messages);
+        InboxMessage message = requireNonNull(
+                getFirst(messages, InboxMessage.getDefaultInstance())
+        );
+        checkNotDefaultArg(message);
+        ShardIndex shard = message.shardIndex();
+        client().removeMessages(shard, messages)
+                .orElseThrow(() -> newIllegalStateException(
+                        "Unable to remove messages from inbox shard `%s`.", shard
+                ));
     }
 
     @Override
     public Iterator<InboxMessageId> index() {
-        throw new UnsupportedOperationException("`index()` method is not yet implemented.");
+        throw newIllegalStateException(
+                "The `index` method is called from within the Inbox Storage."
+        );
     }
 
     @Override
     public Optional<InboxMessage> read(InboxReadRequest request) {
-        throw new UnsupportedOperationException("`read()` method is not yet implemented.");
+        checkNotNull(request);
+        return client().find(request.recordId());
     }
 
     @Override
     public void write(InboxMessageId id, InboxMessage record) {
+        checkNotDefaultArg(id);
+        checkNotDefaultArg(record);
         write(record);
+    }
+
+    private InboxClient client() {
+        if (client == null) {
+            client = clientSupplier.get();
+        }
+        return client;
     }
 }

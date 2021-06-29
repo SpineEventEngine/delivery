@@ -11,7 +11,7 @@ import io.grpc.ManagedChannelBuilder;
 import io.spine.base.Identifier;
 import io.spine.client.Client;
 import io.spine.environment.Environment;
-import io.spine.message.delivery.MessagesInShard;
+import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.event.ShardPickedUp;
@@ -108,15 +108,25 @@ final class AppTest {
         client.asGuest()
               .command(writeMessage)
               .postAndForget();
-        var expected = MessagesInShard.newBuilder()
-                .setId(message.shardIndex())
-                .addMessage(message)
+        var expected = InboxMessageHolder.newBuilder()
+                .setId(message.getId())
+                .setMessage(message)
+                .setMessage(message)
+                .setShard(message.shardIndex())
+                .setInbox(message.getInboxId())
+                .setSignal(message.getSignalId())
+                .setIsEvent(message.hasEvent())
+                .setIsCommand(message.hasCommand())
+                .setLabel(message.getLabel())
+                .setStatus(message.getStatus())
+                .setReceivedAt(message.getWhenReceived())
+                .setVersion(message.getVersion())
                 .vBuild();
         client.asGuest()
-              .subscribeTo(MessagesInShard.class)
-              .byId(message.shardIndex())
-              .observe(messagesInShard -> {
-                  assertThat(messagesInShard)
+              .subscribeTo(InboxMessageHolder.class)
+              .byId(message.getId())
+              .observe(inboxMessageHolder -> {
+                  assertThat(inboxMessageHolder)
                           .isEqualTo(expected);
                   messageWritten.countDown();
               })

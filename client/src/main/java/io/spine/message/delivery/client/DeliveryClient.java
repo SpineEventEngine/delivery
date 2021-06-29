@@ -9,22 +9,40 @@ package io.spine.message.delivery.client;
 import com.google.appengine.api.ThreadManager;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.CommandMessage;
 import io.spine.base.EventMessage;
 import io.spine.client.Client;
+import io.spine.client.OrderBy;
+import io.spine.client.QueryFilter;
+import io.spine.client.Subscription;
 import io.spine.client.Subscription;
 import io.spine.logging.Logging;
+import io.spine.message.delivery.InboxMessageHolder;
+import io.spine.message.delivery.InboxMessageHolder.Column;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseShard;
+import io.spine.message.delivery.command.RemoveMessage;
+import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
+import io.spine.message.delivery.command.WriteMessages;
+import io.spine.message.delivery.event.MessageRemoved;
 import io.spine.message.delivery.event.MessageWritten;
+import io.spine.message.delivery.event.MessagesRemoved;
+import io.spine.message.delivery.event.MessagesWritten;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.InboxMessage;
+import io.spine.server.delivery.InboxMessageComparator;
+import io.spine.server.delivery.InboxMessageId;
+import io.spine.server.delivery.Page;
 import io.spine.server.delivery.ShardIndex;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -32,9 +50,22 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.collect.Iterables.toArray;
+import static io.spine.client.OrderBy.Direction.DESCENDING;
+import static io.spine.client.QueryFilter.eq;
+import static io.spine.client.QueryFilter.gt;
+import static io.spine.server.delivery.InboxMessageStatus.TO_DELIVER;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
+import static io.spine.util.Preconditions2.checkPositive;
 
+/**
+ * A client for working with the Message Delivery server.
+ *
+ * <p>Provides APIs for modifying and querying the remote state of the Message Delivery context.
+ */
 final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
 
     private final Client client;
@@ -58,10 +89,10 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
      * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
      * and {@code port}.
      */
-    @SuppressWarnings("CanIgnore")
+    @SuppressWarnings("CheckReturnValue" /* We're fine to just `check` args. */)
     static DeliveryClient create(String host, int port) {
         checkNotEmptyOrBlank(host);
-//        checkPositive(port);
+        checkPositive(port);
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(host, port)
                 .usePlaintext()
@@ -97,14 +128,50 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     }
 
     @Override
+    public Optional<MessagesWritten>
+    writeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
+        checkNotDefaultArg(shard);
+        checkNotNull(messages);
+        WriteMessages writeMessages = WriteMessages.newBuilder()
+                .setShard(shard)
+                .addAllMessage(messages)
+                .vBuild();
+        Optional<MessagesWritten> result = postCommand(writeMessages, MessagesWritten.class);
+        return result;
+    }
+
+    @Override
+    public Optional<MessageRemoved> removeMessage(InboxMessage message) {
+        checkNotDefaultArg(message);
+        RemoveMessage removeMessage = RemoveMessage.newBuilder()
+                .setMessage(message)
+                .vBuild();
+        Optional<MessageRemoved> result = postCommand(removeMessage, MessageRemoved.class);
+        return result;
+    }
+
+    @Override
+    public Optional<MessagesRemoved>
+    removeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
+        checkNotDefaultArg(shard);
+        checkNotNull(messages);
+        RemoveMessages removeMessages = RemoveMessages.newBuilder()
+                .setShard(shard)
+                .addAllMessage(messages)
+                .vBuild();
+        Optional<MessagesRemoved> result = postCommand(removeMessages, MessagesRemoved.class);
+        return result;
+    }
+
+    @Override
     public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, NodeId worker) {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
-        PickUpShard pickUpShard = PickUpShard.newBuilder()
+        var pickUpShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        Optional<ShardPickedUp> result = postCommand(pickUpShard, ShardPickedUp.class);
+        var result = postCommand(pickUpShard, ShardPickedUp.class);
         return result;
     }
 
@@ -118,6 +185,58 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
                 .vBuild();
         Optional<ShardReleased> result = postCommand(releaseShard, ShardReleased.class);
         return result;
+    }
+
+    @Override
+    public Optional<InboxMessage> find(InboxMessageId messageId) {
+        checkNotDefaultArg(messageId);
+        return client.asGuest()
+                     .select(InboxMessageHolder.class)
+                     .byId(messageId)
+                     .run()
+                     .stream()
+                     .findFirst()
+                     .map(InboxMessageHolder::getMessage);
+    }
+
+    @Override
+    public Page<InboxMessage> readAll(ShardIndex shard, int pageSize) {
+        Page<InboxMessage> page = new InboxPage(sinceWhen -> readAll(shard, sinceWhen, pageSize));
+        return page;
+    }
+
+    private ImmutableList<InboxMessage>
+    readAll(ShardIndex shard, @Nullable Timestamp sinceWhen, int pageSize) {
+        ImmutableList.Builder<QueryFilter> filters = ImmutableList.<QueryFilter>builder()
+                .add(eq(Column.shard(), shard));
+        if (sinceWhen != null) {
+            filters.add(gt(Column.receivedAt(), sinceWhen));
+        }
+        ImmutableList<InboxMessage> result =
+                client.asGuest()
+                      .select(InboxMessageHolder.class)
+                      .where(toArray(filters.build(), QueryFilter.class))
+                      .limit(pageSize)
+                      .orderBy(Column.receivedAt(), OrderBy.Direction.ASCENDING)
+                      .run()
+                      .stream()
+                      .map(InboxMessageHolder::getMessage)
+                      .sorted(InboxMessageComparator.chronologically)
+                      .collect(toImmutableList());
+        return result;
+    }
+
+    @Override
+    public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard) {
+        return client.asGuest()
+                     .select(InboxMessageHolder.class)
+                     .where(eq(Column.shard(), shard), eq(Column.status(), TO_DELIVER))
+                     .orderBy(Column.receivedAt(), DESCENDING)
+                     .limit(1)
+                     .run()
+                     .stream()
+                     .findFirst()
+                     .map(InboxMessageHolder::getMessage);
     }
 
     private <C extends CommandMessage, E extends EventMessage> Optional<E>

@@ -62,6 +62,9 @@ dependencies {
 
 modelCompiler {
     generateValidation = true
+    columns {
+        generate(true)
+    }
 
     interfaces {
         mark(messages().inFiles(suffix("commands.proto")), asType("io.spine.base.CommandMessage"))
