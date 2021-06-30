@@ -10,6 +10,9 @@ import com.google.appengine.api.ThreadManager;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.message.delivery.client.DeliveryClient;
+import io.spine.server.BoundedContext;
+import io.spine.server.CommandService;
+import io.spine.server.QueryService;
 
 import javax.servlet.http.HttpServlet;
 import java.util.concurrent.ExecutorService;
@@ -32,6 +35,13 @@ abstract class DemoServlet extends HttpServlet {
         useLog4j2FloggerBackend();
     }
 
+    protected static final BoundedContext context = DemoContext.newInstance();
+    protected static final QueryService queryService = QueryService.newBuilder()
+            .add(context)
+            .build();
+    protected static final CommandService commandService = CommandService.newBuilder()
+            .add(context)
+            .build();
     protected static final Supplier<DeliveryClient> client = memoize(DemoServlet::cloudRunClient);
 
     @SuppressWarnings(
