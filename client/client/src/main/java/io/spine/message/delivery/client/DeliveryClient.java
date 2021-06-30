@@ -6,6 +6,7 @@
 
 package io.spine.message.delivery.client;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Timestamp;
@@ -59,7 +60,8 @@ import static io.spine.util.Preconditions2.checkPositive;
  *
  * <p>Provides APIs for modifying and querying the remote state of the Message Delivery context.
  */
-final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
+@SuppressWarnings("OverlyCoupledClass")
+public final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
 
     private final Client client;
 
@@ -73,6 +75,7 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     /**
      * Creates a new delivery client which connects to a local gRPC server on port {@code 8484}.
      */
+    @VisibleForTesting
     static DeliveryClient local() {
         return create("127.0.0.1", 8484);
     }
@@ -89,6 +92,15 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
                 .forAddress(host, port)
                 .usePlaintext()
                 .build();
+        return new DeliveryClient(channel);
+    }
+
+    /**
+     * Creates a new delivery client which connects to a gRPC server
+     * using specified {@code channel}.
+     */
+    public static DeliveryClient create(ManagedChannel channel) {
+        checkNotNull(channel);
         return new DeliveryClient(channel);
     }
 
@@ -218,7 +230,7 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     postCommand(C command, Class<E> event) {
         _trace().log("Posting command `%s` and waiting for a response event `%s`.",
                      command.getClass(), event);
-        CompletableFuture<Optional<E>> future = new CompletableFuture<Optional<E>>();
+        CompletableFuture<Optional<E>> future = new CompletableFuture<>();
         ImmutableSet<Subscription> subscriptions =
                 client.asGuest()
                       .command(command)

@@ -28,6 +28,7 @@ java {
 dependencies {
     errorprone(ErrorProne.core)
     errorprone(ErrorProne.Plugin.nullaway)
+    errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
     compileOnlyApi(CheckerFramework.annotations)
     compileOnlyApi(FindBugs.annotations)
     compileOnlyApi(JavaX.annotations)

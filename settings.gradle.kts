@@ -5,9 +5,17 @@
  */
 
 rootProject.name = "message-delivery"
-include("server")
 include("model")
+include("server")
 includeBuild("client")
+
+fun deployment(name: String) {
+    val path = ":${name}"
+    include(path)
+    project(path).projectDir = file("./deployment/${name}")
+}
+
+deployment("server-cloud-run")
 
 dependencyResolutionManagement {
     repositories {

@@ -34,6 +34,7 @@ dependencies {
     implementation("io.spine.tools:spine-protoc-api:${spineBaseVersion}")
     implementation("io.spine.tools:spine-plugin-base:${spineBaseVersion}")
     implementation("io.spine.tools:spine-model-compiler:${spineBaseVersion}")
+    implementation("com.google.cloud.tools:appengine-gradle-plugin:2.4.1")
 }
 
 kotlinDslPluginOptions {
