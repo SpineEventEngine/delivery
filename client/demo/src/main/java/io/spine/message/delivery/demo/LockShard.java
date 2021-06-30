@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client;
+package io.spine.message.delivery.demo;
 
 import io.spine.logging.Logging;
 import io.spine.server.NodeId;
@@ -24,8 +24,7 @@ public class LockShard extends ClientServlet implements Logging {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         _info().log("Picking up a shard!");
         NodeId worker = ServerEnvironment.instance().nodeId();
         ShardIndex shard = DeliveryStrategy.newIndex(1, 2);

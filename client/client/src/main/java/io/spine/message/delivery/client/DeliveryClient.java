@@ -6,9 +6,7 @@
 
 package io.spine.message.delivery.client;
 
-import com.google.appengine.api.ThreadManager;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Timestamp;
@@ -19,7 +17,6 @@ import io.spine.base.EventMessage;
 import io.spine.client.Client;
 import io.spine.client.OrderBy;
 import io.spine.client.QueryFilter;
-import io.spine.client.Subscription;
 import io.spine.client.Subscription;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.InboxMessageHolder;
@@ -46,9 +43,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -66,7 +60,8 @@ import static io.spine.util.Preconditions2.checkPositive;
  *
  * <p>Provides APIs for modifying and querying the remote state of the Message Delivery context.
  */
-final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
+@SuppressWarnings("OverlyCoupledClass")
+public final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
 
     private final Client client;
 
@@ -101,19 +96,11 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     }
 
     /**
-     * Creates a new delivery client which connects to a gRPC server on the specified
-     * {@code target}.
-     *
-     * <p>It is assumed that the target is using a secure connection.
+     * Creates a new delivery client which connects to a gRPC server
+     * using specified {@code channel}.
      */
-    static DeliveryClient create(String target) {
-        checkNotEmptyOrBlank(target);
-        ThreadFactory threads = ThreadManager.currentRequestThreadFactory();
-        ExecutorService executor = Executors.newCachedThreadPool(threads);
-        ManagedChannel channel = ManagedChannelBuilder
-                .forTarget(target)
-                .executor(executor)
-                .build();
+    public static DeliveryClient create(ManagedChannel channel) {
+        checkNotNull(channel);
         return new DeliveryClient(channel);
     }
 
@@ -167,11 +154,11 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, NodeId worker) {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
-        var pickUpShard = PickUpShard.newBuilder()
+        PickUpShard pickUpShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        var result = postCommand(pickUpShard, ShardPickedUp.class);
+        Optional<ShardPickedUp> result = postCommand(pickUpShard, ShardPickedUp.class);
         return result;
     }
 
@@ -243,7 +230,7 @@ final class DeliveryClient implements SessionRegistryClient, InboxClient, Loggin
     postCommand(C command, Class<E> event) {
         _trace().log("Posting command `%s` and waiting for a response event `%s`.",
                      command.getClass(), event);
-        CompletableFuture<Optional<E>> future = new CompletableFuture<Optional<E>>();
+        CompletableFuture<Optional<E>> future = new CompletableFuture<>();
         ImmutableSet<Subscription> subscriptions =
                 client.asGuest()
                       .command(command)
