@@ -5,6 +5,7 @@
  */
 
 rootProject.name = "message-delivery-client"
+include("client")
 includeBuild("..") {
     dependencySubstitution {
         substitute(module("io.spine.message-delivery:model")).using(project(":model"))
