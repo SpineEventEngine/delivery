@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package spine.message.delivery.demo;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package="io.spine.message.delivery.demo.command";
+
+// The person has been already greeted by the greeter.
+message PersonAlreadyGreeted {
+
+    // The name of the person who was already greeted..
+    string name = 1 [(required) = true];
+}
