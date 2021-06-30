@@ -9,10 +9,14 @@ package io.spine.message.delivery.demo;
 import com.google.appengine.api.ThreadManager;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.spine.base.Production;
+import io.spine.message.delivery.DeliveryBootstrapper;
 import io.spine.message.delivery.client.DeliveryClient;
 import io.spine.server.BoundedContext;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
+import io.spine.server.ServerEnvironment;
+import io.spine.server.delivery.UniformAcrossAllShards;
 
 import javax.servlet.http.HttpServlet;
 import java.util.concurrent.ExecutorService;
@@ -31,8 +35,22 @@ import static com.google.common.base.Suppliers.memoize;
 @SuppressWarnings("serial")
 abstract class DemoServlet extends HttpServlet {
 
+    /** The number of shards used for the signal delivery. **/
+    private static final int NUMBER_OF_SHARDS = 50;
+
     static {
         useLog4j2FloggerBackend();
+    }
+
+    static {
+        ServerEnvironment
+                .when(Production.class)
+                .useDelivery((env) -> DeliveryBootstrapper.newInstance()
+                        .withChannel(deliveryServerChannel())
+                        .init()
+                        .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
+                        .build()
+                );
     }
 
     protected static final BoundedContext context = DemoContext.newInstance();
@@ -44,21 +62,24 @@ abstract class DemoServlet extends HttpServlet {
             .build();
     protected static final Supplier<DeliveryClient> client = memoize(DemoServlet::cloudRunClient);
 
+    private static DeliveryClient cloudRunClient() {
+        return DeliveryClient.create(deliveryServerChannel());
+    }
+
     @SuppressWarnings(
             "CallToSystemGetenv" /* We do want to use env variable for the server location. */
     )
-    private static DeliveryClient cloudRunClient() {
+    private static ManagedChannel deliveryServerChannel() {
         String server = System.getenv("DELIVERY_SERVER");
         if (isNullOrEmpty(server)) {
             server = "dns:///message-delivery-server-irtlrrb2aq-uc.a.run.app:443";
         }
         ThreadFactory threads = ThreadManager.currentRequestThreadFactory();
         ExecutorService executor = Executors.newCachedThreadPool(threads);
-        ManagedChannel channel = ManagedChannelBuilder
+        return ManagedChannelBuilder
                 .forTarget(server)
                 .executor(executor)
                 .build();
-        return DeliveryClient.create(channel);
     }
 
     /**
