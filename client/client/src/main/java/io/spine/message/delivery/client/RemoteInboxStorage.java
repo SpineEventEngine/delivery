@@ -71,6 +71,7 @@ final class RemoteInboxStorage
     }
 
     @Override
+    @SuppressWarnings("ReturnValueIgnored" /* It's OK to just throw the exception. */)
     public void writeAll(Iterable<InboxMessage> messages) {
         checkNotNull(messages);
         InboxMessage message = requireNonNull(
@@ -85,6 +86,7 @@ final class RemoteInboxStorage
     }
 
     @Override
+    @SuppressWarnings("ReturnValueIgnored" /* It's OK to just throw the exception. */)
     public void removeAll(Iterable<InboxMessage> messages) {
         checkNotNull(messages);
         InboxMessage message = requireNonNull(
