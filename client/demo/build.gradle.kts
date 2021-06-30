@@ -36,7 +36,7 @@ dependencies {
     implementation(Log4j2.api)
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)
-    implementation("com.google.appengine:appengine-api-1.0-sdk:+")  // Latest App Engine Api's
+    implementation("com.google.appengine:appengine-api-1.0-sdk:+")  // Latest App Engine APIs.
     providedCompile("javax.servlet:javax.servlet-api:3.1.0")
 }
 
