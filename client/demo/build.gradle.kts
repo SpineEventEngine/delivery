@@ -18,8 +18,9 @@ plugins {
     id("com.google.cloud.tools.appengine-appenginewebxml")
 }
 
+//TODO:2021-06-30:yuri-sergiichuk: add ability to configure the project from a property file or
+// environment variable.
 /** The GCP project ID used for deployment of the application. **/
-//val gcpProject: String by project
 val gcpProject = "bko-dev-firestore"
 
 apply(from = "$rootDir/../version.gradle.kts")

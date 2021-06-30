@@ -13,9 +13,9 @@ plugins {
     id("com.google.cloud.tools.jib")
     id("com.github.johnrengelman.shadow")
 }
-
+//TODO:2021-06-30:yuri-sergiichuk: add ability to configure the project from a property file or
+// environment variable.
 /** The GCP project ID used for deployment of the application. **/
-//val gcpProject: String by project
 val gcpProject = "bko-dev-firestore"
 
 dependencies {
