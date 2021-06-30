@@ -40,7 +40,7 @@ abstract class ClientServlet extends HttpServlet {
     private static DeliveryClient cloudRunClient() {
         String server = System.getenv("DELIVERY_SERVER");
         if (isNullOrEmpty(server)) {
-            server = "dns:///message-delivery-server-irtlrrb2aq-uc.a.run.app/:443";
+            server = "dns:///message-delivery-server-irtlrrb2aq-uc.a.run.app:443";
         }
         ThreadFactory threads = ThreadManager.currentRequestThreadFactory();
         ExecutorService executor = Executors.newCachedThreadPool(threads);
