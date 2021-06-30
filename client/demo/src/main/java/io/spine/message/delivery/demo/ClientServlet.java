@@ -23,7 +23,7 @@ import static com.google.common.base.Suppliers.memoize;
 /**
  * An abstract base servlet for the demo Application.
  *
- * <p>Exposes the {@link DeliveryClient} and configured logging.
+ * <p>Exposes the {@link DeliveryClient} and configures logging.
  */
 @SuppressWarnings("serial")
 abstract class ClientServlet extends HttpServlet {
