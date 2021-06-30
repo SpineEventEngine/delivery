@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @SuppressWarnings("serial")
 @WebServlet(name = "ReleaseShard", value = "/work-registry/release")
-final class ReleaseShard extends ClientServlet implements Logging {
+final class ReleaseShard extends DemoServlet implements Logging {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override

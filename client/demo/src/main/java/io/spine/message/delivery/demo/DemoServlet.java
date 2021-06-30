@@ -26,13 +26,13 @@ import static com.google.common.base.Suppliers.memoize;
  * <p>Exposes the {@link DeliveryClient} and configures logging.
  */
 @SuppressWarnings("serial")
-abstract class ClientServlet extends HttpServlet {
+abstract class DemoServlet extends HttpServlet {
 
     static {
         useLog4j2FloggerBackend();
     }
 
-    protected static final Supplier<DeliveryClient> client = memoize(ClientServlet::cloudRunClient);
+    protected static final Supplier<DeliveryClient> client = memoize(DemoServlet::cloudRunClient);
 
     @SuppressWarnings(
             "CallToSystemGetenv" /* We do want to use env variable for the server location. */
