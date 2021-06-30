@@ -56,8 +56,8 @@ idea {
 
 dependencies {
     Protobuf.libs.forEach { implementation(it) }
-    implementation(Spine.base)
-    testImplementation(Spine.Test.base)
+    implementation(Spine.Stable.base)
+    testImplementation(Spine.Stable.Test.base)
 }
 
 modelCompiler {
