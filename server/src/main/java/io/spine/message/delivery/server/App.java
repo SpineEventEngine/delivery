@@ -120,6 +120,10 @@ public final class App implements Logging {
     /**
      * Configures Log4j2 as the <a href="https://github.com/google/flogger">Flogger</a> backend.
      */
+    @SuppressWarnings({
+            "DuplicateStringLiteralInspection", /* Used in non-related context. */
+            "AccessOfSystemProperties" /* There is no better way to configure Flogger. */
+    })
     private static void useLog4j2FloggerBackend() {
         System.setProperty(
                 "flogger.backend_factory",
