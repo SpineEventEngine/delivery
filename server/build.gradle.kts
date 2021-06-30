@@ -4,6 +4,7 @@
  * Use is subject to license terms.
  */
 
+import io.spine.internal.dependency.Grpc
 import io.spine.internal.dependency.Log4j2
 import io.spine.internal.dependency.Spine
 
@@ -12,4 +13,5 @@ dependencies {
     implementation(project(":model"))
     implementation(Spine.server)
     testImplementation(Spine.Test.server)
+    testRuntimeOnly(Grpc.nettyShaded)
 }
