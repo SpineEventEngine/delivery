@@ -12,11 +12,9 @@ import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.ShardIndex;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "ReleaseShard", value = "/work-registry/release")
@@ -28,6 +26,7 @@ public class ReleaseShard extends ClientServlet implements Logging {
         _info().log("Releasing a shard!");
         NodeId worker = ServerEnvironment.instance().nodeId();
         ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
-        client.get().releaseShard(shard, worker);
+        client.get()
+              .releaseShard(shard, worker);
     }
 }

@@ -12,11 +12,9 @@ import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.ShardIndex;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @SuppressWarnings("serial")
 @WebServlet(name = "LockShard", value = "/work-registry/pickUp")
@@ -28,6 +26,7 @@ public class LockShard extends ClientServlet implements Logging {
         _info().log("Picking up a shard!");
         NodeId worker = ServerEnvironment.instance().nodeId();
         ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
-        client.get().pickUpShard(shard,worker);
+        client.get()
+              .pickUpShard(shard, worker);
     }
 }
