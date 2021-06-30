@@ -39,11 +39,16 @@ object JavadocOptions {
 tasks.javadoc {
     (options as StandardJavadocDocletOptions).tags?.addAll(JavadocOptions.tags)
     (options as StandardJavadocDocletOptions).encoding = JavadocOptions.encoding
-    (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
 }
 
 if (JavaVersion.current().isJava8Compatible) {
     tasks.javadoc {
         (options as StandardJavadocDocletOptions).addStringOption("Xdoclint:none", "-quiet")
+    }
+}
+
+if (JavaVersion.current().isJava11Compatible) {
+    tasks.javadoc {
+        (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
     }
 }
