@@ -16,9 +16,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Provides a GET HTTP request handler which releases a delivery shard
+ * using the {@link io.spine.message.delivery.client.DeliveryClient DeliveryClient}.
+ */
 @SuppressWarnings("serial")
 @WebServlet(name = "ReleaseShard", value = "/work-registry/release")
-public class ReleaseShard extends ClientServlet implements Logging {
+final class ReleaseShard extends ClientServlet implements Logging {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override

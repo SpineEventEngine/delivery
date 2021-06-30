@@ -16,9 +16,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Provides a GET HTTP request handler which picks up a delivery shard
+ * using the {@link io.spine.message.delivery.client.DeliveryClient DeliveryClient}.
+ */
 @SuppressWarnings("serial")
 @WebServlet(name = "LockShard", value = "/work-registry/pickUp")
-public class LockShard extends ClientServlet implements Logging {
+final class LockShard extends ClientServlet implements Logging {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override

@@ -20,8 +20,13 @@ import java.util.function.Supplier;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Suppliers.memoize;
 
+/**
+ * An abstract base servlet for the demo Application.
+ *
+ * <p>Exposes the {@link DeliveryClient} and configured logging.
+ */
 @SuppressWarnings("serial")
-public class ClientServlet extends HttpServlet {
+abstract class ClientServlet extends HttpServlet {
 
     static {
         useLog4j2FloggerBackend();
