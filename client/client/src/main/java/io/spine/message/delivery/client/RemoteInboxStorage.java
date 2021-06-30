@@ -30,7 +30,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * An {@code InboxStorage} based on a remotely-stored Inbox state.
  */
-final class RemoteInboxStorage
+public final class RemoteInboxStorage
         extends AbstractStorage<InboxMessageId, InboxMessage, InboxReadRequest>
         implements InboxStorage, Logging {
 
@@ -42,7 +42,7 @@ final class RemoteInboxStorage
      *
      * <p>The supplier is lazily evaluated and memoized.
      */
-    RemoteInboxStorage(Supplier<InboxClient> clientSupplier) {
+    public RemoteInboxStorage(Supplier<InboxClient> clientSupplier) {
         super(false);
         this.clientSupplier = checkNotNull(clientSupplier);
     }
