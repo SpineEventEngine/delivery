@@ -6,6 +6,10 @@
 
 import io.spine.internal.dependency.Spine
 
+plugins {
+    spine
+}
+
 dependencies {
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)
