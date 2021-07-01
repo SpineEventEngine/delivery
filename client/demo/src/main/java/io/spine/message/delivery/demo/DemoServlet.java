@@ -53,12 +53,15 @@ abstract class DemoServlet extends HttpServlet implements Logging {
     static {
         ServerEnvironment
                 .when(Production.class)
-                .useDelivery((env) -> DeliveryBootstrapper.newInstance()
-                        .withChannel(deliveryServerChannel())
-                        .init()
-                        .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
-                        .build()
-                )
+                .useDelivery((env) -> {
+                    Delivery delivery = DeliveryBootstrapper.newInstance()
+                            .withChannel(deliveryServerChannel())
+                            .init()
+                            .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
+                            .build();
+                    delivery.subscribe(new LocalDispatchingObserver());
+                    return delivery;
+                })
                 .use(InMemoryTransportFactory.newInstance())
                 .use(InMemoryStorageFactory.newInstance());
     }
