@@ -27,6 +27,7 @@ final class GreeterRepo extends AggregateRepository<String, GreatGreeter> {
      * Creates a new repository with the {@code random} to be used by the {@link GreatGreeter}.
      */
     GreeterRepo(Random random) {
+        super();
         this.random = checkNotNull(random);
     }
 
