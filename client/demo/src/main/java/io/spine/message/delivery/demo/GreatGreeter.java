@@ -8,6 +8,7 @@ package io.spine.message.delivery.demo;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ProtocolStringList;
+import io.spine.logging.Logging;
 import io.spine.message.delivery.demo.command.PersonAlreadyGreeted;
 import io.spine.message.delivery.demo.command.SayHello;
 import io.spine.message.delivery.demo.event.SaidHello;
@@ -23,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * The one who greets people but only once.
  */
-final class GreatGreeter extends Aggregate<String, Greeter, Greeter.Builder> {
+final class GreatGreeter extends Aggregate<String, Greeter, Greeter.Builder> implements Logging {
 
     private static final ImmutableList<String> greetings = ImmutableList.<String>builder()
             .add("Hello %s.")
@@ -42,8 +43,10 @@ final class GreatGreeter extends Aggregate<String, Greeter, Greeter.Builder> {
     @Assign
     SaidHello handle(SayHello c) throws PersonAlreadyGreeted {
         String personName = c.getName();
+        _info().log("Saying Hello to `%s`.", personName);
         ProtocolStringList alreadyGreetedPeople = state().getNameList();
         if (alreadyGreetedPeople.contains(personName)) {
+            _info().log("`%s` was already greeted.", personName);
             throw PersonAlreadyGreeted.newBuilder()
                     .setName(personName)
                     .build();
