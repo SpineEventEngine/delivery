@@ -13,6 +13,7 @@ import io.spine.message.delivery.client.RemoteInboxStorage;
 import io.spine.message.delivery.client.WorkRegistry;
 import io.spine.server.delivery.Delivery;
 import io.spine.server.delivery.DeliveryBuilder;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -22,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class DeliveryBootstrapper {
 
-    private ManagedChannel channel;
+    private @MonotonicNonNull ManagedChannel channel;
 
     /**
      * Prevents direct instantiation.
