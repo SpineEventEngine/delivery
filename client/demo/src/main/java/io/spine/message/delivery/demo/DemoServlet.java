@@ -6,7 +6,6 @@
 
 package io.spine.message.delivery.demo;
 
-import com.google.appengine.api.ThreadManager;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.Production;
@@ -23,9 +22,6 @@ import io.spine.server.transport.memory.InMemoryTransportFactory;
 
 import javax.servlet.http.HttpServlet;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -93,11 +89,10 @@ abstract class DemoServlet extends HttpServlet implements Logging {
         if (isNullOrEmpty(server)) {
             server = "dns:///message-delivery-server-irtlrrb2aq-uc.a.run.app:443";
         }
-        ThreadFactory threads = ThreadManager.currentRequestThreadFactory();
-        ExecutorService executor = Executors.newFixedThreadPool(2, threads);
+//        ThreadFactory threads = ThreadManager.currentRequestThreadFactory();
+//        ExecutorService executor = Executors.newFixedThreadPool(2, threads);
         return ManagedChannelBuilder
                 .forTarget(server)
-                .executor(executor)
                 .build();
     }
 
