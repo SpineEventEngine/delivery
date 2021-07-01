@@ -38,54 +38,27 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * An abstract base servlet for the demo Application.
  *
- * <p>Exposes the {@link DeliveryClient} and configures logging.
+ * <p>Starts and configures {@link DemoContext demo} server and exposes a {@link Client} to the
+ * server to inheritors.
  */
 @SuppressWarnings("serial")
 abstract class DemoServlet extends HttpServlet implements Logging {
 
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
+    protected static final Supplier<DeliveryClient> client = memoize(DemoServlet::cloudRunClient);
     protected static final String SERVER_NAME = "DemoServer";
-
-    static {
-        useLog4j2FloggerBackend();
-    }
-
-    static {
-        ServerEnvironment
-                .when(Production.class)
-                .useDelivery((env) -> {
-                    Delivery delivery = DeliveryBootstrapper.newInstance()
-                            .withChannel(deliveryServerChannel())
-                            .init()
-                            .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
-                            .build();
-                    delivery.subscribe(new LocalDispatchingObserver());
-                    return delivery;
-                })
-                .use(InMemoryTransportFactory.newInstance())
-                .use(InMemoryStorageFactory.newInstance());
-    }
-
     protected static final Server server;
     protected static final Client spineClient;
 
     static {
-        BoundedContextBuilder demoContext = DemoContext.builder();
-        server = Server.inProcess(SERVER_NAME)
-                       .add(demoContext)
-                       .build();
-        try {
-            server.start();
-        } catch (IOException e) {
-            throw newIllegalStateException(e, "Unable to start Demo in-process server.");
-        }
+        useLog4j2FloggerBackend();
+        configureEnv();
+        server = startServer();
         spineClient = Client
                 .inProcess(SERVER_NAME)
                 .build();
     }
-
-    protected static final Supplier<DeliveryClient> client = memoize(DemoServlet::cloudRunClient);
 
     private static DeliveryClient cloudRunClient() {
         return DeliveryClient.create(deliveryServerChannel());
@@ -112,6 +85,41 @@ abstract class DemoServlet extends HttpServlet implements Logging {
                 .forTarget(server)
                 .executor(executor)
                 .build();
+    }
+
+    /**
+     * Configures and starts the {@link DemoContext demo} server.
+     */
+    private static Server startServer() {
+        BoundedContextBuilder demoContext = DemoContext.builder();
+        Server server = Server.inProcess(SERVER_NAME)
+                              .add(demoContext)
+                              .build();
+        try {
+            server.start();
+        } catch (IOException e) {
+            throw newIllegalStateException(e, "Unable to start Demo in-process server.");
+        }
+        return server;
+    }
+
+    /**
+     * Configures the application {@link ServerEnvironment}.
+     */
+    private static void configureEnv() {
+        ServerEnvironment
+                .when(Production.class)
+                .useDelivery((env) -> {
+                    Delivery delivery = DeliveryBootstrapper.newInstance()
+                            .withChannel(deliveryServerChannel())
+                            .init()
+                            .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
+                            .build();
+                    delivery.subscribe(new LocalDispatchingObserver());
+                    return delivery;
+                })
+                .use(InMemoryTransportFactory.newInstance())
+                .use(InMemoryStorageFactory.newInstance());
     }
 
     /**
