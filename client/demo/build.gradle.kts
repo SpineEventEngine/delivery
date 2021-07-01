@@ -46,11 +46,9 @@ appengine {
         version = "1"
     }
     run {
-        port = 8080
         jvmFlags = listOf(
             "-Xdebug",
-            "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5008",
-            "-Dappengine.fullscan.seconds=5"
+            "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
         )
     }
 }
