@@ -3,21 +3,14 @@
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
-import io.spine.internal.dependency.Flogger
-import io.spine.internal.dependency.Grpc
-import io.spine.internal.dependency.Log4j2
-import io.spine.internal.dependency.Spine
+
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import io.spine.internal.dependency.Jetty
 
 plugins {
-    idea
-    `java-convention`
-    `dependency-management`
-    `code-quality`
-    spine
-    war
     application
+    id("com.github.johnrengelman.shadow")
     id("com.google.cloud.tools.appengine-appyaml")
-//    id("com.google.cloud.tools.appengine-appenginewebxml")
 }
 
 //TODO:2021-06-30:yuri-sergiichuk: add ability to configure the project from a property file or
@@ -25,39 +18,37 @@ plugins {
 /** The GCP project ID used for deployment of the application. **/
 val gcpProject = "spine-dev"
 
-apply(from = "$rootDir/../version.gradle.kts")
-group = "io.spine.message-delivery"
-version = extra["messageDeliveryVersion"]!!
-
 dependencies {
-    runtimeOnly(Grpc.nettyShaded)
-    runtimeOnly(Log4j2.slf4jBridge)
-    runtimeOnly(Log4j2.core)
-    runtimeOnly(Flogger.Runtime.log4J2)
-    implementation(project(":client"))
-    implementation(Log4j2.api)
-    implementation(Spine.Stable.server)
-    implementation(Spine.Stable.client)
-    implementation("com.google.appengine:appengine-api-1.0-sdk:+")  // Latest App Engine APIs.
-    providedCompile("javax.servlet:javax.servlet-api:3.1.0")
+    Jetty.all.forEach { implementation(it) }
+    implementation(project(":demo"))
 }
+val uberJarName = "app"
+val uberJarFolder = "${buildDir}/uberJar"
+val appClassName = "io.spine.message.delivery.demo.JettyStarter"
+project.setProperty("mainClassName", appClassName)
 
-//appengine {
-//    deploy {
-//        projectId = gcpProject
-//        version = "2"
-//    }
-//    run {
-//        jvmFlags = listOf(
-//            "-Xdebug",
-//            "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
-//        )
-//    }
-//}
+tasks.withType<ShadowJar> {
+    archiveBaseName.set(uberJarName)
+    archiveClassifier.set("")
+    archiveVersion.set("")
+
+    mergeServiceFiles()
+    mergeServiceFiles("desc.ref")
+    manifest {
+        attributes["Multi-Release"] = "true" // https://github.com/johnrengelman/shadow/issues/449
+        attributes["Main-Class"] = appClassName
+    }
+    destinationDirectory.set(file(uberJarFolder))
+}
 
 appengine {
     deploy {
         projectId = gcpProject
         version = "2"
     }
+    stage {
+        setArtifact(file("${uberJarFolder}/${uberJarName}.jar"))
+    }
 }
+
+tasks.getByName("appengineStage").dependsOn(tasks.getByName("shadowJar"))
