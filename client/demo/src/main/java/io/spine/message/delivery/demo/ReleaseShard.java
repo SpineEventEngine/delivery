@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @SuppressWarnings("serial")
 @WebServlet(name = "ReleaseShard", value = "/work-registry/release")
-final class ReleaseShard extends DemoServlet {
+public final class ReleaseShard extends DemoServlet {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override

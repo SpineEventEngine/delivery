@@ -26,7 +26,7 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
  */
 @SuppressWarnings("serial")
 @WebServlet(name = "Greeter", value = "/greet")
-final class GreeterServlet extends DemoServlet {
+public final class GreeterServlet extends DemoServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
