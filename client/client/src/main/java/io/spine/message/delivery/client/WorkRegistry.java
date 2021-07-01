@@ -20,17 +20,26 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
-public class WorkRegistry implements ShardedWorkRegistry, Logging {
+/**
+ * A work registry backed by the remote {@link SessionRegistryClient}.
+ */
+public final class WorkRegistry implements ShardedWorkRegistry, Logging {
 
     private final Supplier<SessionRegistryClient> client;
 
+    /**
+     * Creates a new registry instance with the supplied {@code client}.
+     */
     public WorkRegistry(Supplier<SessionRegistryClient> client) {
         this.client = checkNotNull(client);
     }
 
     @Override
     public Optional<ShardProcessingSession> pickUp(ShardIndex index, NodeId nodeId) {
+        checkNotDefaultArg(index);
+        checkNotDefaultArg(nodeId);
         return client
                 .get()
                 .pickUpShard(index, nodeId)
