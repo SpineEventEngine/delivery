@@ -3,8 +3,10 @@
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
+import io.spine.internal.dependency.AppEngine
 import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Grpc
+import io.spine.internal.dependency.JavaX
 import io.spine.internal.dependency.Log4j2
 import io.spine.internal.dependency.Spine
 
@@ -22,6 +24,6 @@ dependencies {
     implementation(Log4j2.api)
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)
-    implementation("com.google.appengine:appengine-api-1.0-sdk:+")  // Latest App Engine APIs.
-    providedCompile("javax.servlet:javax.servlet-api:3.1.0")
+    implementation(AppEngine.api)  // Latest App Engine APIs.
+    providedCompile(JavaX.servlets)
 }
