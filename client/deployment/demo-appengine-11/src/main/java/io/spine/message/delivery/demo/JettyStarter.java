@@ -51,11 +51,13 @@ public final class JettyStarter {
         builder.beans.forEach(server::addBean);
     }
 
+    /**
+     * Starts Jetty server.
+     */
     public static void main(String[] args) {
         JettyStarter starter = newBuilder().build();
         Runtime.getRuntime()
                .addShutdownHook(new Thread(starter::stop));
-
         starter.start();
     }
 
@@ -66,12 +68,11 @@ public final class JettyStarter {
         try {
             server.start();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException("Unable to start Jetty server.", e);
         }
         try {
             server.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (InterruptedException ignored) {
         }
     }
 
@@ -82,7 +83,7 @@ public final class JettyStarter {
         try {
             server.stop();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException("Unable to stop Jetty server.", e);
         }
     }
 
