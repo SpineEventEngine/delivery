@@ -27,6 +27,7 @@ dependencies {
 }
 
 val appClassName = "io.spine.message.delivery.server.App"
+project.setProperty("mainClassName", appClassName)
 
 tasks.withType<ShadowJar> {
     mergeServiceFiles()
