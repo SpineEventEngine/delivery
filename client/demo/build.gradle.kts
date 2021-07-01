@@ -43,7 +43,7 @@ dependencies {
 appengine {
     deploy {
         projectId = gcpProject
-        version = "1"
+        version = "2"
     }
     run {
         jvmFlags = listOf(
