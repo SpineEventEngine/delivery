@@ -8,8 +8,8 @@
     <runtime>java8</runtime>
     <threadsafe>true</threadsafe>
     <service>message-delivery-client</service>
-    <instance-class>F2</instance-class>
-    <automatic-scaling>
+    <instance-class>B2</instance-class>
+    <basic-scaling>
         <max-instances>1</max-instances>
-    </automatic-scaling>
+    </basic-scaling>
 </appengine-web-app>
