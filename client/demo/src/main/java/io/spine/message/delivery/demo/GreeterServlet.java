@@ -68,6 +68,13 @@ public final class GreeterServlet extends DemoServlet {
                         greeted.countDown();
                     }
                 })
+                .onServerError((msg, error) -> {
+                    _trace().log(
+                            "Server was not able to handle command `%s`: %s",
+                            msg.getClass(), error
+                    );
+                    greeted.countDown();
+                })
                 .post();
         try {
             _debug().log("Waiting for the command to path through.");
