@@ -69,10 +69,12 @@ public final class GreeterServlet extends DemoServlet {
                 })
                 .post();
         try {
+            _debug().log("Waiting for the command to path through.");
             greeted.await();
         } catch (InterruptedException e) {
             throw newIllegalStateException(e, "Hanged while waiting for a greeting :-(");
         }
+        _debug().log("Unsubscribing from updates.");
         subscriptions.forEach(spineClient.subscriptions()::cancel);
     }
 }
