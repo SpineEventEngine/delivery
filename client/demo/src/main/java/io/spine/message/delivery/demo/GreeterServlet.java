@@ -7,6 +7,8 @@
 package io.spine.message.delivery.demo;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
+import io.spine.client.Subscription;
 import io.spine.message.delivery.demo.command.SayHello;
 import io.spine.message.delivery.demo.event.SaidHello;
 
@@ -14,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
@@ -44,11 +47,13 @@ public final class GreeterServlet extends DemoServlet {
         SayHello sayHello = SayHello.newBuilder()
                 .setName(personName)
                 .vBuild();
-        spineClient
+        CountDownLatch greeted = new CountDownLatch(1);
+        ImmutableSet<Subscription> subscriptions = spineClient
                 .asGuest()
                 .command(sayHello)
                 .observe(SaidHello.class, e -> {
                     String greeting = e.getGreeting();
+                    _info().log("Said `%s` to `%s`.", greeting, personName);
                     try {
                         resp.setContentType("text/plain");
                         resp.getWriter()
@@ -58,7 +63,16 @@ public final class GreeterServlet extends DemoServlet {
                         throw newIllegalStateException(
                                 ex, "Unable to write response to the caller."
                         );
+                    } finally {
+                        greeted.countDown();
                     }
-                });
+                })
+                .post();
+        try {
+            greeted.await();
+        } catch (InterruptedException e) {
+            throw newIllegalStateException(e, "Hanged while waiting for a greeting :-(");
+        }
+        subscriptions.forEach(spineClient.subscriptions()::cancel);
     }
 }
