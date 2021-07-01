@@ -11,7 +11,10 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="io.spine" level="TRACE" additivity="false">
+        <Logger name="io.spine" level="INFO" additivity="false">
+            <AppenderRef ref="LogToConsole"/>
+        </Logger>
+        <Logger name="io.spine.message.delivery" level="INFO" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="INFO">
