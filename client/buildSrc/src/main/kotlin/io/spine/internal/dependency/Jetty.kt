@@ -12,6 +12,7 @@ object Jetty {
     const val server = "org.eclipse.jetty:jetty-server:${version}"
     const val servlet = "org.eclipse.jetty:jetty-servlet:${version}"
     const val webapp = "org.eclipse.jetty:jetty-webapp:${version}"
+    const val annotations = "org.eclipse.jetty:jetty-annotations:${version}"
 
-    val all = listOf(server, servlet, webapp)
+    val all = listOf(server, servlet, webapp, annotations)
 }
