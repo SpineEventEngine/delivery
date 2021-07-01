@@ -10,6 +10,7 @@ import io.spine.internal.dependency.Grpc
 import io.spine.internal.dependency.Log4j2
 
 plugins {
+    application
     id("com.google.cloud.tools.jib")
     id("com.github.johnrengelman.shadow")
 }
