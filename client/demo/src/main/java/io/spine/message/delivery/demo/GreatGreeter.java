@@ -22,7 +22,7 @@ import java.util.Random;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The one who greets people but only once.
+ * The one who greets people, but only once.
  */
 final class GreatGreeter extends Aggregate<String, Greeter, Greeter.Builder> implements Logging {
 
