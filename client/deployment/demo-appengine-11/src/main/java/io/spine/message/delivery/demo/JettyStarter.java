@@ -45,6 +45,7 @@ public final class JettyStarter {
     private final Server server;
 
     private JettyStarter(Builder builder) {
+        super();
         this.server = new Server(builder.port);
         server.setHandler(webAppContext());
         builder.beans.forEach(server::addBean);
