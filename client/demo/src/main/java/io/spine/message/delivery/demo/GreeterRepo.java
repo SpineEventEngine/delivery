@@ -17,8 +17,14 @@ import java.util.Random;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Manages {@link GreatGreeter} aggregate.
+ */
 final class GreeterRepo extends AggregateRepository<String, GreatGreeter> {
 
+    /**
+     * The ID of the single system greeter.
+     */
     static final String greeter = "GreatGreeter";
 
     private final Random random;
