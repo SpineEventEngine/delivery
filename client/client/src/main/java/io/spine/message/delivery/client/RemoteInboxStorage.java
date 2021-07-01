@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.getFirst;
+import static io.spine.protobuf.Messages.isDefault;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static java.util.Objects.requireNonNull;
@@ -77,7 +78,10 @@ public final class RemoteInboxStorage
         InboxMessage message = requireNonNull(
                 getFirst(messages, InboxMessage.getDefaultInstance())
         );
-        checkNotDefaultArg(message);
+        if (isDefault(message)) {
+            _trace().log("No messages supplied. Skip writing to the inbox.");
+            return;
+        }
         ShardIndex shard = message.shardIndex();
         client().writeMessages(shard, messages)
                 .orElseThrow(() -> newIllegalStateException(
@@ -92,7 +96,10 @@ public final class RemoteInboxStorage
         InboxMessage message = requireNonNull(
                 getFirst(messages, InboxMessage.getDefaultInstance())
         );
-        checkNotDefaultArg(message);
+        if (isDefault(message)) {
+            _trace().log("No messages supplied. Skip removing messages from the inbox.");
+            return;
+        }
         ShardIndex shard = message.shardIndex();
         client().removeMessages(shard, messages)
                 .orElseThrow(() -> newIllegalStateException(
