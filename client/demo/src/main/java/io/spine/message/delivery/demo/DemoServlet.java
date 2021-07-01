@@ -94,7 +94,7 @@ abstract class DemoServlet extends HttpServlet implements Logging {
             server = "dns:///message-delivery-server-irtlrrb2aq-uc.a.run.app:443";
         }
         ThreadFactory threads = ThreadManager.currentRequestThreadFactory();
-        ExecutorService executor = Executors.newCachedThreadPool(threads);
+        ExecutorService executor = Executors.newFixedThreadPool(2, threads);
         return ManagedChannelBuilder
                 .forTarget(server)
                 .executor(executor)
