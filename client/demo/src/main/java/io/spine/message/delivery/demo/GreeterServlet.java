@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
@@ -70,7 +71,7 @@ public final class GreeterServlet extends DemoServlet {
                 .post();
         try {
             _debug().log("Waiting for the command to path through.");
-            greeted.await();
+            greeted.await(3, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw newIllegalStateException(e, "Hanged while waiting for a greeting :-(");
         }
