@@ -18,6 +18,8 @@ import io.spine.server.BoundedContextBuilder;
 import io.spine.server.Server;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.UniformAcrossAllShards;
+import io.spine.server.storage.memory.InMemoryStorageFactory;
+import io.spine.server.transport.memory.InMemoryTransportFactory;
 
 import javax.servlet.http.HttpServlet;
 import java.io.IOException;
@@ -54,7 +56,9 @@ abstract class DemoServlet extends HttpServlet implements Logging {
                         .init()
                         .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
                         .build()
-                );
+                )
+                .use(InMemoryTransportFactory.newInstance())
+                .use(InMemoryStorageFactory.newInstance());
     }
 
     protected static final Server server;
