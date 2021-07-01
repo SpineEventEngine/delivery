@@ -15,6 +15,7 @@ import io.spine.logging.Logging;
 import io.spine.message.delivery.DeliveryBootstrapper;
 import io.spine.message.delivery.client.DeliveryClient;
 import io.spine.server.BoundedContextBuilder;
+import io.spine.server.DeploymentType;
 import io.spine.server.Server;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.Delivery;
@@ -98,7 +99,14 @@ abstract class DemoServlet extends HttpServlet implements Logging {
         if (isNullOrEmpty(server)) {
             server = "dns:///message-delivery-server-irtlrrb2aq-uc.a.run.app:443";
         }
-        ThreadFactory threads = ThreadManager.currentRequestThreadFactory();
+        ServerEnvironment env = ServerEnvironment.instance();
+        DeploymentType deployment = env.deploymentType();
+        ThreadFactory threads;
+        if (deployment == DeploymentType.APPENGINE_CLOUD) {
+            threads = ThreadManager.currentRequestThreadFactory();
+        } else {
+            threads = Executors.defaultThreadFactory();
+        }
         ExecutorService executor = Executors.newCachedThreadPool(threads);
         return ManagedChannelBuilder
                 .forTarget(server)
