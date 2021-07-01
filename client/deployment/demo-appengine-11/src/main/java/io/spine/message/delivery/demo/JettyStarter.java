@@ -73,6 +73,7 @@ public final class JettyStarter {
         try {
             server.join();
         } catch (InterruptedException ignored) {
+            // there's nothing we can do when the server is interrupted.
         }
     }
 
