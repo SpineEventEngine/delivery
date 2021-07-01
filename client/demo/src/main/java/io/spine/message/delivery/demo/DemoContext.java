@@ -6,7 +6,6 @@
 
 package io.spine.message.delivery.demo;
 
-import com.google.common.annotations.VisibleForTesting;
 import io.spine.server.BoundedContext;
 import io.spine.server.BoundedContextBuilder;
 
@@ -37,7 +36,6 @@ final class DemoContext {
     /**
      * Returns a fully-initialized context builder.
      */
-    @VisibleForTesting
     static BoundedContextBuilder builder() {
         return BoundedContext
                 .singleTenant(contextName)

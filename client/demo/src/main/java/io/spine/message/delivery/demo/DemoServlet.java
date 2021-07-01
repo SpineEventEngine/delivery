@@ -10,15 +10,17 @@ import com.google.appengine.api.ThreadManager;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.Production;
+import io.spine.client.Client;
+import io.spine.logging.Logging;
 import io.spine.message.delivery.DeliveryBootstrapper;
 import io.spine.message.delivery.client.DeliveryClient;
-import io.spine.server.BoundedContext;
-import io.spine.server.CommandService;
-import io.spine.server.QueryService;
+import io.spine.server.BoundedContextBuilder;
+import io.spine.server.Server;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.UniformAcrossAllShards;
 
 import javax.servlet.http.HttpServlet;
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -26,6 +28,7 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Suppliers.memoize;
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * An abstract base servlet for the demo Application.
@@ -33,10 +36,11 @@ import static com.google.common.base.Suppliers.memoize;
  * <p>Exposes the {@link DeliveryClient} and configures logging.
  */
 @SuppressWarnings("serial")
-abstract class DemoServlet extends HttpServlet {
+abstract class DemoServlet extends HttpServlet implements Logging {
 
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
+    protected static final String SERVER_NAME = "DemoServer";
 
     static {
         useLog4j2FloggerBackend();
@@ -53,13 +57,24 @@ abstract class DemoServlet extends HttpServlet {
                 );
     }
 
-    protected static final BoundedContext context = DemoContext.newInstance();
-    protected static final QueryService queryService = QueryService.newBuilder()
-            .add(context)
-            .build();
-    protected static final CommandService commandService = CommandService.newBuilder()
-            .add(context)
-            .build();
+    protected static final Server server;
+    protected static final Client spineClient;
+
+    static {
+        BoundedContextBuilder demoContext = DemoContext.builder();
+        server = Server.inProcess(SERVER_NAME)
+                       .add(demoContext)
+                       .build();
+        try {
+            server.start();
+        } catch (IOException e) {
+            throw newIllegalStateException(e, "Unable to start Demo in-process server.");
+        }
+        spineClient = Client
+                .inProcess(SERVER_NAME)
+                .build();
+    }
+
     protected static final Supplier<DeliveryClient> client = memoize(DemoServlet::cloudRunClient);
 
     private static DeliveryClient cloudRunClient() {

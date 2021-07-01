@@ -6,7 +6,6 @@
 
 package io.spine.message.delivery.demo;
 
-import io.spine.logging.Logging;
 import io.spine.server.NodeId;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.DeliveryStrategy;
@@ -22,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @SuppressWarnings("serial")
 @WebServlet(name = "ReleaseShard", value = "/work-registry/release")
-final class ReleaseShard extends DemoServlet implements Logging {
+final class ReleaseShard extends DemoServlet {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
