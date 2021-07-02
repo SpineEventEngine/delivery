@@ -10,7 +10,7 @@ import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
 
 /**
- * Provides APIs that modify the Inbox state.
+ * Modifies the remote Inbox state.
  */
 public interface InboxModifier {
 

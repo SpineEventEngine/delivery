@@ -15,7 +15,7 @@ import io.spine.server.delivery.ShardIndex;
 import java.util.Optional;
 
 /**
- * Provides APIs query the Inbox state.
+ * Queries the remote Inbox state.
  */
 public interface InboxReader {
 
