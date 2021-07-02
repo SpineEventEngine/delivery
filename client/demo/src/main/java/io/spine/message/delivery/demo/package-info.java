@@ -7,4 +7,12 @@
 /**
  * Root package of the Message Delivery demo application.
  */
+@BoundedContext(DemoContext.contextName)
+@CheckReturnValue
+@ParametersAreNonnullByDefault
 package io.spine.message.delivery.demo;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+import io.spine.core.BoundedContext;
+
+import javax.annotation.ParametersAreNonnullByDefault;

@@ -7,4 +7,10 @@
 /**
  * Root package of the Message Delivery demo application.
  */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
 package io.spine.message.delivery.demo;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;
