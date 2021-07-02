@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 final class DeliveryBootstrapperTest {
 
     @Test
-    @DisplayName("be `NPE` safe")
+    @DisplayName("be `NPE`-safe")
     void beNpeSafe() {
         assertThrows(
                 NullPointerException.class,

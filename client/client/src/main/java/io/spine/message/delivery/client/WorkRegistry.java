@@ -6,6 +6,7 @@
 
 package io.spine.message.delivery.client;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Duration;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.event.ShardPickedUp;
@@ -64,7 +65,9 @@ public final class WorkRegistry implements ShardedWorkRegistry, Logging {
 
     @Override
     public Iterable<ShardIndex> releaseExpiredSessions(Duration inactivityPeriod) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        checkNotDefaultArg(inactivityPeriod);
+        _warn().log("Expired sessions releasing functionality is not yet implemented.");
+        return ImmutableList.of();
     }
 
     private static final class Session extends ShardProcessingSession {
