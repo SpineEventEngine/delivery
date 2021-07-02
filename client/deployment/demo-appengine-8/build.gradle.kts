@@ -10,6 +10,7 @@ plugins {
 
 //TODO:2021-06-30:yuri-sergiichuk: add ability to configure the project from a property file or
 // environment variable.
+// See https://github.com/SpineEventEngine/message-delivery/issues/6
 /** The GCP project ID used for deployment of the application. **/
 val gcpProject = "spine-dev"
 
