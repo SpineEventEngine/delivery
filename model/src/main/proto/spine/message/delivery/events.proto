@@ -84,7 +84,6 @@ message ShardReleased {
     google.protobuf.Timestamp when_released = 3 [(required) = true];
 }
 
-
 // Sharded work sessions that were picked up before the specified inactivity period were released.
 message ExpiredShardsReleased {
 
