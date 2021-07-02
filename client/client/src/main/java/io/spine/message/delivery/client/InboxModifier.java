@@ -6,14 +6,8 @@
 
 package io.spine.message.delivery.client;
 
-import io.spine.message.delivery.event.MessageRemoved;
-import io.spine.message.delivery.event.MessageWritten;
-import io.spine.message.delivery.event.MessagesRemoved;
-import io.spine.message.delivery.event.MessagesWritten;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
-
-import java.util.Optional;
 
 /**
  * Provides APIs that modify the Inbox state.
