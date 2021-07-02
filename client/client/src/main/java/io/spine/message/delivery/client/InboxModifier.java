@@ -21,22 +21,22 @@ import java.util.Optional;
 public interface InboxModifier {
 
     /**
-     * Tries to write a new {@code message} to the inbox.
+     * Writes a new {@code message} to the inbox.
      */
-    Optional<MessageWritten> writeMessage(InboxMessage message);
+    void writeMessage(InboxMessage message);
 
     /**
-     * Tries to write {@code messages} to the inbox.
+     * Writes {@code messages} to the inbox.
      */
-    Optional<MessagesWritten> writeMessages(ShardIndex shard, Iterable<InboxMessage> messages);
+    void writeMessages(ShardIndex shard, Iterable<InboxMessage> messages);
 
     /**
-     * Tries to remove a {@code message} from the inbox.
+     * Removes a {@code message} from the inbox.
      */
-    Optional<MessageRemoved> removeMessage(InboxMessage message);
+    void removeMessage(InboxMessage message);
 
     /**
-     * Tries to remove {@code messages} from the inbox.
+     * Removes {@code messages} from the inbox.
      */
-    Optional<MessagesRemoved> removeMessages(ShardIndex shard, Iterable<InboxMessage> messages);
+    void removeMessages(ShardIndex shard, Iterable<InboxMessage> messages);
 }

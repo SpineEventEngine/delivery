@@ -29,10 +29,6 @@ import io.spine.message.delivery.command.RemoveMessage;
 import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.command.WriteMessages;
-import io.spine.message.delivery.event.MessageRemoved;
-import io.spine.message.delivery.event.MessageWritten;
-import io.spine.message.delivery.event.MessagesRemoved;
-import io.spine.message.delivery.event.MessagesWritten;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.InboxMessage;
@@ -61,7 +57,6 @@ import static io.spine.util.Preconditions2.checkPositive;
  *
  * <p>Provides APIs for modifying and querying the remote state of the Message Delivery context.
  */
-@SuppressWarnings("OverlyCoupledClass")
 public final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
 
     private final Client client;
@@ -106,49 +101,43 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
     }
 
     @Override
-    public Optional<MessageWritten> writeMessage(InboxMessage message) {
+    public void writeMessage(InboxMessage message) {
         checkNotDefaultArg(message);
         WriteMessage writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        Optional<MessageWritten> result = post(writeMessage, MessageWritten.class);
-        return result;
+        post(writeMessage);
     }
 
     @Override
-    public Optional<MessagesWritten>
-    writeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
+    public void writeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
         checkNotDefaultArg(shard);
         checkNotNull(messages);
         WriteMessages writeMessages = WriteMessages.newBuilder()
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        Optional<MessagesWritten> result = post(writeMessages, MessagesWritten.class);
-        return result;
+        post(writeMessages);
     }
 
     @Override
-    public Optional<MessageRemoved> removeMessage(InboxMessage message) {
+    public void removeMessage(InboxMessage message) {
         checkNotDefaultArg(message);
         RemoveMessage removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        Optional<MessageRemoved> result = post(removeMessage, MessageRemoved.class);
-        return result;
+        post(removeMessage);
     }
 
     @Override
-    public Optional<MessagesRemoved>
-    removeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
+    public void removeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
         checkNotDefaultArg(shard);
         checkNotNull(messages);
         RemoveMessages removeMessages = RemoveMessages.newBuilder()
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        Optional<MessagesRemoved> result = post(removeMessages, MessagesRemoved.class);
-        return result;
+        post(removeMessages);
     }
 
     @Override

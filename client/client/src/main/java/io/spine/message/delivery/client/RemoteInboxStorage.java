@@ -65,10 +65,7 @@ public final class RemoteInboxStorage
     @SuppressWarnings("ReturnValueIgnored" /* It's OK to just throw the exception. */)
     public void write(InboxMessage message) {
         checkNotDefaultArg(message);
-        client().writeMessage(message)
-                .orElseThrow(
-                        () -> newIllegalStateException("Unable to write a message to the inbox.")
-                );
+        client().writeMessage(message);
     }
 
     @Override
@@ -83,10 +80,7 @@ public final class RemoteInboxStorage
             return;
         }
         ShardIndex shard = message.shardIndex();
-        client().writeMessages(shard, messages)
-                .orElseThrow(() -> newIllegalStateException(
-                        "Unable to write messages to the inbox shard `%s`.", shard
-                ));
+        client().writeMessages(shard, messages);
     }
 
     @Override
@@ -101,10 +95,7 @@ public final class RemoteInboxStorage
             return;
         }
         ShardIndex shard = message.shardIndex();
-        client().removeMessages(shard, messages)
-                .orElseThrow(() -> newIllegalStateException(
-                        "Unable to remove messages from inbox shard `%s`.", shard
-                ));
+        client().removeMessages(shard, messages);
     }
 
     @Override
