@@ -51,6 +51,10 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
+      - name: Prepare local server container
+        run: ./gradlew :server-cloud-run:jibDockerBuild
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Client
         run: |
           cd client
