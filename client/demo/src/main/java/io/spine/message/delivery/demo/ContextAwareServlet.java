@@ -42,11 +42,11 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * server to inheritors.
  */
 @SuppressWarnings("serial")
-abstract class DemoServlet extends HttpServlet implements Logging {
+abstract class ContextAwareServlet extends HttpServlet implements Logging {
 
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
-    protected static final Supplier<DeliveryClient> client = memoize(DemoServlet::cloudRunClient);
+    protected static final Supplier<DeliveryClient> client = memoize(ContextAwareServlet::cloudRunClient);
     protected static final String SERVER_NAME = "DemoServer";
     protected static final Server server;
     protected static final Client spineClient;

@@ -30,7 +30,7 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
  */
 @SuppressWarnings("serial")
 @WebServlet(name = "Greeter", value = "/greet")
-public final class GreeterServlet extends DemoServlet {
+public final class GreeterServlet extends ContextAwareServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {

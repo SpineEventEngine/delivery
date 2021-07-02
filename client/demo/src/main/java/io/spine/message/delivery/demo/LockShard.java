@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 @SuppressWarnings("serial")
 @WebServlet(name = "LockShard", value = "/work-registry/pickUp")
-public final class LockShard extends DemoServlet {
+public final class LockShard extends ContextAwareServlet {
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
