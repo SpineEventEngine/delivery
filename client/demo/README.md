@@ -1,4 +1,4 @@
-Demo Application
+Greeter Application
 ----------
 
 This Gradle module contains a demo Spine application deployed as App Engine 11

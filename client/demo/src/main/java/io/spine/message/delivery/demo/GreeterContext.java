@@ -15,15 +15,18 @@ import java.util.Random;
 /**
  * Represents the context of this demo application.
  */
-final class DemoContext {
+final class GreeterContext {
 
     private static final Random random = new SecureRandom();
-    static final String contextName = "Demo";
+    /**
+     * The name of this context.
+     */
+    static final String NAME = "Greeter";
 
     /**
      * Prevents instantiation.
      */
-    private DemoContext() {
+    private GreeterContext() {
     }
 
     /**
@@ -38,7 +41,7 @@ final class DemoContext {
      */
     static BoundedContextBuilder builder() {
         return BoundedContext
-                .singleTenant(contextName)
+                .singleTenant(NAME)
                 .add(new GreeterRepo(random));
     }
 }

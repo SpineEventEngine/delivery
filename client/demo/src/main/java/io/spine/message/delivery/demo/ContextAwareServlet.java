@@ -38,7 +38,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * An abstract base servlet for the demo Application.
  *
- * <p>Starts and configures {@link DemoContext demo} server and exposes a {@link Client} to the
+ * <p>Starts and configures {@link GreeterContext demo} server and exposes a {@link Client} to the
  * server to inheritors.
  */
 @SuppressWarnings("serial")
@@ -88,10 +88,10 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
     }
 
     /**
-     * Configures and starts the {@link DemoContext demo} server.
+     * Configures and starts the {@link GreeterContext demo} server.
      */
     private static Server startServer() {
-        BoundedContextBuilder demoContext = DemoContext.builder();
+        BoundedContextBuilder demoContext = GreeterContext.builder();
         Server server = Server.inProcess(SERVER_NAME)
                               .add(demoContext)
                               .build();

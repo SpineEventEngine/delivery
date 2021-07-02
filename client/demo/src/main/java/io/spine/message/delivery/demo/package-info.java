@@ -7,7 +7,7 @@
 /**
  * Root package of the Message Delivery demo application.
  */
-@BoundedContext(DemoContext.contextName)
+@BoundedContext(GreeterContext.NAME)
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.message.delivery.demo;
