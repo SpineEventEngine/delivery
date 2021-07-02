@@ -14,7 +14,6 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.CommandMessage;
 import io.spine.base.Error;
-import io.spine.base.EventMessage;
 import io.spine.client.Client;
 import io.spine.client.OrderBy;
 import io.spine.client.QueryFilter;
@@ -29,6 +28,7 @@ import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.rejection.Rejections;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageComparator;
@@ -139,7 +139,37 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        Optional<ShardPickedUp> result = post(pickUpShard, ShardPickedUp.class);
+        _trace().log(
+                "Posting `PickUpShard` command and waiting for a response event `ShardPickedUp`."
+        );
+        CompletableFuture<Optional<ShardPickedUp>> future = new CompletableFuture<>();
+        ImmutableSet<Subscription> subscriptions =
+                client.asGuest()
+                      .command(pickUpShard)
+                      .observe(ShardPickedUp.class, e -> {
+                          _trace().log(
+                                  "Received `ShardPickedUp` event in response " +
+                                          "for a `PickUpShard` command for shard `%s`.",
+                                  shard
+                          );
+                          future.complete(Optional.of(e));
+                      })
+                      .observe(Rejections.ShardAlreadyPickedUp.class, e -> {
+                          _trace().log(
+                                  "Received `ShardAlreadyPickedUp` rejection in response for " +
+                                          "a `PickUpShard` command for shard `%s`.",
+                                  shard
+                          );
+                          future.complete(Optional.empty());
+                      })
+                      .onServerError((msg, error) -> {
+                          logServerError(msg, error);
+                          future.complete(Optional.empty());
+                      })
+                      .onStreamingError(future::completeExceptionally)
+                      .post();
+        Optional<ShardPickedUp> result = future.join();
+        subscriptions.forEach(client.subscriptions()::cancel);
         return result;
     }
 
@@ -212,32 +242,6 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
               .command(command)
               .onServerError((msg, error) -> logServerError(command, error))
               .postAndForget();
-    }
-
-    private <C extends CommandMessage, E extends EventMessage> Optional<E>
-    post(C command, Class<E> event) {
-        _trace().log("Posting command `%s` and waiting for a response event `%s`.",
-                     command.getClass(), event);
-        CompletableFuture<Optional<E>> future = new CompletableFuture<>();
-        ImmutableSet<Subscription> subscriptions =
-                client.asGuest()
-                      .command(command)
-                      .observe(event, e -> {
-                          _trace().log(
-                                  "Received an event `%s` in response for a command `%s`.",
-                                  event, command.getClass()
-                          );
-                          future.complete(Optional.of(e));
-                      })
-                      .onServerError((msg, error) -> {
-                          logServerError(msg, error);
-                          future.complete(Optional.empty());
-                      })
-                      .onStreamingError(future::completeExceptionally)
-                      .post();
-        Optional<E> result = future.join();
-        subscriptions.forEach(client.subscriptions()::cancel);
-        return result;
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in non-related module. */)
