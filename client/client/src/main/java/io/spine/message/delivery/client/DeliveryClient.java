@@ -69,14 +69,6 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
     }
 
     /**
-     * Creates a new delivery client which connects to a local gRPC server on port {@code 8484}.
-     */
-    @VisibleForTesting
-    static DeliveryClient local() {
-        return create("127.0.0.1", 8484);
-    }
-
-    /**
      * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
      * and {@code port}.
      */
