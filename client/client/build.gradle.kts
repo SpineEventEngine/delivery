@@ -5,6 +5,7 @@
  */
 
 import io.spine.internal.dependency.Spine
+import io.spine.internal.dependency.Testcontainers
 
 plugins {
     spine
@@ -13,6 +14,8 @@ plugins {
 dependencies {
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)
+    testImplementation(Testcontainers.lib)
+    testImplementation(Testcontainers.junitJupiter)
 }
 
 // We're explicitly copying protos to ensure rejections are generated.
