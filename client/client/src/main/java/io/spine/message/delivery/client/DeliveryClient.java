@@ -9,10 +9,12 @@ package io.spine.message.delivery.client;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.CommandMessage;
+import io.spine.base.Error;
 import io.spine.base.EventMessage;
 import io.spine.client.Client;
 import io.spine.client.OrderBy;
@@ -32,7 +34,6 @@ import io.spine.message.delivery.event.MessageWritten;
 import io.spine.message.delivery.event.MessagesRemoved;
 import io.spine.message.delivery.event.MessagesWritten;
 import io.spine.message.delivery.event.ShardPickedUp;
-import io.spine.message.delivery.event.ShardReleased;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageComparator;
@@ -110,7 +111,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         WriteMessage writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        Optional<MessageWritten> result = postCommand(writeMessage, MessageWritten.class);
+        Optional<MessageWritten> result = post(writeMessage, MessageWritten.class);
         return result;
     }
 
@@ -123,7 +124,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        Optional<MessagesWritten> result = postCommand(writeMessages, MessagesWritten.class);
+        Optional<MessagesWritten> result = post(writeMessages, MessagesWritten.class);
         return result;
     }
 
@@ -133,7 +134,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         RemoveMessage removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        Optional<MessageRemoved> result = postCommand(removeMessage, MessageRemoved.class);
+        Optional<MessageRemoved> result = post(removeMessage, MessageRemoved.class);
         return result;
     }
 
@@ -146,7 +147,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        Optional<MessagesRemoved> result = postCommand(removeMessages, MessagesRemoved.class);
+        Optional<MessagesRemoved> result = post(removeMessages, MessagesRemoved.class);
         return result;
     }
 
@@ -158,20 +159,19 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        Optional<ShardPickedUp> result = postCommand(pickUpShard, ShardPickedUp.class);
+        Optional<ShardPickedUp> result = post(pickUpShard, ShardPickedUp.class);
         return result;
     }
 
     @Override
-    public Optional<ShardReleased> releaseShard(ShardIndex shard, NodeId worker) {
+    public void releaseShard(ShardIndex shard, NodeId worker) {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
         ReleaseShard releaseShard = ReleaseShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        Optional<ShardReleased> result = postCommand(releaseShard, ShardReleased.class);
-        return result;
+        post(releaseShard);
     }
 
     @Override
@@ -226,8 +226,16 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                      .map(InboxMessageHolder::getMessage);
     }
 
+    private <C extends CommandMessage> void post(C command) {
+        _trace().log("Posting command `%s`.", command.getClass());
+        client.asGuest()
+              .command(command)
+              .onServerError((msg, error) -> logServerError(command, error))
+              .postAndForget();
+    }
+
     private <C extends CommandMessage, E extends EventMessage> Optional<E>
-    postCommand(C command, Class<E> event) {
+    post(C command, Class<E> event) {
         _trace().log("Posting command `%s` and waiting for a response event `%s`.",
                      command.getClass(), event);
         CompletableFuture<Optional<E>> future = new CompletableFuture<>();
@@ -242,10 +250,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                           future.complete(Optional.of(e));
                       })
                       .onServerError((msg, error) -> {
-                          _trace().log(
-                                  "Server was not able to handle command `%s`: %s",
-                                  command.getClass(), error
-                          );
+                          logServerError(msg, error);
                           future.complete(Optional.empty());
                       })
                       .onStreamingError(future::completeExceptionally)
@@ -253,5 +258,13 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         Optional<E> result = future.join();
         subscriptions.forEach(client.subscriptions()::cancel);
         return result;
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in non-related module. */)
+    private <C extends Message> void logServerError(C message, Error error) {
+        _trace().log(
+                "Server was not able to handle command `%s`: %s",
+                message.getClass(), error
+        );
     }
 }
