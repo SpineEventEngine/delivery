@@ -6,7 +6,6 @@
 
 package io.spine.message.delivery;
 
-import com.google.common.base.Suppliers;
 import io.grpc.ManagedChannel;
 import io.spine.message.delivery.client.DeliveryClient;
 import io.spine.message.delivery.client.RemoteInboxStorage;
@@ -15,7 +14,10 @@ import io.spine.server.delivery.Delivery;
 import io.spine.server.delivery.DeliveryBuilder;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
+import java.util.function.Supplier;
+
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Suppliers.memoize;
 
 /**
  * Provides fluent API for building a {@link Delivery} backed by the Message Delivery Server and
@@ -51,9 +53,9 @@ public final class DeliveryBootstrapper {
      */
     public DeliveryBuilder init() {
         checkNotNull(channel, "The gRPC channel must not be `null`.");
-        DeliveryClient client = DeliveryClient.create(channel);
+        Supplier<DeliveryClient> client = () -> DeliveryClient.create(channel);
         return Delivery.newBuilder()
-                .setInboxStorage(new RemoteInboxStorage(Suppliers.ofInstance(client)))
-                .setWorkRegistry(new WorkRegistry(Suppliers.ofInstance(client)));
+                .setInboxStorage(new RemoteInboxStorage(memoize(client::get)))
+                .setWorkRegistry(new WorkRegistry(memoize(client::get)));
     }
 }

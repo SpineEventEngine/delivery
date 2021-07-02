@@ -35,7 +35,7 @@ public final class RemoteInboxStorage
         extends AbstractStorage<InboxMessageId, InboxMessage, InboxReadRequest>
         implements InboxStorage, Logging {
 
-    private final Supplier<InboxClient> clientSupplier;
+    private final Supplier<? extends InboxClient> clientSupplier;
     private @MonotonicNonNull InboxClient client;
 
     /**
@@ -43,7 +43,7 @@ public final class RemoteInboxStorage
      *
      * <p>The supplier is lazily evaluated and memoized.
      */
-    public RemoteInboxStorage(Supplier<InboxClient> clientSupplier) {
+    public RemoteInboxStorage(Supplier<? extends InboxClient> clientSupplier) {
         super(false);
         this.clientSupplier = checkNotNull(clientSupplier);
     }

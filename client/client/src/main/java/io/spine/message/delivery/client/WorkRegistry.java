@@ -27,12 +27,12 @@ import static io.spine.util.Preconditions2.checkNotDefaultArg;
  */
 public final class WorkRegistry implements ShardedWorkRegistry, Logging {
 
-    private final Supplier<SessionRegistryClient> client;
+    private final Supplier<? extends SessionRegistryClient> client;
 
     /**
      * Creates a new registry instance with the supplied {@code client}.
      */
-    public WorkRegistry(Supplier<SessionRegistryClient> client) {
+    public WorkRegistry(Supplier<? extends SessionRegistryClient> client) {
         this.client = checkNotNull(client);
     }
 

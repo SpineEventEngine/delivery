@@ -9,5 +9,5 @@ package io.spine.message.delivery.client;
 /**
  * A client for working with the inbox.
  */
-interface InboxClient extends InboxModifier, InboxReader {
+public interface InboxClient extends InboxModifier, InboxReader {
 }
