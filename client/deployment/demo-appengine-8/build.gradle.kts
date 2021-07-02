@@ -23,6 +23,7 @@ appengine {
         version = "2"
     }
     run {
+        // Exposes a debug port for the local AppEngine server debug sessions.
         jvmFlags = listOf(
             "-Xdebug",
             "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
