@@ -56,12 +56,15 @@ idea {
 
 dependencies {
     Protobuf.libs.forEach { implementation(it) }
-    implementation(Spine.base)
-    testImplementation(Spine.Test.base)
+    implementation(Spine.Stable.base)
+    testImplementation(Spine.Stable.Test.base)
 }
 
 modelCompiler {
     generateValidation = true
+    columns {
+        generate(true)
+    }
 
     interfaces {
         mark(messages().inFiles(suffix("commands.proto")), asType("io.spine.base.CommandMessage"))

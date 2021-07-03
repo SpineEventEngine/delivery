@@ -5,11 +5,13 @@
  */
 
 import io.spine.internal.dependency.Grpc
+import io.spine.internal.dependency.Log4j2
 import io.spine.internal.dependency.Spine
 
 dependencies {
-    runtimeOnly(Grpc.nettyShaded)
+    implementation(Log4j2.api)
     implementation(project(":model"))
     implementation(Spine.server)
     testImplementation(Spine.Test.server)
+    testRuntimeOnly(Grpc.nettyShaded)
 }

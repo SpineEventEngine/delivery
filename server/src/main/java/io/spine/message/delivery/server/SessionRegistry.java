@@ -43,6 +43,7 @@ final class SessionRegistry
         var worker = c.getWorker();
         _debug().log("Worker `%s` is picking up shard `%s`.", worker, shard);
         checkNotPickedUp();
+        _info().log("Shard `%s` is picked up by worker `%s`.", shard, worker);
         return ShardPickedUp.newBuilder()
                 .setShard(shard)
                 .setPickedBy(worker)
@@ -53,9 +54,12 @@ final class SessionRegistry
     private void checkNotPickedUp() throws ShardAlreadyPickedUp {
         var state = state();
         if (state.hasPickedBy()) {
+            var shard = id();
+            var worker = state.getPickedBy();
+            _debug().log("Shard `%s` is already picked up by `%s`.", worker, shard);
             throw ShardAlreadyPickedUp.newBuilder()
-                    .setShard(id())
-                    .setWorker(state.getPickedBy())
+                    .setShard(shard)
+                    .setWorker(worker)
                     .build();
         }
     }
@@ -72,6 +76,7 @@ final class SessionRegistry
         var worker = c.getWorker();
         _debug().log("Worker `%s` is releasing shard `%s`.", worker, shard);
         checkCanRelease(c);
+        _info().log("Shard `%s` is released by worker `%s`.", shard, worker);
         return ShardReleased.newBuilder()
                 .setShard(shard)
                 .setPickedBy(worker)
@@ -83,9 +88,13 @@ final class SessionRegistry
         var state = state();
         var currentWorker = state.getPickedBy();
         if (isDefault(currentWorker)) {
+            _debug().log("Shard `%s` is picked up. Nothing to release.", id());
             throw unableToRelease(c, shardNotPickedUp());
         }
-        if (!currentWorker.equals(c.getWorker())) {
+        var workerToPickUpShard = c.getWorker();
+        if (!currentWorker.equals(workerToPickUpShard)) {
+            _debug().log("Worker `%s` cannot release a shard `%s` picked up by `%s`.",
+                         workerToPickUpShard, id(), currentWorker);
             throw unableToRelease(c, shardPickedUpByOtherWorker(currentWorker));
         }
     }

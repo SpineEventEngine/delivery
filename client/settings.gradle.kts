@@ -5,11 +5,21 @@
  */
 
 rootProject.name = "message-delivery-client"
+include("client")
+include("demo")
 includeBuild("..") {
     dependencySubstitution {
         substitute(module("io.spine.message-delivery:model")).using(project(":model"))
     }
 }
+fun deployment(name: String) {
+    val path = ":${name}"
+    include(path)
+    project(path).projectDir = file("./deployment/${name}")
+}
+
+deployment("demo-appengine-8")
+deployment("demo-appengine-11")
 
 dependencyResolutionManagement {
     repositories {

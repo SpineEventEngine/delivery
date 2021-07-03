@@ -24,9 +24,38 @@ import "spine/server/server_environment.proto";
 
 // A new message was written to a particular Inbox.
 message MessageWritten {
+    option (is).java_type = "io.spine.message.delivery.WithInboxMessage";
 
     // The message that was written to the Inbox.
     spine.server.delivery.InboxMessage message = 1 [(required) = true];
+}
+
+// New messages were written to a particular Inbox.
+message MessagesWritten {
+
+    // A shard into which the messages are written.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
+    // The messages that were written to the Inbox.
+    repeated spine.server.delivery.InboxMessage message = 2 [(required) = true];
+}
+
+// A message was removed from a particular Inbox.
+message MessageRemoved {
+    option (is).java_type = "io.spine.message.delivery.WithInboxMessage";
+
+    // The message that was removed from the Inbox.
+    spine.server.delivery.InboxMessage message = 1 [(required) = true];
+}
+
+// Messages were removed from a particular Inbox.
+message MessagesRemoved {
+
+    // A shard from which the messages are removed.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
+    // The messages that were removed from the Inbox.
+    repeated spine.server.delivery.InboxMessage message = 2 [(required) = true];
 }
 
 // A shard has been picked up by a worker.
@@ -53,4 +82,27 @@ message ShardReleased {
 
     // The time when the `worker` has released the shard.
     google.protobuf.Timestamp when_released = 3 [(required) = true];
+}
+
+// Sharded work sessions that were picked up before the specified inactivity period were released.
+message ExpiredShardsReleased {
+
+    // The shards that were released if any.
+    repeated ExpiredShard shard = 1;
+}
+
+// The expired sharded work session .
+message ExpiredShard {
+
+    // The shard that was released.
+    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
+
+    // The node that released the shard.
+    spine.server.NodeId picked_by = 2 [(required) = true];
+
+    // The time when the `worker` has picked up the shard.
+    google.protobuf.Timestamp when_picked = 3 [(required) = true];
+
+    // The time when the `worker` has released the shard.
+    google.protobuf.Timestamp when_released = 4 [(required) = true];
 }

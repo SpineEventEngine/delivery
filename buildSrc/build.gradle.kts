@@ -32,6 +32,8 @@ dependencies {
     implementation("net.ltgt.gradle:gradle-errorprone-plugin:2.0.1")
     implementation("com.google.protobuf:protobuf-gradle-plugin:0.8.16")
     implementation("io.spine.tools:spine-mc-java:${spineBaseVersion}")
+    implementation("com.github.jengelman.gradle.plugins:shadow:6.1.0")
+    implementation("gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:3.1.1")
 }
 
 kotlinDslPluginOptions {

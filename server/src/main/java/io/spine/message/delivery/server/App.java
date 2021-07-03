@@ -18,12 +18,19 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.IOException;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * Starts the {@code Delivery} gRPC server.
  */
 public final class App implements Logging {
+
+    static {
+        useLog4j2FloggerBackend();
+    }
+
+    private static final int DEFAULT_PORT = 8484;
 
     /**
      * A host to use for gRPC server.
@@ -35,7 +42,7 @@ public final class App implements Logging {
      * A port to use for gRPC server.
      */
     @VisibleForTesting
-    static final int PORT = 8484;
+    static final int PORT = port();
 
     private @MonotonicNonNull DeliveryContext deliveryContext;
     private @MonotonicNonNull GrpcContainer grpc;
@@ -93,11 +100,34 @@ public final class App implements Logging {
                 .use(Delivery.localAsync());
     }
 
+    private static int port() {
+        @SuppressWarnings("CallToSystemGetenv")
+        String port = System.getenv("PORT");
+        if (isNullOrEmpty(port)) {
+            return DEFAULT_PORT;
+        }
+        return Integer.parseInt(port);
+    }
+
     /**
      * Creates and starts a gRPC server and serves {@code Delivery} bounded context.
      */
     public static void main(String[] args) {
         var app = new App();
         app.initAndStart();
+    }
+
+    /**
+     * Configures Log4j2 as the <a href="https://github.com/google/flogger">Flogger</a> backend.
+     */
+    @SuppressWarnings({
+            "DuplicateStringLiteralInspection", /* Used in non-related context. */
+            "AccessOfSystemProperties" /* There is no better way to configure Flogger. */
+    })
+    private static void useLog4j2FloggerBackend() {
+        System.setProperty(
+                "flogger.backend_factory",
+                "com.google.common.flogger.backend.log4j2.Log4j2BackendFactory#getInstance"
+        );
     }
 }

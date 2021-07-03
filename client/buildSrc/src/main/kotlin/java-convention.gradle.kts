@@ -21,13 +21,14 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 dependencies {
     errorprone(ErrorProne.core)
     errorprone(ErrorProne.Plugin.nullaway)
+    errorproneJavac("com.google.errorprone:javac:9+181-r4173-1")
     compileOnlyApi(CheckerFramework.annotations)
     compileOnlyApi(FindBugs.annotations)
     compileOnlyApi(JavaX.annotations)
