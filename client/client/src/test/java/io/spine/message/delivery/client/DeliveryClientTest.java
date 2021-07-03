@@ -16,6 +16,7 @@ import io.spine.server.delivery.ShardIndex;
 import io.spine.test.message.delivery.server.Something;
 import io.spine.type.TypeUrl;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -53,6 +54,11 @@ final class DeliveryClientTest {
     @BeforeEach
     void connectClient() {
         client = DeliveryClient.create(server.getHost(), server.getFirstMappedPort());
+    }
+
+    @AfterEach
+    void stopServer() {
+        server.stop();
     }
 
     @Nested
@@ -165,6 +171,7 @@ final class DeliveryClientTest {
             assertThat(readMessage)
                     .isEmpty();
         }
+
         @Test
         @DisplayName("find a message in the inbox")
         void find() {
