@@ -31,7 +31,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Supplier;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.common.base.Suppliers.memoize;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -64,14 +63,13 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         return DeliveryClient.create(deliveryServerChannel());
     }
 
-    @SuppressWarnings(
-            "CallToSystemGetenv" /* We do want to use env variable for the server location. */
-    )
     private static ManagedChannel deliveryServerChannel() {
-        String server = System.getenv("DELIVERY_SERVER");
-        if (isNullOrEmpty(server)) {
-            server = "dns:///message-delivery-server-irtlrrb2aq-uc.a.run.app:443";
-        }
+        /**
+         * A GCE instance.
+         *
+         * For load-testing purposes only.
+         */
+        String server = "104.197.194.64:8484";
         ServerEnvironment env = ServerEnvironment.instance();
         DeploymentType deployment = env.deploymentType();
         ThreadFactory threads;
@@ -84,6 +82,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         return ManagedChannelBuilder
                 .forTarget(server)
                 .executor(executor)
+                .usePlaintext()     // There is no SSL set up on GCE.
                 .build();
     }
 
