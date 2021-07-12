@@ -11,6 +11,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.Production;
 import io.spine.client.Client;
+import io.spine.core.TenantId;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.DeliveryBootstrapper;
 import io.spine.message.delivery.client.DeliveryClient;
@@ -19,9 +20,12 @@ import io.spine.server.DeploymentType;
 import io.spine.server.Server;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.Delivery;
-import io.spine.server.delivery.LocalDispatchingObserver;
+import io.spine.server.delivery.InboxMessage;
+import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.ShardObserver;
 import io.spine.server.delivery.UniformAcrossAllShards;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
+import io.spine.server.tenant.TenantAwareRunner;
 import io.spine.server.transport.memory.InMemoryTransportFactory;
 
 import javax.servlet.http.HttpServlet;
@@ -45,7 +49,10 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
 
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
-    protected static final Supplier<DeliveryClient> client = memoize(ContextAwareServlet::cloudRunClient);
+    private static final String GCE_INSTANCE_IP = "34.136.33.165";
+
+    protected static final Supplier<DeliveryClient> client =
+            memoize(ContextAwareServlet::remoteDelivery);
     protected static final String SERVER_NAME = "DemoServer";
     protected static final Server server;
     protected static final Client spineClient;
@@ -59,7 +66,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
                 .build();
     }
 
-    private static DeliveryClient cloudRunClient() {
+    private static DeliveryClient remoteDelivery() {
         return DeliveryClient.create(deliveryServerChannel());
     }
 
@@ -69,15 +76,8 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
      * <p>For load-testing purposes only.
      */
     private static ManagedChannel deliveryServerChannel() {
-        String server = "34.136.33.165:8484";
-        ServerEnvironment env = ServerEnvironment.instance();
-        DeploymentType deployment = env.deploymentType();
-        ThreadFactory threads;
-        if (deployment == DeploymentType.APPENGINE_CLOUD) {
-            threads = ThreadManager.currentRequestThreadFactory();
-        } else {
-            threads = Executors.defaultThreadFactory();
-        }
+        String server = GCE_INSTANCE_IP + ":8484";
+        ThreadFactory threads = threadFactory();
         ExecutorService executor = Executors.newCachedThreadPool(threads);
         return ManagedChannelBuilder
                 .forTarget(server)
@@ -114,11 +114,26 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
                             .init()
                             .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
                             .build();
-                    delivery.subscribe(new LocalDispatchingObserver());
+                    delivery.subscribe(new AsyncLocalObserver());
                     return delivery;
                 })
                 .use(InMemoryTransportFactory.newInstance())
                 .use(InMemoryStorageFactory.newInstance());
+    }
+
+    /**
+     * Returns the thread factory suitable for the runtime environment.
+     */
+    private static ThreadFactory threadFactory() {
+        ServerEnvironment env = ServerEnvironment.instance();
+        DeploymentType deployment = env.deploymentType();
+        ThreadFactory threads;
+        if (deployment == DeploymentType.APPENGINE_CLOUD) {
+            threads = ThreadManager.currentRequestThreadFactory();
+        } else {
+            threads = Executors.defaultThreadFactory();
+        }
+        return threads;
     }
 
     /**
@@ -133,5 +148,34 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
                 "flogger.backend_factory",
                 "com.google.common.flogger.backend.log4j2.Log4j2BackendFactory#getInstance"
         );
+    }
+
+    /**
+     * An asynchronous shard observer which runs on top of the {@linkplain #threadFactory()
+     * runtime-specific thread factory}.
+     */
+    private static final class AsyncLocalObserver implements ShardObserver {
+
+        private final ExecutorService executor;
+
+        private AsyncLocalObserver() {
+            executor = Executors.newCachedThreadPool(threadFactory());
+        }
+
+        @SuppressWarnings("FutureReturnValueIgnored")
+        @Override
+        public void onMessage(InboxMessage update) {
+            Delivery delivery = ServerEnvironment.instance()
+                    .delivery();
+            ShardIndex index = update.shardIndex();
+            executor.submit(() -> runDelivery(update, delivery, index));
+        }
+
+        @SuppressWarnings("HandleMethodResult")
+        private static void runDelivery(InboxMessage message, Delivery delivery, ShardIndex index) {
+            TenantId tenant = message.tenant();
+            TenantAwareRunner.with(tenant)
+                             .run(() -> delivery.deliverMessagesFrom(index));
+        }
     }
 }
