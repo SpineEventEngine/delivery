@@ -63,13 +63,13 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         return DeliveryClient.create(deliveryServerChannel());
     }
 
+    /**
+     * Connects directly to a GCE instance.
+     *
+     * <p>For load-testing purposes only.
+     */
     private static ManagedChannel deliveryServerChannel() {
-        /**
-         * A GCE instance.
-         *
-         * For load-testing purposes only.
-         */
-        String server = "104.197.194.64:8484";
+        String server = "34.136.33.165:8484";
         ServerEnvironment env = ServerEnvironment.instance();
         DeploymentType deployment = env.deploymentType();
         ThreadFactory threads;
