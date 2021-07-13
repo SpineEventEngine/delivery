@@ -7,8 +7,10 @@
 package io.spine.message.delivery.server;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.client.Client;
 import io.spine.environment.Production;
 import io.spine.logging.Logging;
+import io.spine.message.delivery.server.grpc.SessionRegistryService;
 import io.spine.server.GrpcContainer;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.Delivery;
@@ -44,8 +46,14 @@ public final class App implements Logging {
     @VisibleForTesting
     static final int PORT = port();
 
+    /**
+     * The name of the internal gRPC app container.
+     */
+    private static final String NAME = "Delivery App";
+
     private @MonotonicNonNull DeliveryContext deliveryContext;
-    private @MonotonicNonNull GrpcContainer grpc;
+    private @MonotonicNonNull GrpcContainer internalGrpc;
+    private @MonotonicNonNull GrpcContainer remoteGrpc;
 
     /**
      * Creates a new instance of the application.
@@ -60,28 +68,30 @@ public final class App implements Logging {
     void initAndStart() {
         initEnv();
         this.deliveryContext = DeliveryContext.newBuilder().build();
-        this.grpc = GrpcContainer
-                .atPort(PORT)
-                .addService(deliveryContext.commandService())
-                .addService(deliveryContext.queryService())
-                .addService(deliveryContext.subscriptionService())
-                .build();
-        grpc.addShutdownHook();
+        this.internalGrpc =
+                registerContext(GrpcContainer.inProcess(NAME), deliveryContext).build();
+        Client internalClient = Client.inProcess(NAME)
+                                      .build();
+        this.remoteGrpc =
+                registerContext(GrpcContainer.atPort(PORT), deliveryContext)
+                        .addService(new SessionRegistryService(internalClient))
+                        .build();
+        remoteGrpc.addShutdownHook();
         try {
-            grpc.start();
+            remoteGrpc.start();
         } catch (IOException e) {
             throw newIllegalStateException(e, "Unable to start gRPC server at %s:%d.", HOST, PORT);
         }
         _info().log("gRPC server started at %s:%d", HOST, PORT);
-        grpc.awaitTermination();
+        remoteGrpc.awaitTermination();
     }
 
-    /**
-     * Returns the configured {@code DeliveryContext}.
-     */
-    @VisibleForTesting
-    DeliveryContext deliveryContext() {
-        return deliveryContext;
+    private static GrpcContainer.Builder
+    registerContext(GrpcContainer.Builder container, DeliveryContext context) {
+        return container
+                .addService(context.commandService())
+                .addService(context.queryService())
+                .addService(context.subscriptionService());
     }
 
     /**
@@ -89,7 +99,7 @@ public final class App implements Logging {
      */
     @VisibleForTesting
     GrpcContainer grpc() {
-        return grpc;
+        return remoteGrpc;
     }
 
     private static void initEnv() {
