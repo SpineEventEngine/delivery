@@ -51,7 +51,6 @@ public final class App implements Logging {
      */
     private static final String NAME = "Delivery App";
 
-    private @MonotonicNonNull DeliveryContext deliveryContext;
     private @MonotonicNonNull GrpcContainer internalGrpc;
     private @MonotonicNonNull GrpcContainer remoteGrpc;
 
@@ -67,11 +66,11 @@ public final class App implements Logging {
     @VisibleForTesting
     void initAndStart() {
         initEnv();
-        this.deliveryContext = DeliveryContext.newBuilder().build();
+        var deliveryContext = DeliveryContext.newBuilder().build();
         this.internalGrpc =
                 registerContext(GrpcContainer.inProcess(NAME), deliveryContext).build();
-        Client internalClient = Client.inProcess(NAME)
-                                      .build();
+        var internalClient = Client.inProcess(NAME)
+                                   .build();
         this.remoteGrpc =
                 registerContext(GrpcContainer.atPort(PORT), deliveryContext)
                         .addService(new SessionRegistryService(internalClient))
@@ -79,11 +78,23 @@ public final class App implements Logging {
         remoteGrpc.addShutdownHook();
         try {
             remoteGrpc.start();
+            _info().log("Remote gRPC server started at port `%d`.", PORT);
         } catch (IOException e) {
-            throw newIllegalStateException(e, "Unable to start gRPC server at %s:%d.", HOST, PORT);
+            throw newIllegalStateException(
+                    e, "Unable to start remote gRPC server at port `%d`.", PORT
+            );
         }
-        _info().log("gRPC server started at %s:%d", HOST, PORT);
+        internalGrpc.addShutdownHook();
+        try {
+            internalGrpc.start();
+            _info().log("Internal gRPC started as in-process server with name `%s`.", NAME);
+        } catch (IOException e) {
+            throw newIllegalStateException(
+                    e, "Unable to start internal gRPC server with name `%s`.", NAME
+            );
+        }
         remoteGrpc.awaitTermination();
+        internalGrpc.awaitTermination();
     }
 
     private static GrpcContainer.Builder
