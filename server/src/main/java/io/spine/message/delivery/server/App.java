@@ -106,11 +106,19 @@ public final class App implements Logging {
     }
 
     /**
-     * Returns the associated gRPC server container.
+     * Returns the associated remote gRPC server container.
      */
     @VisibleForTesting
-    GrpcContainer grpc() {
+    GrpcContainer remoteGrpc() {
         return remoteGrpc;
+    }
+
+    /**
+     * Returns the associated internal gRPC server container.
+     */
+    @VisibleForTesting
+    GrpcContainer internalGrpc() {
+        return internalGrpc;
     }
 
     private static void initEnv() {
