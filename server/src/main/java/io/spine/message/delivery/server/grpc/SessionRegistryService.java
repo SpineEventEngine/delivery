@@ -42,6 +42,7 @@ public final class SessionRegistryService
      * {@link io.spine.message.delivery.server.DeliveryContext DeliveryContext}.
      */
     public SessionRegistryService(Client client) {
+        super();
         this.client = checkNotNull(client);
     }
 
