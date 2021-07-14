@@ -21,7 +21,7 @@ dependencies {
 appengine {
     deploy {
         projectId = gcpProject
-        version = "2"
+        version = "3"
     }
     run {
         // Exposes a debug port for the local AppEngine server debug sessions.

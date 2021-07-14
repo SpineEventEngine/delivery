@@ -45,7 +45,7 @@ tasks.withType<ShadowJar> {
 appengine {
     deploy {
         projectId = gcpProject
-        version = "2"
+        version = "3"
     }
     stage {
         setArtifact(file("${uberJarFolder}/${uberJarName}.jar"))
