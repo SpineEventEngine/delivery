@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) 2000-2021 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery.grpc";
+option java_outer_classname = "ShardSessionRegistryServiceProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "spine/message/delivery/commands.proto";
+import "spine/message/delivery/events.proto";
+
+
+// A service for working with the `ShardSessionRegistry` bypassing Spine's `CommandService`.
+service ShardSessionRegistryService {
+
+    // Picks up the shard for processing.
+    rpc PickShard(PickUpShard) returns (ShardPickedUp);
+}

@@ -7,17 +7,16 @@
 package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import io.spine.base.CommandMessage;
 import io.spine.base.Error;
 import io.spine.client.Client;
 import io.spine.client.OrderBy;
 import io.spine.client.QueryFilter;
-import io.spine.client.Subscription;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.InboxMessageHolder.Column;
@@ -28,7 +27,8 @@ import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.ShardPickedUp;
-import io.spine.message.delivery.rejection.Rejections;
+import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
+import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageComparator;
@@ -38,7 +38,6 @@ import io.spine.server.delivery.ShardIndex;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -59,12 +58,14 @@ import static io.spine.util.Preconditions2.checkPositive;
 public final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
 
     private final Client client;
+    private final ShardSessionRegistryServiceBlockingStub sessionRegistry;
 
     private DeliveryClient(ManagedChannel channel) {
         client = Client
                 .usingChannel(channel)
                 .withGuestId("DeliveryClient")
                 .build();
+        sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(channel);
     }
 
     /**
@@ -142,35 +143,13 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         _trace().log(
                 "Posting `PickUpShard` command and waiting for a response event `ShardPickedUp`."
         );
-        CompletableFuture<Optional<ShardPickedUp>> future = new CompletableFuture<>();
-        ImmutableSet<Subscription> subscriptions =
-                client.asGuest()
-                      .command(pickUpShard)
-                      .observe(ShardPickedUp.class, e -> {
-                          _trace().log(
-                                  "Received `ShardPickedUp` event in response " +
-                                          "for a `PickUpShard` command for shard `%s`.",
-                                  shard
-                          );
-                          future.complete(Optional.of(e));
-                      })
-                      .observe(Rejections.ShardAlreadyPickedUp.class, e -> {
-                          _trace().log(
-                                  "Received `ShardAlreadyPickedUp` rejection in response for " +
-                                          "a `PickUpShard` command for shard `%s`.",
-                                  shard
-                          );
-                          future.complete(Optional.empty());
-                      })
-                      .onServerError((msg, error) -> {
-                          logServerError(msg, error);
-                          future.complete(Optional.empty());
-                      })
-                      .onStreamingError(future::completeExceptionally)
-                      .post();
-        Optional<ShardPickedUp> result = future.join();
-        subscriptions.forEach(client.subscriptions()::cancel);
-        return result;
+        try {
+            ShardPickedUp shardPickedUp = sessionRegistry.pickShard(pickUpShard);
+            return Optional.of(shardPickedUp);
+        } catch (StatusRuntimeException e) {
+            _debug().log("Unable to pick up shard `%s`.", shard);
+        }
+        return Optional.empty();
     }
 
     @Override
