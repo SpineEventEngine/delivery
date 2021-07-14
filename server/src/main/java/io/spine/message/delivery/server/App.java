@@ -19,8 +19,10 @@ import io.spine.server.transport.memory.InMemoryTransportFactory;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Suppliers.memoize;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -74,17 +76,22 @@ public final class App implements Logging {
     @VisibleForTesting
     public void initAndStart() {
         initEnv();
-        var deliveryContext = DeliveryContext.newBuilder().build();
+        Supplier<Client> internalClient = memoize(
+                () -> Client.inProcess(NAME)
+                            .build()
+        );
+        var deliveryContext = DeliveryContext.newBuilder()
+                .contextClient(internalClient)
+                .build();
         this.internalGrpc = startInternalGrpc(deliveryContext);
-        this.remoteGrpc = startRemoteGrpc(deliveryContext);
+        this.remoteGrpc = startRemoteGrpc(deliveryContext, internalClient);
 
         remoteGrpc.awaitTermination();
         internalGrpc.awaitTermination();
     }
 
-    private GrpcContainer startRemoteGrpc(DeliveryContext deliveryContext) {
-        var internalClient = Client.inProcess(NAME)
-                                   .build();
+    private GrpcContainer
+    startRemoteGrpc(DeliveryContext deliveryContext, Supplier<Client> internalClient) {
         var remoteGrpc =
                 registerContext(GrpcContainer.atPort(PORT), deliveryContext)
                         .addService(new SessionRegistryService(internalClient))

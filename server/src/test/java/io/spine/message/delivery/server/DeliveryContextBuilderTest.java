@@ -28,6 +28,9 @@ final class DeliveryContextBuilderTest {
     @DisplayName("initialize `BoundedContext`")
     void initContext() {
         var boundedContext = DeliveryContext.newBuilder()
+                .contextClient(() -> {
+                    throw new IllegalStateException("The client must not be called in this test.");
+                })
                 .context()
                 .build();
         assertThat(boundedContext.hasEntitiesWithState(InboxMessageHolder.class))

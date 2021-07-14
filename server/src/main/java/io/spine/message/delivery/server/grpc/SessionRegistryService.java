@@ -23,6 +23,7 @@ import io.spine.message.delivery.rejection.ShardAlreadyPickedUp;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.nullToEmpty;
@@ -43,9 +44,9 @@ public final class SessionRegistryService
      * Creates a new service which uses supplied {@code client} to talk to the
      * {@link io.spine.message.delivery.server.DeliveryContext DeliveryContext}.
      */
-    public SessionRegistryService(Client client) {
+    public SessionRegistryService(Supplier<Client> client) {
         super();
-        this.client = checkNotNull(client);
+        this.client = checkNotNull(client.get());
     }
 
     @Override
