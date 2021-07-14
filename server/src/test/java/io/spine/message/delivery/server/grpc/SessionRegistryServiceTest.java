@@ -8,6 +8,7 @@ package io.spine.message.delivery.server.grpc;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import io.spine.client.Client;
 import io.spine.environment.Environment;
 import io.spine.message.delivery.command.PickUpShard;
@@ -30,6 +31,7 @@ import java.time.Duration;
 
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`SessionRegistryService` should")
 final class SessionRegistryServiceTest {
@@ -88,26 +90,19 @@ final class SessionRegistryServiceTest {
                 .comparingExpectedFieldsOnly()
                 .isEqualTo(expected);
     }
-//
-//    @Test
-//    @DisplayName("release a previously picked up shard")
-//    void releaseShard() {
-//        Optional<ShardPickedUp> result = client.pickUpShard(shard, worker);
-//        assertThat(result)
-//                .isPresent();
-//        assertDoesNotThrow(() -> client.releaseShard(shard, worker));
-//    }
-//
-//    @Test
-//    @DisplayName("do not pick up a shard for delivery if one is already picked up")
-//    void notPickUpShard() {
-//        Optional<ShardPickedUp> firstAttempt = client.pickUpShard(shard, worker);
-//        assertThat(firstAttempt)
-//                .isPresent();
-//        Optional<ShardPickedUp> secondAttempt = client.pickUpShard(shard, worker);
-//        assertThat(secondAttempt)
-//                .isEmpty();
-//    }
+
+    @Test
+    @DisplayName("do not pick up a shard for delivery if one is already picked up")
+    void notPickUpShard() {
+        var request = PickUpShard.newBuilder()
+                .setShard(shard)
+                .setWorker(worker)
+                .vBuild();
+        var firstAttempt = sessionRegistry.pickShard(request);
+        assertThat(firstAttempt)
+                .isNotEqualToDefaultInstance();
+        assertThrows(StatusRuntimeException.class, () -> sessionRegistry.pickShard(request));
+    }
 
     private static ManagedChannel localServer() {
         return ManagedChannelBuilder
