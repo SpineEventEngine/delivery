@@ -11,6 +11,7 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import io.spine.base.CommandMessage;
 import io.spine.base.Error;
 import io.spine.client.Client;
@@ -145,8 +146,8 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         try {
             ShardPickedUp shardPickedUp = sessionRegistry.pickShard(pickUpShard);
             return Optional.of(shardPickedUp);
-        } catch (RuntimeException e) {
-            _info().log("Unable to pick up shard `%s`.", shard);
+        } catch (StatusRuntimeException e) {
+            _debug().log("Unable to pick up shard `%s`.", shard);
         }
         return Optional.empty();
     }
