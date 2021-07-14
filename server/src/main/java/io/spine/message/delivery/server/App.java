@@ -38,13 +38,13 @@ public final class App implements Logging {
      * A host to use for gRPC server.
      */
     @VisibleForTesting
-    static final String HOST = "127.0.0.1";
+    public static final String HOST = "127.0.0.1";
 
     /**
      * A port to use for gRPC server.
      */
     @VisibleForTesting
-    static final int PORT = port();
+    public static final int PORT = port();
 
     /**
      * The name of the internal gRPC app container.
@@ -57,14 +57,14 @@ public final class App implements Logging {
     /**
      * Creates a new instance of the application.
      */
-    App() {
+    public App() {
     }
 
     /**
      * Initializes the application server environment and starts the gRPC container.
      */
     @VisibleForTesting
-    void initAndStart() {
+    public void initAndStart() {
         initEnv();
         var deliveryContext = DeliveryContext.newBuilder().build();
         this.internalGrpc =
@@ -109,7 +109,7 @@ public final class App implements Logging {
      * Returns the associated remote gRPC server container.
      */
     @VisibleForTesting
-    GrpcContainer remoteGrpc() {
+    public GrpcContainer remoteGrpc() {
         return remoteGrpc;
     }
 
@@ -117,7 +117,7 @@ public final class App implements Logging {
      * Returns the associated internal gRPC server container.
      */
     @VisibleForTesting
-    GrpcContainer internalGrpc() {
+    public GrpcContainer internalGrpc() {
         return internalGrpc;
     }
 

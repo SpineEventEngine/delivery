@@ -6,10 +6,113 @@
 
 package io.spine.message.delivery.server.grpc;
 
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+import io.spine.client.Client;
+import io.spine.environment.Environment;
+import io.spine.message.delivery.command.PickUpShard;
+import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
+import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
+import io.spine.message.delivery.server.App;
+import io.spine.server.NodeId;
+import io.spine.server.ServerEnvironment;
+import io.spine.server.delivery.DeliveryStrategy;
+import io.spine.server.delivery.ShardIndex;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
+
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 
 @DisplayName("`SessionRegistryService` should")
 final class SessionRegistryServiceTest {
 
-    //TODO:2021-07-13:yuri-sergiichuk: add tests.
+    private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
+    private final NodeId worker = NodeId.newBuilder()
+            .setValue(SessionRegistryServiceTest.class.getName())
+            .vBuild();
+    private final App app = new App();
+    private @MonotonicNonNull Client client;
+    private @MonotonicNonNull ShardSessionRegistryServiceBlockingStub sessionRegistry;
+
+    @AfterAll
+    static void resetEnvs() {
+        Environment.instance().reset();
+        ServerEnvironment.instance().reset();
+    }
+
+    @BeforeEach
+    void startApp() {
+        var appThread = new Thread(app::initAndStart);
+        appThread.start();
+        sleepUninterruptibly(Duration.ofSeconds(3)); // allow the server to start.
+    }
+
+    @BeforeEach
+    void setupClients() {
+        var localServer = localServer();
+        client = Client
+                .usingChannel(localServer)
+                .build();
+        sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(localServer);
+    }
+
+    @AfterEach
+    void shutdownApp() {
+        app.remoteGrpc()
+           .shutdownNowAndWait();
+        app.internalGrpc()
+           .shutdownNowAndWait();
+    }
+
+    @Test
+    @DisplayName("pick up a shard")
+    void pickUpShard() {
+        var request = PickUpShard.newBuilder()
+                .setShard(shard)
+                .setWorker(worker)
+                .vBuild();
+        var expected = ShardPickedUp.newBuilder()
+                .setShard(shard)
+                .setPickedBy(worker)
+                .buildPartial();
+        var response = sessionRegistry.pickShard(request);
+        assertThat(response)
+                .comparingExpectedFieldsOnly()
+                .isEqualTo(expected);
+    }
+//
+//    @Test
+//    @DisplayName("release a previously picked up shard")
+//    void releaseShard() {
+//        Optional<ShardPickedUp> result = client.pickUpShard(shard, worker);
+//        assertThat(result)
+//                .isPresent();
+//        assertDoesNotThrow(() -> client.releaseShard(shard, worker));
+//    }
+//
+//    @Test
+//    @DisplayName("do not pick up a shard for delivery if one is already picked up")
+//    void notPickUpShard() {
+//        Optional<ShardPickedUp> firstAttempt = client.pickUpShard(shard, worker);
+//        assertThat(firstAttempt)
+//                .isPresent();
+//        Optional<ShardPickedUp> secondAttempt = client.pickUpShard(shard, worker);
+//        assertThat(secondAttempt)
+//                .isEmpty();
+//    }
+
+    private static ManagedChannel localServer() {
+        return ManagedChannelBuilder
+                .forAddress(App.HOST, App.PORT)
+                .usePlaintext()
+                .build();
+    }
 }
