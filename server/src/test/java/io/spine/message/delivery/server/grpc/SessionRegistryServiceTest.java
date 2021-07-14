@@ -9,7 +9,6 @@ package io.spine.message.delivery.server.grpc;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
-import io.spine.client.Client;
 import io.spine.environment.Environment;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.event.ShardPickedUp;
@@ -41,7 +40,6 @@ final class SessionRegistryServiceTest {
             .setValue(SessionRegistryServiceTest.class.getName())
             .vBuild();
     private final App app = new App();
-    private @MonotonicNonNull Client client;
     private @MonotonicNonNull ShardSessionRegistryServiceBlockingStub sessionRegistry;
 
     @AfterAll
@@ -60,9 +58,6 @@ final class SessionRegistryServiceTest {
     @BeforeEach
     void setupClients() {
         var localServer = localServer();
-        client = Client
-                .usingChannel(localServer)
-                .build();
         sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(localServer);
     }
 
