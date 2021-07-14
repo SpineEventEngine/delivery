@@ -28,6 +28,7 @@ import "spine/server/server_environment.proto";
 //
 message ShardSessionRegistry {
     option (entity).kind = AGGREGATE;
+    option (entity).visibility = QUERY;
 
     // The index of the shard this registry is guarding.
     spine.server.delivery.ShardIndex id = 1;
