@@ -39,6 +39,6 @@ final class ArmyGreetPolicy extends AbstractCommander {
     }
 
     private static String soliderName(String armyId, int soliderIndex) {
-        return "[Army `" + armyId + "`] Solider #" + soliderIndex;
+        return "[Army `" + armyId + "`] Soldier #" + soliderIndex;
     }
 }
