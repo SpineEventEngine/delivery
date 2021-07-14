@@ -49,7 +49,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
 
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
-    private static final String GCE_INSTANCE_IP = "34.136.33.165";
+    private static final String GCE_SERVER = "message-delivery-server.c.spine-dev.internal";
 
     protected static final Supplier<DeliveryClient> client =
             memoize(ContextAwareServlet::remoteDelivery);
@@ -76,7 +76,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
      * <p>For load-testing purposes only.
      */
     private static ManagedChannel deliveryServerChannel() {
-        String server = GCE_INSTANCE_IP + ":8484";
+        String server = "dns:///" + GCE_SERVER + ":8484";
         ThreadFactory threads = threadFactory();
         ExecutorService executor = Executors.newCachedThreadPool(threads);
         return ManagedChannelBuilder
