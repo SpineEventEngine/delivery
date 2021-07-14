@@ -48,7 +48,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 @SuppressWarnings("serial")
 abstract class ContextAwareServlet extends HttpServlet implements Logging {
 
-    private static final FluentLogger logger = Logging.loggerFor(ContextAwareServlet.class);
+    private static final FluentLogger logger;
 
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
@@ -62,6 +62,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
 
     static {
         useLog4j2FloggerBackend();
+        logger = Logging.loggerFor(ContextAwareServlet.class);
         configureEnv();
         server = startServer();
         spineClient = Client
