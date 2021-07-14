@@ -9,6 +9,7 @@ package io.spine.message.delivery.server.grpc;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
 import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import io.spine.base.Error;
 import io.spine.client.Client;
@@ -24,6 +25,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.nullToEmpty;
 import static io.grpc.Status.fromCode;
 import static io.grpc.Status.fromThrowable;
 
@@ -83,7 +85,9 @@ public final class SessionRegistryService
                           latch.countDown();
                       })
                       .onStreamingError((error) -> {
-                          responseObserver.onError(fromThrowable(error).asException());
+                          if (!ignoreCancelledStream(error)) {
+                              responseObserver.onError(fromThrowable(error).asException());
+                          }
                           latch.countDown();
                       })
                       .post();
@@ -93,6 +97,21 @@ public final class SessionRegistryService
             throw new IllegalStateException(e);
         }
         subscriptions.forEach(client.subscriptions()::cancel);
+    }
+
+    private boolean ignoreCancelledStream(Throwable error) {
+        if (!(error instanceof StatusRuntimeException)) {
+            return false;
+        }
+        Status status = ((StatusRuntimeException) error).getStatus();
+        if (Status.Code.CANCELLED != status.getCode()) {
+            return false;
+        }
+        if (nullToEmpty(error.getMessage()).contains("without error")) {
+            _trace().log("Stream is cancelled without errors.");
+            return true;
+        }
+        return false;
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in non-related module. */)
