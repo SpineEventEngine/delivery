@@ -41,6 +41,8 @@ public final class GreetArmyServlet extends ContextAwareServlet {
 
         long startMillis = System.currentTimeMillis();
         CountDownLatch greeted = new CountDownLatch(howManySoldiers);
+        // todo: We should subscribe to `SaidHello` event separately.
+        //  Subscribing as done below doesn't work.
         ImmutableSet<Subscription> subscriptions = spineClient
                 .asGuest()
                 .command(greetAnArmy)
