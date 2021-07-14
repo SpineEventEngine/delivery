@@ -12,4 +12,7 @@
     <basic-scaling>
         <max-instances>1</max-instances>
     </basic-scaling>
+    <vpc-access-connector>
+        <name>projects/spine-dev/locations/us-central1/connectors/app-engine-test-connector</name>
+    </vpc-access-connector>
 </appengine-web-app>

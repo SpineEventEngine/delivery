@@ -18,3 +18,5 @@ handlers:
     script: unused
     login: optional
     secure: optional
+vpc_access_connector:
+  name: "projects/spine-dev/locations/us-central1/connectors/app-engine-test-connector"
