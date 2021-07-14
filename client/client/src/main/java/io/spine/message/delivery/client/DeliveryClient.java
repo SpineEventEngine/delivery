@@ -152,7 +152,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
             ShardPickedUp shardPickedUp = sessionRegistry.pickShard(pickUpShard);
             return Optional.of(shardPickedUp);
         } catch (StatusRuntimeException e) {
-            _debug().log("Unable to pick up shard `%s`.", shard);
+            _trace().log("Unable to pick up shard `%s`: %s.", shard, e.getStatus());
         }
         return Optional.empty();
     }
