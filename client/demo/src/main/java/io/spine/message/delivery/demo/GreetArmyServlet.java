@@ -16,6 +16,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -34,21 +35,20 @@ public final class GreetArmyServlet extends ContextAwareServlet {
         @SuppressWarnings("MagicNumber") int howManySoldiers = 1000;
         _info().log("Today's army count is %d.", howManySoldiers);
 
-        GreetAnArmy greetAnArmy =
-                GreetAnArmy.newBuilder()
-                        .setHowManySoldiers(howManySoldiers)
-                        .vBuild();
+        GreetAnArmy greetAnArmy = GreetAnArmy.newBuilder()
+                .setHowManySoldiers(howManySoldiers)
+                .vBuild();
 
         long startMillis = System.currentTimeMillis();
         CountDownLatch greeted = new CountDownLatch(howManySoldiers);
-        @SuppressWarnings("unused") ImmutableSet<Subscription> subscriptions = spineClient
+        ImmutableSet<Subscription> subscriptions = spineClient
                 .asGuest()
                 .command(greetAnArmy)
                 .observe(SaidHello.class, e -> {
                     String greeting = e.getGreeting();
                     _info().log("One of the soldiers was greeted: `%s`", greeting);
                     greeted.countDown();
-                    if(greeted.getCount() == 0) {
+                    if (greeted.getCount() == 0) {
                         logPerformance(howManySoldiers, startMillis);
                     }
                 })
@@ -57,10 +57,21 @@ public final class GreetArmyServlet extends ContextAwareServlet {
                             "Server was not able to `%s`: %s",
                             msg.getClass(), error
                     );
-                    throw newIllegalStateException("Something went terribly wrong: %s.",
-                                                   Json.toCompactJson(error));
+                    throw newIllegalStateException(
+                            "Something went terribly wrong: %s.", Json.toCompactJson(error)
+                    );
                 })
                 .post();
+        try {
+            _debug().log("Waiting the army to be greeted.");
+            greeted.await(10, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            throw newIllegalStateException(
+                    e, "Hanged while waiting for the army to be greeted greeting :-("
+            );
+        }
+        _debug().log("Unsubscribing from the greeting updates.");
+        subscriptions.forEach(spineClient.subscriptions()::cancel);
     }
 
     private void logPerformance(int howManySoldiers, long startMillis) {
@@ -69,6 +80,5 @@ public final class GreetArmyServlet extends ContextAwareServlet {
         long perSoldier = durationMillis / howManySoldiers;
         _info().log("Army was greeted for %d ms. That's about %d ms per soldier.",
                     durationMillis, perSoldier);
-        _debug().log("Unsubscribing from army updates.");
     }
 }
