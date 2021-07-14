@@ -61,17 +61,31 @@ public final class App implements Logging {
     }
 
     /**
+     * Creates and starts a gRPC server and serves {@code Delivery} bounded context.
+     */
+    public static void main(String[] args) {
+        var app = new App();
+        app.initAndStart();
+    }
+
+    /**
      * Initializes the application server environment and starts the gRPC container.
      */
     @VisibleForTesting
     public void initAndStart() {
         initEnv();
         var deliveryContext = DeliveryContext.newBuilder().build();
-        this.internalGrpc =
-                registerContext(GrpcContainer.inProcess(NAME), deliveryContext).build();
+        this.internalGrpc = startInternalGrpc(deliveryContext);
+        this.remoteGrpc = startRemoteGrpc(deliveryContext);
+
+        remoteGrpc.awaitTermination();
+        internalGrpc.awaitTermination();
+    }
+
+    private GrpcContainer startRemoteGrpc(DeliveryContext deliveryContext) {
         var internalClient = Client.inProcess(NAME)
                                    .build();
-        this.remoteGrpc =
+        var remoteGrpc =
                 registerContext(GrpcContainer.atPort(PORT), deliveryContext)
                         .addService(new SessionRegistryService(internalClient))
                         .build();
@@ -84,6 +98,12 @@ public final class App implements Logging {
                     e, "Unable to start remote gRPC server at port `%d`.", PORT
             );
         }
+        return remoteGrpc;
+    }
+
+    private GrpcContainer startInternalGrpc(DeliveryContext deliveryContext) {
+        var internalGrpc =
+                registerContext(GrpcContainer.inProcess(NAME), deliveryContext).build();
         internalGrpc.addShutdownHook();
         try {
             internalGrpc.start();
@@ -93,8 +113,7 @@ public final class App implements Logging {
                     e, "Unable to start internal gRPC server with name `%s`.", NAME
             );
         }
-        remoteGrpc.awaitTermination();
-        internalGrpc.awaitTermination();
+        return internalGrpc;
     }
 
     private static GrpcContainer.Builder
@@ -136,14 +155,6 @@ public final class App implements Logging {
             return DEFAULT_PORT;
         }
         return Integer.parseInt(port);
-    }
-
-    /**
-     * Creates and starts a gRPC server and serves {@code Delivery} bounded context.
-     */
-    public static void main(String[] args) {
-        var app = new App();
-        app.initAndStart();
     }
 
     /**
