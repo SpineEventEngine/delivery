@@ -16,3 +16,10 @@ message SayHello {
     // The name of the person whom we greet.
     string name = 1 [(required) = true];
 }
+
+// Greets the whole army.
+message GreetAnArmy {
+
+    // The number of soldiers in an army.
+    int32 how_many_soldiers = 1 [(required) = true];
+}

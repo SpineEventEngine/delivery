@@ -49,12 +49,15 @@ public final class GreeterServlet extends ContextAwareServlet {
                 .setName(personName)
                 .vBuild();
         CountDownLatch greeted = new CountDownLatch(1);
+        long startTime = System.currentTimeMillis();
         ImmutableSet<Subscription> subscriptions = spineClient
                 .asGuest()
                 .command(sayHello)
                 .observe(SaidHello.class, e -> {
+                    long endTime = System.currentTimeMillis();
                     String greeting = e.getGreeting();
-                    _info().log("Said `%s` to `%s`.", greeting, personName);
+                    _info().log("Said `%s` to `%s` in %d ms.",
+                                greeting, personName, (endTime - startTime));
                     try {
                         resp.setContentType("text/plain");
                         resp.getWriter()
@@ -70,7 +73,7 @@ public final class GreeterServlet extends ContextAwareServlet {
                 })
                 .onServerError((msg, error) -> {
                     _trace().log(
-                            "Server was not able to handle command `%s`: %s",
+                            "Server was not able to handle the command `%s`: %s",
                             msg.getClass(), error
                     );
                     greeted.countDown();
