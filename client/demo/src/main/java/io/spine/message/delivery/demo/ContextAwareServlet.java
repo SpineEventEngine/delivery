@@ -7,6 +7,7 @@
 package io.spine.message.delivery.demo;
 
 import com.google.appengine.api.ThreadManager;
+import com.google.common.flogger.FluentLogger;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.Production;
@@ -46,6 +47,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  */
 @SuppressWarnings("serial")
 abstract class ContextAwareServlet extends HttpServlet implements Logging {
+
+    private static final FluentLogger logger = Logging.loggerFor(ContextAwareServlet.class);
 
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
@@ -106,6 +109,8 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
      * Configures the application {@link ServerEnvironment}.
      */
     private static void configureEnv() {
+        logger.atConfig()
+              .log("Configuring `ServerEnvironment`.");
         ServerEnvironment
                 .when(Production.class)
                 .useDelivery((env) -> {

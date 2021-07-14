@@ -7,6 +7,7 @@
 package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
@@ -57,6 +58,8 @@ import static io.spine.util.Preconditions2.checkPositive;
  */
 public final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
 
+    private static final FluentLogger logger = Logging.loggerFor(DeliveryClient.class);
+
     private final Client client;
     private final ShardSessionRegistryServiceBlockingStub sessionRegistry;
 
@@ -89,6 +92,8 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
      */
     public static DeliveryClient create(ManagedChannel channel) {
         checkNotNull(channel);
+        logger.atConfig()
+              .log("Creating a `DeliveryClient` for the channel `%s`.", channel);
         return new DeliveryClient(channel);
     }
 
