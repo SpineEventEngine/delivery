@@ -26,8 +26,10 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.nullToEmpty;
+import static io.grpc.Status.FAILED_PRECONDITION;
 import static io.grpc.Status.fromCode;
 import static io.grpc.Status.fromThrowable;
+import static java.lang.String.format;
 
 /**
  * The {@code SessionRegistryService} allows client applications to interact with the
@@ -67,16 +69,21 @@ public final class SessionRegistryService
                           latch.countDown();
                       })
                       .observe(Rejections.ShardAlreadyPickedUp.class, e -> {
-                          _trace().log(
-                                  "Received `ShardAlreadyPickedUp` rejection for shard `%s`.",
-                                  e.getShard()
+                          var msg = format(
+                                  "Shard `%s` is already picked up by the worker `%s`.",
+                                  e.getShard(), e.getWorker()
                           );
-                          responseObserver.onError(fromThrowable(
-                                  ShardAlreadyPickedUp.newBuilder()
-                                          .setShard(e.getShard())
-                                          .setWorker(e.getWorker())
-                                          .build()
-                          ).asException());
+                          _trace().log(msg);
+                          var error = ShardAlreadyPickedUp.newBuilder()
+                                  .setShard(e.getShard())
+                                  .setWorker(e.getWorker())
+                                  .build();
+                          responseObserver.onError(
+                                  FAILED_PRECONDITION
+                                          .withCause(error)
+                                          .withDescription(msg)
+                                          .asRuntimeException()
+                          );
                           latch.countDown();
                       })
                       .onServerError((msg, error) -> {
