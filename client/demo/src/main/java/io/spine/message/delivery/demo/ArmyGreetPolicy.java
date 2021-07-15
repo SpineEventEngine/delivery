@@ -23,12 +23,12 @@ final class ArmyGreetPolicy extends AbstractCommander implements Logging {
 
     @Command
     Iterable<SayHello> handle(GreetAnArmy command) {
-        int howManySoliders = command.getHowManySoldiers();
+        int howManySoldiers = command.getHowManySoldiers();
         String armyId = Identifier.newUuid();
-        _info().log("Greeting %d soldiers of the army `%s`", howManySoliders, armyId);
+        _info().log("Greeting %d soldiers of the army `%s`", howManySoldiers, armyId);
         ImmutableList.Builder<SayHello> builder = ImmutableList.builder();
-        for (int soliderIndex = 0; soliderIndex < howManySoliders; soliderIndex++) {
-            SayHello sayHello = newCommand(armyId, soliderIndex);
+        for (int soldierIndex = 0; soldierIndex < howManySoldiers; soldierIndex++) {
+            SayHello sayHello = newCommand(armyId, soldierIndex);
             builder.add(sayHello);
         }
         return builder.build();
@@ -40,7 +40,7 @@ final class ArmyGreetPolicy extends AbstractCommander implements Logging {
                 .vBuild();
     }
 
-    private static String soliderName(String armyId, int soliderIndex) {
-        return "[Army `" + armyId + "`] Soldier #" + soliderIndex;
+    private static String soliderName(String armyId, int soldierIndex) {
+        return "[Army `" + armyId + "`] Soldier #" + soldierIndex;
     }
 }
