@@ -6,7 +6,6 @@
 
 package io.spine.message.delivery.demo;
 
-import com.google.common.collect.ImmutableSet;
 import io.spine.client.Subscription;
 import io.spine.json.Json;
 import io.spine.message.delivery.demo.command.GreetAnArmy;
@@ -41,19 +40,8 @@ public final class GreetArmyServlet extends ContextAwareServlet {
 
         long startMillis = System.currentTimeMillis();
         CountDownLatch greeted = new CountDownLatch(howManySoldiers);
-        // todo: We should subscribe to `SaidHello` event separately.
-        //  Subscribing as done below doesn't work.
-        ImmutableSet<Subscription> subscriptions = spineClient
+        Subscription subscription = spineClient
                 .asGuest()
-                .command(greetAnArmy)
-                .observe(SaidHello.class, e -> {
-                    String greeting = e.getGreeting();
-                    _info().log("One of the soldiers was greeted: `%s`", greeting);
-                    greeted.countDown();
-                    if (greeted.getCount() == 0) {
-                        logPerformance(howManySoldiers, startMillis);
-                    }
-                })
                 .onServerError((msg, error) -> {
                     _trace().log(
                             "Server was not able to `%s`: %s",
@@ -63,7 +51,23 @@ public final class GreetArmyServlet extends ContextAwareServlet {
                             "Something went terribly wrong: %s.", Json.toCompactJson(error)
                     );
                 })
+                .subscribeToEvent(SaidHello.class)
+                .observe(e -> {
+                    String greeting = e.getGreeting();
+                    _info().log("One of the soldiers was greeted: `%s`", greeting);
+                    greeted.countDown();
+                    if (greeted.getCount() == 0) {
+                        logPerformance(howManySoldiers, startMillis);
+                    }
+                })
                 .post();
+        _debug().log("Subscribed on `SaidHello` events.");
+        post(greetAnArmy);
+//        spineClient
+//                .asGuest()
+//                .command(greetAnArmy)
+//                .postAndForget();
+        _debug().log("Army greeting requested.");
         try {
             _debug().log("Waiting the army to be greeted.");
             greeted.await(10, TimeUnit.MINUTES);
@@ -73,7 +77,8 @@ public final class GreetArmyServlet extends ContextAwareServlet {
             );
         }
         _debug().log("Unsubscribing from the greeting updates.");
-        subscriptions.forEach(spineClient.subscriptions()::cancel);
+        spineClient.subscriptions()
+                   .cancel(subscription);
     }
 
     private void logPerformance(int howManySoldiers, long startMillis) {

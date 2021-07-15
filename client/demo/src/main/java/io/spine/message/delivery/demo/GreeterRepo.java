@@ -18,14 +18,9 @@ import java.util.Random;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Manages {@link GreatGreeter} aggregate.
+ * Manages {@link GreatGreeter} aggregates.
  */
 final class GreeterRepo extends AggregateRepository<String, GreatGreeter> {
-
-    /**
-     * The ID of the single system greeter.
-     */
-    static final String greeter = "GreatGreeter";
 
     private final Random random;
 
@@ -39,12 +34,12 @@ final class GreeterRepo extends AggregateRepository<String, GreatGreeter> {
 
     @Override
     protected void setupCommandRouting(CommandRouting<String> routing) {
-        routing.route(SayHello.class, (cmd, ctx) -> greeter);
+        routing.route(SayHello.class, (cmd, ctx) -> cmd.getName());
     }
 
     @Override
     protected void setupEventRouting(EventRouting<String> routing) {
-        routing.unicast(SaidHello.class, e -> greeter);
+        routing.unicast(SaidHello.class, SaidHello::getName);
     }
 
     @Override

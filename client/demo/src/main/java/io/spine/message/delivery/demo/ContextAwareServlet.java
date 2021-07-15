@@ -7,15 +7,22 @@
 package io.spine.message.delivery.demo;
 
 import com.google.appengine.api.ThreadManager;
+import com.google.common.base.Suppliers;
 import com.google.common.flogger.FluentLogger;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.spine.base.CommandMessage;
 import io.spine.base.Production;
+import io.spine.client.ActorRequestFactory;
 import io.spine.client.Client;
+import io.spine.core.Command;
 import io.spine.core.TenantId;
+import io.spine.core.UserId;
+import io.spine.grpc.StreamObservers;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.DeliveryBootstrapper;
 import io.spine.message.delivery.client.DeliveryClient;
+import io.spine.server.BoundedContext;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.DeploymentType;
 import io.spine.server.Server;
@@ -36,7 +43,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Supplier;
 
-import static com.google.common.base.Suppliers.memoize;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -54,11 +60,12 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
     private static final int NUMBER_OF_SHARDS = 50;
     private static final String GCE_SERVER = "message-delivery-server.c.spine-dev.internal";
 
-    protected static final Supplier<DeliveryClient> client =
-            memoize(ContextAwareServlet::remoteDelivery);
+    protected static final Supplier<DeliveryClient> client;
     protected static final String SERVER_NAME = "DemoServer";
     protected static final Server server;
     protected static final Client spineClient;
+    protected static final BoundedContext greeterContext;
+    protected static final ActorRequestFactory actorRequestFactory;
 
     static {
         useLog4j2FloggerBackend();
@@ -67,6 +74,24 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         server = startServer();
         spineClient = Client
                 .inProcess(SERVER_NAME)
+                .build();
+        client = Suppliers.ofInstance(remoteDelivery());
+        greeterContext = GreeterContext.builder().build();
+        actorRequestFactory = requestFactory();
+    }
+
+    protected static <C extends CommandMessage> void post(C command) {
+        Command cmd = actorRequestFactory.command().create(command);
+        greeterContext.commandBus()
+                      .post(cmd, StreamObservers.noOpObserver());
+    }
+
+    private static ActorRequestFactory requestFactory() {
+        UserId actor = UserId.newBuilder()
+                .setValue("Demo")
+                .vBuild();
+        return ActorRequestFactory.newBuilder()
+                .setActor(actor)
                 .build();
     }
 
@@ -112,17 +137,15 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
     private static void configureEnv() {
         logger.atConfig()
               .log("Configuring `ServerEnvironment`.");
+        Delivery delivery = DeliveryBootstrapper.newInstance()
+                .withChannel(ContextAwareServlet::deliveryServerChannel)
+                .init()
+                .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
+                .build();
+        delivery.subscribe(new AsyncLocalObserver());
         ServerEnvironment
                 .when(Production.class)
-                .useDelivery((env) -> {
-                    Delivery delivery = DeliveryBootstrapper.newInstance()
-                            .withChannel(deliveryServerChannel())
-                            .init()
-                            .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
-                            .build();
-                    delivery.subscribe(new AsyncLocalObserver());
-                    return delivery;
-                })
+                .use(delivery)
                 .use(InMemoryTransportFactory.newInstance())
                 .use(InMemoryStorageFactory.newInstance());
     }
