@@ -25,7 +25,7 @@ import static com.google.common.base.Suppliers.memoize;
  */
 public final class DeliveryBootstrapper {
 
-    private @MonotonicNonNull ManagedChannel channel;
+    private @MonotonicNonNull Supplier<ManagedChannel> channel;
 
     /**
      * Prevents direct instantiation.
@@ -43,7 +43,7 @@ public final class DeliveryBootstrapper {
     /**
      * Configures the gRPC {@code channel} to be used by the delivery.
      */
-    public DeliveryBootstrapper withChannel(ManagedChannel channel) {
+    public DeliveryBootstrapper withChannel(Supplier<ManagedChannel> channel) {
         this.channel = checkNotNull(channel);
         return this;
     }
@@ -53,7 +53,7 @@ public final class DeliveryBootstrapper {
      */
     public DeliveryBuilder init() {
         checkNotNull(channel, "The gRPC channel must not be `null`.");
-        Supplier<DeliveryClient> client = () -> DeliveryClient.create(channel);
+        Supplier<DeliveryClient> client = () -> DeliveryClient.create(channel.get());
         return Delivery.newBuilder()
                 .setInboxStorage(new RemoteInboxStorage(memoize(client::get)))
                 .setWorkRegistry(new WorkRegistry(memoize(client::get)));

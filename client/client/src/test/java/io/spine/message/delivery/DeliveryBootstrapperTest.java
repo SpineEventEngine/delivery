@@ -37,9 +37,8 @@ final class DeliveryBootstrapperTest {
     @Test
     @DisplayName("bootstrap `DeliveryBuilder` configuration")
     void bootstrapDeliveryConfig() {
-        ManagedChannel channel = new NoOpChannel();
         DeliveryBuilder builder = DeliveryBootstrapper.newInstance()
-                .withChannel(channel)
+                .withChannel(NoOpChannel::new)
                 .init();
         assertThat(builder.inboxStorage())
                 .isPresent();

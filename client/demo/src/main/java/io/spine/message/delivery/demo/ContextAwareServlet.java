@@ -138,7 +138,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         logger.atConfig()
               .log("Configuring `ServerEnvironment`.");
         Delivery delivery = DeliveryBootstrapper.newInstance()
-                .withChannel(deliveryServerChannel())
+                .withChannel(ContextAwareServlet::deliveryServerChannel)
                 .init()
                 .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
                 .build();
