@@ -7,6 +7,7 @@
 package io.spine.message.delivery.demo;
 
 import com.google.appengine.api.ThreadManager;
+import com.google.common.base.Suppliers;
 import com.google.common.flogger.FluentLogger;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -36,7 +37,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.function.Supplier;
 
-import static com.google.common.base.Suppliers.memoize;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -54,8 +54,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
     private static final int NUMBER_OF_SHARDS = 50;
     private static final String GCE_SERVER = "message-delivery-server.c.spine-dev.internal";
 
-    protected static final Supplier<DeliveryClient> client =
-            memoize(ContextAwareServlet::remoteDelivery);
+    protected static final Supplier<DeliveryClient> client;
     protected static final String SERVER_NAME = "DemoServer";
     protected static final Server server;
     protected static final Client spineClient;
@@ -68,6 +67,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         spineClient = Client
                 .inProcess(SERVER_NAME)
                 .build();
+        client = Suppliers.ofInstance(remoteDelivery());
     }
 
     private static DeliveryClient remoteDelivery() {
