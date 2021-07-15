@@ -43,5 +43,5 @@ message ShardSessionRegistry {
     //
     // Must be empty when `worker` is also empty.
     //
-    google.protobuf.Timestamp when_picked = 3;
+    google.protobuf.Timestamp when_picked = 3 [(column) = true];
 }
