@@ -6,6 +6,7 @@
 
 package io.spine.message.delivery.demo;
 
+import com.google.common.net.MediaType;
 import io.spine.client.Subscription;
 import io.spine.json.Json;
 import io.spine.message.delivery.demo.command.GreetAnArmy;
@@ -14,10 +15,13 @@ import io.spine.message.delivery.demo.event.SaidHello;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.String.format;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 /**
  * Propagates HTTP requests into a command to greet an army.
@@ -28,7 +32,7 @@ public final class GreetArmyServlet extends ContextAwareServlet {
 
     @Override
     @SuppressWarnings("UnstableApiUsage")  /* Using Guava's type which hasn't changed since 2012. */
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         _debug().log("Starting to greet an army.");
 
         @SuppressWarnings("MagicNumber") int howManySoldiers = 1000;
@@ -76,9 +80,14 @@ public final class GreetArmyServlet extends ContextAwareServlet {
                     e, "Hanged while waiting for the army to be greeted greeting :-("
             );
         }
+        long durationMillis = System.currentTimeMillis() - startMillis;
         _debug().log("Unsubscribing from the greeting updates.");
         spineClient.subscriptions()
                    .cancel(subscription);
+        resp.setContentType(MediaType.PLAIN_TEXT_UTF_8.type());
+        resp.getWriter()
+            .println(format("Army greeting took %d millis.", durationMillis));
+        resp.setStatus(SC_OK);
     }
 
     private void logPerformance(int howManySoldiers, long startMillis) {
