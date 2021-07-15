@@ -85,14 +85,14 @@ message ShardReleased {
 }
 
 // Sharded work sessions that were picked up before the specified inactivity period were released.
-message ExpiredShardsReleased {
+message ExpiredSessionsReleased {
 
     // The shards that were released if any.
-    repeated ExpiredShard shard = 1;
+    repeated ExpiredSession shard = 1;
 }
 
-// The expired sharded work session .
-message ExpiredShard {
+// The expired sharded work session.
+message ExpiredSession {
 
     // The shard that was released.
     spine.server.delivery.ShardIndex shard = 1 [(required) = true];
