@@ -6,34 +6,76 @@
 
 package io.spine.message.delivery.server;
 
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.util.Timestamps;
 import io.spine.base.Time;
 import io.spine.client.Client;
 import io.spine.core.CommandContext;
+import io.spine.logging.Logging;
+import io.spine.message.delivery.SessionsCleaner;
+import io.spine.message.delivery.SessionsCleanerId;
+import io.spine.message.delivery.ShardSessionRegistry;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.command.ReleaseShard;
+import io.spine.message.delivery.event.ExpiredShard;
 import io.spine.message.delivery.event.ExpiredShardsReleased;
-import io.spine.message.delivery.event.ShardReleased;
-import io.spine.message.delivery.rejection.UnableToReleaseShard;
-import io.spine.server.command.AbstractCommander;
 import io.spine.server.command.Assign;
-import io.spine.server.command.Command;
+import io.spine.server.procman.ProcessManager;
 
-public class SessionsCleanerProcess extends AbstractCommander {
+import static com.google.common.base.Preconditions.checkNotNull;
+
+public class SessionsCleanerProcess
+        extends ProcessManager<SessionsCleanerId, SessionsCleaner, SessionsCleaner.Builder>
+        implements Logging {
 
     private Client client;
 
-
     @Assign
     ExpiredShardsReleased handle(ReleaseExpiredSessions c, CommandContext context) {
-        var shard = c.getShard();
-        var worker = c.getWorker();
-        _debug().log("Worker `%s` is releasing shard `%s`.", worker, shard);
-        checkCanRelease(c);
-        _info().log("Shard `%s` is released by worker `%s`.", shard, worker);
-        return ShardReleased.newBuilder()
-                .setShard(shard)
-                .setPickedBy(worker)
+        var result = ExpiredShardsReleased.newBuilder();
+        var inactivityPeriod = c.getInactivityPeriod();
+        var whenPickedPeriod = Timestamps.subtract(Time.currentTime(), inactivityPeriod);
+        ImmutableList<ShardSessionRegistry> expiredShards =
+                client.asGuest()
+                      .run(ShardSessionRegistry
+                                   .query()
+                                   .whenPicked()
+                                   .isLessThan(whenPickedPeriod)
+                                   .build()
+                      );
+        for (ShardSessionRegistry expiredShardRegistry : expiredShards) {
+            releaseShard(expiredShardRegistry);
+            result.addShard(fromRegistry(expiredShardRegistry));
+        }
+        return result.vBuild();
+    }
+
+    private static ExpiredShard fromRegistry(ShardSessionRegistry expiredShardRegistry) {
+        return ExpiredShard.newBuilder()
+                .setShard(expiredShardRegistry.getId())
+                .setPickedBy(expiredShardRegistry.getPickedBy())
+                .setWhenPicked(expiredShardRegistry.getWhenPicked())
                 .setWhenReleased(Time.currentTime())
                 .vBuild();
+    }
+
+    private void releaseShard(ShardSessionRegistry expiredShardRegistry) {
+        ReleaseShard releaseShard = ReleaseShard.newBuilder()
+                .setShard(expiredShardRegistry.getId())
+                .setWorker(expiredShardRegistry.getPickedBy())
+                .vBuild();
+        client.asGuest()
+              .command(releaseShard)
+              .postAndForget();
+    }
+
+    /**
+     * Sets the client to be used by this process to query the context entities.
+     *
+     * @apiNote This method is intended to be used as part of the entity configuration
+     *         done through the repository.
+     */
+    public void setClient(Client client) {
+        this.client = checkNotNull(client);
     }
 }

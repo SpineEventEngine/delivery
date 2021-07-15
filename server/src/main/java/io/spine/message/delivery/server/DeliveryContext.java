@@ -107,7 +107,8 @@ public final class DeliveryContext {
                     .singleTenant(NAME)
                     .add(SessionRegistry.class)
                     .add(new InboxModifierRepo())
-                    .add(new MessageHolderRepo());
+                    .add(new MessageHolderRepo())
+                    .add(new SessionsCleanerProcessRepo(contextClient));
         }
     }
 }
