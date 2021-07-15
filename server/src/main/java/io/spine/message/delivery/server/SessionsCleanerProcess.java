@@ -36,7 +36,10 @@ final class SessionsCleanerProcess
         var result = ExpiredSessionsReleased.newBuilder();
         var inactivityPeriod = c.getInactivityPeriod();
         var whenPickedPeriod = Timestamps.subtract(Time.currentTime(), inactivityPeriod);
-        ImmutableList<ShardSessionRegistry> expiredShards =
+        _info().log(
+                "Querying shard session registries picked earlier than `%s`.", whenPickedPeriod
+        );
+        ImmutableList<ShardSessionRegistry> expiredSessions =
                 client.asGuest()
                       .run(ShardSessionRegistry
                                    .query()
@@ -44,9 +47,12 @@ final class SessionsCleanerProcess
                                    .isLessThan(whenPickedPeriod)
                                    .build()
                       );
-        for (ShardSessionRegistry expiredShardRegistry : expiredShards) {
-            releaseShard(expiredShardRegistry);
-            result.addShard(fromRegistry(expiredShardRegistry));
+        _info().log(
+                "Releasing `%d` shard sessions.", expiredSessions.size()
+        );
+        for (ShardSessionRegistry expiredSession : expiredSessions) {
+            releaseShard(expiredSession);
+            result.addShard(fromRegistry(expiredSession));
         }
         return result.vBuild();
     }
