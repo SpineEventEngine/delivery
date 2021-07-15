@@ -25,7 +25,7 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class SessionsCleanerProcess
+final class SessionsCleanerProcess
         extends ProcessManager<SessionsCleanerId, SessionsCleaner, SessionsCleaner.Builder>
         implements Logging {
 

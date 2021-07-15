@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public final class SessionsCleanerProcessRepo
+final class SessionsCleanerProcessRepo
         extends ProcessManagerRepository<SessionsCleanerId, SessionsCleanerProcess, SessionsCleaner> {
 
     /**
@@ -31,7 +31,8 @@ public final class SessionsCleanerProcessRepo
     private final Supplier<Client> clientSupplier;
     private @MonotonicNonNull Client client;
 
-    public SessionsCleanerProcessRepo(Supplier<Client> clientSupplier) {
+    SessionsCleanerProcessRepo(Supplier<Client> clientSupplier) {
+        super();
         this.clientSupplier = checkNotNull(clientSupplier);
     }
 
