@@ -20,7 +20,7 @@ option java_generate_equals_and_hash = true;
 message InboxModifier {
     option (entity).kind = PROCESS_MANAGER;
 
-    // The ID of the writer.
+    // The ID of the modifier.
     InboxModifierId id = 1;
 }
 
