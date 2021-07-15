@@ -26,14 +26,14 @@ repositories {
     maven("https://spine.mycloudrepo.io/public/repositories/snapshots")
 }
 
-val spineBaseVersion = "2.0.0-SNAPSHOT.35"
+val spineBaseVersion = "2.0.0-SNAPSHOT.37"
 
 dependencies {
-    implementation("net.ltgt.gradle:gradle-errorprone-plugin:2.0.1")
-    implementation("com.google.protobuf:protobuf-gradle-plugin:0.8.16")
+    implementation("net.ltgt.gradle:gradle-errorprone-plugin:2.0.2")
+    implementation("com.google.protobuf:protobuf-gradle-plugin:0.8.17")
     implementation("io.spine.tools:spine-mc-java:${spineBaseVersion}")
     implementation("com.github.jengelman.gradle.plugins:shadow:6.1.0")
-    implementation("gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:3.1.1")
+    implementation("gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:3.1.2")
 }
 
 kotlinDslPluginOptions {
