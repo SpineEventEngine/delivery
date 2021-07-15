@@ -6,6 +6,8 @@
 
 package io.spine.message.delivery.client;
 
+import com.google.protobuf.Duration;
+import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.ShardIndex;
@@ -40,4 +42,16 @@ interface SessionRegistryClient {
      *         the node which would like to release the shard
      */
     void releaseShard(ShardIndex shard, NodeId worker);
+
+    /**
+     * Clears up the recorded {@code NodeId}s from the session records if there was no activity
+     * for longer than passed {@code inactivityPeriod}.
+     *
+     * <p>It may be handy if an application node hangs or gets killed — so that it is not able
+     * to complete the session in a conventional way.
+     *
+     * @param inactivityPeriod
+     *         the duration of the period after which the session is considered expired
+     */
+    ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod);
 }

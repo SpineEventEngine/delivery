@@ -8,6 +8,7 @@ package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
@@ -22,11 +23,13 @@ import io.spine.logging.Logging;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.InboxMessageHolder.Column;
 import io.spine.message.delivery.command.PickUpShard;
+import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.command.ReleaseShard;
 import io.spine.message.delivery.command.RemoveMessage;
 import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.command.WriteMessages;
+import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
@@ -166,6 +169,21 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 .setWorker(worker)
                 .vBuild();
         post(releaseShard);
+    }
+
+    @Override
+    public ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod) {
+        checkNotDefaultArg(inactivityPeriod);
+        ReleaseExpiredSessions releaseExpiredSessions = ReleaseExpiredSessions.newBuilder()
+                .setInactivityPeriod(inactivityPeriod)
+                .vBuild();
+        _trace().log(
+                "Posting `ReleaseExpiredSessions` command " +
+                        "and waiting for a response event `ExpiredSessionsReleased`."
+        );
+        ExpiredSessionsReleased sessionsReleased =
+                sessionRegistry.releaseSessions(releaseExpiredSessions);
+        return sessionsReleased;
     }
 
     @Override
