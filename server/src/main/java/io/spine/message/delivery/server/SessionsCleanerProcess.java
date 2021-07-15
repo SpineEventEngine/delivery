@@ -17,10 +17,11 @@ import io.spine.message.delivery.SessionsCleanerId;
 import io.spine.message.delivery.ShardSessionRegistry;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.command.ReleaseShard;
-import io.spine.message.delivery.event.ExpiredShard;
-import io.spine.message.delivery.event.ExpiredShardsReleased;
+import io.spine.message.delivery.event.ExpiredSession;
+import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.server.command.Assign;
 import io.spine.server.procman.ProcessManager;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -28,11 +29,11 @@ public class SessionsCleanerProcess
         extends ProcessManager<SessionsCleanerId, SessionsCleaner, SessionsCleaner.Builder>
         implements Logging {
 
-    private Client client;
+    private @MonotonicNonNull Client client;
 
     @Assign
-    ExpiredShardsReleased handle(ReleaseExpiredSessions c, CommandContext context) {
-        var result = ExpiredShardsReleased.newBuilder();
+    ExpiredSessionsReleased handle(ReleaseExpiredSessions c, CommandContext context) {
+        var result = ExpiredSessionsReleased.newBuilder();
         var inactivityPeriod = c.getInactivityPeriod();
         var whenPickedPeriod = Timestamps.subtract(Time.currentTime(), inactivityPeriod);
         ImmutableList<ShardSessionRegistry> expiredShards =
@@ -50,8 +51,8 @@ public class SessionsCleanerProcess
         return result.vBuild();
     }
 
-    private static ExpiredShard fromRegistry(ShardSessionRegistry expiredShardRegistry) {
-        return ExpiredShard.newBuilder()
+    private static ExpiredSession fromRegistry(ShardSessionRegistry expiredShardRegistry) {
+        return ExpiredSession.newBuilder()
                 .setShard(expiredShardRegistry.getId())
                 .setPickedBy(expiredShardRegistry.getPickedBy())
                 .setWhenPicked(expiredShardRegistry.getWhenPicked())

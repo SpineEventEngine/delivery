@@ -13,6 +13,7 @@ import io.spine.server.BoundedContextBuilder;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
 import io.spine.server.SubscriptionService;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.function.Supplier;
 
@@ -76,7 +77,7 @@ public final class DeliveryContext {
      */
     public static final class Builder {
 
-        private Supplier<Client> contextClient;
+        private @MonotonicNonNull Supplier<Client> contextClient;
 
         /**
          * Creates a new builder instance.
