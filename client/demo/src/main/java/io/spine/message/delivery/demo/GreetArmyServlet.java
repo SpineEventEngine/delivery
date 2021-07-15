@@ -62,10 +62,11 @@ public final class GreetArmyServlet extends ContextAwareServlet {
                 })
                 .post();
         _debug().log("Subscribed on `SaidHello` events.");
-        spineClient
-                .asGuest()
-                .command(greetAnArmy)
-                .postAndForget();
+        post(greetAnArmy);
+//        spineClient
+//                .asGuest()
+//                .command(greetAnArmy)
+//                .postAndForget();
         _debug().log("Army greeting requested.");
         try {
             _debug().log("Waiting the army to be greeted.");
