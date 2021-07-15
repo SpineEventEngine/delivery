@@ -8,6 +8,7 @@ package io.spine.message.delivery.server;
 
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
+import io.spine.server.SubscriptionService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -33,10 +34,16 @@ final class DeliveryContextTest {
     @Test
     @DisplayName("expose context-related APIs")
     void exposeApis() {
-        var context = DeliveryContext.newBuilder().build();
+        var context = DeliveryContext.newBuilder()
+                .contextClient(() -> {
+                    throw new IllegalStateException("The client must not be called in this test.");
+                })
+                .build();
         assertThat(context.commandService())
                 .isInstanceOf(CommandService.class);
         assertThat(context.queryService())
                 .isInstanceOf(QueryService.class);
+        assertThat(context.subscriptionService())
+                .isInstanceOf(SubscriptionService.class);
     }
 }
