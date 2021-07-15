@@ -8,6 +8,7 @@ package io.spine.message.delivery.demo;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.base.Identifier;
+import io.spine.logging.Logging;
 import io.spine.message.delivery.demo.command.GreetAnArmy;
 import io.spine.message.delivery.demo.command.SayHello;
 import io.spine.server.command.AbstractCommander;
@@ -18,12 +19,13 @@ import io.spine.server.command.Command;
  *
  * <p>Splits the incoming command into a number of {@link SayHello} commands, one for each soldier.
  */
-final class ArmyGreetPolicy extends AbstractCommander {
+final class ArmyGreetPolicy extends AbstractCommander implements Logging {
 
     @Command
     Iterable<SayHello> handle(GreetAnArmy command) {
         int howManySoliders = command.getHowManySoldiers();
         String armyId = Identifier.newUuid();
+        _info().log("Greeting %d soldiers of the army `%s`", howManySoliders, armyId);
         ImmutableList.Builder<SayHello> builder = ImmutableList.builder();
         for (int soliderIndex = 0; soliderIndex < howManySoliders; soliderIndex++) {
             SayHello sayHello = newCommand(armyId, soliderIndex);
