@@ -28,9 +28,11 @@ import io.spine.server.DeploymentType;
 import io.spine.server.Server;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.Delivery;
+import io.spine.server.delivery.DeliveryBuilder;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardObserver;
+import io.spine.server.delivery.ShardedWorkRegistry;
 import io.spine.server.delivery.UniformAcrossAllShards;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.server.tenant.TenantAwareRunner;
@@ -38,6 +40,7 @@ import io.spine.server.transport.memory.InMemoryTransportFactory;
 
 import javax.servlet.http.HttpServlet;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -66,11 +69,12 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
     protected static final Client spineClient;
     protected static final BoundedContext greeterContext;
     protected static final ActorRequestFactory actorRequestFactory;
+    protected static final ShardedWorkRegistry workRegistry;
 
     static {
         useLog4j2FloggerBackend();
         logger = Logging.loggerFor(ContextAwareServlet.class);
-        configureEnv();
+        workRegistry = configureEnv().orElseThrow(IllegalStateException::new);
         server = startServer();
         spineClient = Client
                 .inProcess(SERVER_NAME)
@@ -134,12 +138,13 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
     /**
      * Configures the application {@link ServerEnvironment}.
      */
-    private static void configureEnv() {
+    private static Optional<ShardedWorkRegistry> configureEnv() {
         logger.atConfig()
               .log("Configuring `ServerEnvironment`.");
-        Delivery delivery = DeliveryBootstrapper.newInstance()
+        DeliveryBuilder deliveryBuilder = DeliveryBootstrapper.newInstance()
                 .withChannel(ContextAwareServlet::deliveryServerChannel)
-                .init()
+                .init();
+        Delivery delivery = deliveryBuilder
                 .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
                 .build();
         delivery.subscribe(new AsyncLocalObserver());
@@ -148,6 +153,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
                 .use(delivery)
                 .use(InMemoryTransportFactory.newInstance())
                 .use(InMemoryStorageFactory.newInstance());
+        return deliveryBuilder.workRegistry();
     }
 
     /**

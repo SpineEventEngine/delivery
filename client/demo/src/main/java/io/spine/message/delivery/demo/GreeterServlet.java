@@ -8,6 +8,7 @@ package io.spine.message.delivery.demo;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.net.MediaType;
 import io.spine.client.Subscription;
 import io.spine.message.delivery.demo.command.SayHello;
 import io.spine.message.delivery.demo.event.SaidHello;
@@ -33,6 +34,7 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
 public final class GreeterServlet extends ContextAwareServlet {
 
     @Override
+    @SuppressWarnings("UnstableApiUsage" /* `MediaType` is available for around 10 years now. */)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         _debug().log("Handling a greeting.");
         String personName = req.getParameter("name");
@@ -59,7 +61,7 @@ public final class GreeterServlet extends ContextAwareServlet {
                     _info().log("Said `%s` to `%s` in %d ms.",
                                 greeting, personName, (endTime - startTime));
                     try {
-                        resp.setContentType("text/plain");
+                        resp.setContentType(MediaType.PLAIN_TEXT_UTF_8.type());
                         resp.getWriter()
                             .println(greeting);
                         resp.setStatus(SC_OK);
