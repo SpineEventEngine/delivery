@@ -17,6 +17,9 @@
         <Logger name="io.spine.message.delivery" level="DEBUG" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
+        <Logger name="io.spine.message.delivery.demo" level="TRACE" additivity="false">
+            <AppenderRef ref="LogToConsole"/>
+        </Logger>
         <Root level="INFO">
             <AppenderRef ref="LogToConsole"/>
         </Root>
