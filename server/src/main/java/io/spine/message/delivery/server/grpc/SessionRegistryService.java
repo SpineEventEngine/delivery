@@ -113,7 +113,7 @@ public final class SessionRegistryService
         } catch (InterruptedException e) {
             throw new IllegalStateException(e);
         }
-        subscriptions.forEach(client.subscriptions()::cancel);
+        cancelSubscription(subscriptions);
     }
 
     @Override
@@ -157,6 +157,11 @@ public final class SessionRegistryService
         } catch (InterruptedException e) {
             throw new IllegalStateException(e);
         }
+        cancelSubscription(subscriptions);
+    }
+
+    private void cancelSubscription(Iterable<Subscription> subscriptions) {
+        _trace().log("Cancelling subscriptions.");
         subscriptions.forEach(client.subscriptions()::cancel);
     }
 
