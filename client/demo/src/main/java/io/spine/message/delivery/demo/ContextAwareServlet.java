@@ -10,6 +10,7 @@ import com.google.appengine.api.ThreadManager;
 import com.google.common.flogger.FluentLogger;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.inprocess.InProcessChannelBuilder;
 import io.spine.base.CommandMessage;
 import io.spine.base.Production;
 import io.spine.client.ActorRequestFactory;
@@ -78,9 +79,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         logger = Logging.loggerFor(ContextAwareServlet.class);
         workRegistry = configureEnv().orElseThrow(IllegalStateException::new);
         server = startServer();
-        spineClient = Client
-                .inProcess(SERVER_NAME)
-                .build();
+        spineClient = inProcessClient();
         client = ofInstance(remoteDelivery());
         greeterContext = GreeterContext.builder().build();
         actorRequestFactory = requestFactory();
@@ -111,14 +110,28 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
      * <p>For load-testing purposes only.
      */
     private static ManagedChannel deliveryServerChannel() {
-        String server = "dns:///" + GCE_SERVER + ":8484";
-        ThreadFactory threads = threadFactory();
-        ExecutorService executor = Executors.newCachedThreadPool(threads);
+        String server = "34.133.42.246:8484";
         return ManagedChannelBuilder
                 .forTarget(server)
-                .executor(executor)
+                .executor(parallelExecutor())
                 .usePlaintext()     // There is no SSL set up on GCE.
                 .build();
+    }
+
+    private static Client inProcessClient() {
+        ManagedChannel channel = InProcessChannelBuilder
+                .forName(SERVER_NAME)
+                .executor(parallelExecutor())
+                .build();
+        return Client
+                .usingChannel(channel)
+                .build();
+    }
+
+    private static ExecutorService parallelExecutor() {
+        ThreadFactory threads = threadFactory();
+        ExecutorService executor = Executors.newCachedThreadPool(threads);
+        return executor;
     }
 
     /**
