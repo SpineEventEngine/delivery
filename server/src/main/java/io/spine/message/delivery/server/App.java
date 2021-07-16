@@ -7,6 +7,7 @@
 package io.spine.message.delivery.server;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.grpc.inprocess.InProcessChannelBuilder;
 import io.spine.client.Client;
 import io.spine.environment.Production;
 import io.spine.logging.Logging;
@@ -19,6 +20,9 @@ import io.spine.server.transport.memory.InMemoryTransportFactory;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -76,10 +80,7 @@ public final class App implements Logging {
     @VisibleForTesting
     public void initAndStart() {
         initEnv();
-        Supplier<Client> internalClient = memoize(
-                () -> Client.inProcess(NAME)
-                            .build()
-        );
+        Supplier<Client> internalClient = memoize(App::internalClient);
         var deliveryContext = DeliveryContext.newBuilder()
                 .contextClient(internalClient)
                 .build();
@@ -88,6 +89,22 @@ public final class App implements Logging {
 
         remoteGrpc.awaitTermination();
         internalGrpc.awaitTermination();
+    }
+
+    private static Client internalClient() {
+        var channel = InProcessChannelBuilder
+                .forName(NAME)
+                .executor(parallelExecutor())
+                .build();
+        return Client
+                .usingChannel(channel)
+                .build();
+    }
+
+    private static ExecutorService parallelExecutor() {
+        ThreadFactory threads = Executors.defaultThreadFactory();
+        ExecutorService executor = Executors.newCachedThreadPool(threads);
+        return executor;
     }
 
     private GrpcContainer
