@@ -55,6 +55,9 @@ public final class GreetArmyServlet extends ContextAwareServlet {
                             "Something went terribly wrong: %s.", Json.toCompactJson(error)
                     );
                 })
+                .onStreamingError(error -> _trace()
+                        .withCause(error)
+                        .log("gRPC streaming error occurred while observing greetings."))
                 .subscribeToEvent(SaidHello.class)
                 .observe(e -> {
                     String greeting = e.getGreeting();
