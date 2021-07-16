@@ -98,6 +98,11 @@ public final class SessionRegistryService
                       })
                       .onStreamingError((error) -> {
                           if (!ignoreCancelledStream(error)) {
+                              _trace().withCause(error)
+                                      .log("gRPC streaming error occurred while " +
+                                                   "picking up shard `%s`.",
+                                           pickUpShard.getShard()
+                                      );
                               responseObserver.onError(fromThrowable(error).asException());
                           }
                           latch.countDown();
@@ -139,6 +144,9 @@ public final class SessionRegistryService
                       })
                       .onStreamingError((error) -> {
                           if (!ignoreCancelledStream(error)) {
+                              _trace().withCause(error)
+                                      .log("gRPC streaming error occurred " +
+                                                   "while releasing expired sessions.");
                               responseObserver.onError(fromThrowable(error).asException());
                           }
                           latch.countDown();
