@@ -113,5 +113,4 @@ final class InboxModifierProcess
                 .setMessage(message)
                 .vBuild();
     }
-
 }
