@@ -93,6 +93,10 @@ public final class DeliveryContext {
             return new DeliveryContext(contextBuilder.build());
         }
 
+        /**
+         * Sets the in-process {@code Client} to be used by the entities of the context
+         * for querying.
+         */
         public Builder contextClient(Supplier<Client> contextClient) {
             this.contextClient = checkNotNull(contextClient);
             return this;
