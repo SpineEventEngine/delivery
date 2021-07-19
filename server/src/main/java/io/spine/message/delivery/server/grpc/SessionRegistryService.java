@@ -8,6 +8,7 @@ package io.spine.message.delivery.server.grpc;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
+import io.grpc.Context;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
@@ -62,59 +63,64 @@ public final class SessionRegistryService
         );
         checkNotDefaultArg(pickUpShard);
         CountDownLatch latch = new CountDownLatch(1);
-        ImmutableSet<Subscription> subscriptions =
-                client.asGuest()
-                      .command(pickUpShard)
-                      .observe(ShardPickedUp.class, e -> {
-                          _trace().log(
-                                  "Received `ShardPickedUp` event for shard `%s`.",
-                                  e.getShard()
-                          );
-                          responseObserver.onNext(e);
-                          responseObserver.onCompleted();
-                          latch.countDown();
-                      })
-                      .observe(Rejections.ShardAlreadyPickedUp.class, e -> {
-                          var msg = format(
-                                  "Shard `%s` is already picked up by the worker `%s`.",
-                                  e.getShard(), e.getWorker()
-                          );
-                          _trace().log(msg);
-                          var error = ShardAlreadyPickedUp.newBuilder()
-                                  .setShard(e.getShard())
-                                  .setWorker(e.getWorker())
-                                  .build();
-                          responseObserver.onError(
-                                  FAILED_PRECONDITION
-                                          .withCause(error)
-                                          .withDescription(msg)
-                                          .asRuntimeException()
-                          );
-                          latch.countDown();
-                      })
-                      .onServerError((msg, error) -> {
-                          logServerError(msg, error);
-                          responseObserver.onError(fromCode(Status.Code.INTERNAL).asException());
-                          latch.countDown();
-                      })
-                      .onStreamingError((error) -> {
-                          if (!ignoreCancelledStream(error)) {
-                              _trace().withCause(error)
-                                      .log("gRPC streaming error occurred while " +
-                                                   "picking up shard `%s`.",
-                                           pickUpShard.getShard()
-                                      );
-                              responseObserver.onError(fromThrowable(error).asException());
-                          }
-                          latch.countDown();
-                      })
-                      .post();
-        try {
-            latch.await(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            throw new IllegalStateException(e);
-        }
-        cancelSubscription(subscriptions);
+        Context ctx = Context.current()
+                             .fork();
+        ctx.run(() -> {
+            ImmutableSet<Subscription> subscriptions =
+                    client.asGuest()
+                          .command(pickUpShard)
+                          .observe(ShardPickedUp.class, e -> {
+                              _trace().log(
+                                      "Received `ShardPickedUp` event for shard `%s`.",
+                                      e.getShard()
+                              );
+                              responseObserver.onNext(e);
+                              responseObserver.onCompleted();
+                              latch.countDown();
+                          })
+                          .observe(Rejections.ShardAlreadyPickedUp.class, e -> {
+                              var msg = format(
+                                      "Shard `%s` is already picked up by the worker `%s`.",
+                                      e.getShard(), e.getWorker()
+                              );
+                              _trace().log(msg);
+                              var error = ShardAlreadyPickedUp.newBuilder()
+                                      .setShard(e.getShard())
+                                      .setWorker(e.getWorker())
+                                      .build();
+                              responseObserver.onError(
+                                      FAILED_PRECONDITION
+                                              .withCause(error)
+                                              .withDescription(msg)
+                                              .asRuntimeException()
+                              );
+                              latch.countDown();
+                          })
+                          .onServerError((msg, error) -> {
+                              logServerError(msg, error);
+                              responseObserver.onError(
+                                      fromCode(Status.Code.INTERNAL).asException());
+                              latch.countDown();
+                          })
+                          .onStreamingError((error) -> {
+                              if (!ignoreCancelledStream(error)) {
+                                  _trace().withCause(error)
+                                          .log("gRPC streaming error occurred while " +
+                                                       "picking up shard `%s`.",
+                                               pickUpShard.getShard()
+                                          );
+                                  responseObserver.onError(fromThrowable(error).asException());
+                              }
+                              latch.countDown();
+                          })
+                          .post();
+            try {
+                latch.await(10, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+            cancelSubscription(subscriptions);
+        });
     }
 
     @Override
@@ -126,42 +132,46 @@ public final class SessionRegistryService
         );
         checkNotDefaultArg(releaseSessions);
         CountDownLatch latch = new CountDownLatch(1);
-        ImmutableSet<Subscription> subscriptions =
-                client.asGuest()
-                      .command(releaseSessions)
-                      .observe(ExpiredSessionsReleased.class, e -> {
-                          _trace().log(
-                                  "Received `ExpiredSessionsReleased` event with `%d` shards.",
-                                  e.getShardCount()
-                          );
-                          responseObserver.onNext(e);
-                          responseObserver.onCompleted();
-                          latch.countDown();
-                      })
-                      .onServerError((msg, error) -> {
-                          logServerError(msg, error);
-                          responseObserver.onError(
-                                  INTERNAL.withDescription(error.getMessage())
-                                          .asRuntimeException()
-                          );
-                          latch.countDown();
-                      })
-                      .onStreamingError((error) -> {
-                          if (!ignoreCancelledStream(error)) {
-                              _trace().withCause(error)
-                                      .log("gRPC streaming error occurred " +
-                                                   "while releasing expired sessions.");
-                              responseObserver.onError(fromThrowable(error).asException());
-                          }
-                          latch.countDown();
-                      })
-                      .post();
-        try {
-            latch.await(3, TimeUnit.MINUTES);
-        } catch (InterruptedException e) {
-            throw new IllegalStateException(e);
-        }
-        cancelSubscription(subscriptions);
+        Context ctx = Context.current()
+                             .fork();
+        ctx.run(() -> {
+            ImmutableSet<Subscription> subscriptions =
+                    client.asGuest()
+                          .command(releaseSessions)
+                          .observe(ExpiredSessionsReleased.class, e -> {
+                              _trace().log(
+                                      "Received `ExpiredSessionsReleased` event with `%d` shards.",
+                                      e.getShardCount()
+                              );
+                              responseObserver.onNext(e);
+                              responseObserver.onCompleted();
+                              latch.countDown();
+                          })
+                          .onServerError((msg, error) -> {
+                              logServerError(msg, error);
+                              responseObserver.onError(
+                                      INTERNAL.withDescription(error.getMessage())
+                                              .asRuntimeException()
+                              );
+                              latch.countDown();
+                          })
+                          .onStreamingError((error) -> {
+                              if (!ignoreCancelledStream(error)) {
+                                  _trace().withCause(error)
+                                          .log("gRPC streaming error occurred " +
+                                                       "while releasing expired sessions.");
+                                  responseObserver.onError(fromThrowable(error).asException());
+                              }
+                              latch.countDown();
+                          })
+                          .post();
+            try {
+                latch.await(3, TimeUnit.MINUTES);
+            } catch (InterruptedException e) {
+                throw new IllegalStateException(e);
+            }
+            cancelSubscription(subscriptions);
+        });
     }
 
     private void cancelSubscription(Iterable<Subscription> subscriptions) {
