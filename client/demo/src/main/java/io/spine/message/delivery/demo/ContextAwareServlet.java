@@ -35,9 +35,13 @@ import io.spine.server.transport.memory.InMemoryTransportFactory;
 import javax.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Suppliers.ofInstance;
@@ -57,6 +61,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
     private static final String GCE_SERVER = "message-delivery-server.c.spine-dev.internal";
+    private static final Executor limitedCachingExecutor = parallelExecutor();
     private static final ManagedChannel channel;
 
     protected static final Supplier<DeliveryClient> client;
@@ -88,7 +93,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         String server = "dns:///" + GCE_SERVER + ":8484";
         return ManagedChannelBuilder
                 .forTarget(server)
-                .executor(parallelExecutor())
+                .executor(limitedCachingExecutor)
                 .usePlaintext()     // There is no SSL set up on GCE.
                 .build();
     }
@@ -96,16 +101,24 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
     private static Client inProcessClient() {
         ManagedChannel channel = InProcessChannelBuilder
                 .forName(SERVER_NAME)
-                .executor(parallelExecutor())
+                .executor(limitedCachingExecutor)
                 .build();
         return Client
                 .usingChannel(channel)
                 .build();
     }
 
+    @SuppressWarnings("MagicNumber" /* Copied defaults from the `Executors.newCachedThreadPool`. */)
     private static ExecutorService parallelExecutor() {
         ThreadFactory threads = threadFactory();
-        ExecutorService executor = Executors.newCachedThreadPool(threads);
+        ExecutorService executor = new ThreadPoolExecutor(
+                0,
+                50,
+                60L,
+                TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                threads
+        );
         return executor;
     }
 
