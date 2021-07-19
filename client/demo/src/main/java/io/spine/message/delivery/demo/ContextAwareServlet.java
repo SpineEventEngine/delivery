@@ -35,7 +35,6 @@ import io.spine.server.transport.memory.InMemoryTransportFactory;
 import javax.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
@@ -44,6 +43,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Suppliers.ofInstance;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
@@ -61,7 +61,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
     private static final String GCE_SERVER = "message-delivery-server.c.spine-dev.internal";
-    private static final Executor limitedCachingExecutor = parallelExecutor();
+    private static final ExecutorService limitedCachingExecutor = parallelExecutor();
     private static final ManagedChannel channel;
 
     protected static final Supplier<DeliveryClient> client;
@@ -150,7 +150,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         Delivery delivery = deliveryBuilder
                 .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
                 .build();
-        delivery.subscribe(new AsyncLocalObserver());
+        delivery.subscribe(new AsyncLocalObserver(limitedCachingExecutor));
         ServerEnvironment
                 .when(Production.class)
                 .use(delivery)
@@ -196,8 +196,8 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
 
         private final ExecutorService executor;
 
-        private AsyncLocalObserver() {
-            executor = Executors.newCachedThreadPool(threadFactory());
+        private AsyncLocalObserver(ExecutorService executor) {
+            this.executor = checkNotNull(executor);
         }
 
         @SuppressWarnings("FutureReturnValueIgnored")
