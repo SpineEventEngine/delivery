@@ -42,6 +42,7 @@ final class GreeterContext {
     static BoundedContextBuilder builder() {
         return BoundedContext
                 .singleTenant(NAME)
-                .add(new GreeterRepo(random));
+                .add(new GreeterRepo(random))
+                .addCommandDispatcher(new ArmyGreetPolicy());
     }
 }

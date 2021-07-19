@@ -17,6 +17,7 @@ plugins {
 dependencies {
     Grpc.apply {
         api(stub)
+        api(core)
         api(protobuf)
     }
     implementation(Spine.Stable.server)

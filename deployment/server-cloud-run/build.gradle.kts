@@ -28,6 +28,12 @@ dependencies {
     implementation(project(":server"))
 }
 
+application {
+    applicationDefaultJvmArgs = listOf(
+        "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=7007"
+    )
+}
+
 val appClassName = "io.spine.message.delivery.server.App"
 project.setProperty("mainClassName", appClassName)
 

@@ -12,23 +12,23 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.message.delivery";
-option java_outer_classname = "InboxWriterProto";
+option java_outer_classname = "SessionsCleanerProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-// A process of handling inboxes modification commands.
-message InboxModifier {
+// A process of cleaning stale sessions.
+message SessionsCleaner {
     option (entity).kind = PROCESS_MANAGER;
 
-    // The ID of the modifier.
-    InboxModifierId id = 1;
+    // The ID of the cleaner.
+    SessionsCleanerId id = 1;
 }
 
-// The modifier identifier.
+// The cleaner identifier.
 //
-// There is only one instance of the modifier across the context.
+// There is only one instance of the cleaner across the context.
 //
-message InboxModifierId {
+message SessionsCleanerId {
 
     string value = 1 [(required) = true];
 }

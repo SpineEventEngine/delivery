@@ -8,6 +8,7 @@ package io.spine.message.delivery.server;
 
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.InboxModifier;
+import io.spine.message.delivery.SessionsCleaner;
 import io.spine.message.delivery.ShardSessionRegistry;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ final class DeliveryContextBuilderTest {
     @DisplayName("initialize `BoundedContext`")
     void initContext() {
         var boundedContext = DeliveryContext.newBuilder()
+                .contextClient(() -> {
+                    throw new IllegalStateException("The client must not be called in this test.");
+                })
                 .context()
                 .build();
         assertThat(boundedContext.hasEntitiesWithState(InboxMessageHolder.class))
@@ -35,6 +39,8 @@ final class DeliveryContextBuilderTest {
         assertThat(boundedContext.hasEntitiesWithState(ShardSessionRegistry.class))
                 .isTrue();
         assertThat(boundedContext.hasEntitiesWithState(InboxModifier.class))
+                .isTrue();
+        assertThat(boundedContext.hasEntitiesWithState(SessionsCleaner.class))
                 .isTrue();
     }
 }

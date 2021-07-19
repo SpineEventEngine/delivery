@@ -28,6 +28,7 @@ import "spine/server/server_environment.proto";
 //
 message ShardSessionRegistry {
     option (entity).kind = AGGREGATE;
+    option (entity).visibility = QUERY;
 
     // The index of the shard this registry is guarding.
     spine.server.delivery.ShardIndex id = 1;
@@ -42,5 +43,5 @@ message ShardSessionRegistry {
     //
     // Must be empty when `worker` is also empty.
     //
-    google.protobuf.Timestamp when_picked = 3;
+    google.protobuf.Timestamp when_picked = 3 [(column) = true];
 }

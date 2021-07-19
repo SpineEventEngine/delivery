@@ -18,6 +18,9 @@ abstract class DeliveryTest extends ContextAwareTest {
     @Override
     protected BoundedContextBuilder contextBuilder() {
         return DeliveryContext.newBuilder()
+                .contextClient(() -> {
+                    throw new IllegalStateException("The client must not be called in this test.");
+                })
                 .context();
     }
 }

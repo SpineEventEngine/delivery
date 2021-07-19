@@ -7,6 +7,8 @@
 package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.flogger.FluentLogger;
+import com.google.protobuf.Duration;
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
@@ -21,11 +23,13 @@ import io.spine.logging.Logging;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.InboxMessageHolder.Column;
 import io.spine.message.delivery.command.PickUpShard;
+import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.command.ReleaseShard;
 import io.spine.message.delivery.command.RemoveMessage;
 import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.command.WriteMessages;
+import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
@@ -56,6 +60,8 @@ import static io.spine.util.Preconditions2.checkPositive;
  * <p>Provides APIs for modifying and querying the remote state of the Message Delivery context.
  */
 public final class DeliveryClient implements SessionRegistryClient, InboxClient, Logging {
+
+    private static final FluentLogger logger = Logging.loggerFor(DeliveryClient.class);
 
     private final Client client;
     private final ShardSessionRegistryServiceBlockingStub sessionRegistry;
@@ -89,6 +95,8 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
      */
     public static DeliveryClient create(ManagedChannel channel) {
         checkNotNull(channel);
+        logger.atConfig()
+              .log("Creating a `DeliveryClient` for the channel `%s`.", channel);
         return new DeliveryClient(channel);
     }
 
@@ -147,7 +155,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
             ShardPickedUp shardPickedUp = sessionRegistry.pickShard(pickUpShard);
             return Optional.of(shardPickedUp);
         } catch (StatusRuntimeException e) {
-            _debug().log("Unable to pick up shard `%s`.", shard);
+            _trace().log("Unable to pick up shard `%s`: %s.", shard, e.getStatus());
         }
         return Optional.empty();
     }
@@ -161,6 +169,21 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 .setWorker(worker)
                 .vBuild();
         post(releaseShard);
+    }
+
+    @Override
+    public ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod) {
+        checkNotDefaultArg(inactivityPeriod);
+        ReleaseExpiredSessions releaseExpiredSessions = ReleaseExpiredSessions.newBuilder()
+                .setInactivityPeriod(inactivityPeriod)
+                .vBuild();
+        _trace().log(
+                "Posting `ReleaseExpiredSessions` command " +
+                        "and waiting for a response event `ExpiredSessionsReleased`."
+        );
+        ExpiredSessionsReleased sessionsReleased =
+                sessionRegistry.releaseSessions(releaseExpiredSessions);
+        return sessionsReleased;
     }
 
     @Override

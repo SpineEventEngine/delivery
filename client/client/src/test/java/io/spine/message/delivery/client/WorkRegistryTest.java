@@ -10,6 +10,7 @@ import com.google.common.base.Suppliers;
 import com.google.common.testing.NullPointerTester;
 import com.google.protobuf.Duration;
 import io.spine.base.Time;
+import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.protobuf.Durations2;
 import io.spine.server.NodeId;
@@ -98,6 +99,11 @@ final class WorkRegistryTest {
         @Override
         public void releaseShard(ShardIndex shard, NodeId worker) {
             // do nothing
+        }
+
+        @Override
+        public ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod) {
+            return ExpiredSessionsReleased.getDefaultInstance();
         }
     }
 }

@@ -7,6 +7,7 @@ entrypoint: >
   -XX:+DisableExplicitGC
   -agentpath:/opt/cdbg/cdbg_java_agent.so=--log_dir=/var/log
   -agentpath:/opt/cprof/profiler_java_agent.so=-logtostderr,-cprof_enable_heap_sampling=true,-minloglevel=2
+  -Dflogger.backend_factory=com.google.common.flogger.backend.log4j2.Log4j2BackendFactory#getInstance
   -jar app.jar
 instance_class: B2
 basic_scaling:
@@ -18,3 +19,5 @@ handlers:
     script: unused
     login: optional
     secure: optional
+vpc_access_connector:
+  name: "projects/spine-dev/locations/us-central1/connectors/app-engine-test-connector"

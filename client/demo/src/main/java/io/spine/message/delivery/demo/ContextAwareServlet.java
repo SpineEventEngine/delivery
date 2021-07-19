@@ -7,10 +7,13 @@
 package io.spine.message.delivery.demo;
 
 import com.google.appengine.api.ThreadManager;
+import com.google.common.flogger.FluentLogger;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.inprocess.InProcessChannelBuilder;
 import io.spine.base.Production;
 import io.spine.client.Client;
+import io.spine.core.TenantId;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.DeliveryBootstrapper;
 import io.spine.message.delivery.client.DeliveryClient;
@@ -19,20 +22,29 @@ import io.spine.server.DeploymentType;
 import io.spine.server.Server;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.Delivery;
-import io.spine.server.delivery.LocalDispatchingObserver;
+import io.spine.server.delivery.DeliveryBuilder;
+import io.spine.server.delivery.InboxMessage;
+import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.ShardObserver;
+import io.spine.server.delivery.ShardedWorkRegistry;
 import io.spine.server.delivery.UniformAcrossAllShards;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
+import io.spine.server.tenant.TenantAwareRunner;
 import io.spine.server.transport.memory.InMemoryTransportFactory;
 
 import javax.servlet.http.HttpServlet;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static com.google.common.base.Suppliers.memoize;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Suppliers.ofInstance;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -44,47 +56,70 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 @SuppressWarnings("serial")
 abstract class ContextAwareServlet extends HttpServlet implements Logging {
 
+    private static final FluentLogger logger;
+
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
-    protected static final Supplier<DeliveryClient> client = memoize(ContextAwareServlet::cloudRunClient);
+    private static final String GCE_SERVER = "message-delivery-server.c.spine-dev.internal";
+    private static final ExecutorService limitedCachingExecutor = parallelExecutor();
+    private static final ManagedChannel channel;
+
+    protected static final Supplier<DeliveryClient> client;
     protected static final String SERVER_NAME = "DemoServer";
     protected static final Server server;
     protected static final Client spineClient;
+    protected static final ShardedWorkRegistry workRegistry;
 
     static {
         useLog4j2FloggerBackend();
-        configureEnv();
+        channel = deliveryServerChannel();
+        logger = Logging.loggerFor(ContextAwareServlet.class);
+        workRegistry = configureEnv().orElseThrow(IllegalStateException::new);
         server = startServer();
-        spineClient = Client
-                .inProcess(SERVER_NAME)
-                .build();
+        spineClient = inProcessClient();
+        client = ofInstance(remoteDelivery());
     }
 
-    private static DeliveryClient cloudRunClient() {
-        return DeliveryClient.create(deliveryServerChannel());
+    private static DeliveryClient remoteDelivery() {
+        return DeliveryClient.create(channel);
     }
 
-    @SuppressWarnings(
-            "CallToSystemGetenv" /* We do want to use env variable for the server location. */
-    )
+    /**
+     * Connects directly to a GCE instance.
+     *
+     * <p>For load-testing purposes only.
+     */
     private static ManagedChannel deliveryServerChannel() {
-        String server = System.getenv("DELIVERY_SERVER");
-        if (isNullOrEmpty(server)) {
-            server = "dns:///message-delivery-server-irtlrrb2aq-uc.a.run.app:443";
-        }
-        ServerEnvironment env = ServerEnvironment.instance();
-        DeploymentType deployment = env.deploymentType();
-        ThreadFactory threads;
-        if (deployment == DeploymentType.APPENGINE_CLOUD) {
-            threads = ThreadManager.currentRequestThreadFactory();
-        } else {
-            threads = Executors.defaultThreadFactory();
-        }
-        ExecutorService executor = Executors.newCachedThreadPool(threads);
+        String server = "dns:///" + GCE_SERVER + ":8484";
         return ManagedChannelBuilder
                 .forTarget(server)
-                .executor(executor)
+                .executor(limitedCachingExecutor)
+                .usePlaintext()     // There is no SSL set up on GCE.
                 .build();
+    }
+
+    private static Client inProcessClient() {
+        ManagedChannel channel = InProcessChannelBuilder
+                .forName(SERVER_NAME)
+                .executor(limitedCachingExecutor)
+                .build();
+        return Client
+                .usingChannel(channel)
+                .build();
+    }
+
+    @SuppressWarnings("MagicNumber" /* Copied defaults from the `Executors.newCachedThreadPool`. */)
+    private static ExecutorService parallelExecutor() {
+        ThreadFactory threads = threadFactory();
+        ExecutorService executor = new ThreadPoolExecutor(
+                0,
+                50,
+                60L,
+                TimeUnit.SECONDS,
+                new SynchronousQueue<>(),
+                threads
+        );
+        return executor;
     }
 
     /**
@@ -106,20 +141,37 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
     /**
      * Configures the application {@link ServerEnvironment}.
      */
-    private static void configureEnv() {
+    private static Optional<ShardedWorkRegistry> configureEnv() {
+        logger.atConfig()
+              .log("Configuring `ServerEnvironment`.");
+        DeliveryBuilder deliveryBuilder = DeliveryBootstrapper.newInstance()
+                .withChannel(ofInstance(channel))
+                .init();
+        Delivery delivery = deliveryBuilder
+                .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
+                .build();
+        delivery.subscribe(new AsyncLocalObserver(limitedCachingExecutor));
         ServerEnvironment
                 .when(Production.class)
-                .useDelivery((env) -> {
-                    Delivery delivery = DeliveryBootstrapper.newInstance()
-                            .withChannel(deliveryServerChannel())
-                            .init()
-                            .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
-                            .build();
-                    delivery.subscribe(new LocalDispatchingObserver());
-                    return delivery;
-                })
+                .use(delivery)
                 .use(InMemoryTransportFactory.newInstance())
                 .use(InMemoryStorageFactory.newInstance());
+        return deliveryBuilder.workRegistry();
+    }
+
+    /**
+     * Returns the thread factory suitable for the runtime environment.
+     */
+    private static ThreadFactory threadFactory() {
+        ServerEnvironment env = ServerEnvironment.instance();
+        DeploymentType deployment = env.deploymentType();
+        ThreadFactory threads;
+        if (deployment == DeploymentType.APPENGINE_CLOUD) {
+            threads = ThreadManager.currentRequestThreadFactory();
+        } else {
+            threads = Executors.defaultThreadFactory();
+        }
+        return threads;
     }
 
     /**
@@ -134,5 +186,34 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
                 "flogger.backend_factory",
                 "com.google.common.flogger.backend.log4j2.Log4j2BackendFactory#getInstance"
         );
+    }
+
+    /**
+     * An asynchronous shard observer which runs on top of the {@linkplain #threadFactory()
+     * runtime-specific thread factory}.
+     */
+    private static final class AsyncLocalObserver implements ShardObserver {
+
+        private final ExecutorService executor;
+
+        private AsyncLocalObserver(ExecutorService executor) {
+            this.executor = checkNotNull(executor);
+        }
+
+        @SuppressWarnings("FutureReturnValueIgnored")
+        @Override
+        public void onMessage(InboxMessage update) {
+            Delivery delivery = ServerEnvironment.instance()
+                    .delivery();
+            ShardIndex index = update.shardIndex();
+            executor.submit(() -> runDelivery(update, delivery, index));
+        }
+
+        @SuppressWarnings("HandleMethodResult")
+        private static void runDelivery(InboxMessage message, Delivery delivery, ShardIndex index) {
+            TenantId tenant = message.tenant();
+            TenantAwareRunner.with(tenant)
+                             .run(() -> delivery.deliverMessagesFrom(index));
+        }
     }
 }

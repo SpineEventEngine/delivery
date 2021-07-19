@@ -7,11 +7,17 @@
 package io.spine.message.delivery.server;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.spine.client.Client;
 import io.spine.server.BoundedContext;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.CommandService;
 import io.spine.server.QueryService;
 import io.spine.server.SubscriptionService;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+
+import java.util.function.Supplier;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Defines a bounded context for the Delivery application.
@@ -71,6 +77,8 @@ public final class DeliveryContext {
      */
     public static final class Builder {
 
+        private @MonotonicNonNull Supplier<Client> contextClient;
+
         /**
          * Creates a new builder instance.
          */
@@ -86,15 +94,26 @@ public final class DeliveryContext {
         }
 
         /**
+         * Sets the in-process {@code Client} to be used by the entities of the context
+         * for querying.
+         */
+        public Builder contextClient(Supplier<Client> contextClient) {
+            this.contextClient = checkNotNull(contextClient);
+            return this;
+        }
+
+        /**
          * Returns a fully-initialized instance of the Delivery {@code BoundedContextBuilder}.
          */
         @VisibleForTesting
         public BoundedContextBuilder context() {
+            checkNotNull(contextClient, "The context client supplier must not be `null`.");
             return BoundedContext
                     .singleTenant(NAME)
                     .add(SessionRegistry.class)
                     .add(new InboxModifierRepo())
-                    .add(new MessageHolderRepo());
+                    .add(new MessageHolderRepo())
+                    .add(new SessionsCleanerProcessRepo(contextClient));
         }
     }
 }

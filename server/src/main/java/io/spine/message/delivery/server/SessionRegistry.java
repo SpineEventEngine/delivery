@@ -56,7 +56,7 @@ final class SessionRegistry
         if (state.hasPickedBy()) {
             var shard = id();
             var worker = state.getPickedBy();
-            _debug().log("Shard `%s` is already picked up by `%s`.", worker, shard);
+            _debug().log("Shard `%s` is already picked up by `%s`.", shard, worker);
             throw ShardAlreadyPickedUp.newBuilder()
                     .setShard(shard)
                     .setWorker(worker)

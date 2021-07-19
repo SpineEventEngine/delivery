@@ -7,6 +7,7 @@
 package io.spine.message.delivery.server;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.grpc.inprocess.InProcessChannelBuilder;
 import io.spine.client.Client;
 import io.spine.environment.Production;
 import io.spine.logging.Logging;
@@ -19,8 +20,13 @@ import io.spine.server.transport.memory.InMemoryTransportFactory;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.base.Suppliers.memoize;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -53,6 +59,7 @@ public final class App implements Logging {
 
     private @MonotonicNonNull GrpcContainer internalGrpc;
     private @MonotonicNonNull GrpcContainer remoteGrpc;
+    private @MonotonicNonNull Supplier<Client> internalClient;
 
     /**
      * Creates a new instance of the application.
@@ -74,17 +81,35 @@ public final class App implements Logging {
     @VisibleForTesting
     public void initAndStart() {
         initEnv();
-        var deliveryContext = DeliveryContext.newBuilder().build();
+        this.internalClient = memoize(App::internalClient);
+        var deliveryContext = DeliveryContext.newBuilder()
+                .contextClient(internalClient)
+                .build();
         this.internalGrpc = startInternalGrpc(deliveryContext);
-        this.remoteGrpc = startRemoteGrpc(deliveryContext);
+        this.remoteGrpc = startRemoteGrpc(deliveryContext, internalClient);
 
-        remoteGrpc.awaitTermination();
         internalGrpc.awaitTermination();
+        remoteGrpc.awaitTermination();
     }
 
-    private GrpcContainer startRemoteGrpc(DeliveryContext deliveryContext) {
-        var internalClient = Client.inProcess(NAME)
-                                   .build();
+    private static Client internalClient() {
+        var channel = InProcessChannelBuilder
+                .forName(NAME)
+                .executor(parallelExecutor())
+                .build();
+        return Client
+                .usingChannel(channel)
+                .build();
+    }
+
+    private static ExecutorService parallelExecutor() {
+        ThreadFactory threads = Executors.defaultThreadFactory();
+        ExecutorService executor = Executors.newCachedThreadPool(threads);
+        return executor;
+    }
+
+    private GrpcContainer
+    startRemoteGrpc(DeliveryContext deliveryContext, Supplier<Client> internalClient) {
         var remoteGrpc =
                 registerContext(GrpcContainer.atPort(PORT), deliveryContext)
                         .addService(new SessionRegistryService(internalClient))
@@ -125,19 +150,20 @@ public final class App implements Logging {
     }
 
     /**
-     * Returns the associated remote gRPC server container.
+     * Shuts down the application.
      */
     @VisibleForTesting
-    public GrpcContainer remoteGrpc() {
-        return remoteGrpc;
-    }
-
-    /**
-     * Returns the associated internal gRPC server container.
-     */
-    @VisibleForTesting
-    public GrpcContainer internalGrpc() {
-        return internalGrpc;
+    public void shutdown() {
+        if (internalClient != null) {
+            internalClient.get()
+                          .shutdown();
+        }
+        if (internalGrpc != null) {
+            internalGrpc.shutdownNowAndWait();
+        }
+        if (remoteGrpc != null) {
+            remoteGrpc.shutdownNowAndWait();
+        }
     }
 
     private static void initEnv() {

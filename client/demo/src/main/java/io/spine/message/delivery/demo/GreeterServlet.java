@@ -8,6 +8,7 @@ package io.spine.message.delivery.demo;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.net.MediaType;
 import io.spine.client.Subscription;
 import io.spine.message.delivery.demo.command.SayHello;
 import io.spine.message.delivery.demo.event.SaidHello;
@@ -33,6 +34,7 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
 public final class GreeterServlet extends ContextAwareServlet {
 
     @Override
+    @SuppressWarnings("UnstableApiUsage" /* `MediaType` is available for around 10 years now. */)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         _debug().log("Handling a greeting.");
         String personName = req.getParameter("name");
@@ -49,14 +51,17 @@ public final class GreeterServlet extends ContextAwareServlet {
                 .setName(personName)
                 .vBuild();
         CountDownLatch greeted = new CountDownLatch(1);
+        long startTime = System.currentTimeMillis();
         ImmutableSet<Subscription> subscriptions = spineClient
                 .asGuest()
                 .command(sayHello)
                 .observe(SaidHello.class, e -> {
+                    long endTime = System.currentTimeMillis();
                     String greeting = e.getGreeting();
-                    _info().log("Said `%s` to `%s`.", greeting, personName);
+                    _info().log("Said `%s` to `%s` in %d ms.",
+                                greeting, personName, (endTime - startTime));
                     try {
-                        resp.setContentType("text/plain");
+                        resp.setContentType(MediaType.PLAIN_TEXT_UTF_8.type());
                         resp.getWriter()
                             .println(greeting);
                         resp.setStatus(SC_OK);
@@ -70,7 +75,7 @@ public final class GreeterServlet extends ContextAwareServlet {
                 })
                 .onServerError((msg, error) -> {
                     _trace().log(
-                            "Server was not able to handle command `%s`: %s",
+                            "Server was not able to handle the command `%s`: %s",
                             msg.getClass(), error
                     );
                     greeted.countDown();
@@ -79,6 +84,7 @@ public final class GreeterServlet extends ContextAwareServlet {
         try {
             _debug().log("Waiting for the command to path through.");
             greeted.await(3, TimeUnit.SECONDS);
+            _trace().log("Greeted latch count is %d.", greeted.getCount());
         } catch (InterruptedException e) {
             throw newIllegalStateException(e, "Hanged while waiting for a greeting :-(");
         }
