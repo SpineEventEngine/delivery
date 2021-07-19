@@ -25,6 +25,12 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Releases sessions picked up prior to the configured inactivity period.
+ *
+ * <p>This process is intended to be used as a last resort functionality to remove locks
+ * from stale session registries.
+ */
 final class SessionsCleanerProcess
         extends ProcessManager<SessionsCleanerId, SessionsCleaner, SessionsCleaner.Builder>
         implements Logging {
