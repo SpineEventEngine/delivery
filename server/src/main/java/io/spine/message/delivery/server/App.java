@@ -88,8 +88,8 @@ public final class App implements Logging {
         this.internalGrpc = startInternalGrpc(deliveryContext);
         this.remoteGrpc = startRemoteGrpc(deliveryContext, internalClient);
 
-        remoteGrpc.awaitTermination();
         internalGrpc.awaitTermination();
+        remoteGrpc.awaitTermination();
     }
 
     private static Client internalClient() {
