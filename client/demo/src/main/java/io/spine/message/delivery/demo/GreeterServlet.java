@@ -84,6 +84,7 @@ public final class GreeterServlet extends ContextAwareServlet {
         try {
             _debug().log("Waiting for the command to path through.");
             greeted.await(3, TimeUnit.SECONDS);
+            _trace().log("Greeted latch count is %d.", greeted.getCount());
         } catch (InterruptedException e) {
             throw newIllegalStateException(e, "Hanged while waiting for a greeting :-(");
         }

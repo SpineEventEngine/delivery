@@ -69,7 +69,6 @@ public final class GreetArmyServlet extends ContextAwareServlet {
                 })
                 .post();
         _debug().log("Subscribed on `SaidHello` events.");
-//        post(greetAnArmy);
         spineClient
                 .asGuest()
                 .command(greetAnArmy)
@@ -77,7 +76,8 @@ public final class GreetArmyServlet extends ContextAwareServlet {
         _debug().log("Army greeting requested.");
         try {
             _debug().log("Waiting the army to be greeted.");
-            greeted.await(10, TimeUnit.MINUTES);
+            greeted.await(5, TimeUnit.MINUTES);
+            _trace().log("Greeted army latch count is %d.", greeted.getCount());
         } catch (InterruptedException e) {
             throw newIllegalStateException(
                     e, "Hanged while waiting for the army to be greeted greeting :-("
