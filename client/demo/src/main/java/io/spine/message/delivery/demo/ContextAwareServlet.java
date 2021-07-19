@@ -11,18 +11,12 @@ import com.google.common.flogger.FluentLogger;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.inprocess.InProcessChannelBuilder;
-import io.spine.base.CommandMessage;
 import io.spine.base.Production;
-import io.spine.client.ActorRequestFactory;
 import io.spine.client.Client;
-import io.spine.core.Command;
 import io.spine.core.TenantId;
-import io.spine.core.UserId;
-import io.spine.grpc.StreamObservers;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.DeliveryBootstrapper;
 import io.spine.message.delivery.client.DeliveryClient;
-import io.spine.server.BoundedContext;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.DeploymentType;
 import io.spine.server.Server;
@@ -69,8 +63,6 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
     protected static final String SERVER_NAME = "DemoServer";
     protected static final Server server;
     protected static final Client spineClient;
-    protected static final BoundedContext greeterContext;
-    protected static final ActorRequestFactory actorRequestFactory;
     protected static final ShardedWorkRegistry workRegistry;
 
     static {
@@ -81,23 +73,6 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         server = startServer();
         spineClient = inProcessClient();
         client = ofInstance(remoteDelivery());
-        greeterContext = GreeterContext.builder().build();
-        actorRequestFactory = requestFactory();
-    }
-
-    protected static <C extends CommandMessage> void post(C command) {
-        Command cmd = actorRequestFactory.command().create(command);
-        greeterContext.commandBus()
-                      .post(cmd, StreamObservers.noOpObserver());
-    }
-
-    private static ActorRequestFactory requestFactory() {
-        UserId actor = UserId.newBuilder()
-                .setValue("Demo")
-                .vBuild();
-        return ActorRequestFactory.newBuilder()
-                .setActor(actor)
-                .build();
     }
 
     private static DeliveryClient remoteDelivery() {
@@ -110,7 +85,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
      * <p>For load-testing purposes only.
      */
     private static ManagedChannel deliveryServerChannel() {
-        String server = "dns:///"+GCE_SERVER+":8484";
+        String server = "dns:///" + GCE_SERVER + ":8484";
         return ManagedChannelBuilder
                 .forTarget(server)
                 .executor(parallelExecutor())
