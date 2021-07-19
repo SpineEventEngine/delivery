@@ -85,7 +85,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
      * <p>For load-testing purposes only.
      */
     private static ManagedChannel deliveryServerChannel() {
-        String server = "localhost:8484";
+        String server = "dns:///" + GCE_SERVER + ":8484";
         return ManagedChannelBuilder
                 .forTarget(server)
                 .executor(parallelExecutor())
