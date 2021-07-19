@@ -22,7 +22,6 @@ dependencies {
     runtimeOnly(Flogger.Runtime.log4J2)
     implementation(project(":client"))
     implementation(Log4j2.api)
-    implementation(Grpc.core)
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)
     implementation(AppEngine.api)  // Latest App Engine APIs.
