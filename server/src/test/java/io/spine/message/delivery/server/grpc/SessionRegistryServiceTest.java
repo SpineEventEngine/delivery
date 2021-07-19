@@ -127,6 +127,32 @@ final class SessionRegistryServiceTest {
     }
 
     @Test
+    @DisplayName("filter out sessions that were already released")
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    void filterOutAlreadyReleasedSessions() {
+        var pickShard = PickUpShard.newBuilder()
+                .setShard(shard)
+                .setWorker(worker)
+                .vBuild();
+        sessionRegistry.pickShard(pickShard);
+        Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
+        var releaseExpired = ReleaseExpiredSessions.newBuilder()
+                .setInactivityPeriod(Durations.fromSeconds(1))
+                .vBuild();
+        ExpiredSessionsReleased released = sessionRegistry.releaseSessions(releaseExpired);
+        assertThat(released.getShardCount())
+                .isEqualTo(1);
+        ExpiredSession expiredSession = released.getShard(0);
+        assertThat(expiredSession.getShard())
+                .isEqualTo(shard);
+        assertThat(expiredSession.getPickedBy())
+                .isEqualTo(worker);
+        ExpiredSessionsReleased result = sessionRegistry.releaseSessions(releaseExpired);
+        assertThat(result.getShardCount())
+                .isEqualTo(0);
+    }
+
+    @Test
     @DisplayName("release no expired sessions if does not match the criteria")
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void releaseNoExpiresSessions() {
