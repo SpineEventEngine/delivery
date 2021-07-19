@@ -56,10 +56,7 @@ final class AppTest {
 
     @AfterEach
     void shutdownApp() {
-        app.remoteGrpc()
-           .shutdownNowAndWait();
-        app.internalGrpc()
-           .shutdownNowAndWait();
+        app.shutdown();
     }
 
     @Test

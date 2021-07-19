@@ -59,6 +59,7 @@ public final class App implements Logging {
 
     private @MonotonicNonNull GrpcContainer internalGrpc;
     private @MonotonicNonNull GrpcContainer remoteGrpc;
+    private @MonotonicNonNull Supplier<Client> internalClient;
 
     /**
      * Creates a new instance of the application.
@@ -80,7 +81,7 @@ public final class App implements Logging {
     @VisibleForTesting
     public void initAndStart() {
         initEnv();
-        Supplier<Client> internalClient = memoize(App::internalClient);
+        this.internalClient = memoize(App::internalClient);
         var deliveryContext = DeliveryContext.newBuilder()
                 .contextClient(internalClient)
                 .build();
@@ -162,6 +163,23 @@ public final class App implements Logging {
     @VisibleForTesting
     public GrpcContainer internalGrpc() {
         return internalGrpc;
+    }
+
+    /**
+     * Shuts down the application.
+     */
+    @VisibleForTesting
+    public void shutdown() {
+        if (internalClient != null) {
+            internalClient.get()
+                          .shutdown();
+        }
+        if (internalGrpc != null) {
+            internalGrpc.shutdownNowAndWait();
+        }
+        if (remoteGrpc != null) {
+            remoteGrpc.shutdownNowAndWait();
+        }
     }
 
     private static void initEnv() {
