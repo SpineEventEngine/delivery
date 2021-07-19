@@ -88,7 +88,7 @@ final class SessionsCleanerProcess
      * @apiNote This method is intended to be used as part of the entity configuration
      *         done through the repository.
      */
-    public void setClient(Client client) {
+    void setClient(Client client) {
         this.client = checkNotNull(client);
     }
 }
