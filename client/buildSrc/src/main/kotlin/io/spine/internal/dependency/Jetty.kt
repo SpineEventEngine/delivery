@@ -8,7 +8,7 @@ package io.spine.internal.dependency
 
 // https://www.eclipse.org/jetty/
 object Jetty {
-    private const val version = "10.0.5"
+    private const val version = "10.0.6"
     const val server = "org.eclipse.jetty:jetty-server:${version}"
     const val servlet = "org.eclipse.jetty:jetty-servlet:${version}"
     const val webapp = "org.eclipse.jetty:jetty-webapp:${version}"
