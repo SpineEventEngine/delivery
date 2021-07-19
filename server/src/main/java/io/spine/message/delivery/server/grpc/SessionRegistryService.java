@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.nullToEmpty;
 import static io.grpc.Status.FAILED_PRECONDITION;
+import static io.grpc.Status.INTERNAL;
 import static io.grpc.Status.fromCode;
 import static io.grpc.Status.fromThrowable;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
@@ -139,7 +140,10 @@ public final class SessionRegistryService
                       })
                       .onServerError((msg, error) -> {
                           logServerError(msg, error);
-                          responseObserver.onError(fromCode(Status.Code.INTERNAL).asException());
+                          responseObserver.onError(
+                                  INTERNAL.withDescription(error.getMessage())
+                                          .asRuntimeException()
+                          );
                           latch.countDown();
                       })
                       .onStreamingError((error) -> {
