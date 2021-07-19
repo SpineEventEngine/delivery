@@ -25,5 +25,6 @@ service ShardSessionRegistryService {
     // Picks up the shard for processing.
     rpc PickShard(PickUpShard) returns (ShardPickedUp);
 
+    // Releases sessions which were picked up more earlier that the configured inactivity period.
     rpc ReleaseSessions(ReleaseExpiredSessions) returns (ExpiredSessionsReleased);
 }
