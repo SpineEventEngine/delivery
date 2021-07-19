@@ -7,6 +7,7 @@
 package io.spine.message.delivery.server;
 
 import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Timestamps;
 import io.spine.base.Time;
 import io.spine.client.Client;
@@ -35,6 +36,13 @@ final class SessionsCleanerProcess
         extends ProcessManager<SessionsCleanerId, SessionsCleaner, SessionsCleaner.Builder>
         implements Logging {
 
+    /**
+     * A static date used for the sessions {@code whenPicked} filtering.
+     *
+     * <p>January 1 2021, 00:00:00 UTC.
+     */
+    private static final Timestamp YEAR_2021 = Timestamps.fromMillis(1609459200000L);
+
     private @MonotonicNonNull Client client;
 
     @Assign
@@ -51,6 +59,8 @@ final class SessionsCleanerProcess
                                    .query()
                                    .whenPicked()
                                    .isLessThan(whenPickedPeriod)
+                                   .whenPicked()
+                                   .isGreaterThan(YEAR_2021)
                                    .build()
                       );
         _info().log(

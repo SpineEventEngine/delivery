@@ -129,6 +129,23 @@ final class SessionRegistryServiceTest {
                 .isEqualTo(worker);
     }
 
+    @Test
+    @DisplayName("release no expired sessions if does not match the criteria")
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    void releaseNoExpiresSessions() {
+        var pickShard = PickUpShard.newBuilder()
+                .setShard(shard)
+                .setWorker(worker)
+                .vBuild();
+        sessionRegistry.pickShard(pickShard);
+        var releaseExpired = ReleaseExpiredSessions.newBuilder()
+                .setInactivityPeriod(Durations.fromSeconds(30))
+                .vBuild();
+        ExpiredSessionsReleased result = sessionRegistry.releaseSessions(releaseExpired);
+        assertThat(result.getShardCount())
+                .isEqualTo(0);
+    }
+
     private static ManagedChannel localServer() {
         return ManagedChannelBuilder
                 .forAddress(App.HOST, App.PORT)
