@@ -51,7 +51,7 @@ application {
 appengine {
     deploy {
         projectId = gcpProject
-        version = "4-b8"
+        version = "4"
     }
     stage {
         setArtifact(file("${uberJarFolder}/${uberJarName}.jar"))
