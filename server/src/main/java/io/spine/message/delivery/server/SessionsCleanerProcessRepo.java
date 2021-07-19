@@ -18,19 +18,25 @@ import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * A repository of {@link SessionsCleanerProcess}.
+ */
 final class SessionsCleanerProcessRepo
         extends ProcessManagerRepository<SessionsCleanerId, SessionsCleanerProcess, SessionsCleaner> {
 
     /**
      * The only cleaner in the context.
      */
-    static final SessionsCleanerId cleaner = SessionsCleanerId.newBuilder()
+    private static final SessionsCleanerId cleaner = SessionsCleanerId.newBuilder()
             .setValue("Mr. Proper")
             .vBuild();
 
     private final Supplier<Client> clientSupplier;
     private @MonotonicNonNull Client client;
 
+    /**
+     * Creates a new repository with the {@code clientSupplier} to be used by the cleaner process.
+     */
     SessionsCleanerProcessRepo(Supplier<Client> clientSupplier) {
         super();
         this.clientSupplier = checkNotNull(clientSupplier);
