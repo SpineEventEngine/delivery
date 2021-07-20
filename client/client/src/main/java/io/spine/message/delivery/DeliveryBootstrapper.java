@@ -7,8 +7,8 @@
 package io.spine.message.delivery;
 
 import io.grpc.ManagedChannel;
-import io.spine.message.delivery.client.DeliveryClient;
 import io.spine.message.delivery.client.RemoteInboxStorage;
+import io.spine.message.delivery.client.SimpleDeliveryClient;
 import io.spine.message.delivery.client.WorkRegistry;
 import io.spine.server.delivery.Delivery;
 import io.spine.server.delivery.DeliveryBuilder;
@@ -21,7 +21,7 @@ import static com.google.common.base.Suppliers.memoize;
 
 /**
  * Provides fluent API for building a {@link Delivery} backed by the Message Delivery Server and
- * based on the {@link DeliveryClient}.
+ * based on the {@link SimpleDeliveryClient}.
  */
 public final class DeliveryBootstrapper {
 
@@ -53,7 +53,7 @@ public final class DeliveryBootstrapper {
      */
     public DeliveryBuilder init() {
         checkNotNull(channel, "The gRPC channel must not be `null`.");
-        Supplier<DeliveryClient> client = () -> DeliveryClient.create(channel.get());
+        Supplier<SimpleDeliveryClient> client = () -> SimpleDeliveryClient.create(channel.get());
         return Delivery.newBuilder()
                 .setInboxStorage(new RemoteInboxStorage(memoize(client::get)))
                 .setWorkRegistry(new WorkRegistry(memoize(client::get)));

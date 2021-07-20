@@ -15,4 +15,7 @@ dependencies {
     implementation(Spine.server)
     testImplementation(Spine.Test.server)
     testRuntimeOnly(Grpc.nettyShaded)
+
+    // Use this one to run the app locally.
+    //implementation(Grpc.nettyShaded)
 }

@@ -19,6 +19,7 @@ subprojects {
     apply<JavadocConventionPlugin>()
     apply<DependencyManagementPlugin>()
     apply<CodeQualityPlugin>()
+    apply<SpinePlugin>()
 }
 
 spinePublishing {

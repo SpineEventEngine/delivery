@@ -34,7 +34,7 @@ application {
     )
 }
 
-val appClassName = "io.spine.message.delivery.server.App"
+val appClassName = "io.spine.message.delivery.server.SimpleApp"
 project.setProperty("mainClassName", appClassName)
 
 tasks.withType<ShadowJar> {
@@ -48,7 +48,7 @@ tasks.withType<ShadowJar> {
 
 jib {
     to {
-        image = "gcr.io/${gcpProject}/message-delivery-server"
+        image = "gcr.io/${gcpProject}/simple-message-delivery-server"
         tags = setOf("latest")
     }
     container {

@@ -16,7 +16,7 @@ import io.spine.client.Client;
 import io.spine.core.TenantId;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.DeliveryBootstrapper;
-import io.spine.message.delivery.client.DeliveryClient;
+import io.spine.message.delivery.client.SimpleDeliveryClient;
 import io.spine.server.BoundedContextBuilder;
 import io.spine.server.DeploymentType;
 import io.spine.server.Server;
@@ -60,11 +60,11 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
 
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
-    private static final String GCE_SERVER = "message-delivery-server.c.spine-dev.internal";
-    private static final ExecutorService limitedCachingExecutor = parallelExecutor();
+    private static final String GCE_SERVER = "simple-message-delivery-server.c.spine-dev.internal";
+    private static final ExecutorService limitedCachingExecutor = Executors.newFixedThreadPool(50);
     private static final ManagedChannel channel;
 
-    protected static final Supplier<DeliveryClient> client;
+    protected static final Supplier<SimpleDeliveryClient> client;
     protected static final String SERVER_NAME = "DemoServer";
     protected static final Server server;
     protected static final Client spineClient;
@@ -80,8 +80,8 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         client = ofInstance(remoteDelivery());
     }
 
-    private static DeliveryClient remoteDelivery() {
-        return DeliveryClient.create(channel);
+    private static SimpleDeliveryClient remoteDelivery() {
+        return SimpleDeliveryClient.create(channel);
     }
 
     /**
@@ -91,6 +91,8 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
      */
     private static ManagedChannel deliveryServerChannel() {
         String server = "dns:///" + GCE_SERVER + ":8484";
+        // Or use this one for local runs.
+//        String server = "127.0.0.1:8484";
         return ManagedChannelBuilder
                 .forTarget(server)
                 .executor(limitedCachingExecutor)
