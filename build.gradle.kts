@@ -24,7 +24,8 @@ subprojects {
 
 spinePublishing {
     projectsToPublish.addAll(
-        "server"
+        "server",
+        "model"
     )
     targetRepositories.addAll(
         PublishingRepos.gitHub("message-delivery")
