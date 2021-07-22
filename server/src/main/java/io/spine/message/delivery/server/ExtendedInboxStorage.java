@@ -6,11 +6,17 @@
 
 package io.spine.message.delivery.server;
 
+import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.protobuf.Timestamp;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.InboxStorage;
+import io.spine.server.delivery.ShardIndex;
 import io.spine.server.storage.StorageFactory;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.Optional;
 
 /**
  * Extends the {@link InboxStorage} by exposing some of API endpoints into {@code public}.
@@ -28,12 +34,23 @@ public class ExtendedInboxStorage extends InboxStorage {
 
     @CanIgnoreReturnValue
     @Override
-    public boolean delete(InboxMessageId id) {
+    public synchronized boolean delete(InboxMessageId id) {
         return super.delete(id);
     }
 
     @Override
-    public void deleteAll(Iterable<InboxMessageId> ids) {
+    public synchronized void deleteAll(Iterable<InboxMessageId> ids) {
         super.deleteAll(ids);
+    }
+
+    @Override
+    public synchronized Optional<InboxMessage> read(InboxMessageId id) {
+        return super.read(id);
+    }
+
+    @Override
+    public synchronized ImmutableList<InboxMessage>
+    readAll(ShardIndex index, @Nullable Timestamp sinceWhen, int pageSize) {
+        return super.readAll(index, sinceWhen, pageSize);
     }
 }

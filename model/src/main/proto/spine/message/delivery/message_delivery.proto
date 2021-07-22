@@ -24,18 +24,8 @@ import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
 
 
-// A single-stop service acting as an back-end implementation for `InboxStorage`
-// and `ShardSessionRegistry`.
-service MessageDeliveryService {
-
-    // Picks up the shard for processing.
-    rpc PickShard(PickUpShard) returns (ShardPickedUp);
-
-    // Releases the shard after its processing is done.
-    rpc ReleaseSession(ReleaseShard) returns (google.protobuf.Empty);
-
-    // Releases sessions which were picked up earlier that the configured inactivity period.
-    rpc ReleaseSessions(ReleaseExpiredSessions) returns (ExpiredSessionsReleased);
+// Acts as a back-end implementation for `InboxStorage`.
+service InboxService {
 
     // Writes a single message to the `InboxStorage`.
     rpc WriteOne(WriteMessage) returns (google.protobuf.Empty);
@@ -57,6 +47,19 @@ service MessageDeliveryService {
 
     // Finds the latest `InboxMessage` in `TO_DELIVER` status, which belongs to the specified shard.
     rpc NewestMessageToDeliver(spine.server.delivery.ShardIndex) returns (OptionalInboxMessage);
+}
+
+// Acts as a back-end implementation for `ShardSessionRegistry`.
+service ShardService {
+
+    // Picks up the shard for processing.
+    rpc PickShard(PickUpShard) returns (ShardPickedUp);
+
+    // Releases the shard after its processing is done.
+    rpc ReleaseSession(ReleaseShard) returns (google.protobuf.Empty);
+
+    // Releases sessions which were picked up earlier that the configured inactivity period.
+    rpc ReleaseSessions(ReleaseExpiredSessions) returns (ExpiredSessionsReleased);
 }
 
 // A query to read `InboxMessage`s.

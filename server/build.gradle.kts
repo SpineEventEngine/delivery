@@ -17,5 +17,5 @@ dependencies {
     testRuntimeOnly(Grpc.nettyShaded)
 
     // Use this one to run the app locally.
-    //implementation(Grpc.nettyShaded)
+//    implementation(Grpc.nettyShaded)
 }

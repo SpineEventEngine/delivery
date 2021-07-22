@@ -96,8 +96,8 @@ public final class GreetArmyServlet extends ContextAwareServlet {
     private void logPerformance(int howManySoldiers, long startMillis) {
         long endMillis = System.currentTimeMillis();
         long durationMillis = endMillis - startMillis;
-        long perSoldier = durationMillis / howManySoldiers;
-        _info().log("Army was greeted for %d ms. That's about %d ms per soldier.",
+        double perSoldier = durationMillis / (double) howManySoldiers;
+        _info().log("Army was greeted for %d ms. That's about %f ms per soldier.",
                     durationMillis, perSoldier);
     }
 }

@@ -10,7 +10,8 @@ import com.google.common.annotations.VisibleForTesting;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.spine.logging.Logging;
-import io.spine.message.delivery.server.grpc.MessageDeliveryService;
+import io.spine.message.delivery.server.grpc.InboxService;
+import io.spine.message.delivery.server.grpc.ShardService;
 
 import java.util.concurrent.ExecutorService;
 
@@ -18,8 +19,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
- * Application exposing only a {@link io.spine.message.delivery.server.grpc.MessageDeliveryService
- * MessageDeliveryService} instance via gRPC.
+ * Application exposing only an {@link InboxService} and {@link ShardService} instances via gRPC.
  */
 public final class SimpleApp implements Logging {
 
@@ -58,11 +58,13 @@ public final class SimpleApp implements Logging {
 
     @SuppressWarnings("OverlyBroadCatchBlock")
     private void initAndStart() {
-        MessageDeliveryService service = new MessageDeliveryService();
+        InboxService inboxService = new InboxService();
+        ShardService shardService = new ShardService();
         Server server =
                 ServerBuilder.forPort(PORT)
                              .executor(executor)
-                             .addService(service)
+                             .addService(inboxService)
+                             .addService(shardService)
                              .build();
         _info().log("Starting gRPC server...");
         try {

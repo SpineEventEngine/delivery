@@ -60,8 +60,12 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
 
     /** The number of shards used for the signal delivery. **/
     private static final int NUMBER_OF_SHARDS = 50;
+
+    @SuppressWarnings("unused")
     private static final String GCE_SERVER = "simple-message-delivery-server.c.spine-dev.internal";
-    private static final ExecutorService limitedCachingExecutor = Executors.newFixedThreadPool(50);
+
+    private static final ExecutorService limitedCachingExecutor = Executors.newFixedThreadPool(250);
+    private static final ExecutorService observerExecutor = Executors.newFixedThreadPool(50);
     private static final ManagedChannel channel;
 
     protected static final Supplier<SimpleDeliveryClient> client;
@@ -152,7 +156,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
         Delivery delivery = deliveryBuilder
                 .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
                 .build();
-        delivery.subscribe(new AsyncLocalObserver(limitedCachingExecutor));
+        delivery.subscribe(new AsyncLocalObserver(observerExecutor));
         ServerEnvironment
                 .when(Production.class)
                 .use(delivery)
@@ -196,6 +200,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
      */
     private static final class AsyncLocalObserver implements ShardObserver {
 
+        @SuppressWarnings({"FieldCanBeLocal", "unused"})
         private final ExecutorService executor;
 
         private AsyncLocalObserver(ExecutorService executor) {

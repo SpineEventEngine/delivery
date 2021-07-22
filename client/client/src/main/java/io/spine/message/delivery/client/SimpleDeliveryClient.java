@@ -8,8 +8,10 @@ package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
+import io.grpc.Context;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -23,11 +25,12 @@ import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
-import io.spine.message.delivery.grpc.MessageDeliveryServiceGrpc;
-import io.spine.message.delivery.grpc.MessageDeliveryServiceGrpc.MessageDeliveryServiceBlockingStub;
+import io.spine.message.delivery.grpc.InboxServiceGrpc;
 import io.spine.message.delivery.grpc.OptionalInboxMessage;
 import io.spine.message.delivery.grpc.PageOfMessages;
 import io.spine.message.delivery.grpc.ReadMessagesSinceTime;
+import io.spine.message.delivery.grpc.ShardServiceGrpc;
+import io.spine.message.delivery.grpc.ShardServiceGrpc.ShardServiceBlockingStub;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageComparator;
@@ -41,6 +44,8 @@ import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static com.google.common.util.concurrent.Futures.getUnchecked;
+import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.util.Preconditions2.checkPositive;
@@ -48,16 +53,18 @@ import static io.spine.util.Preconditions2.checkPositive;
 /**
  * A delivery client which performs all of its operation through {@code MessageDeliveryService}.
  */
-@SuppressWarnings({"ResultOfMethodCallIgnored", "OverlyCoupledClass"})
+@SuppressWarnings({"ResultOfMethodCallIgnored", "OverlyCoupledClass", "FutureReturnValueIgnored"})
 public final class SimpleDeliveryClient
         implements InboxClient, SessionRegistryClient, Logging {
 
     private static final FluentLogger logger = Logging.loggerFor(SimpleDeliveryClient.class);
 
-    private final MessageDeliveryServiceBlockingStub messageDeliveryService;
+    private final InboxServiceGrpc.InboxServiceFutureStub inboxService;
+    private final ShardServiceBlockingStub shardService;
 
     private SimpleDeliveryClient(ManagedChannel channel) {
-        messageDeliveryService = MessageDeliveryServiceGrpc.newBlockingStub(channel);
+        shardService = ShardServiceGrpc.newBlockingStub(channel);
+        inboxService = InboxServiceGrpc.newFutureStub(channel);
     }
 
     /**
@@ -92,7 +99,13 @@ public final class SimpleDeliveryClient
         WriteMessage writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        messageDeliveryService.writeOne(writeMessage);
+        withNewGrpcContext(() -> inboxService.writeOne(writeMessage));
+    }
+
+    private static void withNewGrpcContext(Runnable action) {
+        Context forked = Context.current()
+                                .fork();
+        forked.run(action);
     }
 
     @Override
@@ -103,7 +116,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        messageDeliveryService.writeMany(writeMessages);
+        withNewGrpcContext(() -> inboxService.writeMany(writeMessages));
     }
 
     @Override
@@ -112,7 +125,7 @@ public final class SimpleDeliveryClient
         RemoveMessage removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        messageDeliveryService.removeOne(removeMessage);
+        withNewGrpcContext(() -> inboxService.removeOne(removeMessage));
     }
 
     @Override
@@ -123,7 +136,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        messageDeliveryService.removeMany(removeMessages);
+        withNewGrpcContext(() -> inboxService.removeMany(removeMessages));
     }
 
     @Override
@@ -135,7 +148,7 @@ public final class SimpleDeliveryClient
                 .setWorker(worker)
                 .vBuild();
         try {
-            ShardPickedUp shardPickedUp = messageDeliveryService.pickShard(pickUpShard);
+            ShardPickedUp shardPickedUp = shardService.pickShard(pickUpShard);
             return Optional.of(shardPickedUp);
         } catch (StatusRuntimeException e) {
             _trace().log("[SimpleClient] Unable to pick up shard `%s`: %s.",
@@ -152,28 +165,37 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        messageDeliveryService.releaseSession(releaseShard);
+        shardService.releaseSession(releaseShard);
     }
 
     @Override
     public ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod) {
         checkNotDefaultArg(inactivityPeriod);
-        ReleaseExpiredSessions releaseExpiredSessions = ReleaseExpiredSessions.newBuilder()
+        ReleaseExpiredSessions command = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(inactivityPeriod)
                 .vBuild();
         _trace().log(
                 "[SimpleClient] Posting `ReleaseExpiredSessions` command" +
                         " and waiting for a response event `ExpiredSessionsReleased`."
         );
-        ExpiredSessionsReleased sessionsReleased =
-                messageDeliveryService.releaseSessions(releaseExpiredSessions);
+        ExpiredSessionsReleased sessionsReleased = shardService.releaseSessions(command);
         return sessionsReleased;
     }
 
     @Override
     public Optional<InboxMessage> find(InboxMessageId messageId) {
         checkNotDefaultArg(messageId);
-        OptionalInboxMessage result = messageDeliveryService.findOne(messageId);
+
+        OptionalInboxMessage result;
+        try {
+            ListenableFuture<OptionalInboxMessage> future =
+                    Context.current()
+                           .fork()
+                           .call(() -> inboxService.findOne(messageId));
+            result = getUnchecked(future);
+        } catch (Exception e) {
+            throw illegalStateWithCauseOf(e);
+        }
         return asOptional(result);
     }
 
@@ -205,7 +227,17 @@ public final class SimpleDeliveryClient
             queryBuilder.setSinceWhen(sinceWhen);
         }
         ReadMessagesSinceTime query = queryBuilder.vBuild();
-        PageOfMessages page = messageDeliveryService.findManyInShard(query);
+
+        PageOfMessages page;
+        try {
+            ListenableFuture<PageOfMessages> future =
+                    Context.current()
+                           .fork()
+                           .call(() -> inboxService.findManyInShard(query));
+            page = getUnchecked(future);
+        } catch (Exception e) {
+            throw illegalStateWithCauseOf(e);
+        }
         ImmutableList<InboxMessage> result =
                 page.getMessageList()
                     .stream()
@@ -216,7 +248,16 @@ public final class SimpleDeliveryClient
 
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard) {
-        OptionalInboxMessage message = messageDeliveryService.newestMessageToDeliver(shard);
+        OptionalInboxMessage message;
+        try {
+            ListenableFuture<OptionalInboxMessage> future =
+                    Context.current()
+                           .fork()
+                           .call(() -> inboxService.newestMessageToDeliver(shard));
+            message = getUnchecked(future);
+        } catch (Exception e) {
+            throw illegalStateWithCauseOf(e);
+        }
         return asOptional(message);
     }
 }
