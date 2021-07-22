@@ -1,0 +1,220 @@
+/*
+ * Copyright 2021, TeamDev. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+package io.spine.server.storage.redis;
+
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterators;
+import com.google.protobuf.Any;
+import com.google.protobuf.FieldMask;
+import com.google.protobuf.Message;
+import io.spine.query.RecordQuery;
+import io.spine.query.SortBy;
+import io.spine.query.Subject;
+import io.spine.server.entity.EntityRecord;
+import io.spine.server.storage.RecordWithColumns;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.redisson.api.RMap;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Maps.filterValues;
+import static io.spine.protobuf.AnyPacker.pack;
+import static io.spine.protobuf.AnyPacker.unpack;
+import static io.spine.server.entity.FieldMasks.applyMask;
+import static io.spine.server.storage.redis.RecordComparator.accordingTo;
+import static java.util.stream.Collectors.toList;
+
+/**
+ * The Redis-based storage for message records.
+ *
+ * <p>Acts like a facade API for the operations available over the data of a single tenant.
+ *
+ * @param <I>
+ *         the type of the record identifiers
+ * @param <R>
+ *         the type of the stored records
+ */
+final class TenantRecords<I, R extends Message>
+        implements TenantDataStorage<I, RecordWithColumns<I, R>> {
+
+    private final RMap<I, RecordWithColumns<I, R>> records;
+
+    /**
+     * Creates a new tenant records facade backed by the supplied {@code records}.
+     */
+    TenantRecords(RMap<I, RecordWithColumns<I, R>> records) {
+        this.records = checkNotNull(records);
+    }
+
+    @Override
+    public Iterator<I> index() {
+        Iterator<I> result = records.keySet()
+                                    .iterator();
+        return result;
+    }
+
+    /**
+     * Obtains the iterator over the identifiers of the records which match the passed query.
+     */
+    Iterator<I> index(RecordQuery<I, R> query) {
+        List<RecordWithColumns<I, R>> subset = findRecords(query);
+        Iterator<I> result = Iterators.transform(subset.iterator(), RecordWithColumns::id);
+        return result;
+    }
+
+    @Override
+    public void put(I id, RecordWithColumns<I, R> record) {
+        records.put(id, record);
+    }
+
+    /**
+     * Returns the message with the passed identifier and applies the given field mask to it.
+     *
+     * <p>If there is no such a message stored, returns {@code Optional.empty()}.
+     */
+    Optional<R> get(I id, FieldMask mask) {
+        return get(id).map(r -> new FieldMaskApplier(mask).apply(r.record()));
+    }
+
+    @Override
+    public Optional<RecordWithColumns<I, R>> get(I id) {
+        RecordWithColumns<I, R> record = records.get(id);
+        return Optional.ofNullable(record);
+    }
+
+    /**
+     * Deletes an item with the specified {@code id}.
+     *
+     * @return {@code true} if the record is deleted, {@code false} otherwise
+     */
+    @SuppressWarnings("unchecked" /* we're covered by the class-level generics. */)
+    boolean delete(I id) {
+        return records.fastRemove(id) > 0;
+    }
+
+    /**
+     * Reads all the records according the to supplied {@code query}.
+     *
+     * <p>Filters and sorts the results based on the query spec.
+     */
+    Iterator<R> readAll(RecordQuery<I, R> query) {
+        FieldMask fieldMask = query.mask();
+        List<RecordWithColumns<I, R>> records = findRecords(query);
+        return records
+                .stream()
+                .map(RecordWithColumns::record)
+                .map(new FieldMaskApplier(fieldMask))
+                .iterator();
+    }
+
+    private List<RecordWithColumns<I, R>> findRecords(RecordQuery<I, R> query) {
+        Map<I, RecordWithColumns<I, R>> filtered = filterRecords(query.subject());
+        Stream<RecordWithColumns<I, R>> stream = filtered.values()
+                                                         .stream();
+        return sortAndLimit(stream, query).collect(toList());
+    }
+
+    private static <I, R extends Message> Stream<RecordWithColumns<I, R>>
+    sortAndLimit(Stream<RecordWithColumns<I, R>> data, RecordQuery<I, R> query) {
+        Stream<RecordWithColumns<I, R>> stream = data;
+        ImmutableList<SortBy<?, R>> sortingSpecs = query.sorting();
+        if (sortingSpecs.size() > 0) {
+            stream = stream.sorted(accordingTo(sortingSpecs.asList()));
+        }
+        Integer limit = query.limit();
+        if (limit != null && limit > 0) {
+            stream = stream.limit(limit);
+        }
+        return stream;
+    }
+
+    /**
+     * Filters the records returning only the ones matching the
+     * {@linkplain Subject subject of the record query}.
+     */
+    private Map<I, RecordWithColumns<I, R>> filterRecords(Subject<I, R> subject) {
+        RecordQueryMatcher<I, R> matcher = new RecordQueryMatcher<>(subject);
+        return filterValues(records, matcher::test);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return records.isEmpty();
+    }
+
+    /**
+     * A {@link Function} transforming the {@link EntityRecord} state by applying the given
+     * {@link FieldMask} to it.
+     *
+     * <p>The resulting {@link EntityRecord} has the same fields as the given one except
+     * the {@code state} field, which is masked.
+     */
+    private class FieldMaskApplier implements Function<R, R> {
+
+        private final FieldMask fieldMask;
+
+        private FieldMaskApplier(FieldMask fieldMask) {
+            this.fieldMask = fieldMask;
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public @Nullable R apply(@Nullable R input) {
+            if (null == input || fieldMask.getPathsList()
+                                          .isEmpty()) {
+                return input;
+            }
+            if (input instanceof EntityRecord) {
+                return (R) maskEntityRecord((EntityRecord) input);
+            }
+            return applyMask(fieldMask, input);
+        }
+
+        private EntityRecord maskEntityRecord(EntityRecord input) {
+            checkNotNull(input);
+            Any maskedState = maskAny(input.getState());
+            EntityRecord result = EntityRecord
+                    .newBuilder(input)
+                    .setState(maskedState)
+                    .vBuild();
+            return result;
+        }
+
+        private Any maskAny(Any message) {
+            Message stateMessage = unpack(message);
+            Message maskedMessage = applyMask(fieldMask, stateMessage);
+            Any result = pack(maskedMessage);
+            return result;
+        }
+    }
+}
