@@ -77,7 +77,11 @@ final class RedisRecordStorageTest {
             assertThat(Iterators.size(storage.index(query)))
                     .isEqualTo(0);
         }
+
+        //TODO:2021-07-23:yuri-sergiichuk: add more tests for empty storage.
     }
+
+    //TODO:2021-07-23:yuri-sergiichuk: add tests for a pre-filled storage.
 
     private static void startRedisContainer(GenericContainer<?> redis) {
         redis.start();
