@@ -27,13 +27,11 @@
 package io.spine.server.storage.redis;
 
 import com.google.protobuf.Message;
-import io.spine.core.TenantId;
 import io.spine.query.RecordQuery;
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.RecordStorage;
 import io.spine.server.storage.RecordWithColumns;
-import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 
 import java.util.Iterator;
@@ -62,18 +60,8 @@ public final class RedisRecordStorage<I, R extends Message> extends RecordStorag
      */
     RedisRecordStorage(ContextSpec context, RecordSpec<I, R, ?> recordSpec, RedissonClient client) {
         super(context, recordSpec);
-        this.multitenantStorage = new MultitenantStorage<>(context.isMultitenant()) {
-            @Override
-            TenantRecords<I, R> createSlice(TenantId tenant) {
-                Class<I> id = recordSpec.idType();
-                Class<? extends Message> source = recordSpec.sourceType();
-                String tenantRecordMap = String.format(
-                        "%s-%s-%s", tenant.getValue(), id.getName(), source.getName()
-                );
-                RMap<I, RecordWithColumns<I, R>> map = client.getMap(tenantRecordMap);
-                return new TenantRecords<>(map);
-            }
-        };
+        this.multitenantStorage =
+                new FlatTenantStorage<>(context.isMultitenant(), recordSpec, client);
     }
 
     private TenantRecords<I, R> records() {

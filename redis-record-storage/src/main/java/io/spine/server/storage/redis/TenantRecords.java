@@ -27,27 +27,32 @@
 package io.spine.server.storage.redis;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterators;
 import com.google.protobuf.Any;
 import com.google.protobuf.FieldMask;
+import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
+import io.spine.protobuf.Messages;
 import io.spine.query.RecordQuery;
 import io.spine.query.SortBy;
 import io.spine.query.Subject;
 import io.spine.server.entity.EntityRecord;
+import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.RecordWithColumns;
+import io.spine.string.Stringifiers;
+import io.spine.util.Exceptions;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.redisson.api.RMap;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Maps.filterValues;
+import static com.google.common.collect.Iterators.transform;
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.server.entity.FieldMasks.applyMask;
@@ -67,19 +72,23 @@ import static java.util.stream.Collectors.toList;
 final class TenantRecords<I, R extends Message>
         implements TenantDataStorage<I, RecordWithColumns<I, R>> {
 
-    private final RMap<I, RecordWithColumns<I, R>> records;
+    private final RMap<String, byte[]> records;
+    private final RecordSpec<I, R, ?> spec;
 
     /**
      * Creates a new tenant records facade backed by the supplied {@code records}.
      */
-    TenantRecords(RMap<I, RecordWithColumns<I, R>> records) {
+    TenantRecords(RMap<String, byte[]> records, RecordSpec<I, R, ?> spec) {
         this.records = checkNotNull(records);
+        this.spec = checkNotNull(spec);
     }
 
     @Override
     public Iterator<I> index() {
-        Iterator<I> result = records.keySet()
-                                    .iterator();
+        Set<String> keys = records.keySet();
+        Iterator<I> result = transform(
+                keys.iterator(), this::fromStorageKey
+        );
         return result;
     }
 
@@ -88,13 +97,37 @@ final class TenantRecords<I, R extends Message>
      */
     Iterator<I> index(RecordQuery<I, R> query) {
         List<RecordWithColumns<I, R>> subset = findRecords(query);
-        Iterator<I> result = Iterators.transform(subset.iterator(), RecordWithColumns::id);
+        Iterator<I> result = transform(subset.iterator(), RecordWithColumns::id);
         return result;
     }
 
     @Override
     public void put(I id, RecordWithColumns<I, R> record) {
-        records.put(id, record);
+        records.put(toStorageKey(id), serialize(record));
+    }
+
+    private byte[] serialize(RecordWithColumns<I, R> recordWithColumns) {
+        return recordWithColumns
+                .record()
+                .toByteArray();
+    }
+
+    private RecordWithColumns<I, R> deserialize(I id, byte[] recordBytes) {
+        Class<R> recordType = spec.storedType();
+        try {
+            @SuppressWarnings("unchecked" /* Checked by generic. */)
+            R record = (R) Messages
+                    .builderFor(recordType)
+                    .mergeFrom(recordBytes)
+                    .buildPartial();
+            return RecordWithColumns.of(id, record);
+        } catch (InvalidProtocolBufferException e) {
+            throw Exceptions.newIllegalStateException(
+                    e,
+                    "Unable to deserialize record of type `%s` with ID `%s`.",
+                    recordType, toStorageKey(id)
+            );
+        }
     }
 
     /**
@@ -108,8 +141,12 @@ final class TenantRecords<I, R extends Message>
 
     @Override
     public Optional<RecordWithColumns<I, R>> get(I id) {
-        RecordWithColumns<I, R> record = records.get(id);
-        return Optional.ofNullable(record);
+        byte[] recordBytes = records.get(toStorageKey(id));
+        if (recordBytes == null) {
+            return Optional.empty();
+        }
+        RecordWithColumns<I, R> record = deserialize(id, recordBytes);
+        return Optional.of(record);
     }
 
     /**
@@ -117,9 +154,8 @@ final class TenantRecords<I, R extends Message>
      *
      * @return {@code true} if the record is deleted, {@code false} otherwise
      */
-    @SuppressWarnings("unchecked" /* we're covered by the class-level generics. */)
     boolean delete(I id) {
-        return records.fastRemove(id) > 0;
+        return records.fastRemove(toStorageKey(id)) > 0;
     }
 
     /**
@@ -138,9 +174,7 @@ final class TenantRecords<I, R extends Message>
     }
 
     private List<RecordWithColumns<I, R>> findRecords(RecordQuery<I, R> query) {
-        Map<I, RecordWithColumns<I, R>> filtered = filterRecords(query.subject());
-        Stream<RecordWithColumns<I, R>> stream = filtered.values()
-                                                         .stream();
+        Stream<RecordWithColumns<I, R>> stream = filterRecords(query.subject());
         return sortAndLimit(stream, query).collect(toList());
     }
 
@@ -162,14 +196,26 @@ final class TenantRecords<I, R extends Message>
      * Filters the records returning only the ones matching the
      * {@linkplain Subject subject of the record query}.
      */
-    private Map<I, RecordWithColumns<I, R>> filterRecords(Subject<I, R> subject) {
-        RecordQueryMatcher<I, R> matcher = new RecordQueryMatcher<>(subject);
-        return filterValues(records, matcher::test);
+    private Stream<RecordWithColumns<I, R>> filterRecords(Subject<I, R> subject) {
+        Predicate<RecordWithColumns<I, R>> matcher = new RecordQueryMatcher<>(subject);
+        return records
+                .entrySet()
+                .stream()
+                .map(entry -> deserialize(fromStorageKey(entry.getKey()), entry.getValue()))
+                .filter(matcher);
     }
 
     @Override
     public boolean isEmpty() {
         return records.isEmpty();
+    }
+
+    private I fromStorageKey(String key) {
+        return Stringifiers.fromString(key, spec.idType());
+    }
+
+    private String toStorageKey(I key) {
+        return Stringifiers.toString(key, spec.idType());
     }
 
     /**
