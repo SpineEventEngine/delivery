@@ -28,6 +28,7 @@ package io.spine.server.storage.redis;
 
 import io.spine.core.TenantId;
 import io.spine.server.storage.MessageRecordSpec;
+import io.spine.server.storage.RecordSpec;
 import io.spine.test.entity.Project;
 import io.spine.test.entity.ProjectId;
 import org.junit.jupiter.api.AfterEach;
@@ -58,6 +59,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("`MultitenantStorage` should")
 class MultitenantStorageTest {
 
+    private static final RecordSpec<ProjectId, Project, ?> recordSpec = new MessageRecordSpec<>(
+            ProjectId.class, Project.class, Project::getId
+    );
+
     private static final boolean IS_MULTITENANT = false;
     @Container
     private final GenericContainer<?> redis = new GenericContainer<>(
@@ -82,9 +87,7 @@ class MultitenantStorageTest {
                     TenantRecords<ProjectId, Project> createSlice(TenantId tenant) {
                         String recordsMap = tenant.getValue() + '-' + getClass().getName();
                         RMap<String, byte[]> records = client.getMap(recordsMap);
-                        return new TenantRecords<>(records, new MessageRecordSpec<>(
-                                ProjectId.class, Project.class, Project::getId)
-                        );
+                        return new TenantRecords<>(records, recordSpec);
                     }
                 };
     }
