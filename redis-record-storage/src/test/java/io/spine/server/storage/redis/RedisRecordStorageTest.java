@@ -7,6 +7,8 @@
 package io.spine.server.storage.redis;
 
 import com.google.common.collect.Iterators;
+import io.spine.base.Identifier;
+import io.spine.query.RecordQuery;
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.MessageRecordSpec;
 import io.spine.server.storage.RecordSpec;
@@ -57,6 +59,22 @@ final class RedisRecordStorageTest {
         @DisplayName("when calling `index()`")
         void index() {
             assertThat(Iterators.size(storage.index()))
+                    .isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("when calling `index(RecordQuery query)`")
+        void indexQuery() {
+            ProjectId someId = ProjectId.newBuilder()
+                    .setId(Identifier.newUuid())
+                    .vBuild();
+            RecordQuery<ProjectId, Project> query =
+                    Project.query()
+                           .id()
+                           .is(someId)
+                           .build()
+                           .toRecordQuery();
+            assertThat(Iterators.size(storage.index(query)))
                     .isEqualTo(0);
         }
     }
