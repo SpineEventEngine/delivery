@@ -129,7 +129,7 @@ public class Sample {
      *         {@link FieldDescriptor} to take the type info from
      * @return a non-default generated value of type of the given field
      */
-    @SuppressWarnings({"OverlyComplexMethod", "BadImport" /* Use `Type` for brevity. */})
+    @SuppressWarnings("BadImport" /* Use `Type` for brevity. */)
     private static Object valueFor(FieldDescriptor field) {
         FieldDescriptor.Type type = field.getType();
         FieldDescriptor.JavaType javaType = type.getJavaType();
@@ -162,6 +162,12 @@ public class Sample {
         }
     }
 
+    /**
+     * Generates a random enum value for the specified {@code field}.
+     *
+     * <p>Value under index 0 is usually used to store `undefined` option so it is skipped.
+     * Use values with indexes from 1 to n.
+     */
     private static Object enumValueFor(FieldDescriptor field, Random random) {
         Descriptors.EnumDescriptor descriptor = field.getEnumType();
         List<Descriptors.EnumValueDescriptor> enumValues = descriptor.getValues();
@@ -170,9 +176,6 @@ public class Sample {
                     "There must be at least one `Enum` value for field `%s`.", field
             );
         }
-
-        // Value under index 0 is usually used to store `undefined` option
-        // Use values with indexes from 1 to n
         int index = random.nextInt(enumValues.size() - 1) + 1;
         Descriptors.EnumValueDescriptor enumValue = descriptor.findValueByNumber(index);
         return enumValue;
