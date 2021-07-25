@@ -92,6 +92,7 @@ final class TenantRecords<I, R extends Message>
                 .toByteArray();
     }
 
+    @SuppressWarnings("unchecked" /* Ensured by generics and serialization approach. */)
     private RecordWithColumns<I, R> deserialize(I id, byte[] recordBytes) {
         Class<R> recordType = spec.storedType();
         try {
@@ -100,7 +101,7 @@ final class TenantRecords<I, R extends Message>
                     .builderFor(recordType)
                     .mergeFrom(recordBytes)
                     .buildPartial();
-            return RecordWithColumns.of(id, record);
+            return RecordWithColumns.create(id, record, (RecordSpec<I, R, R>) spec);
         } catch (InvalidProtocolBufferException e) {
             throw Exceptions.newIllegalStateException(
                     e,
