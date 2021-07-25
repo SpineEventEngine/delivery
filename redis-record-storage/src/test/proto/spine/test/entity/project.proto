@@ -22,7 +22,7 @@ message Project {
 
     ProjectId id = 1;
 
-    string name = 2;
+    string name = 2 [(column) = true];
 
     repeated Task task = 3;
 
@@ -34,7 +34,7 @@ message Project {
         CANCELLED = 4;
     }
 
-    Status status = 4;
+    Status status = 4 [(column) = true];
 }
 
 message TaskId {
