@@ -16,10 +16,12 @@ import io.spine.server.GrpcContainer;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.Delivery;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
+import io.spine.server.storage.redis.RedisStorageFactory;
 import io.spine.server.transport.memory.InMemoryTransportFactory;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -169,9 +171,20 @@ public final class App implements Logging {
     private static void initEnv() {
         ServerEnvironment
                 .when(Production.class)
-                .use(InMemoryStorageFactory.newInstance())
+                .useStorageFactory(env -> {
+                    if (useRedis()) {
+                        return RedisStorageFactory.newInstance();
+                    }
+                    return InMemoryStorageFactory.newInstance();
+                })
                 .use(InMemoryTransportFactory.newInstance())
                 .use(Delivery.localAsync());
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    private static boolean useRedis() {
+        Map<String, String> envs = System.getenv();
+        return envs.containsKey("USE_REDIS") && envs.containsKey("REDIS_HOST");
     }
 
     private static int port() {
