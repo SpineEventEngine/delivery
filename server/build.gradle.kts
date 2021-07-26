@@ -11,6 +11,7 @@ import io.spine.internal.dependency.Spine
 dependencies {
     implementation(Log4j2.api)
     implementation(project(":model"))
+    implementation(project(":redis-record-storage"))
     implementation(Grpc.core)
     implementation(Spine.server)
     testImplementation(Spine.Test.server)
