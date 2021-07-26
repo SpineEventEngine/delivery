@@ -168,13 +168,15 @@ public final class App implements Logging {
         }
     }
 
-    private static void initEnv() {
+    private void initEnv() {
         ServerEnvironment
                 .when(Production.class)
                 .useStorageFactory(env -> {
                     if (useRedis()) {
+                        _config().log("Using Redis storage.");
                         return RedisStorageFactory.newInstance();
                     }
+                    _config().log("Using in-memory storage.");
                     return InMemoryStorageFactory.newInstance();
                 })
                 .use(InMemoryTransportFactory.newInstance())
