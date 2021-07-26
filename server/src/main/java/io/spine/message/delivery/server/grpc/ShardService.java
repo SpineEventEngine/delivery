@@ -21,6 +21,7 @@ import io.spine.message.delivery.server.ExtendedShardRegistry;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
+import io.spine.server.storage.memory.InMemoryStorageFactory;
 
 import java.util.Optional;
 
@@ -36,7 +37,8 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase im
 
     public ShardService() {
         super();
-        registry = new ExtendedShardRegistry();
+        InMemoryStorageFactory factory = InMemoryStorageFactory.newInstance();
+        registry = new ExtendedShardRegistry(factory);
     }
 
     @Override

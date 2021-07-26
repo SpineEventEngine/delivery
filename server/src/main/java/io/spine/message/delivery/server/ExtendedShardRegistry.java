@@ -12,14 +12,10 @@ import io.spine.server.delivery.AbstractWorkRegistry;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.delivery.ShardSessionRecord;
+import io.spine.server.storage.StorageFactory;
 
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Optional;
-
-import static com.google.common.collect.Iterators.unmodifiableIterator;
-import static com.google.common.collect.Maps.newConcurrentMap;
-import static java.util.Objects.requireNonNull;
 
 /**
  * An {@link io.spine.server.delivery.memory.InMemoryShardedWorkRegistry
@@ -27,7 +23,11 @@ import static java.util.Objects.requireNonNull;
  */
 public class ExtendedShardRegistry extends AbstractWorkRegistry {
 
-    private final Map<ShardIndex, ShardSessionRecord> workByNode = newConcurrentMap();
+    private final ShardRegistryStorage storage;
+
+    public ExtendedShardRegistry(StorageFactory factory) {
+        this.storage = new ShardRegistryStorage(factory);
+    }
 
     @Override
     public synchronized Optional<ShardProcessingSession> pickUp(ShardIndex index, NodeId nodeId) {
@@ -46,17 +46,17 @@ public class ExtendedShardRegistry extends AbstractWorkRegistry {
 
     @Override
     protected Iterator<ShardSessionRecord> allRecords() {
-        return unmodifiableIterator(workByNode.values().iterator());
+        return storage.readAll();
     }
 
     @Override
     protected void write(ShardSessionRecord session) {
-        workByNode.put(session.getIndex(), session);
+        storage.write(session.getIndex(), session);
     }
 
     @Override
     protected Optional<ShardSessionRecord> find(ShardIndex index) {
-        return Optional.ofNullable(workByNode.get(index));
+        return storage.read(index);
     }
 
     @Override
@@ -68,10 +68,8 @@ public class ExtendedShardRegistry extends AbstractWorkRegistry {
      * Releases the shard under the given index.
      */
     public synchronized void releaseShard(ShardIndex index) {
-        ShardSessionRecord record = workByNode.get(index);
-        if(record != null) {
-            clearNode(record);
-        }
+        storage.read(index)
+               .ifPresent(this::clearNode);
     }
 
     /**
@@ -85,10 +83,8 @@ public class ExtendedShardRegistry extends AbstractWorkRegistry {
 
         @Override
         protected void complete() {
-            ShardSessionRecord record = workByNode.get(shardIndex());
-            requireNonNull(record);
-            // Clear the node ID value and release the session.
-            clearNode(record);
+            Optional<ShardSessionRecord> record = storage.read(shardIndex());
+            record.ifPresent(ExtendedShardRegistry.this::clearNode);
         }
     }
 }
