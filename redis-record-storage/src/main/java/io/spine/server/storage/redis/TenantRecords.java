@@ -16,10 +16,12 @@ import io.spine.query.RecordQuery;
 import io.spine.query.SortBy;
 import io.spine.query.Subject;
 import io.spine.server.entity.EntityRecord;
+import io.spine.server.entity.storage.EntityRecordSpec;
+import io.spine.server.entity.storage.EntityRecordWithColumns;
+import io.spine.server.storage.MessageRecordSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.RecordWithColumns;
 import io.spine.string.Stringifiers;
-import io.spine.util.Exceptions;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.redisson.api.RMap;
 
@@ -37,6 +39,7 @@ import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.server.entity.FieldMasks.applyMask;
 import static io.spine.server.storage.redis.RecordComparator.accordingTo;
+import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -101,14 +104,29 @@ final class TenantRecords<I, R extends Message>
                     .builderFor(recordType)
                     .mergeFrom(recordBytes)
                     .buildPartial();
-            return RecordWithColumns.create(id, record, (RecordSpec<I, R, R>) spec);
+            return recordWithColumns(id, record, spec);
         } catch (InvalidProtocolBufferException e) {
-            throw Exceptions.newIllegalStateException(
+            throw newIllegalStateException(
                     e,
                     "Unable to deserialize record of type `%s` with ID `%s`.",
                     recordType, toStorageKey(id)
             );
         }
+    }
+
+    @SuppressWarnings({
+            "unchecked", /* Ensured by generics and serialization approach. */
+            "ChainOfInstanceofChecks" /* There is no better way to abstract this part yet. */
+    })
+    private RecordWithColumns<I, R> recordWithColumns(I id, R record, RecordSpec<I, R, ?> spec) {
+        if (spec instanceof EntityRecordSpec) {
+            return (RecordWithColumns<I, R>)
+                    EntityRecordWithColumns.create(id, (EntityRecord) record);
+        }
+        if (spec instanceof MessageRecordSpec) {
+            return RecordWithColumns.create(id, record, (RecordSpec<I, R, R>) spec);
+        }
+        throw newIllegalStateException("Unsupported record spec: %s", spec);
     }
 
     /**
