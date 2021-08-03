@@ -26,6 +26,7 @@ public class ExtendedShardRegistry extends AbstractWorkRegistry {
     private final ShardRegistryStorage storage;
 
     public ExtendedShardRegistry(StorageFactory factory) {
+        super();
         this.storage = new ShardRegistryStorage(factory);
     }
 
