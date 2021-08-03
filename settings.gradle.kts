@@ -18,6 +18,7 @@ fun deployment(name: String) {
 }
 
 deployment("server-cloud-run")
+deployment("simple-server-cloud-run")
 
 dependencyResolutionManagement {
     repositories {

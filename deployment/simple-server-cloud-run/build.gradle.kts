@@ -25,7 +25,7 @@ dependencies {
     runtimeOnly(Log4j2.slf4jBridge)
     runtimeOnly(Log4j2.core)
     runtimeOnly(Flogger.Runtime.log4J2)
-    implementation(project(":server"))
+    implementation(project(":simple-server"))
 }
 
 application {
@@ -34,7 +34,7 @@ application {
     )
 }
 
-val appClassName = "io.spine.message.delivery.server.App"
+val appClassName = "io.spine.message.delivery.server.SimpleApp"
 project.setProperty("mainClassName", appClassName)
 
 tasks.withType<ShadowJar> {
@@ -48,7 +48,7 @@ tasks.withType<ShadowJar> {
 
 jib {
     to {
-        image = "gcr.io/${gcpProject}/message-delivery-server"
+        image = "gcr.io/${gcpProject}/simple-message-delivery-server"
         tags = setOf("latest")
     }
     container {
