@@ -5,9 +5,10 @@
  */
 
 rootProject.name = "message-delivery"
+include("redis-record-storage")
 include("model")
 include("server")
-include("redis-record-storage")
+include("simple-server")
 includeBuild("client")
 
 fun deployment(name: String) {
