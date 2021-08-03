@@ -27,19 +27,7 @@ object Spine {
     object Stable {
 
         const val version = "1.7.4"
-
-        // A custom Spine version, which addresses `SubscriptionCallback` synchronization issue:
-        //
-        //  static SubscriptionCallback forwardingTo(StreamObserver<SubscriptionUpdate> observer) {
-        //        return update -> {
-        //            synchronized (observer) {
-        //                checkNotNull(update);
-        //                observer.onNext(update);
-        //            }
-        //        };
-        //  }
-        //
-        const val coreVersion = "1.7.4.1"
+        const val coreVersion = "1.7.5"
         const val timeVersion = "1.7.1"
 
         const val base = "io.spine:spine-base:${version}"
