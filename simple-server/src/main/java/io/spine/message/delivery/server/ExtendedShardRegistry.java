@@ -17,16 +17,23 @@ import io.spine.server.storage.StorageFactory;
 import java.util.Iterator;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
- * An {@link io.spine.server.delivery.memory.InMemoryShardedWorkRegistry
- * InMemoryShardedWorkRegistry} with some more API endpoints exposes to public.
+ * A {@link ShardRegistryStorage}-baked {@link io.spine.server.delivery.ShardedWorkRegistry
+ * ShardedWorkRegistry}  with some more API endpoints exposes to public.
  */
 public class ExtendedShardRegistry extends AbstractWorkRegistry {
 
     private final ShardRegistryStorage storage;
 
+    /**
+     * Creates a new {@code ExtendedShardRegistry} backed by {@link ShardRegistryStorage} created
+     * from the configured {@code factory}.
+     */
     public ExtendedShardRegistry(StorageFactory factory) {
         super();
+        checkNotNull(factory);
         this.storage = new ShardRegistryStorage(factory);
     }
 

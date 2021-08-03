@@ -21,10 +21,11 @@ import io.spine.message.delivery.server.ExtendedShardRegistry;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
-import io.spine.server.storage.memory.InMemoryStorageFactory;
+import io.spine.server.storage.StorageFactory;
 
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.message.delivery.server.grpc.Responses.alreadyPicked;
 import static io.spine.message.delivery.server.grpc.Responses.completeCall;
 
@@ -35,9 +36,13 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase im
 
     private final ExtendedShardRegistry registry;
 
-    public ShardService() {
+    /**
+     * Creates a new {@code ShardService} backed by an {@link ExtendedShardRegistry} created from
+     * the configured {@code factory}.
+     */
+    public ShardService(StorageFactory factory) {
         super();
-        InMemoryStorageFactory factory = InMemoryStorageFactory.newInstance();
+        checkNotNull(factory);
         registry = new ExtendedShardRegistry(factory);
     }
 
@@ -78,6 +83,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase im
         _debug().log("Expired sessions were released: %s.", Joiner.on(", ")
                                                                   .join(indices));
 
-        responseObserver.onNext(ExpiredSessionsReleased.newBuilder().vBuild());
+        responseObserver.onNext(ExpiredSessionsReleased.newBuilder()
+                                        .vBuild());
     }
 }

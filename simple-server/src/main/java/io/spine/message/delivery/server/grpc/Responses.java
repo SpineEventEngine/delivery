@@ -9,7 +9,6 @@ package io.spine.message.delivery.server.grpc;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import io.spine.base.Time;
-import io.spine.message.delivery.event.MessageWritten;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.OptionalInboxMessage;
 import io.spine.message.delivery.rejection.ShardAlreadyPickedUp;
@@ -32,10 +31,18 @@ final class Responses {
     private Responses() {
     }
 
+    /**
+     * Populates the {@code response} with a {@code ShardAlreadyPickedUp} error.
+     *
+     * @param response
+     *         the response on which the {@code onError} callback with the error is called
+     * @param shard
+     *         the shard that was already picked up
+     * @param worker
+     *         the worker who picked up the shard
+     */
     static void
-    alreadyPicked(StreamObserver<ShardPickedUp> response,
-                  ShardIndex shard,
-                  NodeId worker) {
+    alreadyPicked(StreamObserver<ShardPickedUp> response, ShardIndex shard, NodeId worker) {
         var error = ShardAlreadyPickedUp.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
@@ -48,29 +55,35 @@ final class Responses {
         );
     }
 
+    /**
+     * Creates a new {@code ShardPickedUp} rejection message with the supplied {@code shard}
+     * and {@code worker}.
+     *
+     * <p>The picked up time is set to the {@linkplain Time#currentTime() current time}.
+     */
     static ShardPickedUp shardPickedUp(ShardIndex shard, NodeId worker) {
-        ShardPickedUp pickedUp =
-                ShardPickedUp.newBuilder().setShard(shard)
-                                                     .setPickedBy(worker)
-                                                     .setWhenPicked(Time.currentTime())
-                                                     .vBuild();
+        ShardPickedUp pickedUp = ShardPickedUp.newBuilder()
+                .setShard(shard)
+                .setPickedBy(worker)
+                .setWhenPicked(Time.currentTime())
+                .vBuild();
         return pickedUp;
     }
 
-    static void messageWritten(StreamObserver<MessageWritten> responseObserver,
-                               InboxMessage message) {
-        MessageWritten response = MessageWritten.newBuilder().setMessage(message)
-                                                            .vBuild();
-        responseObserver.onNext(response);
-        responseObserver.onCompleted();
-    }
-
+    /**
+     * Completes the provided {@code observer}.
+     *
+     * <p>Sends {@linkplain Empty#getDefaultInstance() empty} response prior to completion.
+     */
     static void completeCall(StreamObserver<Empty> observer) {
         observer.onNext(Empty.getDefaultInstance());
         observer.onCompleted();
     }
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType") /* By intention. */
+    /**
+     * Writes the optional {@code message} if any is present and completes the {@code observer}.
+     */
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType" /* By intention. */)
     static void writeOptionalMessage(StreamObserver<OptionalInboxMessage> observer,
                                      Optional<InboxMessage> message) {
         OptionalInboxMessage.Builder responseBuilder = OptionalInboxMessage.newBuilder();

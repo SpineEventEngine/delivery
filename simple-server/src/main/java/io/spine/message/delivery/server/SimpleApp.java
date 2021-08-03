@@ -12,6 +12,8 @@ import io.grpc.ServerBuilder;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.server.grpc.InboxService;
 import io.spine.message.delivery.server.grpc.ShardService;
+import io.spine.server.storage.StorageFactory;
+import io.spine.server.storage.memory.InMemoryStorageFactory;
 
 import java.util.concurrent.ExecutorService;
 
@@ -58,8 +60,9 @@ public final class SimpleApp implements Logging {
 
     @SuppressWarnings("OverlyBroadCatchBlock")
     private void initAndStart() {
-        InboxService inboxService = new InboxService();
-        ShardService shardService = new ShardService();
+        StorageFactory factory = InMemoryStorageFactory.newInstance();
+        InboxService inboxService = new InboxService(factory);
+        ShardService shardService = new ShardService(factory);
         Server server =
                 ServerBuilder.forPort(PORT)
                              .executor(executor)
@@ -69,8 +72,7 @@ public final class SimpleApp implements Logging {
         _info().log("Starting gRPC server...");
         try {
             server.start();
-            _info().log("gRPC server started at host '%s' and port '%d'.",
-                        HOST, PORT);
+            _info().log("gRPC server started at host '%s' and port '%d'.", HOST, PORT);
             server.awaitTermination();
         } catch (Exception e) {
             _error().withCause(e)

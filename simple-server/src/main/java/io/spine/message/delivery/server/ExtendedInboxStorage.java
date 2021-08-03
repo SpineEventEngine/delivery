@@ -18,13 +18,21 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Extends the {@link InboxStorage} by exposing some of API endpoints into {@code public}.
  */
 public class ExtendedInboxStorage extends InboxStorage {
 
+    /**
+     * Creates a new {@code ExtendedInboxStorage} backed by the configured {@code factory}.
+     *
+     * <p>The {@code multitenant} parameter determines whether the storage operates in
+     * a multitenant environment.
+     */
     public ExtendedInboxStorage(StorageFactory factory, boolean multitenant) {
-        super(factory, multitenant);
+        super(checkNotNull(factory), multitenant);
     }
 
     @Override

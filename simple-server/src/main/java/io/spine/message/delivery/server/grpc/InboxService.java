@@ -23,12 +23,13 @@ import io.spine.message.delivery.server.ExtendedInboxStorage;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
-import io.spine.server.storage.memory.InMemoryStorageFactory;
+import io.spine.server.storage.StorageFactory;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.message.delivery.server.grpc.Responses.completeCall;
 import static io.spine.message.delivery.server.grpc.Responses.writeOptionalMessage;
@@ -41,11 +42,12 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase im
     private final ExtendedInboxStorage inboxStorage;
 
     /**
-     * Creates a new service instance, instantiating the in-memory storage for itself.
+     * Creates a {@code InboxService} backed by an {@link ExtendedInboxStorage} created from
+     * the configured {@code factory}.
      */
-    public InboxService() {
+    public InboxService(StorageFactory factory) {
         super();
-        InMemoryStorageFactory factory = InMemoryStorageFactory.newInstance();
+        checkNotNull(factory);
         inboxStorage = new ExtendedInboxStorage(factory, false);
     }
 
