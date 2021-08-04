@@ -46,7 +46,7 @@ tasks.withType<ShadowJar> {
 jib {
     to {
         image = "gcr.io/${extras.gcpProject}/simple-message-delivery-server"
-        tags = setOf("latest", extras.git.hash, extras.git.shortHash)
+        tags = setOf("latest", extras.git.hash, extras.git.shortHash, "v${version}")
     }
     container {
         mainClass = appClassName
