@@ -12,7 +12,6 @@ import io.spine.internal.dependency.Spine
 
 plugins {
     war
-    spine
 }
 
 dependencies {

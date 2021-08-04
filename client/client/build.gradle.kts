@@ -10,10 +10,6 @@ import io.spine.internal.dependency.Log4j2
 import io.spine.internal.dependency.Spine
 import io.spine.internal.dependency.Testcontainers
 
-plugins {
-    spine
-}
-
 dependencies {
     api(project(":base"))
     implementation(Spine.Stable.server)

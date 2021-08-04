@@ -7,10 +7,6 @@
 import io.spine.internal.dependency.Grpc
 import io.spine.internal.dependency.Spine
 
-plugins {
-    spine
-}
-
 dependencies {
     Grpc.apply {
         api(stub)

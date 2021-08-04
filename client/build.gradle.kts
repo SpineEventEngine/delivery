@@ -42,7 +42,7 @@ subprojects {
 
 spinePublishing {
     projectsToPublish.addAll(
-        "client"
+        "client", "simple-client", "base"
     )
     targetRepositories.addAll(
         PublishingRepos.gitHub("message-delivery")
