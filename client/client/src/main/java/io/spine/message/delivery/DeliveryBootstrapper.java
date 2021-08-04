@@ -24,6 +24,7 @@ public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<Del
      * Prevents direct instantiation.
      */
     private DeliveryBootstrapper() {
+        super();
     }
 
     /**
