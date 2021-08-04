@@ -14,7 +14,9 @@ import io.spine.message.delivery.server.grpc.InboxService;
 import io.spine.message.delivery.server.grpc.ShardService;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
+import io.spine.server.storage.redis.RedisStorageFactory;
 
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -60,7 +62,7 @@ public final class SimpleApp implements Logging {
 
     @SuppressWarnings("OverlyBroadCatchBlock")
     private void initAndStart() {
-        StorageFactory factory = InMemoryStorageFactory.newInstance();
+        StorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
         ShardService shardService = new ShardService(factory);
         Server server =
@@ -87,6 +89,22 @@ public final class SimpleApp implements Logging {
             return DEFAULT_PORT;
         }
         return Integer.parseInt(port);
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in different module. */)
+    private StorageFactory storageFactory() {
+        if (useRedis()) {
+            _config().log("Using Redis storage.");
+            return RedisStorageFactory.newInstance();
+        }
+        _config().log("Using in-memory storage.");
+        return InMemoryStorageFactory.newInstance();
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    private static boolean useRedis() {
+        Map<String, String> envs = System.getenv();
+        return envs.containsKey("USE_REDIS") && envs.containsKey("REDIS_HOST");
     }
 
     /**
