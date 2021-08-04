@@ -142,7 +142,7 @@ jobs:
           export_default_credentials: true
       - name: Deploy Server Containers
         run: |
-          ./gradlew publish --stacktrace
+          ./gradlew jib --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
