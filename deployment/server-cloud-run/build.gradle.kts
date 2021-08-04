@@ -14,11 +14,8 @@ plugins {
     id("com.google.cloud.tools.jib")
     id("com.github.johnrengelman.shadow")
 }
-//TODO:2021-06-30:yuri-sergiichuk: add ability to configure the project from a property file or
-// environment variable.
-// See https://github.com/SpineEventEngine/message-delivery/issues/6
-/** The GCP project ID used for deployment of the application. **/
-val gcpProject = "spine-dev"
+
+val extras by extra(io.spine.internal.gradle.prepareExtras(project))
 
 dependencies {
     runtimeOnly(Grpc.nettyShaded)
@@ -48,8 +45,8 @@ tasks.withType<ShadowJar> {
 
 jib {
     to {
-        image = "gcr.io/${gcpProject}/message-delivery-server"
-        tags = setOf("latest")
+        image = "gcr.io/${extras.gcpProject}/message-delivery-server"
+        tags = setOf("latest", extras.git.hash, extras.git.shortHash)
     }
     container {
         mainClass = appClassName
