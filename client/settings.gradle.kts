@@ -5,6 +5,7 @@
  */
 
 rootProject.name = "message-delivery-client"
+include("base")
 include("client")
 include("demo")
 includeBuild("..") {

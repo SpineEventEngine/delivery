@@ -15,7 +15,11 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":base"))
+    Grpc.apply {
+        api(stub)
+        api(core)
+        api(protobuf)
+    }
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)
     testImplementation(Spine.Stable.Test.server)
@@ -25,4 +29,15 @@ dependencies {
     testRuntimeOnly(Log4j2.slf4jBridge)
     testRuntimeOnly(Log4j2.core)
     testRuntimeOnly(Flogger.Runtime.log4J2)
+}
+
+// We're explicitly copying protos to ensure rejections are generated.
+// See https://github.com/SpineEventEngine/base/issues/650 for details.
+val copyExternalProtos = tasks.create<Copy>("copyExternalProtos") {
+    from("../../model/src/main/proto")
+    into("./src/main/proto")
+}
+
+tasks.withType<com.google.protobuf.gradle.GenerateProtoTask> {
+    dependsOn(copyExternalProtos)
 }
