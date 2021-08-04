@@ -24,6 +24,9 @@ import static com.google.common.base.Suppliers.memoize;
 
 /**
  * Provides fluent API for building a {@link Delivery} backed by the Message Delivery Server.
+ *
+ * @param <T>
+ *         the type of the bootstrapper
  */
 public abstract class AbstractDeliveryBootstrapper<T extends AbstractDeliveryBootstrapper<T>> {
 
