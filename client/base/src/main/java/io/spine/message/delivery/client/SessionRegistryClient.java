@@ -17,7 +17,7 @@ import java.util.Optional;
 /**
  * A client for working with the delivery session registry.
  */
-interface SessionRegistryClient {
+public interface SessionRegistryClient {
 
     /**
      * Tries to pick up a {@code shard} for working with it.

@@ -5,7 +5,7 @@
  */
 
 /**
- * Root package of the Message Delivery application.
+ * Root package of the Message Delivery Client.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault

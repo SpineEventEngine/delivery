@@ -1,15 +1,15 @@
 /*
- * Copyright (c) 2000-2021 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2021 TeamDev Ltd. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
 
 /**
- * Root package of the Message Delivery Client.
+ * Client implementation of Message Delivery.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.message.delivery;
+package io.spine.message.delivery.client;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
