@@ -73,4 +73,4 @@ data class Extras(
  * Runs specified `command` and returns its text output.
  */
 fun exec(command: String): String =
-    ProcessGroovyMethods.getText(ProcessGroovyMethods.execute(command))
+    ProcessGroovyMethods.getText(ProcessGroovyMethods.execute(command)).trim()
