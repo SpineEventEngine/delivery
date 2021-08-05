@@ -9,7 +9,7 @@ include("redis-record-storage")
 include("model")
 include("server")
 include("simple-server")
-include("testutil")
+include("testutil-server")
 includeBuild("client")
 
 fun deployment(name: String) {
