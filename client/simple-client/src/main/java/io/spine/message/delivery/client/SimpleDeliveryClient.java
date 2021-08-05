@@ -9,6 +9,7 @@ package io.spine.message.delivery.client;
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
 import com.google.common.util.concurrent.ListenableFuture;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import io.grpc.Context;
@@ -41,17 +42,23 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
+import java.util.concurrent.Callable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.util.concurrent.Futures.getUnchecked;
+import static io.spine.protobuf.Messages.isDefault;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.util.Preconditions2.checkPositive;
 
 /**
- * A delivery client which performs all of its operation through {@code MessageDeliveryService}.
+ * A delivery client which performs all of its operation through {@code Inbox} and {@code Shard}
+ * gRPC services.
+ *
+ * @see InboxServiceGrpc
+ * @see ShardServiceGrpc
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored", "OverlyCoupledClass", "FutureReturnValueIgnored"})
 public final class SimpleDeliveryClient
@@ -100,12 +107,6 @@ public final class SimpleDeliveryClient
                 .setMessage(message)
                 .vBuild();
         withNewGrpcContext(() -> inboxService.writeOne(writeMessage));
-    }
-
-    private static void withNewGrpcContext(Runnable action) {
-        Context forked = Context.current()
-                                .fork();
-        forked.run(action);
     }
 
     @Override
@@ -187,23 +188,17 @@ public final class SimpleDeliveryClient
         checkNotDefaultArg(messageId);
 
         OptionalInboxMessage result;
-        try {
-            ListenableFuture<OptionalInboxMessage> future =
-                    Context.current()
-                           .fork()
-                           .call(() -> inboxService.findOne(messageId));
-            result = getUnchecked(future);
-        } catch (Exception e) {
-            throw illegalStateWithCauseOf(e);
-        }
+        ListenableFuture<OptionalInboxMessage> future = withNewGrpcContext(
+                () -> inboxService.findOne(messageId)
+        );
+        result = getUnchecked(future);
         return asOptional(result);
     }
 
     @NonNull
     private static Optional<InboxMessage> asOptional(OptionalInboxMessage result) {
         InboxMessage message = result.getMessage();
-        if (InboxMessage.getDefaultInstance()
-                        .equals(message)) {
+        if (isDefault(message)) {
             return Optional.empty();
         } else {
             return Optional.of(message);
@@ -212,32 +207,26 @@ public final class SimpleDeliveryClient
 
     @Override
     public Page<InboxMessage> readAll(ShardIndex shard, int pageSize) {
-        Page<InboxMessage> page = new InboxPage(sinceWhen ->
-                                                        readAll(shard, sinceWhen, pageSize));
+        Page<InboxMessage> page = new InboxPage(
+                sinceWhen -> readAll(shard, sinceWhen, pageSize)
+        );
         return page;
     }
 
     private ImmutableList<InboxMessage>
     readAll(ShardIndex shard, @Nullable Timestamp sinceWhen, int pageSize) {
-        ReadMessagesSinceTime.Builder queryBuilder =
-                ReadMessagesSinceTime
-                        .newBuilder().setShard(shard)
-                                     .setPageSize(pageSize);
+        ReadMessagesSinceTime.Builder queryBuilder = ReadMessagesSinceTime.newBuilder()
+                .setShard(shard)
+                .setPageSize(pageSize);
         if (sinceWhen != null) {
             queryBuilder.setSinceWhen(sinceWhen);
         }
         ReadMessagesSinceTime query = queryBuilder.vBuild();
 
-        PageOfMessages page;
-        try {
-            ListenableFuture<PageOfMessages> future =
-                    Context.current()
-                           .fork()
-                           .call(() -> inboxService.findManyInShard(query));
-            page = getUnchecked(future);
-        } catch (Exception e) {
-            throw illegalStateWithCauseOf(e);
-        }
+        ListenableFuture<PageOfMessages> future = withNewGrpcContext(
+                () -> inboxService.findManyInShard(query)
+        );
+        PageOfMessages page = getUnchecked(future);
         ImmutableList<InboxMessage> result =
                 page.getMessageList()
                     .stream()
@@ -248,16 +237,21 @@ public final class SimpleDeliveryClient
 
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard) {
-        OptionalInboxMessage message;
+        ListenableFuture<OptionalInboxMessage> future = withNewGrpcContext(
+                () -> inboxService.newestMessageToDeliver(shard)
+        );
+        OptionalInboxMessage message = getUnchecked(future);
+        return asOptional(message);
+    }
+
+    @CanIgnoreReturnValue
+    private static <V> V withNewGrpcContext(Callable<V> action) {
+        Context forked = Context.current()
+                                .fork();
         try {
-            ListenableFuture<OptionalInboxMessage> future =
-                    Context.current()
-                           .fork()
-                           .call(() -> inboxService.newestMessageToDeliver(shard));
-            message = getUnchecked(future);
+            return forked.call(action);
         } catch (Exception e) {
             throw illegalStateWithCauseOf(e);
         }
-        return asOptional(message);
     }
 }
