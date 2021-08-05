@@ -15,6 +15,7 @@ import io.spine.message.delivery.server.grpc.ShardService;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.server.storage.redis.RedisStorageFactory;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -46,6 +47,8 @@ public final class SimpleApp implements Logging {
 
     private static final ExecutorService executor = newFixedThreadPool(20);
 
+    private @MonotonicNonNull Server server;
+
     /**
      * Creates a new instance of the application.
      */
@@ -57,6 +60,8 @@ public final class SimpleApp implements Logging {
      */
     public static void main(String[] args) {
         var app = new SimpleApp();
+        Runtime.getRuntime()
+               .addShutdownHook(new Thread(app::shutdown));
         app.initAndStart();
     }
 
@@ -65,12 +70,12 @@ public final class SimpleApp implements Logging {
         StorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
         ShardService shardService = new ShardService(factory);
-        Server server =
-                ServerBuilder.forPort(PORT)
-                             .executor(executor)
-                             .addService(inboxService)
-                             .addService(shardService)
-                             .build();
+        this.server = ServerBuilder
+                .forPort(PORT)
+                .executor(executor)
+                .addService(inboxService)
+                .addService(shardService)
+                .build();
         _info().log("Starting gRPC server...");
         try {
             server.start();
@@ -79,6 +84,16 @@ public final class SimpleApp implements Logging {
         } catch (Exception e) {
             _error().withCause(e)
                     .log("Error running the gRPC server.");
+        }
+    }
+
+    /**
+     * Shuts down the application.
+     */
+    @VisibleForTesting
+    public void shutdown() {
+        if (server != null) {
+            server.shutdown();
         }
     }
 
