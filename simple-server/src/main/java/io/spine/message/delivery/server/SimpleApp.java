@@ -37,7 +37,8 @@ public final class SimpleApp implements Logging {
     /**
      * A host to use for gRPC server.
      */
-    private static final String HOST = "127.0.0.1";
+    @VisibleForTesting
+    public static final String HOST = "127.0.0.1";
 
     /**
      * A port to use for gRPC server.
@@ -65,8 +66,9 @@ public final class SimpleApp implements Logging {
         app.initAndStart();
     }
 
-    @SuppressWarnings("OverlyBroadCatchBlock")
-    private void initAndStart() {
+    @VisibleForTesting
+    @SuppressWarnings("OverlyBroadCatchBlock" /* We do want to catch all exceptions. */)
+    void initAndStart() {
         StorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
         ShardService shardService = new ShardService(factory);
