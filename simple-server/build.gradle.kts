@@ -14,7 +14,7 @@ dependencies {
     implementation(project(":redis-record-storage"))
     implementation(Grpc.core)
     implementation(Spine.server)
-    testImplementation(Spine.Test.server)
+    testImplementation(project(":testutil"))
     testRuntimeOnly(Grpc.nettyShaded)
 
     // Use this one to run the app locally.
