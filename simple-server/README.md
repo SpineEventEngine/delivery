@@ -1,8 +1,7 @@
-Message Delivery Server
+Simple Message Delivery Server
 ---------------
 
-This module holds the Server of the Message Delivery which is written as full-fledged 
-Spine application.
+This module holds the Server of the Message Delivery which is written as plain gRPC application.
 
 The server is a runnable application which exposes gRPC APIs for working with the delivery.
 
