@@ -50,7 +50,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Prepare local server container
-        run: ./gradlew :server-cloud-run:jibDockerBuild
+        run: ./gradlew :server-cloud-run:jibDockerBuild :simple-server-cloud-run:jibDockerBuild
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Client
