@@ -9,11 +9,8 @@ include("base")
 include("client")
 include("simple-client")
 include("demo")
-includeBuild("..") {
-    dependencySubstitution {
-        substitute(module("io.spine.message-delivery:model")).using(project(":model"))
-    }
-}
+include("testutil-client")
+
 fun deployment(name: String) {
     val path = ":${name}"
     include(path)

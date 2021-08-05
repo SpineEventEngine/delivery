@@ -20,8 +20,8 @@ import io.spine.server.delivery.InboxMessageMixin;
 import io.spine.server.delivery.InboxMessageStatus;
 import io.spine.server.delivery.InboxSignalId;
 import io.spine.server.delivery.ShardIndex;
-import io.spine.test.message.delivery.server.DoSmth;
-import io.spine.test.message.delivery.server.Something;
+import io.spine.test.message.delivery.client.DoSmth;
+import io.spine.test.message.delivery.client.Something;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.type.TypeUrl;
 

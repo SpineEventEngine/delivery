@@ -14,7 +14,7 @@ dependencies {
     api(project(":base"))
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)
-    testImplementation(Spine.Stable.Test.server)
+    testImplementation(project(":testutil-client"))
     testImplementation(Testcontainers.lib)
     testImplementation(Testcontainers.junitJupiter)
     testRuntimeOnly(Grpc.nettyShaded)

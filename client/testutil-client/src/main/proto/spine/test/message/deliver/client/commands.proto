@@ -11,7 +11,7 @@ package spine.test.message.delivery;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.test.message.delivery.server";
+option java_package = "io.spine.test.message.delivery.client";
 option java_outer_classname = "GivenCommandsProto";
 option java_multiple_files = true;
 
