@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Extends the {@link InboxStorage} by exposing some of API endpoints into {@code public}.
  */
-public class ExtendedInboxStorage extends InboxStorage {
+public final class ExtendedInboxStorage extends InboxStorage {
 
     /**
      * Creates a new {@code ExtendedInboxStorage} backed by the configured {@code factory}.

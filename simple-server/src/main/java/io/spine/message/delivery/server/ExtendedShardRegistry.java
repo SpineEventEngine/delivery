@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A {@link ShardRegistryStorage}-baked {@link io.spine.server.delivery.ShardedWorkRegistry
  * ShardedWorkRegistry}  with some more API endpoints exposes to public.
  */
-public class ExtendedShardRegistry extends AbstractWorkRegistry {
+public final class ExtendedShardRegistry extends AbstractWorkRegistry {
 
     private final ShardRegistryStorage storage;
 
