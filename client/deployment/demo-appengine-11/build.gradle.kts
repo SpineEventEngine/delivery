@@ -13,11 +13,7 @@ plugins {
     id("com.google.cloud.tools.appengine-appyaml")
 }
 
-//TODO:2021-06-30:yuri-sergiichuk: add ability to configure the project from a property file or
-// environment variable.
-// See https://github.com/SpineEventEngine/message-delivery/issues/6
-/** The GCP project ID used for deployment of the application. **/
-val gcpProject = "spine-dev"
+val extras by extra(io.spine.internal.gradle.prepareExtras(project))
 
 dependencies {
     Jetty.all.forEach { implementation(it) }
@@ -50,7 +46,7 @@ application {
 
 appengine {
     deploy {
-        projectId = gcpProject
+        projectId = extras.gcpProject
         version = "4"
     }
     stage {

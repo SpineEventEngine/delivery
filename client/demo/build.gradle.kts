@@ -12,7 +12,6 @@ import io.spine.internal.dependency.Spine
 
 plugins {
     war
-    spine
 }
 
 dependencies {
@@ -20,7 +19,7 @@ dependencies {
     runtimeOnly(Log4j2.slf4jBridge)
     runtimeOnly(Log4j2.core)
     runtimeOnly(Flogger.Runtime.log4J2)
-    implementation(project(":client"))
+    implementation(project(":simple-client"))
     implementation(Log4j2.api)
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)

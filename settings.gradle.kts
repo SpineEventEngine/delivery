@@ -5,9 +5,11 @@
  */
 
 rootProject.name = "message-delivery"
+include("redis-record-storage")
 include("model")
 include("server")
-include("redis-record-storage")
+include("simple-server")
+include("testutil-server")
 includeBuild("client")
 
 fun deployment(name: String) {
@@ -17,6 +19,7 @@ fun deployment(name: String) {
 }
 
 deployment("server-cloud-run")
+deployment("simple-server-cloud-run")
 
 dependencyResolutionManagement {
     repositories {

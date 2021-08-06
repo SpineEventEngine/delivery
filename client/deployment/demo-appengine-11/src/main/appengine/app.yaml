@@ -1,6 +1,6 @@
 runtime: java11
 env: standard
-service: 'message-delivery-client-j11'
+service: 'simple-message-delivery-client-j11'
 entrypoint: >
   java
   -server

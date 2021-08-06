@@ -13,7 +13,7 @@ import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.Page;
 import io.spine.server.delivery.ShardIndex;
-import io.spine.test.message.delivery.server.Something;
+import io.spine.test.message.delivery.client.Something;
 import io.spine.type.TypeUrl;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.junit.jupiter.api.AfterEach;

@@ -27,19 +27,20 @@ object Spine {
     object Stable {
 
         const val version = "1.7.4"
+        const val coreVersion = "1.7.5"
         const val timeVersion = "1.7.1"
 
         const val base = "io.spine:spine-base:${version}"
-        const val client = "io.spine:spine-client:${version}"
-        const val server = "io.spine:spine-server:${version}"
-        const val core = "io.spine:spine-core:${version}"
+        const val client = "io.spine:spine-client:${coreVersion}"
+        const val server = "io.spine:spine-server:${coreVersion}"
+        const val core = "io.spine:spine-core:${coreVersion}"
         const val time = "io.spine:spine-time:${timeVersion}"
 
         object Test {
             const val base = "io.spine:spine-testlib:${version}"
-            const val client = "io.spine:spine-testutil-client:${version}"
-            const val server = "io.spine:spine-testutil-server:${version}"
-            const val core = "io.spine:spine-testutil-core:${version}"
+            const val client = "io.spine:spine-testutil-client:${coreVersion}"
+            const val server = "io.spine:spine-testutil-server:${coreVersion}"
+            const val core = "io.spine:spine-testutil-core:${coreVersion}"
             const val time = "io.spine:spine-testutil-time:${timeVersion}"
         }
     }

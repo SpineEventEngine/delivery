@@ -168,6 +168,7 @@ public final class App implements Logging {
         }
     }
 
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in different module. */)
     private void initEnv() {
         ServerEnvironment
                 .when(Production.class)

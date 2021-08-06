@@ -43,10 +43,8 @@ final class GreatGreeter extends Aggregate<String, Greeter, Greeter.Builder> imp
     @Assign
     SaidHello handle(SayHello c) throws PersonAlreadyGreeted {
         String personName = c.getName();
-        _info().log("Saying Hello to `%s`.", personName);
         ProtocolStringList alreadyGreetedPeople = state().getNameList();
         if (alreadyGreetedPeople.contains(personName)) {
-            _info().log("`%s` was already greeted.", personName);
             throw PersonAlreadyGreeted.newBuilder()
                     .setName(personName)
                     .build();

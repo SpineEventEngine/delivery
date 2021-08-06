@@ -8,29 +8,23 @@ package io.spine.message.delivery;
 
 import io.grpc.ManagedChannel;
 import io.spine.message.delivery.client.DeliveryClient;
-import io.spine.message.delivery.client.RemoteInboxStorage;
-import io.spine.message.delivery.client.WorkRegistry;
+import io.spine.message.delivery.client.InboxClient;
+import io.spine.message.delivery.client.SessionRegistryClient;
 import io.spine.server.delivery.Delivery;
-import io.spine.server.delivery.DeliveryBuilder;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.function.Supplier;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Suppliers.memoize;
 
 /**
  * Provides fluent API for building a {@link Delivery} backed by the Message Delivery Server and
  * based on the {@link DeliveryClient}.
  */
-public final class DeliveryBootstrapper {
-
-    private @MonotonicNonNull Supplier<ManagedChannel> channel;
+public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<DeliveryBootstrapper> {
 
     /**
      * Prevents direct instantiation.
      */
     private DeliveryBootstrapper() {
+        super();
     }
 
     /**
@@ -40,22 +34,18 @@ public final class DeliveryBootstrapper {
         return new DeliveryBootstrapper();
     }
 
-    /**
-     * Configures the gRPC {@code channel} to be used by the delivery.
-     */
-    public DeliveryBootstrapper withChannel(Supplier<ManagedChannel> channel) {
-        this.channel = checkNotNull(channel);
+    @Override
+    protected DeliveryBootstrapper self() {
         return this;
     }
 
-    /**
-     * Initializes the underlying {@code DeliveryBuilder} using this bootstrapper configurations.
-     */
-    public DeliveryBuilder init() {
-        checkNotNull(channel, "The gRPC channel must not be `null`.");
-        Supplier<DeliveryClient> client = () -> DeliveryClient.create(channel.get());
-        return Delivery.newBuilder()
-                .setInboxStorage(new RemoteInboxStorage(memoize(client::get)))
-                .setWorkRegistry(new WorkRegistry(memoize(client::get)));
+    @Override
+    protected InboxClient newInboxClient(Supplier<ManagedChannel> channel) {
+        return DeliveryClient.create(channel.get());
+    }
+
+    @Override
+    protected SessionRegistryClient newSessionRegistryClient(Supplier<ManagedChannel> channel) {
+        return DeliveryClient.create(channel.get());
     }
 }
