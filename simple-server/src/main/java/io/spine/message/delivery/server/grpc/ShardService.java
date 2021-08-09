@@ -32,9 +32,11 @@ import static io.spine.message.delivery.server.grpc.Responses.completeCall;
 /**
  * Acts as a gRPC-wired backend for the {@link io.spine.message.delivery.ShardSessionRegistry}.
  */
-public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase implements Logging {
+public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
+        implements Logging, NamedHealthAwareService {
 
     private final ExtendedShardRegistry registry;
+    private boolean healthy = true;
 
     /**
      * Creates a new {@code ShardService} backed by an {@link ExtendedShardRegistry} created from
@@ -85,5 +87,20 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase im
 
         responseObserver.onNext(ExpiredSessionsReleased.newBuilder()
                                         .vBuild());
+    }
+
+    @Override
+    public boolean healthy() {
+        return healthy;
+    }
+
+    @Override
+    public void healthy(boolean value) {
+        this.healthy = value;
+    }
+
+    @Override
+    public String name() {
+        return ShardServiceGrpc.SERVICE_NAME;
     }
 }

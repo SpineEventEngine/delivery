@@ -37,9 +37,11 @@ import static io.spine.message.delivery.server.grpc.Responses.writeOptionalMessa
 /**
  * Acts as a gRPC-wired backend for the {@link io.spine.server.delivery.InboxStorage}.
  */
-public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase implements Logging {
+public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
+        implements Logging, NamedHealthAwareService {
 
     private final ExtendedInboxStorage inboxStorage;
+    private boolean healthy = true;
 
     /**
      * Creates a {@code InboxService} backed by an {@link ExtendedInboxStorage} created from
@@ -128,5 +130,20 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase im
 
     private void log(ShardIndex shard, ImmutableList<InboxMessage> messages) {
         _info().log("`findManyInShard(%d)` -> %d.", shard.getIndex(), messages.size());
+    }
+
+    @Override
+    public boolean healthy() {
+        return healthy;
+    }
+
+    @Override
+    public void healthy(boolean value) {
+        this.healthy = value;
+    }
+
+    @Override
+    public String name() {
+        return InboxServiceGrpc.SERVICE_NAME;
     }
 }

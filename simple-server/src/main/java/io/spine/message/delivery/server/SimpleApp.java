@@ -10,6 +10,7 @@ import com.google.common.annotations.VisibleForTesting;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.spine.logging.Logging;
+import io.spine.message.delivery.server.grpc.HealthService;
 import io.spine.message.delivery.server.grpc.InboxService;
 import io.spine.message.delivery.server.grpc.ShardService;
 import io.spine.server.storage.StorageFactory;
@@ -49,6 +50,7 @@ public final class SimpleApp implements Logging {
     private static final ExecutorService executor = newFixedThreadPool(20);
 
     private @MonotonicNonNull Server server;
+    private @MonotonicNonNull HealthService healthService;
 
     /**
      * Creates a new instance of the application.
@@ -72,11 +74,15 @@ public final class SimpleApp implements Logging {
         StorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
         ShardService shardService = new ShardService(factory);
+        healthService = new HealthService()
+                .register(inboxService)
+                .register(shardService);
         this.server = ServerBuilder
                 .forPort(PORT)
                 .executor(executor)
                 .addService(inboxService)
                 .addService(shardService)
+                .addService(healthService)
                 .build();
         _info().log("Starting gRPC server...");
         try {
@@ -94,6 +100,9 @@ public final class SimpleApp implements Logging {
      */
     @VisibleForTesting
     public void shutdown() {
+        if (healthService != null){
+            healthService.markNonHealthy();
+        }
         if (server != null) {
             server.shutdown();
         }
