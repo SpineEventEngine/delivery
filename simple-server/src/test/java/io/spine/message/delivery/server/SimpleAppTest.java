@@ -6,7 +6,6 @@
 
 package io.spine.message.delivery.server;
 
-import io.grpc.ManagedChannel;
 import io.grpc.health.v1.HealthCheckRequest;
 import io.grpc.health.v1.HealthCheckResponse;
 import io.grpc.health.v1.HealthGrpc;
@@ -36,8 +35,6 @@ final class SimpleAppTest extends WithApp {
     @DisplayName("expose")
     class Expose {
 
-        private final ManagedChannel channel = serverChannel();
-
         @Test
         @DisplayName("`ShardService`")
         void shardService() {
@@ -48,7 +45,7 @@ final class SimpleAppTest extends WithApp {
                     .setShard(shard)
                     .setWorker(worker)
                     .vBuild();
-            var shardService = ShardServiceGrpc.newBlockingStub(channel);
+            var shardService = ShardServiceGrpc.newBlockingStub(serverChannel());
             assertDoesNotThrow(() -> {
                 shardService.pickShard(pickUpShard);
             });
@@ -62,7 +59,7 @@ final class SimpleAppTest extends WithApp {
             var writeMessage = WriteMessage.newBuilder()
                     .setMessage(message)
                     .vBuild();
-            var inboxService = InboxServiceGrpc.newFutureStub(channel);
+            var inboxService = InboxServiceGrpc.newFutureStub(serverChannel());
             assertDoesNotThrow(() -> {
                 inboxService.writeOne(writeMessage);
             });
@@ -76,7 +73,7 @@ final class SimpleAppTest extends WithApp {
                     .buildPartial();
             var message = HealthCheckRequest.newBuilder()
                     .buildPartial();
-            var service = HealthGrpc.newBlockingStub(channel);
+            var service = HealthGrpc.newBlockingStub(serverChannel());
             var response = service.check(message);
             assertThat(response)
                     .isEqualTo(expected);

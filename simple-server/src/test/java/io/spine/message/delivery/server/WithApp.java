@@ -48,7 +48,7 @@ public abstract class WithApp {
     /**
      * Returns the running application instance.
      */
-    protected final SimpleApp app(){
+    protected final SimpleApp app() {
         return app;
     }
 
