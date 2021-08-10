@@ -100,12 +100,20 @@ public final class SimpleApp implements Logging {
      */
     @VisibleForTesting
     public void shutdown() {
-        if (healthService != null){
+        if (healthService != null) {
             healthService.markNonHealthy();
         }
         if (server != null) {
             server.shutdown();
         }
+    }
+
+    /**
+     * Returns the configured health check service.
+     */
+    @VisibleForTesting
+    public HealthService healthService() {
+        return healthService;
     }
 
     private static int port() {

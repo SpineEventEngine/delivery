@@ -46,6 +46,13 @@ public abstract class WithApp {
     }
 
     /**
+     * Returns the running application instance.
+     */
+    protected final SimpleApp app(){
+        return app;
+    }
+
+    /**
      * Returns a channel connected to the running application.
      */
     private static ManagedChannel newServerChannel() {

@@ -62,6 +62,21 @@ final class HealthServiceTest extends WithApp {
                 .isEqualTo(expected);
     }
 
+    @Test
+    @DisplayName("ensure service status may change")
+    void ensureStatusChane() {
+        var expected = HealthCheckResponse.newBuilder()
+                .setStatus(HealthCheckResponse.ServingStatus.NOT_SERVING)
+                .buildPartial();
+        var message = HealthCheckRequest.newBuilder()
+                .buildPartial();
+        app().healthService()
+             .markNonHealthy();
+        var response = healthService.check(message);
+        assertThat(response)
+                .isEqualTo(expected);
+    }
+
     private static Stream<Arguments> services() {
         return Stream.of(
                 Arguments.of(HealthGrpc.SERVICE_NAME),
