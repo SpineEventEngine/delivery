@@ -7,6 +7,7 @@
 package io.spine.message.delivery.server.grpc;
 
 import com.google.common.collect.Maps;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.grpc.health.v1.HealthCheckRequest;
 import io.grpc.health.v1.HealthCheckResponse;
 import io.grpc.health.v1.HealthGrpc;
@@ -32,15 +33,22 @@ public final class HealthService extends HealthGrpc.HealthImplBase
     private final Map<String, NamedHealthAwareService> services;
     private boolean healthy = true;
 
+    /**
+     * Creates a new instance of the service.
+     */
+    @SuppressWarnings(
+            "ThisEscapedInObjectConstruction" /* We do want to check the health of this service as well. */
+    )
     public HealthService() {
         super();
         this.services = Maps.newConcurrentMap();
-        register(() -> DEFAULT_SERVICE_NAME);
+        register(() -> DEFAULT_SERVICE_NAME).register(this);
     }
 
     /**
      * Registers the {@code service} for tracking its health.
      */
+    @CanIgnoreReturnValue
     public HealthService register(NamedHealthAwareService service) {
         checkNotNull(service);
         services.put(service.name(), service);
@@ -61,9 +69,9 @@ public final class HealthService extends HealthGrpc.HealthImplBase
     private void
     checkHealthy(StreamObserver<HealthCheckResponse> responseObserver, String serviceToCheck) {
         if (healthy(serviceToCheck)) {
-            responseObserver.onNext(nok());
-        } else {
             responseObserver.onNext(ok());
+        } else {
+            responseObserver.onNext(nok());
         }
         responseObserver.onCompleted();
     }
