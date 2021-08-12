@@ -22,8 +22,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.com.google.common.collect.ImmutableList;
 import org.testcontainers.utility.DockerImageName;
 
@@ -40,11 +38,9 @@ import static io.spine.base.Identifier.newUuid;
 import static io.spine.message.delivery.client.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@Testcontainers
 @DisplayName("`SimpleDeliveryClient` should")
 final class SimpleDeliveryClientTest {
 
-    @Container
     private final GenericContainer<?> server = new GenericContainer<>(
             DockerImageName.parse("gcr.io/spine-dev/simple-message-delivery-server:latest")
     ).withExposedPorts(8484);
@@ -53,6 +49,7 @@ final class SimpleDeliveryClientTest {
 
     @BeforeEach
     void connectClient() {
+        server.start();
         client = SimpleDeliveryClient.create(server.getHost(), server.getFirstMappedPort());
     }
 
