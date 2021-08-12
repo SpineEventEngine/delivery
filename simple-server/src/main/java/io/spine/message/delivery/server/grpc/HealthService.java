@@ -14,6 +14,7 @@ import io.grpc.health.v1.HealthGrpc;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -31,7 +32,7 @@ public final class HealthService extends HealthGrpc.HealthImplBase
      */
     private static final String DEFAULT_SERVICE_NAME = "";
     private final Map<String, NamedHealthAwareService> services;
-    private boolean healthy = true;
+    private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
      * Creates a new instance of the service.
@@ -113,12 +114,12 @@ public final class HealthService extends HealthGrpc.HealthImplBase
 
     @Override
     public boolean healthy() {
-        return healthy;
+        return healthy.get();
     }
 
     @Override
     public void healthy(boolean value) {
-        this.healthy = value;
+        healthy.set(value);
     }
 
     @Override

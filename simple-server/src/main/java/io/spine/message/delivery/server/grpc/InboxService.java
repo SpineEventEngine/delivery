@@ -28,6 +28,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -41,7 +42,7 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
         implements Logging, NamedHealthAwareService {
 
     private final ExtendedInboxStorage inboxStorage;
-    private boolean healthy = true;
+    private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
      * Creates a {@code InboxService} backed by an {@link ExtendedInboxStorage} created from
@@ -134,12 +135,12 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
 
     @Override
     public boolean healthy() {
-        return healthy;
+        return healthy.get();
     }
 
     @Override
     public void healthy(boolean value) {
-        this.healthy = value;
+        healthy.set(value);
     }
 
     @Override

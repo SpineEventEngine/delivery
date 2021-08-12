@@ -24,6 +24,7 @@ import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.storage.StorageFactory;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.message.delivery.server.grpc.Responses.alreadyPicked;
@@ -36,7 +37,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         implements Logging, NamedHealthAwareService {
 
     private final ExtendedShardRegistry registry;
-    private boolean healthy = true;
+    private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
      * Creates a new {@code ShardService} backed by an {@link ExtendedShardRegistry} created from
@@ -91,12 +92,12 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
 
     @Override
     public boolean healthy() {
-        return healthy;
+        return healthy.get();
     }
 
     @Override
     public void healthy(boolean value) {
-        this.healthy = value;
+        healthy.set(value);
     }
 
     @Override
