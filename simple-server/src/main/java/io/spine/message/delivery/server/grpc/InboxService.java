@@ -28,6 +28,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -37,9 +38,11 @@ import static io.spine.message.delivery.server.grpc.Responses.writeOptionalMessa
 /**
  * Acts as a gRPC-wired backend for the {@link io.spine.server.delivery.InboxStorage}.
  */
-public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase implements Logging {
+public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
+        implements Logging, NamedHealthAwareService {
 
     private final ExtendedInboxStorage inboxStorage;
+    private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
      * Creates a {@code InboxService} backed by an {@link ExtendedInboxStorage} created from
@@ -128,5 +131,20 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase im
 
     private void log(ShardIndex shard, ImmutableList<InboxMessage> messages) {
         _info().log("`findManyInShard(%d)` -> %d.", shard.getIndex(), messages.size());
+    }
+
+    @Override
+    public boolean healthy() {
+        return healthy.get();
+    }
+
+    @Override
+    public void healthy(boolean value) {
+        healthy.set(value);
+    }
+
+    @Override
+    public String name() {
+        return InboxServiceGrpc.SERVICE_NAME;
     }
 }

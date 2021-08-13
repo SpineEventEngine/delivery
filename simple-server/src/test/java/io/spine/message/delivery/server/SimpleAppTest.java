@@ -6,8 +6,9 @@
 
 package io.spine.message.delivery.server;
 
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.health.v1.HealthCheckRequest;
+import io.grpc.health.v1.HealthCheckResponse;
+import io.grpc.health.v1.HealthGrpc;
 import io.spine.base.Identifier;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.WriteMessage;
@@ -18,41 +19,21 @@ import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.test.message.delivery.server.Something;
 import io.spine.type.TypeUrl;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 
-import java.time.Duration;
-
-import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Isolated
 @DisplayName("`SimpleApp` should")
-final class SimpleAppTest {
-
-    private final SimpleApp app = new SimpleApp();
-
-    @BeforeEach
-    void startApp() {
-        var appThread = new Thread(app::initAndStart);
-        appThread.start();
-        sleepUninterruptibly(Duration.ofSeconds(1)); // allow the server to start.
-    }
-
-    @AfterEach
-    void shutdownApp() {
-        app.shutdown();
-    }
+final class SimpleAppTest extends WithApp {
 
     @Nested
     @DisplayName("expose")
     class Expose {
-
-        private final ManagedChannel channel = serverChannel();
 
         @Test
         @DisplayName("`ShardService`")
@@ -64,7 +45,7 @@ final class SimpleAppTest {
                     .setShard(shard)
                     .setWorker(worker)
                     .vBuild();
-            var shardService = ShardServiceGrpc.newBlockingStub(channel);
+            var shardService = ShardServiceGrpc.newBlockingStub(serverChannel());
             assertDoesNotThrow(() -> {
                 shardService.pickShard(pickUpShard);
             });
@@ -78,18 +59,24 @@ final class SimpleAppTest {
             var writeMessage = WriteMessage.newBuilder()
                     .setMessage(message)
                     .vBuild();
-            var inboxService = InboxServiceGrpc.newFutureStub(channel);
+            var inboxService = InboxServiceGrpc.newFutureStub(serverChannel());
             assertDoesNotThrow(() -> {
                 inboxService.writeOne(writeMessage);
             });
         }
-    }
 
-    private static ManagedChannel serverChannel() {
-        ManagedChannel channel = ManagedChannelBuilder
-                .forAddress(SimpleApp.HOST, SimpleApp.PORT)
-                .usePlaintext()
-                .build();
-        return channel;
+        @Test
+        @DisplayName("`HealthService`")
+        void healthService() {
+            var expected = HealthCheckResponse.newBuilder()
+                    .setStatus(HealthCheckResponse.ServingStatus.SERVING)
+                    .buildPartial();
+            var message = HealthCheckRequest.newBuilder()
+                    .buildPartial();
+            var service = HealthGrpc.newBlockingStub(serverChannel());
+            var response = service.check(message);
+            assertThat(response)
+                    .isEqualTo(expected);
+        }
     }
 }
