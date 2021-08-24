@@ -36,6 +36,24 @@ dependencyResolutionManagement {
             }
         }
         maven("https://spine.mycloudrepo.io/public/repositories/snapshots")
+        maven("https://maven.pkg.github.com/SpineEventEngine/base-types") {
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+        maven("https://maven.pkg.github.com/SpineEventEngine/base") {
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+        maven("https://maven.pkg.github.com/SpineEventEngine/core-java") {
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 }
 
@@ -55,5 +73,23 @@ pluginManagement {
             }
         }
         maven("https://spine.mycloudrepo.io/public/repositories/snapshots")
+        maven("https://maven.pkg.github.com/SpineEventEngine/base-types") {
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+        maven("https://maven.pkg.github.com/SpineEventEngine/base") {
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+        maven("https://maven.pkg.github.com/SpineEventEngine/core-java") {
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
     }
 }
