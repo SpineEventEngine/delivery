@@ -15,7 +15,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
 import org.gradle.api.file.FileCollection
-import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.plugins.JavaPluginConvention
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.publish.PublishingExtension
@@ -26,6 +26,7 @@ import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.getPlugin
 import org.gradle.kotlin.dsl.property
 import org.gradle.kotlin.dsl.setProperty
 
@@ -134,7 +135,7 @@ class Publish : Plugin<Project> {
     }
 
     private fun Project.setUpDefaultArtifacts() {
-        val javaConvention = project.extensions.getByType(JavaPluginExtension::class)
+        val javaConvention = project.convention.getPlugin(JavaPluginConvention::class)
         val sourceSets = javaConvention.sourceSets
 
         val sourceJar = tasks.createIfAbsent(
