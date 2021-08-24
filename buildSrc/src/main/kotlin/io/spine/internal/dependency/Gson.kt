@@ -13,6 +13,6 @@ package io.spine.internal.dependency
  * [Gson](https://github.com/google/gson)
  */
 object Gson {
-    private const val version = "2.8.7"
+    private const val version = "2.8.8"
     const val lib = "com.google.code.gson:gson:${version}"
 }
