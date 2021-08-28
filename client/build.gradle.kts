@@ -6,6 +6,11 @@
 import io.spine.internal.gradle.PublishingRepos
 import io.spine.internal.gradle.spinePublishing
 
+/**
+ * Client build is still working on Gradle v6 while the latest Spine 1.x is not yet compatible
+ * with Gradle v7.
+ */
+
 allprojects {
     apply(from = "$rootDir/../version.gradle.kts")
     group = "io.spine.message-delivery"
