@@ -9,5 +9,5 @@ package io.spine.internal.dependency
 // https://checkstyle.sourceforge.io/
 @Suppress("unused")
 object CheckStyle {
-    const val version = "8.44"
+    const val version = "8.45.1"
 }

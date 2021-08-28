@@ -19,6 +19,28 @@ plugins {
     `java-library`
 }
 
+repositories {
+    mavenCentral()
+    google()
+    maven("https://spine.mycloudrepo.io/public/repositories/releases") {
+        content {
+            includeGroup("io.spine")
+            includeGroup("io.spine.tools")
+            includeGroup("io.spine.gcloud")
+        }
+        mavenContent {
+            releasesOnly()
+        }
+    }
+    maven("https://spine.mycloudrepo.io/public/repositories/snapshots")
+    maven("https://maven.pkg.github.com/SpineEventEngine/*") {
+        credentials {
+            username = System.getenv("GITHUB_ACTOR")
+            password = System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
+
 configurations.all {
     resolutionStrategy {
         force(

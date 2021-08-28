@@ -162,10 +162,12 @@ class Publish : Plugin<Project> {
         }
     }
 
-    private fun TaskContainer.createIfAbsent(artifactTask: DefaultArtifact,
-                                             from: FileCollection,
-                                             classifier: String,
-                                             dependencies: Set<Any> = setOf()): Task {
+    private fun TaskContainer.createIfAbsent(
+        artifactTask: DefaultArtifact,
+        from: FileCollection,
+        classifier: String,
+        dependencies: Set<Any> = setOf()
+    ): Task {
         val existing = findByName(artifactTask.name)
         if (existing != null) {
             return existing
@@ -177,8 +179,9 @@ class Publish : Plugin<Project> {
         }
     }
 
-    private fun PublishingExtension.createMavenPublication(project: Project,
-                                                           extension: PublishExtension
+    private fun PublishingExtension.createMavenPublication(
+        project: Project,
+        extension: PublishExtension
     ) {
         val artifactIdForPublishing = if (extension.spinePrefix.get()) {
             "spine-${project.name}"
@@ -214,10 +217,12 @@ class Publish : Plugin<Project> {
         }
     }
 
-    private fun MavenArtifactRepository.initialize(repo: Repository,
-                                                   project: Project,
-                                                   snapshots: Boolean) {
-        val publicRepo = if(snapshots) {
+    private fun MavenArtifactRepository.initialize(
+        repo: Repository,
+        project: Project,
+        snapshots: Boolean
+    ) {
+        val publicRepo = if (snapshots) {
             repo.snapshots
         } else {
             repo.releases

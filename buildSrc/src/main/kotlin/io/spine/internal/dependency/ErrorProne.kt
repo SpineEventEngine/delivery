@@ -9,8 +9,8 @@ package io.spine.internal.dependency
 // https://errorprone.info/
 @Suppress("unused")
 object ErrorProne {
-    private const val version = "2.7.1"
-    private const val nullawayVersion = "0.9.1"
+    private const val version = "2.9.0"
+    private const val nullawayVersion = "0.9.2"
 
     val annotations = listOf(
         "com.google.errorprone:error_prone_annotations:${version}",

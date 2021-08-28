@@ -11,7 +11,7 @@ object JUnit {
     private const val version = "5.7.2"
 
     // https://github.com/apiguardian-team/apiguardian
-    private const val apiGuardianVersion = "1.1.1"
+    private const val apiGuardianVersion = "1.1.2"
 
     val api = listOf(
         "org.apiguardian:apiguardian-api:${apiGuardianVersion}",
