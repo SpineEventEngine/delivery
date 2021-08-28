@@ -33,9 +33,12 @@ repositories {
         }
     }
     maven("https://spine.mycloudrepo.io/public/repositories/snapshots")
-    spine("base")
-    spine("base-types")
-    spine("core-java")
+    maven("https://maven.pkg.github.com/SpineEventEngine/*") {
+        credentials {
+            username = System.getenv("GITHUB_ACTOR")
+            password = System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
 
 configurations.all {
@@ -62,19 +65,3 @@ configurations.all {
         )
     }
 }
-
-/**
- * Adds and configures a Spine's GitHub Packages Maven repository.
- *
- * @see [RepositoryHandler.maven]
- * @see [MavenArtifactRepository.setUrl]
- * @see [MavenArtifactRepository.credentials]
- */
-fun RepositoryHandler.spine(repoName: Any) =
-    maven {
-        setUrl("https://maven.pkg.github.com/SpineEventEngine/${repoName}")
-        credentials {
-            username = System.getenv("GITHUB_ACTOR")
-            password = System.getenv("GITHUB_TOKEN")
-        }
-    }

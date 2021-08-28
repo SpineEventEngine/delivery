@@ -24,9 +24,12 @@ repositories {
         }
     }
     maven("https://spine.mycloudrepo.io/public/repositories/snapshots")
-    spine("base")
-    spine("base-types")
-    spine("core-java")
+    maven("https://maven.pkg.github.com/SpineEventEngine/*") {
+        credentials {
+            username = System.getenv("GITHUB_ACTOR")
+            password = System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
 
 val spineBaseVersion = "2.0.0-SNAPSHOT.47"
@@ -38,19 +41,3 @@ dependencies {
     implementation("gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0")
     implementation("gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:3.1.2")
 }
-
-/**
- * Adds and configures a Spine's GitHub Packages Maven repository.
- *
- * @see [RepositoryHandler.maven]
- * @see [MavenArtifactRepository.setUrl]
- * @see [MavenArtifactRepository.credentials]
- */
-fun RepositoryHandler.spine(repoName: Any) =
-    maven {
-        setUrl("https://maven.pkg.github.com/SpineEventEngine/${repoName}")
-        credentials {
-            username = System.getenv("GITHUB_ACTOR")
-            password = System.getenv("GITHUB_TOKEN")
-        }
-    }
