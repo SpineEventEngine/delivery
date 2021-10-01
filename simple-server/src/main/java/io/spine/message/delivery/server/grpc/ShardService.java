@@ -6,24 +6,20 @@
 
 package io.spine.message.delivery.server.grpc;
 
-import com.google.common.base.Joiner;
-import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.command.ReleaseShard;
+import io.spine.message.delivery.event.ExpiredSession;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.ShardServiceGrpc;
 import io.spine.message.delivery.server.ExtendedShardRegistry;
-import io.spine.server.NodeId;
-import io.spine.server.delivery.ShardIndex;
-import io.spine.server.delivery.ShardProcessingSession;
+import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.storage.StorageFactory;
 
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -51,10 +47,10 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
 
     @Override
     public void pickShard(PickUpShard request, StreamObserver<ShardPickedUp> response) {
-        ShardIndex shard = request.getShard();
+        var shard = request.getShard();
         int index = shard.getIndex();
-        NodeId worker = request.getWorker();
-        Optional<ShardProcessingSession> session = registry.pickUp(shard, worker);
+        var worker = request.getWorker();
+        var session = registry.pickUp(shard, worker);
         if (session.isPresent()) {
             ShardPickedUp pickedUp = Responses.shardPickedUp(shard, worker);
             log("Shard %d picked up.", index);
@@ -68,7 +64,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
 
     @Override
     public void releaseSession(ReleaseShard request, StreamObserver<Empty> observer) {
-        ShardIndex shard = request.getShard();
+        var shard = request.getShard();
         registry.releaseShard(shard);
         log("Shard %d released.", shard.getIndex());
         completeCall(observer);
@@ -81,13 +77,23 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     @Override
     public void releaseSessions(ReleaseExpiredSessions request,
                                 StreamObserver<ExpiredSessionsReleased> responseObserver) {
-        Duration period = request.getInactivityPeriod();
-        Iterable<ShardIndex> indices = registry.releaseExpiredSessions(period);
-        _debug().log("Expired sessions were released: %s.", Joiner.on(", ")
-                                                                  .join(indices));
+        var period = request.getInactivityPeriod();
+        var sessions = registry.releaseInactiveSessions(period);
+        _debug().log("Expired sessions were released: %s.", sessions);
+        var result = ExpiredSessionsReleased.newBuilder();
+        sessions.stream()
+                .map(ShardService::toExpiredSession)
+                .forEach(result::addShard);
+        responseObserver.onNext(result.vBuild());
+        responseObserver.onCompleted();
+    }
 
-        responseObserver.onNext(ExpiredSessionsReleased.newBuilder()
-                                        .vBuild());
+    private static ExpiredSession toExpiredSession(ShardSessionRecord session) {
+        return ExpiredSession.newBuilder()
+                .setShard(session.getIndex())
+                .setPickedBy(session.getPickedBy())
+                .setWhenPicked(session.getWhenLastPicked())
+                .vBuild();
     }
 
     @Override
