@@ -11,6 +11,7 @@ import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Gson
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JavaX
+import io.spine.internal.dependency.Log4j2
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
 import io.spine.internal.dependency.Truth
@@ -50,6 +51,13 @@ configurations.all {
             Guava.testLib,
             FindBugs.annotations,
             Flogger.lib,
+            Flogger.Runtime.log4J,
+            Flogger.Runtime.log4J2,
+            Flogger.Runtime.slf4J,
+            Flogger.Runtime.systemBackend,
+            Log4j2.api,
+            Log4j2.core,
+            Log4j2.slf4jBridge,
             Gson.lib,
             JavaX.annotations,
             Protobuf.libs,
