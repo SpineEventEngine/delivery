@@ -8,7 +8,7 @@ package io.spine.internal.dependency
 
 // https://junit.org/junit5/
 object JUnit {
-    private const val version = "5.7.2"
+    private const val version = "5.8.1"
 
     // https://github.com/apiguardian-team/apiguardian
     private const val apiGuardianVersion = "1.1.2"

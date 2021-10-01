@@ -8,7 +8,7 @@ package io.spine.internal.dependency
 
 // https://github.com/google/flogger
 object Flogger {
-    internal const val version = "0.6"
+    internal const val version = "0.7.1"
     const val lib = "com.google.flogger:flogger:${version}"
 
     @Suppress("unused")

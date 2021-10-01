@@ -8,6 +8,6 @@ package io.spine.internal.dependency
 
 // https://github.com/redisson/redisson
 object Redisson {
-    private const val version = "3.16.1"
+    private const val version = "3.16.3"
     const val lib = "org.redisson:redisson:${version}"
 }
