@@ -32,7 +32,7 @@ repositories {
     }
 }
 
-val spineBaseVersion = "2.0.0-SNAPSHOT.47"
+val spineBaseVersion = "2.0.0-SNAPSHOT.65"
 
 dependencies {
     implementation("net.ltgt.gradle:gradle-errorprone-plugin:2.0.2")
