@@ -182,7 +182,7 @@ final class TenantRecords<I, R extends Message>
         Stream<RecordWithColumns<I, R>> stream = data;
         ImmutableList<SortBy<?, R>> sortingSpecs = query.sorting();
         if (sortingSpecs.size() > 0) {
-            stream = stream.sorted(accordingTo(sortingSpecs.asList()));
+            stream = stream.sorted(accordingTo(sortingSpecs));
         }
         Integer limit = query.limit();
         if (limit != null && limit > 0) {
