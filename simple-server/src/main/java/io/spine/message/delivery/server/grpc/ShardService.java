@@ -8,6 +8,7 @@ package io.spine.message.delivery.server.grpc;
 
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import io.spine.base.Time;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
@@ -93,6 +94,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
                 .setShard(session.getIndex())
                 .setPickedBy(session.getPickedBy())
                 .setWhenPicked(session.getWhenLastPicked())
+                .setWhenReleased(Time.currentTime())
                 .vBuild();
     }
 

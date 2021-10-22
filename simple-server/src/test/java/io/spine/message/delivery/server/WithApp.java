@@ -8,6 +8,7 @@ package io.spine.message.delivery.server;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.spine.message.delivery.grpc.ShardServiceGrpc;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +51,13 @@ public abstract class WithApp {
      */
     protected final SimpleApp app() {
         return app;
+    }
+
+    /**
+     * Returns blocking {@code ShardService} connected to the app.
+     */
+    protected final ShardServiceGrpc.ShardServiceBlockingStub syncShardService(){
+        return ShardServiceGrpc.newBlockingStub(serverChannel());
     }
 
     /**
