@@ -8,10 +8,8 @@ package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
-import io.grpc.Context;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -42,16 +40,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
-import java.util.concurrent.Callable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.protobuf.Messages.isDefault;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.util.Preconditions2.checkPositive;
-import static java.lang.Thread.currentThread;
 
 /**
  * A delivery client which performs all of its operation through {@code Inbox} and {@code Shard}
@@ -106,7 +101,7 @@ public final class SimpleDeliveryClient
         WriteMessage writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        withNewGrpcContext(() -> inboxService.writeOne(writeMessage));
+        inboxService.writeOne(writeMessage);
     }
 
     @Override
@@ -117,7 +112,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        withNewGrpcContext(() -> inboxService.writeMany(writeMessages));
+        inboxService.writeMany(writeMessages);
     }
 
     @Override
@@ -126,7 +121,7 @@ public final class SimpleDeliveryClient
         RemoveMessage removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        withNewGrpcContext(() -> inboxService.removeOne(removeMessage));
+        inboxService.removeOne(removeMessage);
     }
 
     @Override
@@ -137,7 +132,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        withNewGrpcContext(() -> inboxService.removeMany(removeMessages));
+        inboxService.removeMany(removeMessages);
     }
 
     @Override
@@ -219,17 +214,7 @@ public final class SimpleDeliveryClient
         }
         ReadMessagesSinceTime query = queryBuilder.vBuild();
 
-        _info().log("[thread: %s] Find many in shard `%d/%d`.",
-                    currentThread().getName(), shard.getIndex(), shard.getOfTotal());
         PageOfMessages page = inboxService.findManyInShard(query);
-
-        page.getMessageList()
-            .stream()
-            .filter(m -> m.getPayloadCase() == InboxMessage.PayloadCase.COMMAND
-                    && m.getCommand().getMessage().getTypeUrl().contains("CompleteStep")
-                    && m.getCommand().getMessage().getTypeUrl().contains("StartStep"))
-            .forEach(m -> _info().log("[thread: %s] Returning message `%s`.",
-                                      m.getCommand().enclosedMessage(), currentThread().getName()));
         ImmutableList<InboxMessage> result =
                 page.getMessageList()
                     .stream()
@@ -242,16 +227,5 @@ public final class SimpleDeliveryClient
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard) {
         OptionalInboxMessage message = inboxService.newestMessageToDeliver(shard);
         return asOptional(message);
-    }
-
-    @CanIgnoreReturnValue
-    private static <V> V withNewGrpcContext(Callable<V> action) {
-        Context forked = Context.current()
-                                .fork();
-        try {
-            return forked.call(action);
-        } catch (Exception e) {
-            throw illegalStateWithCauseOf(e);
-        }
     }
 }
