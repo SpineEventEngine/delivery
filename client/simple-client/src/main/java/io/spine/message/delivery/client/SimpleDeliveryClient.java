@@ -8,7 +8,6 @@ package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
@@ -27,6 +26,7 @@ import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.InboxServiceGrpc;
+import io.spine.message.delivery.grpc.InboxServiceGrpc.InboxServiceBlockingStub;
 import io.spine.message.delivery.grpc.OptionalInboxMessage;
 import io.spine.message.delivery.grpc.PageOfMessages;
 import io.spine.message.delivery.grpc.ReadMessagesSinceTime;
@@ -46,12 +46,12 @@ import java.util.concurrent.Callable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.util.concurrent.Futures.getUnchecked;
 import static io.spine.protobuf.Messages.isDefault;
 import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.util.Preconditions2.checkPositive;
+import static java.lang.Thread.currentThread;
 
 /**
  * A delivery client which performs all of its operation through {@code Inbox} and {@code Shard}
@@ -66,12 +66,12 @@ public final class SimpleDeliveryClient
 
     private static final FluentLogger logger = Logging.loggerFor(SimpleDeliveryClient.class);
 
-    private final InboxServiceGrpc.InboxServiceFutureStub inboxService;
     private final ShardServiceBlockingStub shardService;
+    private final InboxServiceBlockingStub inboxService;
 
     private SimpleDeliveryClient(ManagedChannel channel) {
         shardService = ShardServiceGrpc.newBlockingStub(channel);
-        inboxService = InboxServiceGrpc.newFutureStub(channel);
+        inboxService = InboxServiceGrpc.newBlockingStub(channel);
     }
 
     /**
@@ -187,11 +187,7 @@ public final class SimpleDeliveryClient
     public Optional<InboxMessage> find(InboxMessageId messageId) {
         checkNotDefaultArg(messageId);
 
-        OptionalInboxMessage result;
-        ListenableFuture<OptionalInboxMessage> future = withNewGrpcContext(
-                () -> inboxService.findOne(messageId)
-        );
-        result = getUnchecked(future);
+        OptionalInboxMessage result = inboxService.findOne(messageId);
         return asOptional(result);
     }
 
@@ -223,10 +219,17 @@ public final class SimpleDeliveryClient
         }
         ReadMessagesSinceTime query = queryBuilder.vBuild();
 
-        ListenableFuture<PageOfMessages> future = withNewGrpcContext(
-                () -> inboxService.findManyInShard(query)
-        );
-        PageOfMessages page = getUnchecked(future);
+        _info().log("[thread: %s] Find many in shard `%d/%d`.",
+                    currentThread().getName(), shard.getIndex(), shard.getOfTotal());
+        PageOfMessages page = inboxService.findManyInShard(query);
+
+        page.getMessageList()
+            .stream()
+            .filter(m -> m.getPayloadCase() == InboxMessage.PayloadCase.COMMAND
+                    && m.getCommand().getMessage().getTypeUrl().contains("CompleteStep")
+                    && m.getCommand().getMessage().getTypeUrl().contains("StartStep"))
+            .forEach(m -> _info().log("[thread: %s] Returning message `%s`.",
+                                      m.getCommand().enclosedMessage(), currentThread().getName()));
         ImmutableList<InboxMessage> result =
                 page.getMessageList()
                     .stream()
@@ -237,10 +240,7 @@ public final class SimpleDeliveryClient
 
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard) {
-        ListenableFuture<OptionalInboxMessage> future = withNewGrpcContext(
-                () -> inboxService.newestMessageToDeliver(shard)
-        );
-        OptionalInboxMessage message = getUnchecked(future);
+        OptionalInboxMessage message = inboxService.newestMessageToDeliver(shard);
         return asOptional(message);
     }
 

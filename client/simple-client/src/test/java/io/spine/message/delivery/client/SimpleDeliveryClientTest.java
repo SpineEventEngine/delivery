@@ -27,13 +27,11 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
-import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.message.delivery.client.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -105,7 +103,7 @@ final class SimpleDeliveryClientTest {
         void writeMessage() {
             InboxMessage message = newMessage();
             client.writeMessage(message);
-            sleepUninterruptibly(1, TimeUnit.SECONDS);
+
             Optional<InboxMessage> readMessage = client.find(message.getId());
             assertThat(readMessage)
                     .isPresent();
@@ -120,7 +118,6 @@ final class SimpleDeliveryClientTest {
             client.writeMessages(
                     shard, ImmutableList.of(firstMessage, secondMessage)
             );
-            sleepUninterruptibly(1, TimeUnit.SECONDS);
             Page<InboxMessage> writtenMessages = client.readAll(shard, 10);
             assertThat(writtenMessages.size())
                     .isEqualTo(2);
@@ -149,7 +146,6 @@ final class SimpleDeliveryClientTest {
             client.removeMessages(
                     shard, ImmutableList.of(firstMessage, secondMessage)
             );
-            sleepUninterruptibly(1, TimeUnit.SECONDS);
             Page<InboxMessage> writtenMessages = client.readAll(shard, 10);
             assertThat(writtenMessages.size())
                     .isEqualTo(0);
@@ -174,7 +170,7 @@ final class SimpleDeliveryClientTest {
         void find() {
             InboxMessage message = newMessage();
             client.writeMessage(message);
-            sleepUninterruptibly(1, TimeUnit.SECONDS);
+
             Optional<InboxMessage> readMessage = client.find(message.getId());
             assertThat(readMessage)
                     .isPresent();
@@ -187,7 +183,7 @@ final class SimpleDeliveryClientTest {
             ShardIndex shard = messages.get(0)
                                        .shardIndex();
             client.writeMessages(shard, messages);
-            sleepUninterruptibly(1, TimeUnit.SECONDS);
+
             int pageSize = 10;
             Page<InboxMessage> writtenMessages = client.readAll(shard, pageSize);
             assertThat(writtenMessages.size())
@@ -219,7 +215,7 @@ final class SimpleDeliveryClientTest {
                     olderMessage.shardIndex(),
                     ImmutableList.of(olderMessage, newestMessage, newerMessage)
             );
-            sleepUninterruptibly(1, TimeUnit.SECONDS);
+
             Optional<InboxMessage> actual =
                     client.newestMessageToDeliver(olderMessage.shardIndex());
             assertThat(actual)
