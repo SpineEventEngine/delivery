@@ -8,11 +8,8 @@ package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.flogger.FluentLogger;
-import com.google.common.util.concurrent.ListenableFuture;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
-import io.grpc.Context;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
@@ -27,6 +24,7 @@ import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.InboxServiceGrpc;
+import io.spine.message.delivery.grpc.InboxServiceGrpc.InboxServiceBlockingStub;
 import io.spine.message.delivery.grpc.OptionalInboxMessage;
 import io.spine.message.delivery.grpc.PageOfMessages;
 import io.spine.message.delivery.grpc.ReadMessagesSinceTime;
@@ -42,13 +40,10 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
-import java.util.concurrent.Callable;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
-import static com.google.common.util.concurrent.Futures.getUnchecked;
 import static io.spine.protobuf.Messages.isDefault;
-import static io.spine.util.Exceptions.illegalStateWithCauseOf;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.util.Preconditions2.checkPositive;
@@ -66,12 +61,12 @@ public final class SimpleDeliveryClient
 
     private static final FluentLogger logger = Logging.loggerFor(SimpleDeliveryClient.class);
 
-    private final InboxServiceGrpc.InboxServiceFutureStub inboxService;
     private final ShardServiceBlockingStub shardService;
+    private final InboxServiceBlockingStub inboxService;
 
     private SimpleDeliveryClient(ManagedChannel channel) {
         shardService = ShardServiceGrpc.newBlockingStub(channel);
-        inboxService = InboxServiceGrpc.newFutureStub(channel);
+        inboxService = InboxServiceGrpc.newBlockingStub(channel);
     }
 
     /**
@@ -106,7 +101,7 @@ public final class SimpleDeliveryClient
         WriteMessage writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        withNewGrpcContext(() -> inboxService.writeOne(writeMessage));
+        inboxService.writeOne(writeMessage);
     }
 
     @Override
@@ -117,7 +112,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        withNewGrpcContext(() -> inboxService.writeMany(writeMessages));
+        inboxService.writeMany(writeMessages);
     }
 
     @Override
@@ -126,7 +121,7 @@ public final class SimpleDeliveryClient
         RemoveMessage removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        withNewGrpcContext(() -> inboxService.removeOne(removeMessage));
+        inboxService.removeOne(removeMessage);
     }
 
     @Override
@@ -137,7 +132,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        withNewGrpcContext(() -> inboxService.removeMany(removeMessages));
+        inboxService.removeMany(removeMessages);
     }
 
     @Override
@@ -187,11 +182,7 @@ public final class SimpleDeliveryClient
     public Optional<InboxMessage> find(InboxMessageId messageId) {
         checkNotDefaultArg(messageId);
 
-        OptionalInboxMessage result;
-        ListenableFuture<OptionalInboxMessage> future = withNewGrpcContext(
-                () -> inboxService.findOne(messageId)
-        );
-        result = getUnchecked(future);
+        OptionalInboxMessage result = inboxService.findOne(messageId);
         return asOptional(result);
     }
 
@@ -223,10 +214,7 @@ public final class SimpleDeliveryClient
         }
         ReadMessagesSinceTime query = queryBuilder.vBuild();
 
-        ListenableFuture<PageOfMessages> future = withNewGrpcContext(
-                () -> inboxService.findManyInShard(query)
-        );
-        PageOfMessages page = getUnchecked(future);
+        PageOfMessages page = inboxService.findManyInShard(query);
         ImmutableList<InboxMessage> result =
                 page.getMessageList()
                     .stream()
@@ -237,21 +225,7 @@ public final class SimpleDeliveryClient
 
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard) {
-        ListenableFuture<OptionalInboxMessage> future = withNewGrpcContext(
-                () -> inboxService.newestMessageToDeliver(shard)
-        );
-        OptionalInboxMessage message = getUnchecked(future);
+        OptionalInboxMessage message = inboxService.newestMessageToDeliver(shard);
         return asOptional(message);
-    }
-
-    @CanIgnoreReturnValue
-    private static <V> V withNewGrpcContext(Callable<V> action) {
-        Context forked = Context.current()
-                                .fork();
-        try {
-            return forked.call(action);
-        } catch (Exception e) {
-            throw illegalStateWithCauseOf(e);
-        }
     }
 }
