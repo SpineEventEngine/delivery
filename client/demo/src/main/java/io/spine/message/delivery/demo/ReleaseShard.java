@@ -16,6 +16,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static io.spine.message.delivery.demo.GreeterContext.NAME;
+
 /**
  * Provides a GET HTTP request handler which releases a delivery shard
  * using the {@link io.spine.message.delivery.client.SimpleDeliveryClient DeliveryClient}.
@@ -27,14 +29,9 @@ public final class ReleaseShard extends ContextAwareServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         _info().log("Releasing a shard!");
-        NodeId node = ServerEnvironment.instance().nodeId();
-        // TODO: 2022-02-28:dmitry.kashcheiev: current solution is incorrect we should release
-        //  the shard that was actually picked in LockSahrd controller, probably ? we can use
-        //  only node ID here.
-        String threadId = String.valueOf(Thread.currentThread().getId());
         WorkerId worker = WorkerId.newBuilder()
-                .setNodeId(node)
-                .setValue(threadId)
+                .setNodeId(ServerEnvironment.instance().nodeId())
+                .setValue(NAME)
                 .vBuild();
         ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
         client.get()

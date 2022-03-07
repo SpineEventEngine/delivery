@@ -34,11 +34,11 @@ final class WorkRegistryTest {
 
     private static final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
     private static final NodeId node = NodeId.newBuilder()
-            .setValue("test")
+            .setValue("test-node")
             .vBuild();
     private static final WorkerId worker = WorkerId.newBuilder()
             .setNodeId(node)
-            .setValue("test")
+            .setValue("test-worker")
             .vBuild();
 
     @Test
