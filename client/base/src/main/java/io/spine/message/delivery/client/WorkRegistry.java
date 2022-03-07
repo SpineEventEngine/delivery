@@ -40,6 +40,12 @@ public final class WorkRegistry implements ShardedWorkRegistry, Logging {
         this.client = checkNotNull(client);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The ID of the worker that tries to pick a shard is the concatenation of the
+     * provided node ID and current thread ID.
+     */
     @Override
     public Optional<ShardProcessingSession> pickUp(ShardIndex index, NodeId nodeId) {
         checkNotDefaultArg(index);
