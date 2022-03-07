@@ -17,7 +17,7 @@ import io.spine.message.delivery.event.ExpiredSession;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.ShardServiceGrpc;
-import io.spine.message.delivery.server.InMemoryShardRegistry;
+import io.spine.message.delivery.server.LiquorShardRegistry;
 import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.storage.StorageFactory;
 
@@ -33,14 +33,13 @@ import static io.spine.message.delivery.server.grpc.Responses.completeCall;
 public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         implements Logging, NamedHealthAwareService {
 
-    private final InMemoryShardRegistry registry;
+    private final LiquorShardRegistry registry;
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
-    // TODO: 2022-02-23:dmitry.kashcheiev: add docs here
     public ShardService(StorageFactory factory) {
         super();
         checkNotNull(factory);
-        registry = new InMemoryShardRegistry(factory);
+        registry = new LiquorShardRegistry(factory);
     }
 
     @Override
