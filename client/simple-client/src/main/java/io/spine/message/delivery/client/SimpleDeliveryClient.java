@@ -30,7 +30,6 @@ import io.spine.message.delivery.grpc.PageOfMessages;
 import io.spine.message.delivery.grpc.ReadMessagesSinceTime;
 import io.spine.message.delivery.grpc.ShardServiceGrpc;
 import io.spine.message.delivery.grpc.ShardServiceGrpc.ShardServiceBlockingStub;
-import io.spine.server.NodeId;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageComparator;
 import io.spine.server.delivery.InboxMessageId;
