@@ -10,14 +10,12 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
-import io.spine.server.NodeId;
-import io.spine.server.delivery.AbstractWorkRegistry;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.delivery.ShardSessionRecord;
+import io.spine.server.delivery.WorkerId;
 import io.spine.server.storage.StorageFactory;
 
-import java.util.Iterator;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -28,7 +26,7 @@ import static io.spine.base.Time.currentTime;
  * A {@link ShardRegistryStorage}-baked {@link io.spine.server.delivery.ShardedWorkRegistry
  * ShardedWorkRegistry}  with some more API endpoints exposes to public.
  */
-public final class ExtendedShardRegistry extends AbstractWorkRegistry {
+public final class InMemoryShardRegistry {
 
     private final ShardRegistryStorage storage;
 
@@ -36,20 +34,74 @@ public final class ExtendedShardRegistry extends AbstractWorkRegistry {
      * Creates a new {@code ExtendedShardRegistry} backed by {@link ShardRegistryStorage} created
      * from the configured {@code factory}.
      */
-    public ExtendedShardRegistry(StorageFactory factory) {
+    public InMemoryShardRegistry(StorageFactory factory) {
         super();
         checkNotNull(factory);
         this.storage = new ShardRegistryStorage(factory);
     }
 
-    @Override
-    public synchronized Optional<ShardProcessingSession> pickUp(ShardIndex index, NodeId nodeId) {
-        return super.pickUp(index, nodeId);
+    public synchronized Optional<ShardProcessingSession> pickUp(ShardIndex index,
+                                                                WorkerId workerId) {
+        var optionalRecord = find(index);
+        if (optionalRecord.isEmpty()) {
+            var newRecord = createRecord(index, workerId);
+            return Optional.of(asSession(newRecord));
+        }
+
+        var record = optionalRecord.get();
+        if (hasWorker(record)) {
+            return Optional.empty();
+        }
+
+        var updatedRecord = updateNode(record, workerId);
+        return Optional.of(asSession(updatedRecord));
     }
 
-    @Override
-    public synchronized Iterable<ShardIndex> releaseExpiredSessions(Duration inactivityPeriod) {
-        return super.releaseExpiredSessions(inactivityPeriod);
+    private static boolean hasWorker(ShardSessionRecord record) {
+        return !WorkerId.getDefaultInstance().equals(record.getWorker());
+    }
+
+    private Optional<ShardSessionRecord> find(ShardIndex index) {
+        return storage.read(index);
+    }
+
+    private ShardSessionRecord createRecord(ShardIndex index, WorkerId worker) {
+        var newRecord = ShardSessionRecord.newBuilder()
+                .setIndex(index)
+                .setWorker(worker)
+                .setWhenLastPicked(currentTime())
+                .vBuild();
+        storage.write(index, newRecord);
+        return newRecord;
+    }
+
+    private ShardProcessingSession asSession(ShardSessionRecord record) {
+        return new InMemoryShardSession(record);
+    }
+
+    private void clearWorker(ShardSessionRecord session) {
+        var record = session.toBuilder()
+                .clearWorker()
+                .build();
+        storage.write(session.getIndex(), record);
+    }
+
+    private ShardSessionRecord updateNode(ShardSessionRecord record, WorkerId worker) {
+        var updatedRecord = record.toBuilder()
+                .setWorker(worker)
+                .setWhenLastPicked(currentTime())
+                .build();
+        storage.write(updatedRecord.getIndex(), updatedRecord);
+        return updatedRecord;
+    }
+
+
+    /**
+     * Releases the shard under the given index.
+     */
+    public synchronized void releaseShard(ShardIndex index) {
+        storage.read(index)
+               .ifPresent(this::clearWorker);
     }
 
     /**
@@ -58,61 +110,24 @@ public final class ExtendedShardRegistry extends AbstractWorkRegistry {
      *
      * <p>It may be handy if an application node hangs or gets killed — so that it is not able
      * to complete the session in a conventional way.
-     *
-     * @implNote A copy of the {@link #releaseExpiredSessions(Duration)} which returns the
-     *         whole {@code ShardSessionRecord} instead of the {@code ShardIndex}.
-     * @see #releaseExpiredSessions(Duration)
      */
     public synchronized ImmutableSet<ShardSessionRecord>
     releaseInactiveSessions(Duration inactivityPeriod) {
         checkNotNull(inactivityPeriod);
         ImmutableSet.Builder<ShardSessionRecord> resultBuilder = ImmutableSet.builder();
-        allRecords().forEachRemaining(record -> {
-            if (record.hasPickedBy()) {
+        storage.readAll().forEachRemaining(record -> {
+            if (record.hasWorker()) {
                 Timestamp whenPicked = record.getWhenLastPicked();
                 Duration elapsed = between(whenPicked, currentTime());
 
                 int comparison = Durations.compare(elapsed, inactivityPeriod);
                 if (comparison >= 0) {
-                    clearNode(record);
+                    clearWorker(record);
                     resultBuilder.add(record);
                 }
             }
         });
         return resultBuilder.build();
-    }
-
-    @Override
-    protected synchronized void clearNode(ShardSessionRecord session) {
-        super.clearNode(session);
-    }
-
-    @Override
-    protected Iterator<ShardSessionRecord> allRecords() {
-        return storage.readAll();
-    }
-
-    @Override
-    protected void write(ShardSessionRecord session) {
-        storage.write(session.getIndex(), session);
-    }
-
-    @Override
-    protected Optional<ShardSessionRecord> find(ShardIndex index) {
-        return storage.read(index);
-    }
-
-    @Override
-    protected ShardProcessingSession asSession(ShardSessionRecord record) {
-        return new InMemoryShardSession(record);
-    }
-
-    /**
-     * Releases the shard under the given index.
-     */
-    public synchronized void releaseShard(ShardIndex index) {
-        storage.read(index)
-               .ifPresent(this::clearNode);
     }
 
     /**
@@ -127,7 +142,7 @@ public final class ExtendedShardRegistry extends AbstractWorkRegistry {
         @Override
         protected void complete() {
             Optional<ShardSessionRecord> record = storage.read(shardIndex());
-            record.ifPresent(ExtendedShardRegistry.this::clearNode);
+            record.ifPresent(InMemoryShardRegistry.this::clearWorker);
         }
     }
 }

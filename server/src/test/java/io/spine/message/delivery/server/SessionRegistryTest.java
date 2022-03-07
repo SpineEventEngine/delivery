@@ -17,6 +17,7 @@ import io.spine.message.delivery.event.ShardReleased;
 import io.spine.message.delivery.rejection.Rejections;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.WorkerId;
 import io.spine.time.testing.FrozenMadHatterParty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,11 @@ final class SessionRegistryTest extends DeliveryTest {
             .setIndex(0)
             .setOfTotal(2)
             .vBuild();
-    private final NodeId worker = NodeId.newBuilder()
+    private final NodeId node = NodeId.newBuilder()
+            .setValue(Identifier.newUuid())
+            .vBuild();
+    private final WorkerId worker = WorkerId.newBuilder()
+            .setNodeId(node)
             .setValue(Identifier.newUuid())
             .vBuild();
 
@@ -60,7 +65,7 @@ final class SessionRegistryTest extends DeliveryTest {
         @DisplayName("updating aggregate state")
         void state() {
             var expected = ShardSessionRegistry.newBuilder()
-                    .setPickedBy(worker)
+                    .setWorker(worker)
                     .setId(shard)
                     .setWhenPicked(time)
                     .vBuild();
@@ -73,7 +78,7 @@ final class SessionRegistryTest extends DeliveryTest {
             var expected = ShardPickedUp.newBuilder()
                     .setShard(shard)
                     .setWhenPicked(time)
-                    .setPickedBy(worker)
+                    .setWorker(worker)
                     .vBuild();
             context().assertEvent(expected);
         }
@@ -137,7 +142,7 @@ final class SessionRegistryTest extends DeliveryTest {
             var expected = ShardReleased.newBuilder()
                     .setShard(shard)
                     .setWhenReleased(time)
-                    .setPickedBy(worker)
+                    .setWorker(worker)
                     .vBuild();
             context().assertEvent(expected);
         }
@@ -161,7 +166,8 @@ final class SessionRegistryTest extends DeliveryTest {
             @Test
             @DisplayName("shard is picked up by another worker")
             void pickedUpByAnotherWorker() {
-                var anotherWorker = NodeId.newBuilder()
+                var anotherWorker = WorkerId.newBuilder()
+                        .setNodeId(node)
                         .setValue(Identifier.newUuid())
                         .vBuild();
                 var pickUpShard = PickUpShard.newBuilder()

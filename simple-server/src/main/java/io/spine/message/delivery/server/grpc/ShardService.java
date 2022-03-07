@@ -17,7 +17,7 @@ import io.spine.message.delivery.event.ExpiredSession;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.ShardServiceGrpc;
-import io.spine.message.delivery.server.ExtendedShardRegistry;
+import io.spine.message.delivery.server.InMemoryShardRegistry;
 import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.storage.StorageFactory;
 
@@ -33,17 +33,14 @@ import static io.spine.message.delivery.server.grpc.Responses.completeCall;
 public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         implements Logging, NamedHealthAwareService {
 
-    private final ExtendedShardRegistry registry;
+    private final InMemoryShardRegistry registry;
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
-    /**
-     * Creates a new {@code ShardService} backed by an {@link ExtendedShardRegistry} created from
-     * the configured {@code factory}.
-     */
+    // TODO: 2022-02-23:dmitry.kashcheiev: add docs here
     public ShardService(StorageFactory factory) {
         super();
         checkNotNull(factory);
-        registry = new ExtendedShardRegistry(factory);
+        registry = new InMemoryShardRegistry(factory);
     }
 
     @Override
@@ -92,7 +89,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     private static ExpiredSession toExpiredSession(ShardSessionRecord session) {
         return ExpiredSession.newBuilder()
                 .setShard(session.getIndex())
-                .setPickedBy(session.getPickedBy())
+                .setWorker(session.getWorker())
                 .setWhenPicked(session.getWhenLastPicked())
                 .setWhenReleased(Time.currentTime())
                 .vBuild();

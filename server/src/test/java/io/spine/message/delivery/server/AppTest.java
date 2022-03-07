@@ -17,6 +17,7 @@ import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.DeliveryStrategy;
+import io.spine.server.delivery.WorkerId;
 import io.spine.test.message.delivery.server.Something;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.AfterAll;
@@ -43,8 +44,10 @@ final class AppTest {
 
     @AfterAll
     static void resetEnvs() {
-        Environment.instance().reset();
-        ServerEnvironment.instance().reset();
+        Environment.instance()
+                .reset();
+        ServerEnvironment.instance()
+                .reset();
     }
 
     @BeforeEach
@@ -70,7 +73,12 @@ final class AppTest {
     @Test
     @DisplayName("handle commands")
     void handleCommands() throws InterruptedException {
-        var worker = ServerEnvironment.instance().nodeId();
+        var node = ServerEnvironment.instance()
+                .nodeId();
+        var worker = WorkerId.newBuilder()
+                .setNodeId(node)
+                .setValue(Identifier.newUuid())
+                .vBuild();
         var shard = DeliveryStrategy.newIndex(0, 1);
         var pickUpShard = PickUpShard.newBuilder()
                 .setShard(shard)
@@ -78,7 +86,7 @@ final class AppTest {
                 .vBuild();
         var expectedEvent = ShardPickedUp.newBuilder()
                 .setShard(shard)
-                .setPickedBy(worker)
+                .setWorker(worker)
                 .buildPartial();
         var client = newClient();
         CountDownLatch shardPickedUp = new CountDownLatch(1);

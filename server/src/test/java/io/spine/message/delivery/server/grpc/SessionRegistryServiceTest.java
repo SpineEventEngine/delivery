@@ -24,6 +24,7 @@ import io.spine.server.NodeId;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.WorkerId;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -43,7 +44,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 final class SessionRegistryServiceTest {
 
     private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
-    private final NodeId worker = NodeId.newBuilder()
+    private final NodeId node = NodeId.newBuilder()
+            .setValue(SessionRegistryServiceTest.class.getName())
+            .vBuild();
+    private final WorkerId worker = WorkerId.newBuilder()
+            .setNodeId(node)
             .setValue(SessionRegistryServiceTest.class.getName())
             .vBuild();
     private final App app = new App();
@@ -51,8 +56,10 @@ final class SessionRegistryServiceTest {
 
     @AfterAll
     static void resetEnvs() {
-        Environment.instance().reset();
-        ServerEnvironment.instance().reset();
+        Environment.instance()
+                .reset();
+        ServerEnvironment.instance()
+                .reset();
     }
 
     @BeforeEach
@@ -82,7 +89,7 @@ final class SessionRegistryServiceTest {
                 .vBuild();
         var expected = ShardPickedUp.newBuilder()
                 .setShard(shard)
-                .setPickedBy(worker)
+                .setWorker(worker)
                 .buildPartial();
         var response = sessionRegistry.pickShard(request);
         assertThat(response)
@@ -122,7 +129,7 @@ final class SessionRegistryServiceTest {
         ExpiredSession expiredSession = result.getShard(0);
         assertThat(expiredSession.getShard())
                 .isEqualTo(shard);
-        assertThat(expiredSession.getPickedBy())
+        assertThat(expiredSession.getWorker())
                 .isEqualTo(worker);
     }
 
@@ -145,7 +152,7 @@ final class SessionRegistryServiceTest {
         ExpiredSession expiredSession = released.getShard(0);
         assertThat(expiredSession.getShard())
                 .isEqualTo(shard);
-        assertThat(expiredSession.getPickedBy())
+        assertThat(expiredSession.getWorker())
                 .isEqualTo(worker);
         ExpiredSessionsReleased result = sessionRegistry.releaseSessions(releaseExpired);
         assertThat(result.getShardCount())

@@ -12,9 +12,9 @@ import io.spine.base.Time;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.OptionalInboxMessage;
 import io.spine.message.delivery.rejection.ShardAlreadyPickedUp;
-import io.spine.server.NodeId;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.WorkerId;
 
 import java.util.Optional;
 
@@ -41,8 +41,9 @@ final class Responses {
      * @param worker
      *         the worker who picked up the shard
      */
+    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with the test.
     static void
-    alreadyPicked(StreamObserver<ShardPickedUp> response, ShardIndex shard, NodeId worker) {
+    alreadyPicked(StreamObserver<ShardPickedUp> response, ShardIndex shard, WorkerId worker) {
         var error = ShardAlreadyPickedUp.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
@@ -61,10 +62,10 @@ final class Responses {
      *
      * <p>The picked up time is set to the {@linkplain Time#currentTime() current time}.
      */
-    static ShardPickedUp shardPickedUp(ShardIndex shard, NodeId worker) {
+    static ShardPickedUp shardPickedUp(ShardIndex shard, WorkerId worker) {
         ShardPickedUp pickedUp = ShardPickedUp.newBuilder()
                 .setShard(shard)
-                .setPickedBy(worker)
+                .setWorker(worker)
                 .setWhenPicked(Time.currentTime())
                 .vBuild();
         return pickedUp;

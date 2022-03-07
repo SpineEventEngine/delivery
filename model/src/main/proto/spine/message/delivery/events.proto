@@ -20,7 +20,6 @@ import "google/protobuf/timestamp.proto";
 
 import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
-import "spine/server/server_environment.proto";
 
 // A new message was written to a particular Inbox.
 message MessageWritten {
@@ -64,8 +63,8 @@ message ShardPickedUp {
     // The shard in which the worker has picked up work from.
     spine.server.delivery.ShardIndex shard = 1 [(required) = true];
 
-    // The node that picked up the work.
-    spine.server.NodeId picked_by = 2 [(required) = true];
+    // An identifier of the worker, which picked up the shard.
+    spine.server.delivery.WorkerId worker = 2 [(required) = true];
 
     // The time when the `worker` has picked up the shard.
     google.protobuf.Timestamp when_picked = 3 [(required) = true];
@@ -77,8 +76,8 @@ message ShardReleased {
     // The shard that was released.
     spine.server.delivery.ShardIndex shard = 1 [(required) = true];
 
-    // The node that released the shard.
-    spine.server.NodeId picked_by = 2 [(required) = true];
+    // An identifier of the worker that released the shard.
+    spine.server.delivery.WorkerId worker = 2 [(required) = true];
 
     // The time when the `worker` has released the shard.
     google.protobuf.Timestamp when_released = 3 [(required) = true];
@@ -97,8 +96,8 @@ message ExpiredSession {
     // The shard that was released.
     spine.server.delivery.ShardIndex shard = 1 [(required) = true];
 
-    // The node that released the shard.
-    spine.server.NodeId picked_by = 2 [(required) = true];
+    // An identifier of the worker that released the shard.
+    spine.server.delivery.WorkerId worker = 2 [(required) = true];
 
     // The time when the `worker` has picked up the shard.
     google.protobuf.Timestamp when_picked = 3 [(required) = true];

@@ -20,7 +20,6 @@ import "google/protobuf/duration.proto";
 
 import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
-import "spine/server/server_environment.proto";
 
 // Writes a new message to the Inbox.
 message WriteMessage {
@@ -64,8 +63,8 @@ message PickUpShard {
     // The shard to pick up work from.
     spine.server.delivery.ShardIndex shard = 1 [(required) = true];
 
-    // The node that is going to perform the work.
-    spine.server.NodeId worker = 2 [(required) = true];
+    // The worker that is going to perform the work.
+    spine.server.delivery.WorkerId worker = 2 [(required) = true];
 }
 
 // Releases the shard which has been previously picked up.
@@ -74,8 +73,8 @@ message ReleaseShard {
     // The shard to release.
     spine.server.delivery.ShardIndex shard = 1 [(required) = true];
 
-    // The node that was performing the work.
-    spine.server.NodeId worker = 2 [(required) = true];
+    // The worker that was performing the work.
+    spine.server.delivery.WorkerId worker = 2 [(required) = true];
 }
 
 // Releases the sharded work sessions that were picked up before the configured

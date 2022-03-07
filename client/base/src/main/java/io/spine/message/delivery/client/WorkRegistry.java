@@ -17,6 +17,7 @@ import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.delivery.ShardedWorkRegistry;
+import io.spine.server.delivery.WorkerId;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -45,21 +46,30 @@ public final class WorkRegistry implements ShardedWorkRegistry, Logging {
         checkNotDefaultArg(nodeId);
         return client
                 .get()
-                .pickUpShard(index, nodeId)
+                .pickUpShard(index, workerId(nodeId))
                 .map(WorkRegistry::session)
                 .map(sessionRecord -> new Session(sessionRecord, this::releaseShard));
+    }
+
+    private static WorkerId workerId(NodeId nodeId) {
+        String threadId = String.valueOf(Thread.currentThread().getId());
+        return WorkerId.newBuilder()
+                .setNodeId(nodeId)
+                .setValue(threadId)
+                .setValue(threadId)
+                .vBuild();
     }
 
     private static ShardSessionRecord session(ShardPickedUp event) {
         return ShardSessionRecord.newBuilder()
                 .setIndex(event.getShard())
-                .setPickedBy(event.getPickedBy())
+                .setWorker(event.getWorker())
                 .setWhenLastPicked(event.getWhenPicked())
                 .vBuild();
     }
 
     private void releaseShard(ShardSessionRecord session) {
-        NodeId worker = session.getPickedBy();
+        WorkerId worker = session.getWorker();
         ShardIndex shard = session.getIndex();
         client.get()
               .releaseShard(shard, worker);

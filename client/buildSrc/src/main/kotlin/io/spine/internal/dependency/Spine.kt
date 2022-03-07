@@ -8,8 +8,8 @@ package io.spine.internal.dependency
 
 // https://github.com/SpineEventEngine
 object Spine {
-    private const val baseVersion = "2.0.0-SNAPSHOT.65"
-    private const val coreVersion = "2.0.0-SNAPSHOT.61"
+    private const val baseVersion = "2.0.0-SNAPSHOT.77"
+    private const val coreVersion = "2.0.0-SNAPSHOT.91"
 
     const val base = "io.spine:spine-base:${baseVersion}"
     const val client = "io.spine:spine-client:${coreVersion}"
@@ -26,9 +26,9 @@ object Spine {
 
     object Stable {
 
-        const val version = "1.7.4"
-        const val coreVersion = "1.7.6"
-        const val timeVersion = "1.7.1"
+        const val version = "1.8.0"
+        const val coreVersion = "1.8.0"
+        const val timeVersion = "1.8.0"
 
         const val base = "io.spine:spine-base:${version}"
         const val client = "io.spine:spine-client:${coreVersion}"

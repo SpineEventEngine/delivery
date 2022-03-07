@@ -18,6 +18,7 @@ import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.delivery.ShardedWorkRegistry;
+import io.spine.server.delivery.WorkerId;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -32,7 +33,11 @@ import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 final class WorkRegistryTest {
 
     private static final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
-    private static final NodeId worker = NodeId.newBuilder()
+    private static final NodeId node = NodeId.newBuilder()
+            .setValue("test")
+            .vBuild();
+    private static final WorkerId worker = WorkerId.newBuilder()
+            .setNodeId(node)
             .setValue("test")
             .vBuild();
 
@@ -41,7 +46,7 @@ final class WorkRegistryTest {
     void beNpeSafe() {
         NullPointerTester tester = new NullPointerTester();
         tester.setDefault(ShardIndex.class, shard);
-        tester.setDefault(NodeId.class, worker);
+        tester.setDefault(NodeId.class, node);
         tester.setDefault(Duration.class, Durations2.fromMinutes(1));
         tester.testAllPublicConstructors(WorkRegistry.class);
         tester.testAllPublicInstanceMethods(new WorkRegistry(NoOpClient::new));
@@ -55,7 +60,7 @@ final class WorkRegistryTest {
         @DisplayName("returning `Optional.empty()` when it is not possible to pick up one")
         void empty() {
             ShardedWorkRegistry registry = new WorkRegistry(NoOpClient::new);
-            Optional<ShardProcessingSession> result = registry.pickUp(shard, worker);
+            Optional<ShardProcessingSession> result = registry.pickUp(shard, node);
             assertThat(result)
                     .isEmpty();
         }
@@ -65,12 +70,12 @@ final class WorkRegistryTest {
         void session() {
             ShardPickedUp shardPickedUp = ShardPickedUp.newBuilder()
                     .setShard(shard)
-                    .setPickedBy(worker)
+                    .setWorker(worker)
                     .setWhenPicked(Time.currentTime())
                     .vBuild();
             ShardedWorkRegistry registry =
                     new WorkRegistry(Suppliers.ofInstance(new NoOpClient(shardPickedUp)));
-            Optional<ShardProcessingSession> result = registry.pickUp(shard, worker);
+            Optional<ShardProcessingSession> result = registry.pickUp(shard, node);
             assertThat(result)
                     .isPresent();
             ShardProcessingSession session = result.get();
@@ -92,12 +97,12 @@ final class WorkRegistryTest {
         }
 
         @Override
-        public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, NodeId worker) {
+        public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker) {
             return Optional.ofNullable(event);
         }
 
         @Override
-        public void releaseShard(ShardIndex shard, NodeId worker) {
+        public void releaseShard(ShardIndex shard, WorkerId worker) {
             // do nothing
         }
 

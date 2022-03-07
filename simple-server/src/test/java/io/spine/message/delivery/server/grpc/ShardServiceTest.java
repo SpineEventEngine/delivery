@@ -9,6 +9,7 @@ package io.spine.message.delivery.server.grpc;
 import com.google.common.util.concurrent.Uninterruptibles;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
+import io.spine.base.Identifier;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.command.ReleaseShard;
@@ -21,6 +22,7 @@ import io.spine.server.NodeId;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.WorkerId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -35,8 +37,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("`ShardService` should")
 final class ShardServiceTest {
 
-    private static final NodeId worker = ServerEnvironment.instance()
+    private static final NodeId node = ServerEnvironment.instance()
             .nodeId();
+    private static final WorkerId worker = WorkerId.newBuilder()
+            .setNodeId(node)
+            .setValue(Identifier.newUuid())
+            .vBuild();
     private static final ShardIndex shard = DeliveryStrategy.newIndex(0, 1);
     private static final PickUpShard pickUpShard = PickUpShard.newBuilder()
             .setShard(shard)
@@ -52,7 +58,7 @@ final class ShardServiceTest {
         void pick() {
             var expected = ShardPickedUp.newBuilder()
                     .setShard(shard)
-                    .setPickedBy(worker)
+                    .setWorker(worker)
                     .buildPartial();
             var pickedUp = syncShardService().pickShard(pickUpShard);
             assertThat(pickedUp)
@@ -130,7 +136,7 @@ final class ShardServiceTest {
             var expected = ExpiredSessionsReleased.newBuilder()
                     .addShard(ExpiredSession.newBuilder()
                                       .setShard(shardPickedUp.getShard())
-                                      .setPickedBy(shardPickedUp.getPickedBy()))
+                                      .setWorker(shardPickedUp.getWorker()))
                     .buildPartial();
             var response = shardService.releaseSessions(request);
             assertThat(response)
