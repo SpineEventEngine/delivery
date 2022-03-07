@@ -12,7 +12,6 @@ import com.google.protobuf.util.Timestamps;
 import io.spine.base.Time;
 import io.spine.client.Client;
 import io.spine.core.CommandContext;
-import io.spine.logging.Logging;
 import io.spine.message.delivery.SessionsCleaner;
 import io.spine.message.delivery.SessionsCleanerId;
 import io.spine.message.delivery.ShardSessionRegistry;
