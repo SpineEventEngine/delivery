@@ -6,7 +6,6 @@
 
 package io.spine.message.delivery.demo;
 
-import io.spine.server.NodeId;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.ShardIndex;
