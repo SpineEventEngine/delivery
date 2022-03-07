@@ -25,7 +25,7 @@ public interface SessionRegistryClient {
      * @param shard
      *         the shard to pick up
      * @param worker
-     *         the node which would like to work with the shard
+     *         the ID of the worker which would like to work with the shard
      * @return the shard picked up acknowledgement event if the shard was picked up, empty otherwise
      */
     Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker);
@@ -39,7 +39,7 @@ public interface SessionRegistryClient {
      * @param shard
      *         the shard to be released
      * @param worker
-     *         the node which would like to release the shard
+     *         the ID of the worker which would like to release the shard
      */
     void releaseShard(ShardIndex shard, WorkerId worker);
 
