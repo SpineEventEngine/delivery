@@ -36,6 +36,10 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     private final LiquorShardRegistry registry;
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
+    /**
+     * Creates a new {@code ShardService} backed by an {@link LiquorShardRegistry} created from
+     * the configured {@code factory}.
+     */
     public ShardService(StorageFactory factory) {
         super();
         checkNotNull(factory);
