@@ -62,7 +62,6 @@ public final class WorkRegistry implements ShardedWorkRegistry, Logging {
         return WorkerId.newBuilder()
                 .setNodeId(nodeId)
                 .setValue(threadId)
-                .setValue(threadId)
                 .vBuild();
     }
 
