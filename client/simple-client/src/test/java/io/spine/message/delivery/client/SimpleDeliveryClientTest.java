@@ -13,6 +13,7 @@ import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.Page;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.WorkerId;
 import io.spine.test.message.delivery.client.Something;
 import io.spine.type.TypeUrl;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -61,7 +62,11 @@ final class SimpleDeliveryClientTest {
     class SessionRegistryClient {
 
         private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
-        private final NodeId worker = NodeId.newBuilder()
+        private final NodeId node = NodeId.newBuilder()
+                .setValue(SimpleDeliveryClient.class.getName())
+                .vBuild();
+        private final WorkerId worker = WorkerId.newBuilder()
+                .setNodeId(node)
                 .setValue(SimpleDeliveryClient.class.getName())
                 .vBuild();
 

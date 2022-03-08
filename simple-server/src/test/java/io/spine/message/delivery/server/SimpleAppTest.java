@@ -17,6 +17,7 @@ import io.spine.message.delivery.grpc.ShardServiceGrpc;
 import io.spine.message.delivery.server.given.TestInboxMessages;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.DeliveryStrategy;
+import io.spine.server.delivery.WorkerId;
 import io.spine.test.message.delivery.server.Something;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
@@ -38,8 +39,12 @@ final class SimpleAppTest extends WithApp {
         @Test
         @DisplayName("`ShardService`")
         void shardService() {
-            var worker = ServerEnvironment.instance()
+            var node = ServerEnvironment.instance()
                     .nodeId();
+            var worker = WorkerId.newBuilder()
+                    .setNodeId(node)
+                    .setValue(Identifier.newUuid())
+                    .vBuild();
             var shard = DeliveryStrategy.newIndex(0, 1);
             var pickUpShard = PickUpShard.newBuilder()
                     .setShard(shard)

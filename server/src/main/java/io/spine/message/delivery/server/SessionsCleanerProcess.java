@@ -12,7 +12,6 @@ import com.google.protobuf.util.Timestamps;
 import io.spine.base.Time;
 import io.spine.client.Client;
 import io.spine.core.CommandContext;
-import io.spine.logging.Logging;
 import io.spine.message.delivery.SessionsCleaner;
 import io.spine.message.delivery.SessionsCleanerId;
 import io.spine.message.delivery.ShardSessionRegistry;
@@ -33,8 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * from stale session registries.
  */
 final class SessionsCleanerProcess
-        extends ProcessManager<SessionsCleanerId, SessionsCleaner, SessionsCleaner.Builder>
-        implements Logging {
+        extends ProcessManager<SessionsCleanerId, SessionsCleaner, SessionsCleaner.Builder> {
 
     /**
      * A static date used for the sessions {@code whenPicked} filtering.
@@ -76,7 +74,7 @@ final class SessionsCleanerProcess
     private static ExpiredSession fromRegistry(ShardSessionRegistry expiredShardRegistry) {
         return ExpiredSession.newBuilder()
                 .setShard(expiredShardRegistry.getId())
-                .setPickedBy(expiredShardRegistry.getPickedBy())
+                .setWorker(expiredShardRegistry.getWorker())
                 .setWhenPicked(expiredShardRegistry.getWhenPicked())
                 .setWhenReleased(Time.currentTime())
                 .vBuild();
@@ -85,7 +83,7 @@ final class SessionsCleanerProcess
     private void releaseShard(ShardSessionRegistry expiredShardRegistry) {
         ReleaseShard releaseShard = ReleaseShard.newBuilder()
                 .setShard(expiredShardRegistry.getId())
-                .setWorker(expiredShardRegistry.getPickedBy())
+                .setWorker(expiredShardRegistry.getWorker())
                 .vBuild();
         client.asGuest()
               .command(releaseShard)

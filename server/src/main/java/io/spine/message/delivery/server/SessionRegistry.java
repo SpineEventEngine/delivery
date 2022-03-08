@@ -17,11 +17,11 @@ import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
 import io.spine.message.delivery.rejection.ShardAlreadyPickedUp;
 import io.spine.message.delivery.rejection.UnableToReleaseShard;
-import io.spine.server.NodeId;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.WorkerId;
 
 import static io.spine.message.delivery.rejection.Rejections.UnableToReleaseShard.Reason;
 import static io.spine.protobuf.Messages.isDefault;
@@ -46,16 +46,16 @@ final class SessionRegistry
         _info().log("Shard `%s` is picked up by worker `%s`.", shard, worker);
         return ShardPickedUp.newBuilder()
                 .setShard(shard)
-                .setPickedBy(worker)
+                .setWorker(worker)
                 .setWhenPicked(Time.currentTime())
                 .vBuild();
     }
 
     private void checkNotPickedUp() throws ShardAlreadyPickedUp {
         var state = state();
-        if (state.hasPickedBy()) {
+        if (state.hasWorker()) {
             var shard = id();
-            var worker = state.getPickedBy();
+            var worker = state.getWorker();
             _debug().log("Shard `%s` is already picked up by `%s`.", shard, worker);
             throw ShardAlreadyPickedUp.newBuilder()
                     .setShard(shard)
@@ -66,7 +66,7 @@ final class SessionRegistry
 
     @Apply
     private void on(ShardPickedUp e) {
-        builder().setPickedBy(e.getPickedBy())
+        builder().setWorker(e.getWorker())
                  .setWhenPicked(e.getWhenPicked());
     }
 
@@ -79,14 +79,14 @@ final class SessionRegistry
         _info().log("Shard `%s` is released by worker `%s`.", shard, worker);
         return ShardReleased.newBuilder()
                 .setShard(shard)
-                .setPickedBy(worker)
+                .setWorker(worker)
                 .setWhenReleased(Time.currentTime())
                 .vBuild();
     }
 
     private void checkCanRelease(ReleaseShard c) throws UnableToReleaseShard {
         var state = state();
-        var currentWorker = state.getPickedBy();
+        var currentWorker = state.getWorker();
         if (isDefault(currentWorker)) {
             _debug().log("Shard `%s` is picked up. Nothing to release.", id());
             throw unableToRelease(c, shardNotPickedUp());
@@ -113,7 +113,7 @@ final class SessionRegistry
     }
 
     @VisibleForTesting
-    static Reason shardPickedUpByOtherWorker(NodeId currentWorker) {
+    static Reason shardPickedUpByOtherWorker(WorkerId currentWorker) {
         return newReason(format(
                 "Shard is picked up by worker `%s` and cannot be released by another worker.",
                 currentWorker
@@ -132,7 +132,7 @@ final class SessionRegistry
             "PMD.UnusedFormalParameter"
     })
     private void on(ShardReleased e) {
-        builder().clearPickedBy()
+        builder().clearWorker()
                  .clearWhenPicked();
     }
 }

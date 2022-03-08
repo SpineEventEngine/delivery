@@ -1,0 +1,172 @@
+/*
+ * Copyright (c) 2000-2021 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+
+package io.spine.message.delivery.server;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.protobuf.Duration;
+import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Durations;
+import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.ShardProcessingSession;
+import io.spine.server.delivery.ShardSessionRecord;
+import io.spine.server.delivery.WorkerId;
+import io.spine.server.storage.StorageFactory;
+
+import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.util.Timestamps.between;
+import static io.spine.base.Time.currentTime;
+
+/**
+ * The registry of the shard indexes along with the worker identifiers,
+ * which process the messages corresponding to each index.
+ *
+ * <p>All picked shards are stored in the {@link ShardRegistryStorage}.
+ */
+public final class LiquorShardRegistry {
+
+    private final ShardRegistryStorage storage;
+
+    /**
+     * Creates a new {@code LiquorShardRegistry} backed by {@link ShardRegistryStorage} created
+     * from the configured {@code factory}.
+     */
+    public LiquorShardRegistry(StorageFactory factory) {
+        super();
+        checkNotNull(factory);
+        this.storage = new ShardRegistryStorage(factory);
+    }
+
+    /**
+     * Picks up the shard at a given index to process.
+     *
+     * <p>This action is intended to be exclusive, i.e. a single shard may be served
+     * by a single worker at a given moment of time.
+     *
+     * <p>In case of a successful operation, an instance of {@link ShardProcessingSession}
+     * is returned. The node obtained the session should perform the desired actions with the
+     * sharded messages and then {@link LiquorShardSession#complete() complete} the session.
+     *
+     * <p>In case the shard at a given index is already picked up by worker,
+     * an {@link Optional#empty() Optional.empty()} is returned.
+     *
+     * @param index
+     *         the index of the shard to pick up for processing
+     * @param worker
+     *         the identifier of the node for which to pick the shard
+     * @return the session of shard processing,
+     *         or {@code Optional.empty()} if the shard is not available
+     */
+    public synchronized Optional<ShardProcessingSession> pickUp(ShardIndex index,
+                                                                WorkerId worker) {
+        var optionalRecord = find(index);
+        if (optionalRecord.isEmpty()) {
+            var newRecord = createRecord(index, worker);
+            return Optional.of(asSession(newRecord));
+        }
+
+        var record = optionalRecord.get();
+        if (hasWorker(record)) {
+            return Optional.empty();
+        }
+
+        var updatedRecord = updateNode(record, worker);
+        return Optional.of(asSession(updatedRecord));
+    }
+
+    private static boolean hasWorker(ShardSessionRecord record) {
+        return !WorkerId.getDefaultInstance()
+                        .equals(record.getWorker());
+    }
+
+    private Optional<ShardSessionRecord> find(ShardIndex index) {
+        return storage.read(index);
+    }
+
+    private ShardSessionRecord createRecord(ShardIndex index, WorkerId worker) {
+        var newRecord = ShardSessionRecord.newBuilder()
+                .setIndex(index)
+                .setWorker(worker)
+                .setWhenLastPicked(currentTime())
+                .vBuild();
+        storage.write(index, newRecord);
+        return newRecord;
+    }
+
+    private ShardProcessingSession asSession(ShardSessionRecord record) {
+        return new LiquorShardSession(record);
+    }
+
+    private void clearWorker(ShardSessionRecord session) {
+        var record = session.toBuilder()
+                .clearWorker()
+                .build();
+        storage.write(session.getIndex(), record);
+    }
+
+    private ShardSessionRecord updateNode(ShardSessionRecord record, WorkerId worker) {
+        var updatedRecord = record.toBuilder()
+                .setWorker(worker)
+                .setWhenLastPicked(currentTime())
+                .build();
+        storage.write(updatedRecord.getIndex(), updatedRecord);
+        return updatedRecord;
+    }
+
+    /**
+     * Releases the shard under the given index.
+     */
+    public synchronized void releaseShard(ShardIndex index) {
+        storage.read(index)
+               .ifPresent(this::clearWorker);
+    }
+
+    /**
+     * Clears up the recorded {@code WorkerId}s from the session records if there was no activity
+     * for longer than passed {@code inactivityPeriod}.
+     *
+     * <p>It may be handy if an application node hangs or gets killed — so that it is not able
+     * to complete the session in a conventional way.
+     */
+    public synchronized ImmutableSet<ShardSessionRecord>
+    releaseInactiveSessions(Duration inactivityPeriod) {
+        checkNotNull(inactivityPeriod);
+        ImmutableSet.Builder<ShardSessionRecord> resultBuilder = ImmutableSet.builder();
+        storage.readAll()
+               .forEachRemaining(record -> {
+                   if (record.hasWorker()) {
+                       Timestamp whenPicked = record.getWhenLastPicked();
+                       Duration elapsed = between(whenPicked, currentTime());
+
+                       int comparison = Durations.compare(elapsed, inactivityPeriod);
+                       if (comparison >= 0) {
+                           clearWorker(record);
+                           resultBuilder.add(record);
+                       }
+                   }
+               });
+        return resultBuilder.build();
+    }
+
+    /**
+     * Implementation of shard processing session, based on
+     * {@link ShardRegistryStorage} storage mechanism.
+     */
+    public class LiquorShardSession extends ShardProcessingSession {
+
+        private LiquorShardSession(ShardSessionRecord record) {
+            super(record);
+        }
+
+        @Override
+        protected void complete() {
+            Optional<ShardSessionRecord> record = storage.read(shardIndex());
+            record.ifPresent(LiquorShardRegistry.this::clearWorker);
+        }
+    }
+}

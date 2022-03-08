@@ -24,8 +24,8 @@ message ShardAlreadyPickedUp {
     // The shard in which some worker has picked up work in.
     spine.server.delivery.ShardIndex shard = 1 [(required) = true];
 
-    // The node that picked up the work in the shard.
-    spine.server.NodeId worker = 2 [(required) = true];
+    // The worker that picked up the work in the shard.
+    spine.server.delivery.WorkerId worker = 2 [(required) = true];
 }
 
 // A shard cannot be release by the worker.
@@ -34,8 +34,8 @@ message UnableToReleaseShard {
     // The shard that should have been released.
     spine.server.delivery.ShardIndex shard = 1 [(required) = true];
 
-    // The node which was trying to release the `shard`.
-    spine.server.NodeId worker = 2 [(required) = true];
+    // The worker which was trying to release the `shard`.
+    spine.server.delivery.WorkerId worker = 2 [(required) = true];
 
     Reason reason = 3;
 

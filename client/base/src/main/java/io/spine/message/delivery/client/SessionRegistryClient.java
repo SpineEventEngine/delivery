@@ -9,8 +9,8 @@ package io.spine.message.delivery.client;
 import com.google.protobuf.Duration;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
-import io.spine.server.NodeId;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.WorkerId;
 
 import java.util.Optional;
 
@@ -25,10 +25,10 @@ public interface SessionRegistryClient {
      * @param shard
      *         the shard to pick up
      * @param worker
-     *         the node which would like to work with the shard
+     *         the ID of the worker which would like to work with the shard
      * @return the shard picked up acknowledgement event if the shard was picked up, empty otherwise
      */
-    Optional<ShardPickedUp> pickUpShard(ShardIndex shard, NodeId worker);
+    Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker);
 
     /**
      * Attempts to release the {@code shard}.
@@ -39,9 +39,9 @@ public interface SessionRegistryClient {
      * @param shard
      *         the shard to be released
      * @param worker
-     *         the node which would like to release the shard
+     *         the ID of the worker which would like to release the shard
      */
-    void releaseShard(ShardIndex shard, NodeId worker);
+    void releaseShard(ShardIndex shard, WorkerId worker);
 
     /**
      * Clears up the recorded {@code NodeId}s from the session records if there was no activity

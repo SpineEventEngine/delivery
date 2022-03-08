@@ -33,11 +33,11 @@ message ShardSessionRegistry {
     // The index of the shard this registry is guarding.
     spine.server.delivery.ShardIndex id = 1;
 
-    // The node ID of the worker who picked up work from the shard.
+    // The ID of the worker who picked up work from the shard.
     //
     // The value may be empty indicating that no one is currently working with the shard.
     //
-    spine.server.NodeId picked_by = 2;
+    spine.server.delivery.WorkerId worker = 2;
 
     // The time when the `worker` has picked up the shard.
     //

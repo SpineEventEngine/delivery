@@ -26,7 +26,7 @@ repositories {
     maven("https://spine.mycloudrepo.io/public/repositories/snapshots")
 }
 
-val spineBaseVersion = "1.7.4"
+val spineBaseVersion = "1.8.0"
 
 dependencies {
     implementation("net.ltgt.gradle:gradle-errorprone-plugin:2.0.2")
@@ -36,8 +36,4 @@ dependencies {
     implementation("io.spine.tools:spine-model-compiler:${spineBaseVersion}")
     implementation("com.github.jengelman.gradle.plugins:shadow:6.1.0")
     implementation("com.google.cloud.tools:appengine-gradle-plugin:2.4.1")
-}
-
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
 }

@@ -30,12 +30,12 @@ import io.spine.message.delivery.grpc.PageOfMessages;
 import io.spine.message.delivery.grpc.ReadMessagesSinceTime;
 import io.spine.message.delivery.grpc.ShardServiceGrpc;
 import io.spine.message.delivery.grpc.ShardServiceGrpc.ShardServiceBlockingStub;
-import io.spine.server.NodeId;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageComparator;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.Page;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.WorkerId;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -136,7 +136,7 @@ public final class SimpleDeliveryClient
     }
 
     @Override
-    public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, NodeId worker) {
+    public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker) {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
         PickUpShard pickUpShard = PickUpShard.newBuilder()
@@ -154,7 +154,7 @@ public final class SimpleDeliveryClient
     }
 
     @Override
-    public void releaseShard(ShardIndex shard, NodeId worker) {
+    public void releaseShard(ShardIndex shard, WorkerId worker) {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
         ReleaseShard releaseShard = ReleaseShard.newBuilder()

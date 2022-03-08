@@ -33,12 +33,12 @@ import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
-import io.spine.server.NodeId;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageComparator;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.Page;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.WorkerId;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
@@ -141,7 +141,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
     }
 
     @Override
-    public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, NodeId worker) {
+    public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker) {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
         PickUpShard pickUpShard = PickUpShard.newBuilder()
@@ -161,7 +161,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
     }
 
     @Override
-    public void releaseShard(ShardIndex shard, NodeId worker) {
+    public void releaseShard(ShardIndex shard, WorkerId worker) {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
         ReleaseShard releaseShard = ReleaseShard.newBuilder()
