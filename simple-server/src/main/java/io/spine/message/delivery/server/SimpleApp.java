@@ -8,7 +8,7 @@ package io.spine.message.delivery.server;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.Server;
-import io.grpc.ServerBuilder;
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.server.grpc.HealthService;
 import io.spine.message.delivery.server.grpc.InboxService;
@@ -35,6 +35,8 @@ public final class SimpleApp implements Logging {
 
     private static final int DEFAULT_PORT = 8484;
 
+    private static final int DEFAULT_MESSAGE_SIZE = 4_194_304; // 4mb
+
     /**
      * A host to use for gRPC server.
      */
@@ -46,6 +48,11 @@ public final class SimpleApp implements Logging {
      */
     @VisibleForTesting
     public static final int PORT = port();
+
+    /**
+     * A max size of the inbound payload that can be received through the gRPC channel.
+     */
+    private static final int MESSAGE_SIZE = messageSize();
 
     private static final ExecutorService executor = newFixedThreadPool(20);
 
@@ -77,14 +84,16 @@ public final class SimpleApp implements Logging {
         healthService = new HealthService()
                 .register(inboxService)
                 .register(shardService);
-        this.server = ServerBuilder
+        this.server = NettyServerBuilder
                 .forPort(PORT)
                 .executor(executor)
                 .addService(inboxService)
                 .addService(shardService)
                 .addService(healthService)
+                .maxInboundMessageSize(MESSAGE_SIZE)
                 .build();
         _info().log("Starting gRPC server...");
+        _info().log("Configured inbound message size: `%d`", MESSAGE_SIZE);
         try {
             server.start();
             _info().log("gRPC server started at host '%s' and port '%d'.", HOST, PORT);
@@ -123,6 +132,15 @@ public final class SimpleApp implements Logging {
             return DEFAULT_PORT;
         }
         return Integer.parseInt(port);
+    }
+
+    private static int messageSize() {
+        @SuppressWarnings("CallToSystemGetenv")
+        String size = System.getenv("MAX_INBOUND_MESSAGE_SIZE");
+        if (isNullOrEmpty(size)) {
+            return DEFAULT_MESSAGE_SIZE;
+        }
+        return Integer.parseInt(size);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in different module. */)
