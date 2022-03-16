@@ -22,3 +22,10 @@ In order to use Redis storage one must set `USE_REDIS` environment variable and 
 `REDIS_HOST` environment variable. The latter allows configuring the host where the Redis server
 should be accessible by the application. It is also possible to configure `REDIS_PORT` environment
 variable which denotes the port on which Redis is accessible. The port defaults to `6379`.
+
+# Inbound message size
+
+By default, the maximum message size allowed to be received by the server is `4 MiB`.
+
+This value may be additionally configured by setting the `MAX_INBOUND_MESSAGE_SIZE`
+environment variable.
