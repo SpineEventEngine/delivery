@@ -8,7 +8,7 @@ package io.spine.message.delivery.server;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.Server;
-import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
+import io.grpc.ServerBuilder;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.server.grpc.HealthService;
 import io.spine.message.delivery.server.grpc.InboxService;
@@ -84,7 +84,7 @@ public final class SimpleApp implements Logging {
         healthService = new HealthService()
                 .register(inboxService)
                 .register(shardService);
-        this.server = NettyServerBuilder
+        this.server = ServerBuilder
                 .forPort(PORT)
                 .executor(executor)
                 .addService(inboxService)
