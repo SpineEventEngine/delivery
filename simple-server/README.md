@@ -28,4 +28,4 @@ variable which denotes the port on which Redis is accessible. The port defaults 
 By default, the maximum message size allowed to be received by the server is `4 MiB`.
 
 This value may be additionally configured by setting the `MAX_INBOUND_MESSAGE_SIZE`
-environment variable.
+environment variable. Allowed values are in bounds from `0` to `Integer.MAX_VALUE`.
