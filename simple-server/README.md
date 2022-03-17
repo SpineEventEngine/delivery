@@ -18,10 +18,12 @@ The server support two storage modes: in-memory and Redis-based.
 The in-memory storage provides best-possible performance and is used by default.
 
 The Redis storage adds ability to store the server info in a separate more durable storage.
-In order to use Redis storage one must set `USE_REDIS` environment variable and also configure
-`REDIS_HOST` environment variable. The latter allows configuring the host where the Redis server
-should be accessible by the application. It is also possible to configure `REDIS_PORT` environment
-variable which denotes the port on which Redis is accessible. The port defaults to `6379`.
+In order to use Redis storage one must set `USE_REDIS` environment variable to `true` and also
+configure `REDIS_HOST` environment variable. The latter allows configuring the host where the Redis 
+server should be accessible by the application. It is also possible to configure `REDIS_PORT` 
+environment variable which denotes the port on which Redis is accessible. The port defaults 
+to `6379`. If the `USE_REDIS` variable is set to `true` but the `REDIS_HOST`is not configured 
+the server will stay in in-memory mode.
 
 # Inbound message size
 
