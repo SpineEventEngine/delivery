@@ -93,7 +93,7 @@ public final class SimpleApp implements Logging {
                 .maxInboundMessageSize(MESSAGE_SIZE)
                 .build();
         _info().log("Starting gRPC server...");
-        _info().log("Configured inbound message size: `%d`", MESSAGE_SIZE);
+        _info().log("Configured inbound message size: `%d` bytes.", MESSAGE_SIZE);
         try {
             server.start();
             _info().log("gRPC server started at host '%s' and port '%d'.", HOST, PORT);
