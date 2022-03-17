@@ -156,7 +156,7 @@ public final class SimpleApp implements Logging {
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static boolean useRedis() {
         Map<String, String> envs = System.getenv();
-        return envs.containsKey("USE_REDIS") && envs.containsKey("REDIS_HOST");
+        return Boolean.parseBoolean(envs.get("USE_REDIS")) && envs.containsKey("REDIS_HOST");
     }
 
     /**
