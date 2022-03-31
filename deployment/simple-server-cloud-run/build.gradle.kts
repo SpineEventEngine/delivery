@@ -51,6 +51,6 @@ jib {
     container {
         mainClass = appClassName
         ports = listOf("8080", "8484")
-        jvmFlags = listOf("-XX:MaxRAMPercentage=100")
+        jvmFlags = listOf("-XX:MaxRAMPercentage=90")
     }
 }
