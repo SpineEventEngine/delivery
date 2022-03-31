@@ -37,6 +37,8 @@ public final class SimpleApp implements Logging {
 
     private static final int DEFAULT_MESSAGE_SIZE = 4_194_304; // 4 MiB
 
+    private static final int BYTES_IN_MB = 1_048_576;
+
     /**
      * A host to use for gRPC server.
      */
@@ -94,6 +96,8 @@ public final class SimpleApp implements Logging {
                 .build();
         _info().log("Starting gRPC server...");
         _info().log("Configured inbound message size: `%d` bytes.", MESSAGE_SIZE);
+        Runtime runtime = Runtime.getRuntime();
+        _info().log("Available memory %dMb", runtime.maxMemory() / BYTES_IN_MB);
         try {
             server.start();
             _info().log("gRPC server started at host '%s' and port '%d'.", HOST, PORT);
