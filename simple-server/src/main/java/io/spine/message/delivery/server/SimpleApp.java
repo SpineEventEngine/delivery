@@ -35,10 +35,9 @@ public final class SimpleApp implements Logging {
 
     private static final int DEFAULT_PORT = 8484;
 
-    private static final int DEFAULT_MESSAGE_SIZE = 4_194_304; // 4 MiB
-
     private static final int BYTES_IN_MB = 1_048_576;
 
+    private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB; // 4 MiB
     /**
      * A host to use for gRPC server.
      */
