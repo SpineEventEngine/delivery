@@ -35,6 +35,10 @@ public final class SimpleApp implements Logging {
 
     private static final int DEFAULT_PORT = 8484;
 
+    private static final int BYTES_IN_MB = 1_048_576;
+
+    private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB; // 4 MiB
+
     /**
      * A host to use for gRPC server.
      */
@@ -46,6 +50,11 @@ public final class SimpleApp implements Logging {
      */
     @VisibleForTesting
     public static final int PORT = port();
+
+    /**
+     * A max size of the inbound payload that can be received through the gRPC channel.
+     */
+    private static final int MESSAGE_SIZE = messageSize();
 
     private static final ExecutorService executor = newFixedThreadPool(20);
 
@@ -83,8 +92,12 @@ public final class SimpleApp implements Logging {
                 .addService(inboxService)
                 .addService(shardService)
                 .addService(healthService)
+                .maxInboundMessageSize(MESSAGE_SIZE)
                 .build();
         _info().log("Starting gRPC server...");
+        _info().log("Configured inbound message size: `%d` bytes.", MESSAGE_SIZE);
+        Runtime runtime = Runtime.getRuntime();
+        _info().log("Available memory %dMb.", runtime.maxMemory() / BYTES_IN_MB);
         try {
             server.start();
             _info().log("gRPC server started at host '%s' and port '%d'.", HOST, PORT);
@@ -123,6 +136,15 @@ public final class SimpleApp implements Logging {
             return DEFAULT_PORT;
         }
         return Integer.parseInt(port);
+    }
+
+    private static int messageSize() {
+        @SuppressWarnings("CallToSystemGetenv")
+        String size = System.getenv("MAX_INBOUND_MESSAGE_SIZE");
+        if (isNullOrEmpty(size)) {
+            return DEFAULT_MESSAGE_SIZE;
+        }
+        return Integer.parseInt(size);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in different module. */)
