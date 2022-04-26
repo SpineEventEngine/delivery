@@ -30,5 +30,5 @@ will stay in in-memory mode.
 
 By default, the maximum message size allowed to be received by the server is `4 MiB`.
 
-This value may be additionally configured by setting the `MAX_INBOUND_MESSAGE_SIZE`
+This can be configured by setting a custom value (in bytes) to the `MAX_INBOUND_MESSAGE_SIZE`
 environment variable. Allowed values are in bounds from `1` to `Integer.MAX_VALUE` inclusive.

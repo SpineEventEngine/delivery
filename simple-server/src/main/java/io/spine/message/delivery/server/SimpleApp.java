@@ -97,7 +97,7 @@ public final class SimpleApp implements Logging {
         _info().log("Starting gRPC server...");
         _info().log("Configured inbound message size: `%d` bytes.", MESSAGE_SIZE);
         Runtime runtime = Runtime.getRuntime();
-        _info().log("Available memory %dMb", runtime.maxMemory() / BYTES_IN_MB);
+        _info().log("Available memory %dMb.", runtime.maxMemory() / BYTES_IN_MB);
         try {
             server.start();
             _info().log("gRPC server started at host '%s' and port '%d'.", HOST, PORT);
