@@ -134,12 +134,14 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+      - id: auth
+        uses: google-github-actions/auth@v0
         with:
           project_id: ${{ env.GCP_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          export_environment_variables: true
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
       - name: Deploy Server Containers
         run: |
           ./gradlew jib --stacktrace
@@ -169,12 +171,14 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+      - id: auth
+        uses: google-github-actions/auth@v0
         with:
           project_id: ${{ env.GCP_PROJECT }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          export_environment_variables: true
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0
       - name: Deploy AppEngine Clients
         run: |
           cd client
