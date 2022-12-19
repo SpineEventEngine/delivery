@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -55,7 +56,7 @@ final class ShardServiceTest {
 
         @Test
         @DisplayName("picking up available shard")
-        void pick() {
+        void pickAvailable() {
             var expected = ShardPickedUp.newBuilder()
                     .setShard(shard)
                     .setWorker(worker)
@@ -64,6 +65,16 @@ final class ShardServiceTest {
             assertThat(pickedUp)
                     .comparingExpectedFieldsOnly()
                     .isEqualTo(expected);
+        }
+
+        @Test
+        @DisplayName("picking up stale shard")
+        void pickStale() {
+            var shardService = syncShardService();
+            shardService.pickShard(pickUpShard);
+            sleepUninterruptibly(5, TimeUnit.SECONDS);
+            shardService.pickShard(pickUpShard);
+            assertDoesNotThrow(() -> shardService.pickShard(pickUpShard));
         }
 
         @Test
@@ -132,7 +143,7 @@ final class ShardServiceTest {
         void releaseExpired() {
             var shardService = syncShardService();
             var shardPickedUp = shardService.pickShard(pickUpShard);
-            Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
+            sleepUninterruptibly(3, TimeUnit.SECONDS);
             var expected = ExpiredSessionsReleased.newBuilder()
                     .addShard(ExpiredSession.newBuilder()
                                       .setShard(shardPickedUp.getShard())
