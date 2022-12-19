@@ -7,9 +7,9 @@
 package io.spine.message.delivery.server;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
-import com.google.protobuf.util.Durations;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.delivery.ShardSessionRecord;
@@ -19,6 +19,7 @@ import io.spine.server.storage.StorageFactory;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.util.Durations.compare;
 import static com.google.protobuf.util.Timestamps.between;
 import static io.spine.base.Time.currentTime;
 
@@ -31,6 +32,9 @@ import static io.spine.base.Time.currentTime;
 public final class LiquorShardRegistry {
 
     private final ShardRegistryStorage storage;
+    private final Duration processingTimeout = Duration.newBuilder()
+            .setSeconds(5)
+            .build();
 
     /**
      * Creates a new {@code LiquorShardRegistry} backed by {@link ShardRegistryStorage} created
@@ -64,19 +68,33 @@ public final class LiquorShardRegistry {
      */
     public synchronized Optional<ShardProcessingSession> pickUp(ShardIndex index,
                                                                 WorkerId worker) {
-        var optionalRecord = find(index);
-        if (optionalRecord.isEmpty()) {
+        var optionalSession = find(index);
+        if (optionalSession.isEmpty()) {
             var newRecord = createRecord(index, worker);
             return Optional.of(asSession(newRecord));
         }
 
-        var record = optionalRecord.get();
-        if (hasWorker(record)) {
-            return Optional.empty();
+        var session = optionalSession.get();
+
+        if (hasWorker(session)) {
+            return releaseIfStale(session)
+                    .map(this::asSession);
         }
 
-        var updatedRecord = updateNode(record, worker);
-        return Optional.of(asSession(updatedRecord));
+        var updatedSession = updateWorker(session, worker);
+        return Optional.of(asSession(updatedSession));
+    }
+
+    private Optional<ShardSessionRecord> releaseIfStale(ShardSessionRecord session) {
+        Timestamp whenPicked = session.getWhenLastPicked();
+        Duration elapsed = between(whenPicked, currentTime());
+        int comparison = compare(elapsed, processingTimeout);
+        if (comparison >= 0) {
+            var updatedSession = clearWorker(session);
+            return Optional.of(updatedSession);
+        } else {
+            return Optional.empty();
+        }
     }
 
     private static boolean hasWorker(ShardSessionRecord record) {
@@ -102,14 +120,16 @@ public final class LiquorShardRegistry {
         return new LiquorShardSession(record);
     }
 
-    private void clearWorker(ShardSessionRecord session) {
+    @CanIgnoreReturnValue
+    private ShardSessionRecord clearWorker(ShardSessionRecord session) {
         var record = session.toBuilder()
                 .clearWorker()
                 .build();
         storage.write(session.getIndex(), record);
+        return record;
     }
 
-    private ShardSessionRecord updateNode(ShardSessionRecord record, WorkerId worker) {
+    private ShardSessionRecord updateWorker(ShardSessionRecord record, WorkerId worker) {
         var updatedRecord = record.toBuilder()
                 .setWorker(worker)
                 .setWhenLastPicked(currentTime())
@@ -143,7 +163,7 @@ public final class LiquorShardRegistry {
                        Timestamp whenPicked = record.getWhenLastPicked();
                        Duration elapsed = between(whenPicked, currentTime());
 
-                       int comparison = Durations.compare(elapsed, inactivityPeriod);
+                       int comparison = compare(elapsed, inactivityPeriod);
                        if (comparison >= 0) {
                            clearWorker(record);
                            resultBuilder.add(record);
