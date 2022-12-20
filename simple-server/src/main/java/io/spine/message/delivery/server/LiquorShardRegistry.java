@@ -6,10 +6,13 @@
 
 package io.spine.message.delivery.server;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
+import io.spine.logging.Logging;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.delivery.ShardSessionRecord;
@@ -23,6 +26,8 @@ import static com.google.protobuf.util.Durations.compare;
 import static com.google.protobuf.util.Timestamps.between;
 import static io.spine.base.Time.currentTime;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
+import static java.lang.String.format;
+import static java.lang.System.lineSeparator;
 
 /**
  * The registry of the shard indexes along with the worker identifiers,
@@ -30,7 +35,7 @@ import static io.spine.util.Preconditions2.checkNotDefaultArg;
  *
  * <p>All picked shards are stored in the {@link ShardRegistryStorage}.
  */
-public final class LiquorShardRegistry {
+public final class LiquorShardRegistry implements Logging {
 
     private final ShardRegistryStorage storage;
     private final Duration processingTimeout;
@@ -75,12 +80,29 @@ public final class LiquorShardRegistry {
         }
 
         var session = optionalSession.get();
-        if (hasWorker(session) && !isStale(session)) {
-            return Optional.empty();
+        if (hasWorker(session)) {
+            if (isStale(session)) {
+                logStale(session);
+            } else {
+                return Optional.empty();
+            }
         }
 
         var updatedSession = updateWorker(session, worker);
         return Optional.of(asSession(updatedSession));
+    }
+
+    private void logStale(ShardSessionRecord session) {
+        String mainMsg = format("Shard %d reached the processing timeout and was" +
+                                        " released automatically.", session.getIndex().getIndex());
+        Duration processingTime = between(session.getWhenLastPicked(), currentTime());
+        ImmutableList<String> logStatements = ImmutableList.<String>builder()
+                .add(mainMsg)
+                .add(format("Processing time: %d seconds.", processingTime.getSeconds()))
+                .add(format("Configured threshold: %d seconds.", processingTimeout.getSeconds()))
+                .build();
+        String logMessage = Joiner.on(lineSeparator()).join(logStatements);
+        _warn().log(logMessage);
     }
 
     private boolean isStale(ShardSessionRecord session) {
