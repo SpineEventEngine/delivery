@@ -7,6 +7,8 @@
 package io.spine.message.delivery.server;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.Duration;
+import com.google.protobuf.util.Durations;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.spine.logging.Logging;
@@ -39,6 +41,8 @@ public final class SimpleApp implements Logging {
 
     private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB; // 4 MiB
 
+    private static final Duration DEFAULT_SHARD_PROCESSING_TIMEOUT = Durations.fromMinutes(3);
+
     /**
      * A host to use for gRPC server.
      */
@@ -55,6 +59,15 @@ public final class SimpleApp implements Logging {
      * A max size of the inbound payload that can be received through the gRPC channel.
      */
     private static final int MESSAGE_SIZE = messageSize();
+
+    /**
+     * Maximum span of time, during which the session can be hold
+     * by a {@linkplain io.spine.server.delivery.WorkerId worker}.
+     *
+     * <p>If a shard session is not released during the given timeout explicitly by the worker,
+     * it will be released automatically by Liquor.
+     */
+    private static final Duration SHARD_PROCESSING_TIMEOUT = shardProcessingTimeout();
 
     private static final ExecutorService executor = newFixedThreadPool(20);
 
@@ -82,7 +95,7 @@ public final class SimpleApp implements Logging {
     void initAndStart() {
         StorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
-        ShardService shardService = new ShardService(factory);
+        ShardService shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
         healthService = new HealthService()
                 .register(inboxService)
                 .register(shardService);
@@ -147,7 +160,17 @@ public final class SimpleApp implements Logging {
         return Integer.parseInt(size);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in different module. */)
+    private static Duration shardProcessingTimeout() {
+        @SuppressWarnings("CallToSystemGetenv")
+        String envVariable = System.getenv("SHARD_PROCESSING_TIMEOUT");
+        if (isNullOrEmpty(envVariable)) {
+            return DEFAULT_SHARD_PROCESSING_TIMEOUT;
+        }
+        int timeout = Integer.parseInt(envVariable);
+        return Durations.fromSeconds(timeout);
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different module. */)
     private StorageFactory storageFactory() {
         if (useRedis()) {
             _config().log("Using Redis storage.");
