@@ -22,6 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.protobuf.util.Durations.compare;
 import static com.google.protobuf.util.Timestamps.between;
 import static io.spine.base.Time.currentTime;
+import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
  * The registry of the shard indexes along with the worker identifiers,
@@ -32,18 +33,17 @@ import static io.spine.base.Time.currentTime;
 public final class LiquorShardRegistry {
 
     private final ShardRegistryStorage storage;
-    private final Duration processingTimeout = Duration.newBuilder()
-            .setSeconds(5)
-            .build();
+    private final Duration processingTimeout;
 
     /**
      * Creates a new {@code LiquorShardRegistry} backed by {@link ShardRegistryStorage} created
      * from the configured {@code factory}.
      */
-    public LiquorShardRegistry(StorageFactory factory) {
+    public LiquorShardRegistry(StorageFactory factory, Duration processingTimeout) {
         super();
         checkNotNull(factory);
         this.storage = new ShardRegistryStorage(factory);
+        this.processingTimeout = checkNotDefaultArg(processingTimeout);
     }
 
     /**
@@ -75,26 +75,20 @@ public final class LiquorShardRegistry {
         }
 
         var session = optionalSession.get();
-
-        if (hasWorker(session)) {
-            return releaseIfStale(session)
-                    .map(this::asSession);
+        if (hasWorker(session) && !isStale(session)) {
+            return Optional.empty();
         }
 
         var updatedSession = updateWorker(session, worker);
         return Optional.of(asSession(updatedSession));
     }
 
-    private Optional<ShardSessionRecord> releaseIfStale(ShardSessionRecord session) {
+    private boolean isStale(ShardSessionRecord session) {
         Timestamp whenPicked = session.getWhenLastPicked();
         Duration elapsed = between(whenPicked, currentTime());
         int comparison = compare(elapsed, processingTimeout);
-        if (comparison >= 0) {
-            var updatedSession = clearWorker(session);
-            return Optional.of(updatedSession);
-        } else {
-            return Optional.empty();
-        }
+        boolean result = comparison > 0;
+        return result;
     }
 
     private static boolean hasWorker(ShardSessionRecord record) {
