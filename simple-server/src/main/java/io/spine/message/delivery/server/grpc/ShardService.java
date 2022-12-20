@@ -6,6 +6,7 @@
 
 package io.spine.message.delivery.server.grpc;
 
+import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import io.spine.base.Time;
@@ -26,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.message.delivery.server.grpc.Responses.alreadyPicked;
 import static io.spine.message.delivery.server.grpc.Responses.completeCall;
+import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
  * Acts as a gRPC-wired backend for the {@link io.spine.message.delivery.ShardSessionRegistry}.
@@ -37,13 +39,18 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
-     * Creates a new {@code ShardService} backed by an {@link LiquorShardRegistry} created from
-     * the configured {@code factory}.
+     * Creates a new {@code ShardService} backed by {@link LiquorShardRegistry}.
+     *
+     * @param factory
+     *         storage to be used to store registry's records
+     * @param processingTimeout
+     *         maximum span of time during which a worker can process a shard
      */
-    public ShardService(StorageFactory factory) {
+    public ShardService(StorageFactory factory, Duration processingTimeout) {
         super();
         checkNotNull(factory);
-        registry = new LiquorShardRegistry(factory);
+        checkNotDefaultArg(processingTimeout);
+        registry = new LiquorShardRegistry(factory, processingTimeout);
     }
 
     @Override
