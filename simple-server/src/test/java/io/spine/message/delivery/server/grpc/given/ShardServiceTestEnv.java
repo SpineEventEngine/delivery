@@ -36,7 +36,8 @@ import static io.spine.base.Identifier.newUuid;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Test environment for {@link io.spine.message.delivery.server.grpc.ShardServiceTest ShardServiceTest}.
+ * Test environment for
+ * {@link io.spine.message.delivery.server.grpc.ShardServiceTest ShardServiceTest}.
  */
 public final class ShardServiceTestEnv implements Closeable {
 
@@ -49,6 +50,9 @@ public final class ShardServiceTestEnv implements Closeable {
 
     private final Collection<Server> runningServers = new ArrayList<>();
 
+    /**
+     * Returns blocking {@link ShardService} with the given {@code processingTimeout} specified.
+     */
     public ShardServiceGrpc.ShardServiceBlockingStub syncShardService(Duration processingTimeout) {
         var shardService = new ShardService(InMemoryStorageFactory.newInstance(),
                                             processingTimeout);
@@ -75,6 +79,9 @@ public final class ShardServiceTestEnv implements Closeable {
         return channel;
     }
 
+    /**
+     * Creates a new request to {@linkplain PickUpShard pick up a shard}.
+     */
     public static PickUpShard pickUpShard() {
         return PickUpShard.newBuilder()
                 .setShard(shard)
@@ -82,6 +89,10 @@ public final class ShardServiceTestEnv implements Closeable {
                 .vBuild();
     }
 
+    /**
+     * Creates a new request to {@linkplain ReleaseShard release a shard} that was picked up
+     * by the given {@link PickUpShard pick up} request.
+     */
     public static ReleaseShard release(PickUpShard request) {
         return ReleaseShard.newBuilder()
                 .setShard(request.getShard())
@@ -89,12 +100,20 @@ public final class ShardServiceTestEnv implements Closeable {
                 .vBuild();
     }
 
+    /**
+     * Creates a new request to {@linkplain ReleaseExpiredSessions release expired sessions}
+     * with the given {@code inactivityPeriod}.
+     */
     public static ReleaseExpiredSessions releaseExpiredSessions(Duration inactivityPeriod) {
         return ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(inactivityPeriod)
                 .vBuild();
     }
 
+    /**
+     * Creates a new {@link ShardPickedUp} response, which could potentially be returned
+     * as a result of the given {@code request}.
+     */
     public static ShardPickedUp asPickedUp(PickUpShard request) {
         return ShardPickedUp.newBuilder()
                 .setShard(request.getShard())
@@ -102,6 +121,10 @@ public final class ShardServiceTestEnv implements Closeable {
                 .buildPartial();
     }
 
+    /**
+     * Creates a new {@link ExpiredSessionsReleased} response, which could potentially be returned
+     * as a result of releasing the given {@code pickedUp} shard.
+     */
     public static ExpiredSessionsReleased asReleased(ShardPickedUp pickedUp) {
         var expiredSession = ExpiredSession.newBuilder()
                 .setShard(pickedUp.getShard())
