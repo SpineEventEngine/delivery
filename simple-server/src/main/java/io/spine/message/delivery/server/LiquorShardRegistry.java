@@ -41,8 +41,10 @@ public final class LiquorShardRegistry implements Logging {
     private final Duration processingTimeout;
 
     /**
-     * Creates a new {@code LiquorShardRegistry} backed by {@link ShardRegistryStorage} created
-     * from the configured {@code factory}.
+     * Creates a new {@code LiquorShardRegistry} backed by {@link ShardRegistryStorage}.
+     *
+     * <p>The given {@code processingTimeout} is used to determine whether a session is stale.
+     * Stale sessions are released automatically.
      */
     public LiquorShardRegistry(StorageFactory factory, Duration processingTimeout) {
         super();
@@ -54,20 +56,29 @@ public final class LiquorShardRegistry implements Logging {
     /**
      * Picks up the shard at a given index to process.
      *
-     * <p>This action is intended to be exclusive, i.e. a single shard may be served
+     * <p>This action is intended to be exclusive, i.e., a single shard may be served
      * by a single worker at a given moment of time.
      *
      * <p>In case of a successful operation, an instance of {@link ShardProcessingSession}
-     * is returned. The node obtained the session should perform the desired actions with the
-     * sharded messages and then {@link LiquorShardSession#complete() complete} the session.
+     * is returned. There are two options when it is successful:
      *
-     * <p>In case the shard at a given index is already picked up by worker,
-     * an {@link Optional#empty() Optional.empty()} is returned.
+     * <ol>
+     *     <li>There is no worker associated with the requested shard.</li>
+     *     <li>The requested shard is already processed by some worker, but its processing
+     *     time reached {@link #processingTimeout}. Such a session is considered stale
+     *     and released automatically.</li>
+     * </ol>
+     *
+     * <p> A worker that obtained the session should perform the desired actions with
+     * the sharded messages and then {@link LiquorShardSession#complete() complete} the session.
+     *
+     * <p>In case the shard at a given index is already picked up by a worker and has not reached
+     * {@link #processingTimeout}, an {@link Optional#empty() Optional.empty()} is returned.
      *
      * @param index
      *         the index of the shard to pick up for processing
      * @param worker
-     *         the identifier of the node for which to pick the shard
+     *         the identifier of the worker for which to pick the shard
      * @return the session of shard processing,
      *         or {@code Optional.empty()} if the shard is not available
      */
