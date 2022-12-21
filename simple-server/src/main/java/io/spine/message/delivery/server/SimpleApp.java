@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.protobuf.util.Durations.checkPositive;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
@@ -41,7 +42,7 @@ public final class SimpleApp implements Logging {
 
     private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB; // 4 MiB
 
-    private static final Duration DEFAULT_SHARD_PROCESSING_TIMEOUT = Durations.fromMinutes(3);
+    private static final Duration DEFAULT_SHARD_PROCESSING_TIMEOUT = Durations.ZERO;
 
     /**
      * A host to use for gRPC server.
@@ -66,6 +67,8 @@ public final class SimpleApp implements Logging {
      *
      * <p>If a shard session is not released during the given timeout explicitly by the worker,
      * it will be released automatically by Liquor.
+     *
+     * <p>By default, the stale-check is {@linkplain Durations#ZERO turned off}.
      */
     private static final Duration SHARD_PROCESSING_TIMEOUT = shardProcessingTimeout();
 
@@ -166,8 +169,9 @@ public final class SimpleApp implements Logging {
         if (isNullOrEmpty(envVariable)) {
             return DEFAULT_SHARD_PROCESSING_TIMEOUT;
         }
-        int timeout = Integer.parseInt(envVariable);
-        return Durations.fromSeconds(timeout);
+        var timeout = Integer.parseInt(envVariable);
+        var duration = Durations.fromMinutes(timeout);
+        return checkPositive(duration);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different module. */)

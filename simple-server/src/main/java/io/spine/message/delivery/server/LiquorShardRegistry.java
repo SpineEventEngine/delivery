@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Durations;
 import io.spine.logging.Logging;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
@@ -22,10 +23,10 @@ import io.spine.server.storage.StorageFactory;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.protobuf.util.Durations.checkNotNegative;
 import static com.google.protobuf.util.Durations.compare;
 import static com.google.protobuf.util.Timestamps.between;
 import static io.spine.base.Time.currentTime;
-import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 
@@ -44,13 +45,15 @@ public final class LiquorShardRegistry implements Logging {
      * Creates a new {@code LiquorShardRegistry} backed by {@link ShardRegistryStorage}.
      *
      * <p>The given {@code processingTimeout} is used to determine whether a session is stale.
-     * Stale sessions are released automatically.
+     * Stale sessions are released automatically. Pass {@link Durations#ZERO Durations.ZERO}
+     * to disable the stale-check. In this case all picked up sessions will always be considered
+     * active until explicitly released by a worker.
      */
     public LiquorShardRegistry(StorageFactory factory, Duration processingTimeout) {
         super();
         checkNotNull(factory);
         this.storage = new ShardRegistryStorage(factory);
-        this.processingTimeout = checkNotDefaultArg(processingTimeout);
+        this.processingTimeout = checkNotNegative(processingTimeout);
     }
 
     /**
@@ -117,6 +120,9 @@ public final class LiquorShardRegistry implements Logging {
     }
 
     private boolean isStale(ShardSessionRecord session) {
+        if (processingTimeout.getSeconds() == 0) {
+            return false;
+        }
         Timestamp whenPicked = session.getWhenLastPicked();
         Duration elapsed = between(whenPicked, currentTime());
         int comparison = compare(elapsed, processingTimeout);
