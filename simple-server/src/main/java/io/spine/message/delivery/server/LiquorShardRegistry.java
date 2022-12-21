@@ -66,16 +66,18 @@ public final class LiquorShardRegistry implements Logging {
      *
      * <ol>
      *     <li>There is no worker associated with the requested shard.
-     *     <li>The requested shard is already processed by some worker, but its processing
-     *     time reached {@link #processingTimeout}. Such a session is considered stale
-     *     and released automatically.
+     *     <li>The requested shard is already being processed by some worker, but its
+     *     processing time reached {@link #processingTimeout}. Such a session is considered
+     *     stale and released automatically.
      * </ol>
      *
      * <p> A worker that obtained the session should perform the desired actions with
-     * the sharded messages and then {@link LiquorShardSession#complete() complete} the session.
+     * the sharded messages and then {@linkplain LiquorShardSession#complete() complete}
+     * the session.
      *
-     * <p>In case the shard at a given index is already picked up by a worker and has not reached
-     * {@link #processingTimeout}, an {@link Optional#empty() Optional.empty()} is returned.
+     * <p>In case the shard at a given index is already picked up by a worker and
+     * has not reached {@linkplain #processingTimeout processing timeout},
+     * an {@link Optional#empty() Optional.empty()} is returned.
      *
      * @param index
      *         the index of the shard to pick up for processing
