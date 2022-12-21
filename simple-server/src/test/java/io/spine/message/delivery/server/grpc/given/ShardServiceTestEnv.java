@@ -52,6 +52,9 @@ public final class ShardServiceTestEnv implements Closeable {
 
     /**
      * Returns blocking {@link ShardService} with the given {@code processingTimeout} specified.
+     *
+     * <p>This method differs from {@code WithApp.syncShardService()} in that it assembles
+     * its own instance of {@link ShardService}, which can be customized with the passed timeout.
      */
     public ShardServiceGrpc.ShardServiceBlockingStub syncShardService(Duration processingTimeout) {
         var shardService = new ShardService(InMemoryStorageFactory.newInstance(),
