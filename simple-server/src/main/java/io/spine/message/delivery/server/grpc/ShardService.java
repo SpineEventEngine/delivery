@@ -27,7 +27,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.message.delivery.server.grpc.Responses.alreadyPicked;
 import static io.spine.message.delivery.server.grpc.Responses.completeCall;
-import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
  * Acts as a gRPC-wired backend for the {@link io.spine.message.delivery.ShardSessionRegistry}.
@@ -49,7 +48,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     public ShardService(StorageFactory factory, Duration processingTimeout) {
         super();
         checkNotNull(factory);
-        checkNotDefaultArg(processingTimeout);
+        checkNotNull(processingTimeout);
         registry = new LiquorShardRegistry(factory, processingTimeout);
     }
 
