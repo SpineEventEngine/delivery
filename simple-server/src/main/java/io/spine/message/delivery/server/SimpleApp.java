@@ -170,7 +170,7 @@ public final class SimpleApp implements Logging {
             return DEFAULT_SHARD_PROCESSING_TIMEOUT;
         }
         var timeout = Integer.parseInt(envVariable);
-        var duration = Durations.fromMinutes(timeout);
+        var duration = Durations.fromSeconds(timeout);
         return checkPositive(duration);
     }
 
