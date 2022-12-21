@@ -9,7 +9,6 @@ package io.spine.message.delivery.server;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
@@ -153,13 +152,11 @@ public final class LiquorShardRegistry implements Logging {
         return new LiquorShardSession(record);
     }
 
-    @CanIgnoreReturnValue
-    private ShardSessionRecord clearWorker(ShardSessionRecord session) {
+    private void clearWorker(ShardSessionRecord session) {
         var record = session.toBuilder()
                 .clearWorker()
                 .build();
         storage.write(session.getIndex(), record);
-        return record;
     }
 
     private ShardSessionRecord updateWorker(ShardSessionRecord record, WorkerId worker) {
