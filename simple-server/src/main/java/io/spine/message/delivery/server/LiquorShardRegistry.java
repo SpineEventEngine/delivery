@@ -86,22 +86,22 @@ public final class LiquorShardRegistry implements Logging {
      */
     public synchronized Optional<ShardProcessingSession> pickUp(ShardIndex index,
                                                                 WorkerId worker) {
-        var optionalSession = find(index);
-        if (optionalSession.isEmpty()) {
+        var optionalRecord = find(index);
+        if (optionalRecord.isEmpty()) {
             var newRecord = createRecord(index, worker);
             return Optional.of(asSession(newRecord));
         }
 
-        var session = optionalSession.get();
-        if (hasWorker(session)) {
-            if (isStale(session)) {
-                logStale(session);
+        var record = optionalRecord.get();
+        if (hasWorker(record)) {
+            if (isStale(record)) {
+                logStale(record);
             } else {
                 return Optional.empty();
             }
         }
 
-        var updatedSession = updateWorker(session, worker);
+        var updatedSession = updateWorker(record, worker);
         return Optional.of(asSession(updatedSession));
     }
 
