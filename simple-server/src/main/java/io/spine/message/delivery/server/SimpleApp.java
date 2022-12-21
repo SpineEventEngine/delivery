@@ -42,7 +42,14 @@ public final class SimpleApp implements Logging {
 
     private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB; // 4 MiB
 
-    private static final Duration DEFAULT_SHARD_PROCESSING_TIMEOUT = Durations.ZERO;
+    /**
+     * A default value for {@link #SHARD_PROCESSING_TIMEOUT} constant.
+     *
+     * <p>Specifying of {@linkplain Durations#ZERO zero duration} means that no restrictions
+     * are imposed on shard processing time. Long-running sessions will NOT be considered stale.
+     * They continue to be held until released by a worker itself.
+     */
+    private static final Duration NO_SHARD_PROCESSING_TIMEOUT = Durations.ZERO;
 
     /**
      * A host to use for gRPC server.
@@ -62,13 +69,16 @@ public final class SimpleApp implements Logging {
     private static final int MESSAGE_SIZE = messageSize();
 
     /**
-     * Maximum span of time, during which the session can be hold
+     * Maximum span of time, during which the session can be held
      * by a {@linkplain io.spine.server.delivery.WorkerId worker}.
      *
-     * <p>If a shard session is not released during the given timeout explicitly by the worker,
-     * it will be released automatically by Liquor.
+     * <p>Sometimes a worker fails to release a session. Such can happen due to
+     * networking troubles, internal/application errors or an instance shutdown.
      *
-     * <p>By default, the stale-check is {@linkplain Durations#ZERO turned off}.
+     * <p>If a shard session is not released by the worker explicitly within
+     * the specified timeout, it will be released automatically by Liquor.
+     *
+     * <p>By default, the stale-check is {@linkplain #NO_SHARD_PROCESSING_TIMEOUT turned off}.
      */
     private static final Duration SHARD_PROCESSING_TIMEOUT = shardProcessingTimeout();
 
@@ -169,7 +179,7 @@ public final class SimpleApp implements Logging {
         @SuppressWarnings("CallToSystemGetenv")
         String envVariable = System.getenv("SHARD_PROCESSING_TIMEOUT");
         if (isNullOrEmpty(envVariable)) {
-            return DEFAULT_SHARD_PROCESSING_TIMEOUT;
+            return NO_SHARD_PROCESSING_TIMEOUT;
         }
         var timeout = Integer.parseInt(envVariable);
         var duration = Durations.fromSeconds(timeout);
