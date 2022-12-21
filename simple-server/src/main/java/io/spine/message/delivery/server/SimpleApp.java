@@ -7,6 +7,8 @@
 package io.spine.message.delivery.server;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.protobuf.Duration;
+import com.google.protobuf.util.Durations;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.spine.logging.Logging;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.protobuf.util.Durations.checkPositive;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
 /**
@@ -40,6 +43,15 @@ public final class SimpleApp implements Logging {
     private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB; // 4 MiB
 
     /**
+     * A default value for {@link #SHARD_PROCESSING_TIMEOUT} constant.
+     *
+     * <p>Specifying of {@linkplain Durations#ZERO zero duration} means that no restrictions
+     * are imposed on shard processing time. Long-running sessions will NOT be considered stale.
+     * They continue to be held until released by a worker itself.
+     */
+    private static final Duration NO_SHARD_PROCESSING_TIMEOUT = Durations.ZERO;
+
+    /**
      * A host to use for gRPC server.
      */
     @VisibleForTesting
@@ -55,6 +67,20 @@ public final class SimpleApp implements Logging {
      * A max size of the inbound payload that can be received through the gRPC channel.
      */
     private static final int MESSAGE_SIZE = messageSize();
+
+    /**
+     * Maximum span of time, during which the session can be held
+     * by a {@linkplain io.spine.server.delivery.WorkerId worker}.
+     *
+     * <p>Sometimes a worker fails to release a session. Such can happen due to
+     * networking troubles, internal/application errors or an instance shutdown.
+     *
+     * <p>If a shard session is not released by the worker explicitly within
+     * the specified timeout, it will be released automatically by Liquor.
+     *
+     * <p>By default, the stale-check is {@linkplain #NO_SHARD_PROCESSING_TIMEOUT turned off}.
+     */
+    private static final Duration SHARD_PROCESSING_TIMEOUT = shardProcessingTimeout();
 
     private static final ExecutorService executor = newFixedThreadPool(20);
 
@@ -82,7 +108,7 @@ public final class SimpleApp implements Logging {
     void initAndStart() {
         StorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
-        ShardService shardService = new ShardService(factory);
+        ShardService shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
         healthService = new HealthService()
                 .register(inboxService)
                 .register(shardService);
@@ -98,6 +124,8 @@ public final class SimpleApp implements Logging {
         _info().log("Configured inbound message size: `%d` bytes.", MESSAGE_SIZE);
         Runtime runtime = Runtime.getRuntime();
         _info().log("Available memory %dMb.", runtime.maxMemory() / BYTES_IN_MB);
+        _info().log("Configured shard processing timeout: `%d` seconds.",
+                    SHARD_PROCESSING_TIMEOUT.getSeconds());
         try {
             server.start();
             _info().log("gRPC server started at host '%s' and port '%d'.", HOST, PORT);
@@ -147,7 +175,18 @@ public final class SimpleApp implements Logging {
         return Integer.parseInt(size);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in different module. */)
+    private static Duration shardProcessingTimeout() {
+        @SuppressWarnings("CallToSystemGetenv")
+        String envVariable = System.getenv("SHARD_PROCESSING_TIMEOUT");
+        if (isNullOrEmpty(envVariable)) {
+            return NO_SHARD_PROCESSING_TIMEOUT;
+        }
+        var timeout = Integer.parseInt(envVariable);
+        var duration = Durations.fromSeconds(timeout);
+        return checkPositive(duration);
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different module. */)
     private StorageFactory storageFactory() {
         if (useRedis()) {
             _config().log("Using Redis storage.");

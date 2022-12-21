@@ -56,7 +56,7 @@ public abstract class WithApp {
     /**
      * Returns blocking {@code ShardService} connected to the app.
      */
-    protected final ShardServiceGrpc.ShardServiceBlockingStub syncShardService(){
+    protected final ShardServiceGrpc.ShardServiceBlockingStub syncShardService() {
         return ShardServiceGrpc.newBlockingStub(serverChannel());
     }
 
