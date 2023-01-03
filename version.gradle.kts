@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2021 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2023 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -8,4 +8,4 @@
  * The version of the application.
  */
 
-val messageDeliveryVersion: String by extra("0.8.3")
+val messageDeliveryVersion: String by extra("0.8.4")
