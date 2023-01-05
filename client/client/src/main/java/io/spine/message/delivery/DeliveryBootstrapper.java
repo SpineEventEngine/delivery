@@ -24,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<DeliveryBootstrapper> {
 
-    private ErrorHandlingStrategy strategy = Propagate.create();
+    private ErrorHandlingStrategy strategy = new Propagate();
 
     /**
      * Prevents direct instantiation.

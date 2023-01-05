@@ -85,7 +85,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
      */
     @SuppressWarnings("CheckReturnValue" /* We're fine to just `check` args. */)
     static DeliveryClient create(String host, int port) {
-        return create(host, port, Propagate.create());
+        return create(host, port, new Propagate());
     }
 
     static DeliveryClient create(String host, int port, ErrorHandlingStrategy strategy) {
@@ -104,7 +104,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
      * using specified {@code channel}.
      */
     public static DeliveryClient create(ManagedChannel channel) {
-        return create(channel, Propagate.create());
+        return create(channel, new Propagate());
     }
 
     public static DeliveryClient create(ManagedChannel channel, ErrorHandlingStrategy strategy) {
