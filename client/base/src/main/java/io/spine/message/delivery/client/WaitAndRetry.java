@@ -16,11 +16,21 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
-public class WaitAndRetry implements ErrorHandlingStrategy {
+/**
+ * An error handling strategy that will be waiting a certain amount of time before retrying a failed
+ * operation.
+ */
+public final class WaitAndRetry implements ErrorHandlingStrategy {
 
     private final int waitSeconds;
     private final int retryCount;
 
+    /**
+     * Starts creation chain for the {@code WaitAndRetry} strategy.
+     *
+     * @param seconds
+     *         amount of seconds to wait before trying to execute failed operation again.
+     */
     public static Builder waitForSeconds(int seconds) {
         checkArgument(seconds > 0, "Waiting seconds should be positive.");
         return new Builder(seconds);
@@ -31,6 +41,9 @@ public class WaitAndRetry implements ErrorHandlingStrategy {
         this.retryCount = retryCount;
     }
 
+    /**
+     * Executes the given operation and in case of failure waits some time before another attempt.
+     */
     @Override
     public void runWithStrategy(VoidOperation operation) {
         int attempts = 0;
@@ -53,6 +66,9 @@ public class WaitAndRetry implements ErrorHandlingStrategy {
         }
     }
 
+    /**
+     * Executes the given operation and in case of failure waits some time before another attempt.
+     */
     @Override
     public <R> R runWithStrategy(OperationWithResult<R> operation) {
         int attempts = 0;
@@ -71,6 +87,9 @@ public class WaitAndRetry implements ErrorHandlingStrategy {
         throw new StrategyFailedException(ImmutableList.copyOf(caughtExceptions));
     }
 
+    /**
+     * Builder for the {@code WaitAndRetry} strategy.
+     */
     public static class Builder {
 
         private final int waitSeconds;
@@ -79,6 +98,9 @@ public class WaitAndRetry implements ErrorHandlingStrategy {
             this.waitSeconds = waitSeconds;
         }
 
+        /**
+         * Creates a new {@code WaitAndRetry} strategy with the given amount of retries.
+         */
         public WaitAndRetry times(int n) {
             checkArgument(n > 0, "Retry counts should be positive.");
             return new WaitAndRetry(waitSeconds, n);

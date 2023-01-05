@@ -12,12 +12,14 @@ package io.spine.message.delivery.client;
 public interface ErrorHandlingStrategy {
 
     /**
-     * Executes the given {@code VoidOperation} and handles occurred exceptions.
+     * Executes the given {@code VoidOperation} and handles occurred exceptions in the way
+     * implemented in a particular strategy.
      */
     void runWithStrategy(VoidOperation operation);
 
     /**
-     * Executes the given {@code OperationWithResult} and handled occurred exceptions.
+     * Executes the given {@code OperationWithResult} and handled occurred exceptions in the way
+     * implemented in a particular strategy.
      */
     <R> R runWithStrategy(OperationWithResult<R> operation);
 }
