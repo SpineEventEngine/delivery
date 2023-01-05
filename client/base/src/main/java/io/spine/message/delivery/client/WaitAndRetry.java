@@ -7,13 +7,13 @@
 package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.util.concurrent.Uninterruptibles;
 import io.grpc.StatusRuntimeException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class WaitAndRetry implements ErrorHandlingStrategy {
@@ -44,7 +44,7 @@ public class WaitAndRetry implements ErrorHandlingStrategy {
                 caughtExceptions.add(e);
                 attempts++;
                 if (attempts < retryCount) {
-                    Uninterruptibles.sleepUninterruptibly(waitSeconds, SECONDS);
+                    sleepUninterruptibly(waitSeconds, SECONDS);
                 }
             }
         }
@@ -64,7 +64,7 @@ public class WaitAndRetry implements ErrorHandlingStrategy {
                 caughtExceptions.add(e);
                 attempts++;
                 if (attempts < retryCount) {
-                    Uninterruptibles.sleepUninterruptibly(waitSeconds, SECONDS);
+                    sleepUninterruptibly(waitSeconds, SECONDS);
                 }
             }
         }
