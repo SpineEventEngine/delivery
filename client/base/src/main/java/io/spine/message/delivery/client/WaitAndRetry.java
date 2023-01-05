@@ -21,7 +21,7 @@ public class WaitAndRetry implements ErrorHandlingStrategy {
     private final int waitSeconds;
     private final int retryCount;
 
-    public static Builder waitFor(int seconds) {
+    public static Builder waitForSeconds(int seconds) {
         checkArgument(seconds > 0, "Waiting seconds should be positive.");
         return new Builder(seconds);
     }
