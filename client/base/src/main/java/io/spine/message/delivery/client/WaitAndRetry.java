@@ -45,7 +45,7 @@ public final class WaitAndRetry implements ErrorHandlingStrategy {
      * Executes the given operation and in case of failure waits some time before another attempt.
      */
     @Override
-    public void runWithStrategy(VoidOperation operation) {
+    public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
         int attempts = 0;
         boolean success = false;
         List<StatusRuntimeException> caughtExceptions = new ArrayList<>(retryCount);
@@ -70,7 +70,7 @@ public final class WaitAndRetry implements ErrorHandlingStrategy {
      * Executes the given operation and in case of failure waits some time before another attempt.
      */
     @Override
-    public <R> R runWithStrategy(OperationWithResult<R> operation) {
+    public <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException {
         int attempts = 0;
         List<StatusRuntimeException> caughtExceptions = new ArrayList<>(retryCount);
         while (attempts < retryCount) {

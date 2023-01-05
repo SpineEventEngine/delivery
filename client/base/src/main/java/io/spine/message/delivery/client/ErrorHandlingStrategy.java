@@ -14,12 +14,18 @@ public interface ErrorHandlingStrategy {
     /**
      * Executes the given {@code VoidOperation} and handles occurred exceptions in the way
      * implemented in a particular strategy.
+     *
+     * @throws StrategyFailedException
+     *         if strategy is unable to handle the occurred exception.
      */
-    void runWithStrategy(VoidOperation operation);
+    void runWithStrategy(VoidOperation operation) throws StrategyFailedException;
 
     /**
      * Executes the given {@code OperationWithResult} and handled occurred exceptions in the way
      * implemented in a particular strategy.
+     *
+     * @throws StrategyFailedException
+     *         if strategy is unable to handle the occurred exception.
      */
-    <R> R runWithStrategy(OperationWithResult<R> operation);
+    <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException;
 }
