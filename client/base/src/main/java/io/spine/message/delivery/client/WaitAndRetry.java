@@ -7,7 +7,6 @@
 package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
-import io.grpc.StatusRuntimeException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,12 +47,12 @@ public final class WaitAndRetry implements ErrorHandlingStrategy {
     public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
         int attempts = 0;
         boolean success = false;
-        List<StatusRuntimeException> caughtExceptions = new ArrayList<>(retryCount);
+        List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
         while (attempts < retryCount && !success) {
             try {
                 operation.run();
                 success = true;
-            } catch (StatusRuntimeException e) {
+            } catch (RuntimeException e) {
                 caughtExceptions.add(e);
                 attempts++;
                 if (attempts < retryCount) {
@@ -72,11 +71,11 @@ public final class WaitAndRetry implements ErrorHandlingStrategy {
     @Override
     public <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException {
         int attempts = 0;
-        List<StatusRuntimeException> caughtExceptions = new ArrayList<>(retryCount);
+        List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
         while (attempts < retryCount) {
             try {
                 return operation.run();
-            } catch (StatusRuntimeException e) {
+            } catch (RuntimeException e) {
                 caughtExceptions.add(e);
                 attempts++;
                 if (attempts < retryCount) {
