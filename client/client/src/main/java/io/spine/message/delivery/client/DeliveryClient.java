@@ -13,12 +13,13 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.StatusRuntimeException;
 import io.spine.base.CommandMessage;
 import io.spine.base.Error;
 import io.spine.client.Client;
+import io.spine.client.CommandRequest;
 import io.spine.client.OrderBy;
 import io.spine.client.QueryFilter;
+import io.spine.client.QueryRequest;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.InboxMessageHolder.Column;
@@ -41,9 +42,11 @@ import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Throwables.getStackTraceAsString;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Iterables.toArray;
 import static io.spine.client.OrderBy.Direction.DESCENDING;
@@ -65,8 +68,10 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
 
     private final Client client;
     private final ShardSessionRegistryServiceBlockingStub sessionRegistry;
+    private final ErrorHandlingStrategy errorHandlingStrategy;
 
-    private DeliveryClient(ManagedChannel channel) {
+    private DeliveryClient(ManagedChannel channel, ErrorHandlingStrategy strategy) {
+        errorHandlingStrategy = strategy;
         client = Client
                 .usingChannel(channel)
                 .withGuestId("DeliveryClient")
@@ -80,13 +85,18 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
      */
     @SuppressWarnings("CheckReturnValue" /* We're fine to just `check` args. */)
     static DeliveryClient create(String host, int port) {
+        return create(host, port, new Propagate());
+    }
+
+    static DeliveryClient create(String host, int port, ErrorHandlingStrategy strategy) {
         checkNotEmptyOrBlank(host);
         checkPositive(port);
+        checkNotNull(strategy);
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(host, port)
                 .usePlaintext()
                 .build();
-        return new DeliveryClient(channel);
+        return new DeliveryClient(channel, strategy);
     }
 
     /**
@@ -94,10 +104,15 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
      * using specified {@code channel}.
      */
     public static DeliveryClient create(ManagedChannel channel) {
+        return create(channel, new Propagate());
+    }
+
+    public static DeliveryClient create(ManagedChannel channel, ErrorHandlingStrategy strategy) {
         checkNotNull(channel);
+        checkNotNull(strategy);
         logger.atConfig()
               .log("Creating a `DeliveryClient` for the channel `%s`.", channel);
-        return new DeliveryClient(channel);
+        return new DeliveryClient(channel, strategy);
     }
 
     @Override
@@ -152,10 +167,14 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 "Posting `PickUpShard` command and waiting for a response event `ShardPickedUp`."
         );
         try {
-            ShardPickedUp shardPickedUp = sessionRegistry.pickShard(pickUpShard);
+
+            ShardPickedUp shardPickedUp = errorHandlingStrategy
+                    .runWithStrategy(() -> sessionRegistry.pickShard(pickUpShard));
             return Optional.of(shardPickedUp);
-        } catch (StatusRuntimeException e) {
-            _trace().log("Unable to pick up shard `%s`: %s.", shard, e.getStatus());
+        } catch (StrategyFailedException e) {
+            ImmutableList<Exception> occurredExceptions = e.occurredExceptions();
+            Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
+            _trace().log("Unable to pick up shard `%s`: %s.", shard, getStackTraceAsString(last));
         }
         return Optional.empty();
     }
@@ -181,19 +200,21 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 "Posting `ReleaseExpiredSessions` command " +
                         "and waiting for a response event `ExpiredSessionsReleased`."
         );
-        ExpiredSessionsReleased sessionsReleased =
-                sessionRegistry.releaseSessions(releaseExpiredSessions);
+
+        ExpiredSessionsReleased sessionsReleased = errorHandlingStrategy
+                .runWithStrategy(() -> sessionRegistry.releaseSessions(releaseExpiredSessions));
         return sessionsReleased;
     }
 
     @Override
     public Optional<InboxMessage> find(InboxMessageId messageId) {
         checkNotDefaultArg(messageId);
-        return client.asGuest()
-                     .select(InboxMessageHolder.class)
-                     .byId(messageId)
-                     .run()
-                     .stream()
+        QueryRequest<InboxMessageHolder> request =
+                client.asGuest()
+                      .select(InboxMessageHolder.class)
+                      .byId(messageId);
+        List<InboxMessageHolder> result = errorHandlingStrategy.runWithStrategy(request::run);
+        return result.stream()
                      .findFirst()
                      .map(InboxMessageHolder::getMessage);
     }
@@ -211,39 +232,44 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         if (sinceWhen != null) {
             filters.add(gt(Column.receivedAt(), sinceWhen));
         }
-        ImmutableList<InboxMessage> result =
+        QueryRequest<InboxMessageHolder> request =
                 client.asGuest()
                       .select(InboxMessageHolder.class)
                       .where(toArray(filters.build(), QueryFilter.class))
                       .limit(pageSize)
-                      .orderBy(Column.receivedAt(), OrderBy.Direction.ASCENDING)
-                      .run()
-                      .stream()
-                      .map(InboxMessageHolder::getMessage)
-                      .sorted(InboxMessageComparator.chronologically)
-                      .collect(toImmutableList());
-        return result;
+                      .orderBy(Column.receivedAt(), OrderBy.Direction.ASCENDING);
+        ImmutableList<InboxMessageHolder> result =
+                errorHandlingStrategy.runWithStrategy(request::run);
+        return result.stream()
+                     .map(InboxMessageHolder::getMessage)
+                     .sorted(InboxMessageComparator.chronologically)
+                     .collect(toImmutableList());
+
     }
 
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard) {
-        return client.asGuest()
-                     .select(InboxMessageHolder.class)
-                     .where(eq(Column.shard(), shard), eq(Column.status(), TO_DELIVER))
-                     .orderBy(Column.receivedAt(), DESCENDING)
-                     .limit(1)
-                     .run()
-                     .stream()
+        QueryRequest<InboxMessageHolder> request =
+                client.asGuest()
+                      .select(InboxMessageHolder.class)
+                      .where(eq(Column.shard(), shard), eq(Column.status(), TO_DELIVER))
+                      .orderBy(Column.receivedAt(), DESCENDING)
+                      .limit(1);
+
+        ImmutableList<InboxMessageHolder> result =
+                errorHandlingStrategy.runWithStrategy(request::run);
+        return result.stream()
                      .findFirst()
                      .map(InboxMessageHolder::getMessage);
     }
 
     private <C extends CommandMessage> void post(C command) {
         _trace().log("Posting command `%s`.", command.getClass());
-        client.asGuest()
-              .command(command)
-              .onServerError((msg, error) -> logServerError(command, error))
-              .postAndForget();
+        CommandRequest request =
+                client.asGuest()
+                      .command(command)
+                      .onServerError((msg, error) -> logServerError(command, error));
+        errorHandlingStrategy.runWithStrategy(request::postAndForget);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in non-related module. */)
