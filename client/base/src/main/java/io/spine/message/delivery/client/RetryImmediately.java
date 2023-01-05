@@ -41,20 +41,17 @@ public final class RetryImmediately implements ErrorHandlingStrategy {
     @Override
     public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
         int attempts = 0;
-        boolean success = false;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
-        while (attempts < retryCount && !success) {
+        while (attempts < retryCount) {
             try {
                 operation.run();
-                success = true;
+                return;
             } catch (RuntimeException e) {
                 caughtExceptions.add(e);
                 attempts++;
             }
         }
-        if (!success) {
-            throw new StrategyFailedException(ImmutableList.copyOf(caughtExceptions));
-        }
+        throw new StrategyFailedException(ImmutableList.copyOf(caughtExceptions));
     }
 
     /**
