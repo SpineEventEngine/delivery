@@ -40,6 +40,10 @@ public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<Del
         return new DeliveryBootstrapper();
     }
 
+    /**
+     * Configures delivery to be using the given {@code strategy} to handle possible failures
+     * during interaction with server.
+     */
     public DeliveryBootstrapper withErrorStrategy(ErrorHandlingStrategy strategy) {
         this.strategy = checkNotNull(strategy);
         return self();
