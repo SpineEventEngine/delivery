@@ -20,5 +20,4 @@ public interface ErrorHandlingStrategy {
      * Executes the given {@code OperationWithResult} and handled occurred exceptions.
      */
     <R> R runWithStrategy(OperationWithResult<R> operation);
-
 }
