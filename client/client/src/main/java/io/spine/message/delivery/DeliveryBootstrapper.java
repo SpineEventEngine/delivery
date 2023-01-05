@@ -8,10 +8,10 @@ package io.spine.message.delivery;
 
 import io.grpc.ManagedChannel;
 import io.spine.message.delivery.client.DeliveryClient;
-import io.spine.message.delivery.client.InboxClient;
-import io.spine.message.delivery.client.SessionRegistryClient;
 import io.spine.message.delivery.client.ErrorHandlingStrategy;
+import io.spine.message.delivery.client.InboxClient;
 import io.spine.message.delivery.client.Propagate;
+import io.spine.message.delivery.client.SessionRegistryClient;
 import io.spine.server.delivery.Delivery;
 
 import java.util.function.Supplier;
@@ -24,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<DeliveryBootstrapper> {
 
-    private ErrorHandlingStrategy strategy = new Propagate();
+    private ErrorHandlingStrategy strategy = Propagate.create();
 
     /**
      * Prevents direct instantiation.

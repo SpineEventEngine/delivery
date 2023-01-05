@@ -8,6 +8,15 @@ package io.spine.message.delivery.client;
 
 public final class Propagate implements ErrorHandlingStrategy {
 
+
+    public static Propagate create(){
+        return new Propagate();
+    }
+
+    private Propagate(){
+
+    }
+
     @Override
     public void runWithStrategy(VoidOperation operation) {
         operation.run(); // Do not catch exceptions and they will propagate.
