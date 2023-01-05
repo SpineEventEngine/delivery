@@ -10,15 +10,21 @@ import io.grpc.ManagedChannel;
 import io.spine.message.delivery.client.DeliveryClient;
 import io.spine.message.delivery.client.InboxClient;
 import io.spine.message.delivery.client.SessionRegistryClient;
+import io.spine.message.delivery.client.ErrorHandlingStrategy;
+import io.spine.message.delivery.client.Propagate;
 import io.spine.server.delivery.Delivery;
 
 import java.util.function.Supplier;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Provides fluent API for building a {@link Delivery} backed by the Message Delivery Server and
  * based on the {@link DeliveryClient}.
  */
 public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<DeliveryBootstrapper> {
+
+    private ErrorHandlingStrategy strategy = new Propagate();
 
     /**
      * Prevents direct instantiation.
@@ -34,6 +40,11 @@ public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<Del
         return new DeliveryBootstrapper();
     }
 
+    public DeliveryBootstrapper withErrorStrategy(ErrorHandlingStrategy strategy) {
+        this.strategy = checkNotNull(strategy);
+        return self();
+    }
+
     @Override
     protected DeliveryBootstrapper self() {
         return this;
@@ -41,11 +52,11 @@ public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<Del
 
     @Override
     protected InboxClient newInboxClient(Supplier<ManagedChannel> channel) {
-        return DeliveryClient.create(channel.get());
+        return DeliveryClient.create(channel.get(), strategy);
     }
 
     @Override
     protected SessionRegistryClient newSessionRegistryClient(Supplier<ManagedChannel> channel) {
-        return DeliveryClient.create(channel.get());
+        return DeliveryClient.create(channel.get(), strategy);
     }
 }
