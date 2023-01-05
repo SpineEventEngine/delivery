@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client;
+package io.spine.message.delivery.client.failures;
 
 /**
  * Strategy that executes operations and decides how to handle errors if any occurred.
