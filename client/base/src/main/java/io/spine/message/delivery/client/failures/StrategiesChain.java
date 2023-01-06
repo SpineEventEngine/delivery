@@ -14,8 +14,8 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Strategy chain that will apply each encapsulated strategy to the operation if previous
- * strategy failed.
+ * Encapsulates a list of other strategies and will apply each encapsulated strategy
+ * to the operation if previous strategy failed.
  */
 public final class StrategiesChain implements ErrorHandlingStrategy {
 
