@@ -48,6 +48,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getStackTraceAsString;
 import static com.google.common.collect.ImmutableList.toImmutableList;
@@ -58,7 +59,6 @@ import static io.spine.client.QueryFilter.gt;
 import static io.spine.server.delivery.InboxMessageStatus.TO_DELIVER;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
-import static io.spine.util.Preconditions2.checkPositive;
 
 /**
  * A client for working with the Message Delivery server.
@@ -93,7 +93,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
 
     static DeliveryClient create(String host, int port, ErrorHandlingStrategy strategy) {
         checkNotEmptyOrBlank(host);
-        checkPositive(port);
+        checkArgument(port > 0, "A positive value expected. Encountered: %s.", port);
         checkNotNull(strategy);
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(host, port)

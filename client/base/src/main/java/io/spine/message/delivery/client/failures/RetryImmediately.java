@@ -24,7 +24,7 @@ public final class RetryImmediately implements ErrorHandlingStrategy {
      * Create a new {@code RetryImmediately} strategy with the given amount of retry attempts.
      */
     public static RetryImmediately times(int n) {
-        checkArgument(n > 0, "Retries count should be positive.");
+        checkArgument(n > 0, "A positive value expected. Encountered: %s.", n);
         return new RetryImmediately(n);
     }
 

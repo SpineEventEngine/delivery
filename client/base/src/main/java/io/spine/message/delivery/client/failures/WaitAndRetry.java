@@ -31,7 +31,7 @@ public final class WaitAndRetry implements ErrorHandlingStrategy {
      *         amount of seconds to wait before trying to execute failed operation again.
      */
     public static Builder waitForSeconds(int seconds) {
-        checkArgument(seconds > 0, "Waiting seconds should be positive.");
+        checkArgument(seconds > 0, "Amount seconds should be positive. Encountered: %s.", seconds);
         return new Builder(seconds);
     }
 
@@ -104,7 +104,7 @@ public final class WaitAndRetry implements ErrorHandlingStrategy {
          * Creates a new {@code WaitAndRetry} strategy with the given amount of retries.
          */
         public WaitAndRetry times(int n) {
-            checkArgument(n > 0, "Retry counts should be positive.");
+            checkArgument(n > 0, "A positive retry amount expected. Encountered: %s.", n);
             return new WaitAndRetry(waitSeconds, n);
         }
     }
