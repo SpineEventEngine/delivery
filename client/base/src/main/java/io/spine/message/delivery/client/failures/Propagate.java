@@ -8,6 +8,8 @@ package io.spine.message.delivery.client.failures;
 
 import com.google.common.collect.ImmutableList;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 /**
  * Error handling strategy that doesn't handle errors but propagates them if the operation failed.
  */
@@ -22,6 +24,7 @@ public final class Propagate implements ErrorHandlingStrategy {
      */
     @Override
     public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
+        checkNotNull(operation);
         try {
             operation.run();
         } catch (RuntimeException e) {
@@ -38,6 +41,7 @@ public final class Propagate implements ErrorHandlingStrategy {
      */
     @Override
     public <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException {
+        checkNotNull(operation);
         try {
             return operation.run();
         } catch (RuntimeException e) {

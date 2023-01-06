@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An error handling strategy that will be immediately retrying operations in case of failures.
@@ -40,6 +41,7 @@ public final class RetryImmediately implements ErrorHandlingStrategy {
      */
     @Override
     public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
+        checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
         while (attempts < retryCount) {
@@ -62,6 +64,7 @@ public final class RetryImmediately implements ErrorHandlingStrategy {
      */
     @Override
     public <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException {
+        checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
         while (attempts < retryCount) {

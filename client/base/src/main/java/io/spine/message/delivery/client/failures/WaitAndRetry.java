@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -48,6 +49,7 @@ public final class WaitAndRetry implements ErrorHandlingStrategy {
      */
     @Override
     public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
+        checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
         while (attempts < retryCount) {
@@ -73,6 +75,7 @@ public final class WaitAndRetry implements ErrorHandlingStrategy {
      */
     @Override
     public <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException {
+        checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
         while (attempts < retryCount) {
