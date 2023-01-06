@@ -107,7 +107,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` picking up shard.")
+        @DisplayName("use provided `ErrorHandlingStrategy` picking up shard")
         void useStrategyPickingUpShard() {
             client.pickUpShard(shard, worker);
 
@@ -321,7 +321,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` finding a message.")
+        @DisplayName("use provided `ErrorHandlingStrategy` finding a message")
         void useStrategyFinding(){
             InboxMessage message = newMessage();
             client.find(message.getId());
@@ -333,7 +333,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` finding multiple messages.")
+        @DisplayName("use provided `ErrorHandlingStrategy` finding multiple messages")
         void useStrategyFindingMany(){
             List<InboxMessage> messages = generate(30);
             ShardIndex shard = messages.get(0)
@@ -350,7 +350,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` finding newest messages.")
+        @DisplayName("use provided `ErrorHandlingStrategy` finding newest messages")
         void useStrategyReadingNewest(){
             InboxMessage olderMessage = toDeliver(
                     Timestamps.fromSeconds(100000L),
