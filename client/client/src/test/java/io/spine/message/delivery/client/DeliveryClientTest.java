@@ -52,9 +52,12 @@ final class DeliveryClientTest {
 
     private @MonotonicNonNull DeliveryClient client;
 
+    private @MonotonicNonNull ExecutionCountingStrategy strategy;
+
     @BeforeEach
     void connectClient() {
-        client = DeliveryClient.create(server.getHost(), server.getFirstMappedPort());
+        strategy = new ExecutionCountingStrategy();
+        client = DeliveryClient.create(server.getHost(), server.getFirstMappedPort(), strategy);
     }
 
     @AfterEach
@@ -101,6 +104,29 @@ final class DeliveryClientTest {
             Optional<ShardPickedUp> secondAttempt = client.pickUpShard(shard, worker);
             assertThat(secondAttempt)
                     .isEmpty();
+        }
+
+        @Test
+        @DisplayName("use provided `ErrorHandlingStrategy` picking up shard.")
+        void useStrategyPickingUpShard() {
+            client.pickUpShard(shard, worker);
+
+            assertThat(strategy.voidOperationExecutions())
+                    .isEqualTo(0);
+            assertThat(strategy.operationsWithResultExecutions())
+                    .isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("use provided `ErrorHandlingStrategy` releasing shard")
+        void useStrategyReleasingShard() {
+            client.pickUpShard(shard, worker);
+            client.releaseShard(shard, worker);
+
+            assertThat(strategy.voidOperationExecutions())
+                    .isEqualTo(1);
+            assertThat(strategy.operationsWithResultExecutions())
+                    .isEqualTo(1);
         }
     }
 
@@ -160,6 +186,66 @@ final class DeliveryClientTest {
             sleepUninterruptibly(1, TimeUnit.SECONDS);
             Page<InboxMessage> writtenMessages = client.readAll(shard, 10);
             assertThat(writtenMessages.size())
+                    .isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("use provided `ErrorHandlingStrategy` writing a message")
+        void useStrategyWritingMessage(){
+            InboxMessage message = newMessage();
+            client.writeMessage(message);
+
+            assertThat(strategy.voidOperationExecutions())
+                    .isEqualTo(1);
+            assertThat(strategy.operationsWithResultExecutions())
+                    .isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("use provided `ErrorHandlingStrategy` removing a message")
+        void useStrategyRemovingMessage(){
+            InboxMessage message = newMessage();
+            client.writeMessage(message);
+            client.removeMessage(message);
+
+            assertThat(strategy.voidOperationExecutions())
+                    .isEqualTo(2);
+            assertThat(strategy.operationsWithResultExecutions())
+                    .isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("use provided `ErrorHandlingStrategy` writing multiple messages")
+        void useStrategyWritingMessages(){
+            InboxMessage firstMessage = newMessage();
+            InboxMessage secondMessage = newMessage();
+            ShardIndex shard = firstMessage.shardIndex();
+            client.writeMessages(
+                    shard, ImmutableList.of(firstMessage, secondMessage)
+            );
+
+            assertThat(strategy.voidOperationExecutions())
+                    .isEqualTo(1);
+            assertThat(strategy.operationsWithResultExecutions())
+                    .isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("use provided `ErrorHandlingStrategy` removing multiple messages")
+        void useStrategyRemovingMessages(){
+            InboxMessage firstMessage = newMessage();
+            InboxMessage secondMessage = newMessage();
+            ShardIndex shard = firstMessage.shardIndex();
+            client.writeMessages(
+                    shard, ImmutableList.of(firstMessage, secondMessage)
+            );
+            client.removeMessages(
+                    shard, ImmutableList.of(firstMessage, secondMessage)
+            );
+
+            assertThat(strategy.voidOperationExecutions())
+                    .isEqualTo(2);
+            assertThat(strategy.operationsWithResultExecutions())
                     .isEqualTo(0);
         }
     }
@@ -232,6 +318,63 @@ final class DeliveryClientTest {
                     client.newestMessageToDeliver(olderMessage.shardIndex());
             assertThat(actual)
                     .hasValue(newestMessage);
+        }
+
+        @Test
+        @DisplayName("use provided `ErrorHandlingStrategy` finding a message.")
+        void useStrategyFinding(){
+            InboxMessage message = newMessage();
+            client.find(message.getId());
+
+            assertThat(strategy.voidOperationExecutions())
+                    .isEqualTo(0);
+            assertThat(strategy.operationsWithResultExecutions())
+                    .isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("use provided `ErrorHandlingStrategy` finding multiple messages.")
+        void useStrategyFindingMany(){
+            List<InboxMessage> messages = generate(30);
+            ShardIndex shard = messages.get(0)
+                                       .shardIndex();
+            client.writeMessages(shard, messages);
+            sleepUninterruptibly(1, TimeUnit.SECONDS);
+            int pageSize = 10;
+            client.readAll(shard, pageSize);
+
+            assertThat(strategy.voidOperationExecutions())
+                    .isEqualTo(1);
+            assertThat(strategy.operationsWithResultExecutions())
+                    .isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("use provided `ErrorHandlingStrategy` finding newest messages.")
+        void useStrategyReadingNewest(){
+            InboxMessage olderMessage = toDeliver(
+                    Timestamps.fromSeconds(100000L),
+                    TypeUrl.from(Something.getDescriptor())
+            );
+            InboxMessage newerMessage = toDeliver(
+                    Timestamps.fromSeconds(100001L),
+                    TypeUrl.from(Something.getDescriptor())
+            );
+            InboxMessage newestMessage = toDeliver(
+                    Timestamps.fromSeconds(100002L),
+                    TypeUrl.from(Something.getDescriptor())
+            );
+            client.writeMessages(
+                    olderMessage.shardIndex(),
+                    ImmutableList.of(olderMessage, newestMessage, newerMessage)
+            );
+            sleepUninterruptibly(1, TimeUnit.SECONDS);
+            client.newestMessageToDeliver(olderMessage.shardIndex());
+
+            assertThat(strategy.voidOperationExecutions())
+                    .isEqualTo(1);
+            assertThat(strategy.operationsWithResultExecutions())
+                    .isEqualTo(1);
         }
 
         private List<InboxMessage> generate(int number) {
