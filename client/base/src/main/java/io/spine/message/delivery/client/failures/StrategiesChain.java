@@ -47,6 +47,7 @@ public final class StrategiesChain implements ErrorHandlingStrategy {
      */
     @Override
     public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
+        checkNotNull(operation);
         List<Exception> occurredExceptions = new ArrayList<>();
         for (ErrorHandlingStrategy strategy : strategies) {
             try {
@@ -69,6 +70,7 @@ public final class StrategiesChain implements ErrorHandlingStrategy {
      */
     @Override
     public <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException {
+        checkNotNull(operation);
         List<Exception> occurredExceptions = new ArrayList<>();
         for (ErrorHandlingStrategy strategy : strategies) {
             try {
