@@ -88,6 +88,10 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         return create(host, port, new Propagate());
     }
 
+    /**
+     * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
+     * and {@code port} and uses the given {@code RequestExecutionStrategy}.
+     */
     static DeliveryClient create(String host, int port, RequestExecutionStrategy strategy) {
         checkNotEmptyOrBlank(host);
         checkArgument(port > 0, "A positive value expected. Encountered: %s.", port);
@@ -107,6 +111,10 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         return create(channel, new Propagate());
     }
 
+    /**
+     * Creates a new delivery client which connects to a gRPC server
+     * using specified {@code channel} and uses the given {@code RequestExecutionStrategy}.
+     */
     public static DeliveryClient create(ManagedChannel channel, RequestExecutionStrategy strategy) {
         checkNotNull(channel);
         checkNotNull(strategy);
