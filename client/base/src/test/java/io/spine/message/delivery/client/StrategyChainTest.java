@@ -18,7 +18,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.message.delivery.client.given.RunCountingOperationWithResult.newRunCountingOperationWithResult;
 import static io.spine.message.delivery.client.given.RunCountingVoidOperation.newRunCountingVoidOperation;
 
-@DisplayName("StrategiesChain should")
+@DisplayName("StrategyChain should")
 final class StrategyChainTest {
 
     private RequestExecutionStrategy strategy;
