@@ -41,6 +41,7 @@ public final class WaitAndRetry extends AbstractExecutionStrategy {
     }
 
     private WaitAndRetry(int waitSeconds, int retryCount) {
+        super();
         this.waitSeconds = waitSeconds;
         this.retryCount = retryCount;
     }

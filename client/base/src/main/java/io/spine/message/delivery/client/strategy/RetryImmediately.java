@@ -34,6 +34,7 @@ public final class RetryImmediately extends AbstractExecutionStrategy {
     }
 
     private RetryImmediately(int count) {
+        super();
         retryCount = count;
     }
 
