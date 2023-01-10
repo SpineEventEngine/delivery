@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client.failures;
+package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 
@@ -17,11 +17,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Encapsulates a list of other strategies and will apply each encapsulated strategy
  * to the operation if previous strategy failed.
  */
-public final class StrategiesChain implements ErrorHandlingStrategy {
+public final class StrategiesChain implements RequestExecutionStrategy {
 
-    private final ImmutableList<ErrorHandlingStrategy> strategies;
+    private final ImmutableList<RequestExecutionStrategy> strategies;
 
-    private StrategiesChain(List<ErrorHandlingStrategy> strategies) {
+    private StrategiesChain(List<RequestExecutionStrategy> strategies) {
         this.strategies = ImmutableList.copyOf(strategies);
     }
 
@@ -32,7 +32,7 @@ public final class StrategiesChain implements ErrorHandlingStrategy {
      *         the first strategy to be added to the chain.
      * @return {@code Builder} to continue build the {@code StrategiesChain}.
      */
-    public static Builder with(ErrorHandlingStrategy strategy) {
+    public static Builder with(RequestExecutionStrategy strategy) {
         checkNotNull(strategy);
         return new Builder(strategy);
     }
@@ -42,22 +42,22 @@ public final class StrategiesChain implements ErrorHandlingStrategy {
      * strategy could not handle the occurred exception (the {@code StrategyFailedException} was
      * thrown by the strategy).
      *
-     * @throws StrategyFailedException
+     * @throws ExecutionFailedException
      *         if none of the strategies could handle the occurred exception.
      */
     @Override
-    public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
+    public void runWithStrategy(VoidOperation operation) throws ExecutionFailedException {
         checkNotNull(operation);
         List<Exception> occurredExceptions = new ArrayList<>();
-        for (ErrorHandlingStrategy strategy : strategies) {
+        for (RequestExecutionStrategy strategy : strategies) {
             try {
                 strategy.runWithStrategy(operation);
                 return;
-            } catch (StrategyFailedException e) {
-                occurredExceptions.addAll(e.occurredExceptions());
+            } catch (ExecutionFailedException e) {
+                occurredExceptions.addAll(e.causes());
             }
         }
-        throw new StrategyFailedException(ImmutableList.copyOf(occurredExceptions));
+        throw new ExecutionFailedException(ImmutableList.copyOf(occurredExceptions));
     }
 
     /**
@@ -65,21 +65,21 @@ public final class StrategiesChain implements ErrorHandlingStrategy {
      * strategy could not handle the occurred exception (the {@code StrategyFailedException} was
      * thrown by the strategy).
      *
-     * @throws StrategyFailedException
+     * @throws ExecutionFailedException
      *         if none of the strategies could handle the occurred exception.
      */
     @Override
-    public <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException {
+    public <R> R runWithStrategy(OperationWithResult<R> operation) throws ExecutionFailedException {
         checkNotNull(operation);
         List<Exception> occurredExceptions = new ArrayList<>();
-        for (ErrorHandlingStrategy strategy : strategies) {
+        for (RequestExecutionStrategy strategy : strategies) {
             try {
                 return strategy.runWithStrategy(operation);
-            } catch (StrategyFailedException e) {
-                occurredExceptions.addAll(e.occurredExceptions());
+            } catch (ExecutionFailedException e) {
+                occurredExceptions.addAll(e.causes());
             }
         }
-        throw new StrategyFailedException(ImmutableList.copyOf(occurredExceptions));
+        throw new ExecutionFailedException(ImmutableList.copyOf(occurredExceptions));
     }
 
     /**
@@ -87,9 +87,9 @@ public final class StrategiesChain implements ErrorHandlingStrategy {
      */
     public static class Builder {
 
-        private final List<ErrorHandlingStrategy> strategies = new ArrayList<>();
+        private final List<RequestExecutionStrategy> strategies = new ArrayList<>();
 
-        private Builder(ErrorHandlingStrategy strategy) {
+        private Builder(RequestExecutionStrategy strategy) {
             strategies.add(strategy);
         }
 
@@ -97,7 +97,7 @@ public final class StrategiesChain implements ErrorHandlingStrategy {
          * Adds the given {@code strategy} to the sequence of strategies to be executed.
          */
         @SuppressWarnings("QuestionableName") // The API looks good with this name.
-        public Builder then(ErrorHandlingStrategy strategy) {
+        public Builder then(RequestExecutionStrategy strategy) {
             checkNotNull(strategy);
             strategies.add(strategy);
             return this;

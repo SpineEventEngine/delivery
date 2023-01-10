@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client.failures;
+package io.spine.message.delivery.client;
 
 /**
  * An operation that doesn't return value.

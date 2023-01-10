@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client.failures;
+package io.spine.message.delivery.client;
 
 import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,23 +12,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.message.delivery.client.failures.RunCountingOperationWithResult.newRunCountingOperationWithResult;
-import static io.spine.message.delivery.client.failures.RunCountingVoidOperation.newRunCountingVoidOperation;
-import static io.spine.message.delivery.client.failures.RunCountingVoidOperation.throwUntil;
+import static io.spine.message.delivery.client.RunCountingOperationWithResult.*;
+import static io.spine.message.delivery.client.RunCountingVoidOperation.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("RetryImmediately error handling strategy should")
-final class RetryImmediatelyTest {
+@DisplayName("Propagate error handling strategy should")
+final class PropagateTest {
 
-    private ErrorHandlingStrategy strategy;
+    private RequestExecutionStrategy strategy;
 
     @BeforeEach
     void setup() {
-        strategy = RetryImmediately.times(3);
+        strategy = new Propagate();
     }
 
     @Test
-    @DisplayName("do not allow `null`s")
+    @DisplayName("do not allow nulls")
     void beNpeSafe() {
         NullPointerTester tester = new NullPointerTester();
         tester.testAllPublicInstanceMethods(strategy);
@@ -55,21 +55,19 @@ final class RetryImmediatelyTest {
     }
 
     @Test
-    @DisplayName("retry `VoidOperation` on failure.")
-    void retryVoidOperationOnFailure() {
-        RunCountingVoidOperation operation = throwUntil(2);
-        strategy.runWithStrategy(operation);
-
-        assertThat(operation.runCount()).isEqualTo(2);
+    @DisplayName("throw `StrategyFailedException` if `VoidOperation` failed.")
+    void throwOnVoidOperationFailure() {
+        assertThrows(ExecutionFailedException.class,
+                     () -> strategy.runWithStrategy(new ThrowingOperation())
+        );
     }
 
     @Test
-    @DisplayName("retry `OperationWithResult` on failure.")
-    void retryOperationWithResultOnFailure() {
-        RunCountingOperationWithResult operation = RunCountingOperationWithResult.throwUntil(2);
-        strategy.runWithStrategy(operation);
-
-        assertThat(operation.runCount()).isEqualTo(2);
+    @DisplayName("throw `StrategyFailedException` if `OperationWithResult` failed.")
+    void throwOnOperationWithResultFailure() {
+        assertThrows(ExecutionFailedException.class, () -> strategy.runWithStrategy(() -> {
+            throw new RuntimeException("For testing");
+        }));
     }
 
     @Test

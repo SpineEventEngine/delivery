@@ -4,14 +4,18 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client.failures;
+package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.message.delivery.client.ExecutionFailedException;
+import io.spine.message.delivery.client.OperationWithResult;
+import io.spine.message.delivery.client.RequestExecutionStrategy;
+import io.spine.message.delivery.client.VoidOperation;
 
 /**
  * A strategy for testing that counts amount of operstions executed.
  */
-public final class ExecutionCountingStrategy implements ErrorHandlingStrategy {
+public final class ExecutionCountingStrategy implements RequestExecutionStrategy {
 
     private int voidOperationExecutions = 0;
 
@@ -22,15 +26,15 @@ public final class ExecutionCountingStrategy implements ErrorHandlingStrategy {
      *
      * Even if the operation throws an exception it will be counted as execution.
      *
-     * @throws StrategyFailedException if the operation throws an exception.
+     * @throws ExecutionFailedException if the operation throws an exception.
      */
     @Override
-    public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
+    public void runWithStrategy(VoidOperation operation) throws ExecutionFailedException {
         voidOperationExecutions++;
         try {
             operation.run();
         } catch (RuntimeException e) {
-            throw new StrategyFailedException(ImmutableList.of(e));
+            throw new ExecutionFailedException(ImmutableList.of(e));
         }
     }
 
@@ -40,15 +44,15 @@ public final class ExecutionCountingStrategy implements ErrorHandlingStrategy {
      *
      * Even if the operation throws an exception it will be counted as execution.
      *
-     * @throws StrategyFailedException if the operation throws an exception.
+     * @throws ExecutionFailedException if the operation throws an exception.
      */
     @Override
-    public <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException {
+    public <R> R runWithStrategy(OperationWithResult<R> operation) throws ExecutionFailedException {
         operationsWithResultExecutions++;
         try {
             return operation.run();
         } catch (RuntimeException e) {
-            throw new StrategyFailedException(ImmutableList.of(e));
+            throw new ExecutionFailedException(ImmutableList.of(e));
         }
     }
 

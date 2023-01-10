@@ -10,8 +10,8 @@ import io.grpc.ManagedChannel;
 import io.spine.message.delivery.client.InboxClient;
 import io.spine.message.delivery.client.SessionRegistryClient;
 import io.spine.message.delivery.client.SimpleDeliveryClient;
-import io.spine.message.delivery.client.failures.ErrorHandlingStrategy;
-import io.spine.message.delivery.client.failures.Propagate;
+import io.spine.message.delivery.client.RequestExecutionStrategy;
+import io.spine.message.delivery.client.Propagate;
 import io.spine.server.delivery.Delivery;
 
 import java.util.function.Supplier;
@@ -24,7 +24,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<DeliveryBootstrapper> {
 
-    private ErrorHandlingStrategy strategy = new Propagate();
+    private RequestExecutionStrategy strategy = new Propagate();
 
     /**
      * Prevents direct instantiation.
@@ -44,7 +44,7 @@ public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<Del
      * Configures delivery to be using the given {@code strategy} to handle possible failures
      * during interaction with server.
      */
-    public DeliveryBootstrapper withErrorStrategy(ErrorHandlingStrategy strategy) {
+    public DeliveryBootstrapper withErrorStrategy(RequestExecutionStrategy strategy) {
         this.strategy = checkNotNull(strategy);
         return self();
     }

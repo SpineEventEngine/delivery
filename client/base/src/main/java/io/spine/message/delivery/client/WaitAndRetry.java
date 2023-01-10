@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client.failures;
+package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 
@@ -20,7 +20,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * An error handling strategy that will be waiting a certain amount of time before retrying a failed
  * operation.
  */
-public final class WaitAndRetry implements ErrorHandlingStrategy {
+public final class WaitAndRetry implements RequestExecutionStrategy {
 
     private final int waitSeconds;
     private final int retryCount;
@@ -44,11 +44,11 @@ public final class WaitAndRetry implements ErrorHandlingStrategy {
     /**
      * Executes the given operation and in case of failure waits some time before another attempt.
      *
-     * @throws StrategyFailedException
+     * @throws ExecutionFailedException
      *         if the retry attempts exceeded.
      */
     @Override
-    public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
+    public void runWithStrategy(VoidOperation operation) throws ExecutionFailedException {
         checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
@@ -64,17 +64,17 @@ public final class WaitAndRetry implements ErrorHandlingStrategy {
                 }
             }
         }
-        throw new StrategyFailedException(ImmutableList.copyOf(caughtExceptions));
+        throw new ExecutionFailedException(ImmutableList.copyOf(caughtExceptions));
     }
 
     /**
      * Executes the given operation and in case of failure waits some time before another attempt.
      *
-     * @throws StrategyFailedException
+     * @throws ExecutionFailedException
      *         if the retry attempts exceeded.
      */
     @Override
-    public <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException {
+    public <R> R runWithStrategy(OperationWithResult<R> operation) throws ExecutionFailedException {
         checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
@@ -89,7 +89,7 @@ public final class WaitAndRetry implements ErrorHandlingStrategy {
                 }
             }
         }
-        throw new StrategyFailedException(ImmutableList.copyOf(caughtExceptions));
+        throw new ExecutionFailedException(ImmutableList.copyOf(caughtExceptions));
     }
 
     /**

@@ -23,9 +23,6 @@ import io.spine.client.QueryRequest;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.InboxMessageHolder.Column;
-import io.spine.message.delivery.client.failures.ErrorHandlingStrategy;
-import io.spine.message.delivery.client.failures.Propagate;
-import io.spine.message.delivery.client.failures.StrategyFailedException;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.command.ReleaseShard;
@@ -71,10 +68,10 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
 
     private final Client client;
     private final ShardSessionRegistryServiceBlockingStub sessionRegistry;
-    private final ErrorHandlingStrategy errorHandlingStrategy;
+    private final RequestExecutionStrategy requestExecutionStrategy;
 
-    private DeliveryClient(ManagedChannel channel, ErrorHandlingStrategy strategy) {
-        errorHandlingStrategy = strategy;
+    private DeliveryClient(ManagedChannel channel, RequestExecutionStrategy strategy) {
+        requestExecutionStrategy = strategy;
         client = Client
                 .usingChannel(channel)
                 .withGuestId("DeliveryClient")
@@ -91,7 +88,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         return create(host, port, new Propagate());
     }
 
-    static DeliveryClient create(String host, int port, ErrorHandlingStrategy strategy) {
+    static DeliveryClient create(String host, int port, RequestExecutionStrategy strategy) {
         checkNotEmptyOrBlank(host);
         checkArgument(port > 0, "A positive value expected. Encountered: %s.", port);
         checkNotNull(strategy);
@@ -110,7 +107,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         return create(channel, new Propagate());
     }
 
-    public static DeliveryClient create(ManagedChannel channel, ErrorHandlingStrategy strategy) {
+    public static DeliveryClient create(ManagedChannel channel, RequestExecutionStrategy strategy) {
         checkNotNull(channel);
         checkNotNull(strategy);
         logger.atConfig()
@@ -171,11 +168,11 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         );
         try {
 
-            ShardPickedUp shardPickedUp = errorHandlingStrategy
+            ShardPickedUp shardPickedUp = requestExecutionStrategy
                     .runWithStrategy(() -> sessionRegistry.pickShard(pickUpShard));
             return Optional.of(shardPickedUp);
-        } catch (StrategyFailedException e) {
-            ImmutableList<Exception> occurredExceptions = e.occurredExceptions();
+        } catch (ExecutionFailedException e) {
+            ImmutableList<Exception> occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
             _trace().log("Unable to pick up shard `%s`: %s.", shard, getStackTraceAsString(last));
         }
@@ -204,7 +201,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                         "and waiting for a response event `ExpiredSessionsReleased`."
         );
 
-        ExpiredSessionsReleased sessionsReleased = errorHandlingStrategy
+        ExpiredSessionsReleased sessionsReleased = requestExecutionStrategy
                 .runWithStrategy(() -> sessionRegistry.releaseSessions(releaseExpiredSessions));
         return sessionsReleased;
     }
@@ -216,7 +213,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 client.asGuest()
                       .select(InboxMessageHolder.class)
                       .byId(messageId);
-        List<InboxMessageHolder> result = errorHandlingStrategy.runWithStrategy(request::run);
+        List<InboxMessageHolder> result = requestExecutionStrategy.runWithStrategy(request::run);
         return result.stream()
                      .findFirst()
                      .map(InboxMessageHolder::getMessage);
@@ -242,7 +239,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                       .limit(pageSize)
                       .orderBy(Column.receivedAt(), OrderBy.Direction.ASCENDING);
         ImmutableList<InboxMessageHolder> result =
-                errorHandlingStrategy.runWithStrategy(request::run);
+                requestExecutionStrategy.runWithStrategy(request::run);
         return result.stream()
                      .map(InboxMessageHolder::getMessage)
                      .sorted(InboxMessageComparator.chronologically)
@@ -260,7 +257,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                       .limit(1);
 
         ImmutableList<InboxMessageHolder> result =
-                errorHandlingStrategy.runWithStrategy(request::run);
+                requestExecutionStrategy.runWithStrategy(request::run);
         return result.stream()
                      .findFirst()
                      .map(InboxMessageHolder::getMessage);
@@ -272,7 +269,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 client.asGuest()
                       .command(command)
                       .onServerError((msg, error) -> logServerError(command, error));
-        errorHandlingStrategy.runWithStrategy(request::postAndForget);
+        requestExecutionStrategy.runWithStrategy(request::postAndForget);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in non-related module. */)

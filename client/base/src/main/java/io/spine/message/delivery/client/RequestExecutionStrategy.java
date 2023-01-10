@@ -4,28 +4,28 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client.failures;
+package io.spine.message.delivery.client;
 
 /**
  * Strategy that executes operations and decides how to handle errors if any occurred.
  */
-public interface ErrorHandlingStrategy {
+public interface RequestExecutionStrategy {
 
     /**
      * Executes the given {@code VoidOperation} and handles occurred exceptions in the way
      * implemented in a particular strategy.
      *
-     * @throws StrategyFailedException
+     * @throws ExecutionFailedException
      *         if strategy is unable to handle the occurred exception.
      */
-    void runWithStrategy(VoidOperation operation) throws StrategyFailedException;
+    void runWithStrategy(VoidOperation operation) throws ExecutionFailedException;
 
     /**
      * Executes the given {@code OperationWithResult} and handled occurred exceptions in the way
      * implemented in a particular strategy.
      *
-     * @throws StrategyFailedException
+     * @throws ExecutionFailedException
      *         if strategy is unable to handle the occurred exception.
      */
-    <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException;
+    <R> R runWithStrategy(OperationWithResult<R> operation) throws ExecutionFailedException;
 }

@@ -13,9 +13,6 @@ import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.logging.Logging;
-import io.spine.message.delivery.client.failures.ErrorHandlingStrategy;
-import io.spine.message.delivery.client.failures.Propagate;
-import io.spine.message.delivery.client.failures.StrategyFailedException;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.command.ReleaseShard;
@@ -67,12 +64,12 @@ public final class SimpleDeliveryClient
     private final ShardServiceBlockingStub shardService;
     private final InboxServiceBlockingStub inboxService;
 
-    private final ErrorHandlingStrategy errorHandlingStrategy;
+    private final RequestExecutionStrategy requestExecutionStrategy;
 
-    private SimpleDeliveryClient(ManagedChannel channel, ErrorHandlingStrategy strategy) {
+    private SimpleDeliveryClient(ManagedChannel channel, RequestExecutionStrategy strategy) {
         shardService = ShardServiceGrpc.newBlockingStub(channel);
         inboxService = InboxServiceGrpc.newBlockingStub(channel);
-        errorHandlingStrategy = strategy;
+        requestExecutionStrategy = strategy;
     }
 
     /**
@@ -89,7 +86,7 @@ public final class SimpleDeliveryClient
      * and {@code port}, and with the given {@code ErrorHandlingStrategy}.
      */
     @SuppressWarnings("CheckReturnValue" /* We're fine to just `check` args. */)
-    static SimpleDeliveryClient create(String host, int port, ErrorHandlingStrategy strategy) {
+    static SimpleDeliveryClient create(String host, int port, RequestExecutionStrategy strategy) {
         checkNotEmptyOrBlank(host);
         checkPositive(port);
         ManagedChannel channel = ManagedChannelBuilder
@@ -112,7 +109,7 @@ public final class SimpleDeliveryClient
      * using specified {@code channel}, and with the given {@code ErrorHandlingStrategy}.
      */
     public static SimpleDeliveryClient create(ManagedChannel channel,
-                                              ErrorHandlingStrategy strategy) {
+                                              RequestExecutionStrategy strategy) {
         checkNotNull(channel);
         logger.atConfig()
               .log("Creating a `SimpleDeliveryClient` for the channel `%s`.", channel);
@@ -125,7 +122,7 @@ public final class SimpleDeliveryClient
         WriteMessage writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        errorHandlingStrategy.runWithStrategy(() -> inboxService.writeOne(writeMessage));
+        requestExecutionStrategy.runWithStrategy(() -> inboxService.writeOne(writeMessage));
     }
 
     @Override
@@ -136,7 +133,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        errorHandlingStrategy.runWithStrategy(() -> inboxService.writeMany(writeMessages));
+        requestExecutionStrategy.runWithStrategy(() -> inboxService.writeMany(writeMessages));
     }
 
     @Override
@@ -145,7 +142,7 @@ public final class SimpleDeliveryClient
         RemoveMessage removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        errorHandlingStrategy.runWithStrategy(() -> inboxService.removeOne(removeMessage));
+        requestExecutionStrategy.runWithStrategy(() -> inboxService.removeOne(removeMessage));
     }
 
     @Override
@@ -156,7 +153,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        errorHandlingStrategy.runWithStrategy(() -> inboxService.removeMany(removeMessages));
+        requestExecutionStrategy.runWithStrategy(() -> inboxService.removeMany(removeMessages));
     }
 
     @Override
@@ -168,11 +165,11 @@ public final class SimpleDeliveryClient
                 .setWorker(worker)
                 .vBuild();
         try {
-            ShardPickedUp shardPickedUp = errorHandlingStrategy
+            ShardPickedUp shardPickedUp = requestExecutionStrategy
                     .runWithStrategy(() -> shardService.pickShard(pickUpShard));
             return Optional.of(shardPickedUp);
-        } catch (StrategyFailedException e) {
-            ImmutableList<Exception> occurredExceptions = e.occurredExceptions();
+        } catch (ExecutionFailedException e) {
+            ImmutableList<Exception> occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
             _trace().log("[SimpleClient] Unable to pick up shard `%s`: %s.",
                          shard, getStackTraceAsString(last));
@@ -188,7 +185,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        errorHandlingStrategy.runWithStrategy(() -> shardService.releaseSession(releaseShard));
+        requestExecutionStrategy.runWithStrategy(() -> shardService.releaseSession(releaseShard));
     }
 
     @Override
@@ -202,7 +199,7 @@ public final class SimpleDeliveryClient
                         " and waiting for a response event `ExpiredSessionsReleased`."
         );
         ExpiredSessionsReleased sessionsReleased =
-                errorHandlingStrategy.runWithStrategy(() -> shardService.releaseSessions(command));
+                requestExecutionStrategy.runWithStrategy(() -> shardService.releaseSessions(command));
         return sessionsReleased;
     }
 
@@ -211,7 +208,7 @@ public final class SimpleDeliveryClient
         checkNotDefaultArg(messageId);
 
         OptionalInboxMessage result =
-                errorHandlingStrategy.runWithStrategy(() -> inboxService.findOne(messageId));
+                requestExecutionStrategy.runWithStrategy(() -> inboxService.findOne(messageId));
         return asOptional(result);
     }
 
@@ -244,7 +241,7 @@ public final class SimpleDeliveryClient
         ReadMessagesSinceTime query = queryBuilder.vBuild();
 
         PageOfMessages page =
-                errorHandlingStrategy.runWithStrategy(() -> inboxService.findManyInShard(query));
+                requestExecutionStrategy.runWithStrategy(() -> inboxService.findManyInShard(query));
         ImmutableList<InboxMessage> result =
                 page.getMessageList()
                     .stream()
@@ -255,7 +252,7 @@ public final class SimpleDeliveryClient
 
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard) {
-        OptionalInboxMessage message = errorHandlingStrategy
+        OptionalInboxMessage message = requestExecutionStrategy
                 .runWithStrategy(() -> inboxService.newestMessageToDeliver(shard));
         return asOptional(message);
     }

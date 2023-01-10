@@ -4,19 +4,17 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client.failures;
+package io.spine.message.delivery.client;
 
 import com.google.common.testing.NullPointerTester;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.message.delivery.client.failures.RunCountingOperationWithResult.newRunCountingOperationWithResult;
-import static io.spine.message.delivery.client.failures.RunCountingVoidOperation.newRunCountingVoidOperation;
-import static io.spine.message.delivery.client.failures.RunCountingVoidOperation.throwUntil;
+import static io.spine.message.delivery.client.RunCountingOperationWithResult.newRunCountingOperationWithResult;
+import static io.spine.message.delivery.client.RunCountingVoidOperation.newRunCountingVoidOperation;
+import static io.spine.message.delivery.client.RunCountingVoidOperation.throwUntil;
 import static java.lang.System.*;
 import static java.time.Duration.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -24,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("WaitAndRetry error handling strategy should")
 final class WaitAndRetryTest {
 
-    private ErrorHandlingStrategy strategy;
+    private RequestExecutionStrategy strategy;
 
     @BeforeEach
     void setup() {

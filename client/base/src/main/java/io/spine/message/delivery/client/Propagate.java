@@ -4,31 +4,31 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client.failures;
+package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Error handling strategy that doesn't handle errors but propagates them if the operation failed.
+ * Strategy that doesn't handle errors but propagates them if the operation failed.
  */
-public final class Propagate implements ErrorHandlingStrategy {
+public final class Propagate implements RequestExecutionStrategy {
 
     /**
      * Executes the given {@code operation} and throws {@code StrategyFailedException} if
      * any exception occurs.
      *
-     * @throws StrategyFailedException
+     * @throws ExecutionFailedException
      *         if any exceptions occurs.
      */
     @Override
-    public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
+    public void runWithStrategy(VoidOperation operation) throws ExecutionFailedException {
         checkNotNull(operation);
         try {
             operation.run();
         } catch (RuntimeException e) {
-            throw new StrategyFailedException(ImmutableList.of(e));
+            throw new ExecutionFailedException(ImmutableList.of(e));
         }
     }
 
@@ -36,16 +36,16 @@ public final class Propagate implements ErrorHandlingStrategy {
      * Executes the given {@code operation} and throws {@code StrategyFailedException} if
      * any exception occurs.
      *
-     * @throws StrategyFailedException
+     * @throws ExecutionFailedException
      *         if any exceptions occurs.
      */
     @Override
-    public <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException {
+    public <R> R runWithStrategy(OperationWithResult<R> operation) throws ExecutionFailedException {
         checkNotNull(operation);
         try {
             return operation.run();
         } catch (RuntimeException e) {
-            throw new StrategyFailedException(ImmutableList.of(e));
+            throw new ExecutionFailedException(ImmutableList.of(e));
         }
     }
 }

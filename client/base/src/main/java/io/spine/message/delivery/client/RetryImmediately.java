@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client.failures;
+package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 
@@ -15,9 +15,9 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An error handling strategy that will be immediately retrying operations in case of failures.
+ * Strategy that will be immediately retrying operations in case of failures.
  */
-public final class RetryImmediately implements ErrorHandlingStrategy {
+public final class RetryImmediately implements RequestExecutionStrategy {
 
     private final int retryCount;
 
@@ -36,11 +36,11 @@ public final class RetryImmediately implements ErrorHandlingStrategy {
     /**
      * Executes the given operation and in case of failure immediately performs another attempt.
      *
-     * @throws StrategyFailedException
+     * @throws ExecutionFailedException
      *         if the retry attempts exceeded.
      */
     @Override
-    public void runWithStrategy(VoidOperation operation) throws StrategyFailedException {
+    public void runWithStrategy(VoidOperation operation) throws ExecutionFailedException {
         checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
@@ -53,17 +53,17 @@ public final class RetryImmediately implements ErrorHandlingStrategy {
                 attempts++;
             }
         }
-        throw new StrategyFailedException(ImmutableList.copyOf(caughtExceptions));
+        throw new ExecutionFailedException(ImmutableList.copyOf(caughtExceptions));
     }
 
     /**
      * Executes the given operation and in case of failure immediately performs another attempt.
      *
-     * @throws StrategyFailedException
+     * @throws ExecutionFailedException
      *         if the retry attempts exceeded.
      */
     @Override
-    public <R> R runWithStrategy(OperationWithResult<R> operation) throws StrategyFailedException {
+    public <R> R runWithStrategy(OperationWithResult<R> operation) throws ExecutionFailedException {
         checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
@@ -75,6 +75,6 @@ public final class RetryImmediately implements ErrorHandlingStrategy {
                 attempts++;
             }
         }
-        throw new StrategyFailedException(ImmutableList.copyOf(caughtExceptions));
+        throw new ExecutionFailedException(ImmutableList.copyOf(caughtExceptions));
     }
 }

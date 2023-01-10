@@ -4,7 +4,9 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client.failures;
+package io.spine.message.delivery.client;
+
+import io.spine.message.delivery.client.VoidOperation;
 
 /**
  * An operation that always throws {@code RuntimeException}.
