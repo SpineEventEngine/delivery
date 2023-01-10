@@ -28,7 +28,7 @@ final class WaitAndRetryTest {
 
     @BeforeEach
     void setup() {
-        strategy = WaitAndRetry.waitForSeconds(2)
+        strategy = WaitAndRetry.forSeconds(2)
                                .times(2);
     }
 

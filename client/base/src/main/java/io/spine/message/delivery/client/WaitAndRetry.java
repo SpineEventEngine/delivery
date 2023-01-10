@@ -31,7 +31,7 @@ public final class WaitAndRetry implements RequestExecutionStrategy {
      * @param seconds
      *         amount of seconds to wait before trying to execute failed operation again.
      */
-    public static Builder waitForSeconds(int seconds) {
+    public static Builder forSeconds(int seconds) {
         checkArgument(seconds > 0, "Amount seconds should be positive. Encountered: %s.", seconds);
         return new Builder(seconds);
     }
