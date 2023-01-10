@@ -4,14 +4,14 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client;
+package io.spine.message.delivery.client.given;
 
 import io.spine.message.delivery.client.VoidOperation;
 
 /**
  * An operation that always throws {@code RuntimeException}.
  */
-final class ThrowingOperation implements VoidOperation {
+public final class ThrowingOperation implements VoidOperation {
 
     /**
      * Always throws {@code RuntimeException}.

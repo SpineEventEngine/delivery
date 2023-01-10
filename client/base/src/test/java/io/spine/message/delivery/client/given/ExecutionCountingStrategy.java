@@ -4,9 +4,13 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client;
+package io.spine.message.delivery.client.given;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.message.delivery.client.ExecutionFailedException;
+import io.spine.message.delivery.client.OperationWithResult;
+import io.spine.message.delivery.client.RequestExecutionStrategy;
+import io.spine.message.delivery.client.VoidOperation;
 
 /**
  * A strategy for testing that counts amount of operstions executed.

@@ -7,13 +7,16 @@
 package io.spine.message.delivery.client;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.message.delivery.client.given.RunCountingOperationWithResult;
+import io.spine.message.delivery.client.given.RunCountingVoidOperation;
+import io.spine.message.delivery.client.given.ThrowingOperation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.message.delivery.client.RunCountingOperationWithResult.*;
-import static io.spine.message.delivery.client.RunCountingVoidOperation.*;
+import static io.spine.message.delivery.client.given.RunCountingOperationWithResult.*;
+import static io.spine.message.delivery.client.given.RunCountingVoidOperation.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

@@ -4,7 +4,9 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client;
+package io.spine.message.delivery.client.given;
+
+import io.spine.message.delivery.client.OperationWithResult;
 
 import static java.lang.String.format;
 
@@ -13,46 +15,48 @@ import static java.lang.String.format;
  *
  * <p> Can be instructed to throw exceptions.
  */
-final class RunCountingVoidOperation implements VoidOperation {
+public final class RunCountingOperationWithResult implements OperationWithResult<String> {
 
     private int runCount = 0;
+
     private final boolean shouldThrow;
     private final int throwUntil;
 
     /**
-     * Creates a new {@code RunCountingVoidOperation} that doesn't throw any exceptions.
+     * Creates a new {@code RunCountingOperationWithResult} that doesn't throw any exceptions.
      */
-    static RunCountingVoidOperation newRunCountingVoidOperation() {
-        return new RunCountingVoidOperation();
+    public static RunCountingOperationWithResult newRunCountingOperationWithResult() {
+        return new RunCountingOperationWithResult();
     }
 
     /**
-     * Creates a new {@code RunCountingVoidOperation} that throws {@code RuntimeException}s
+     * Creates a new {@code RunCountingOperationWithResult} that throws {@code RuntimeException}s
      * until the {@linkplain #run()} method will be executed {@code throwTimes} times.
      */
-    static RunCountingVoidOperation throwUntil(int throwTimes) {
-        return new RunCountingVoidOperation(throwTimes);
+    public static RunCountingOperationWithResult throwUntil(int throwTimes) {
+        return new RunCountingOperationWithResult(throwTimes);
     }
 
-    private RunCountingVoidOperation(int throwUntil) {
+    private RunCountingOperationWithResult(int throwTimes) {
         this.shouldThrow = true;
-        this.throwUntil = throwUntil;
+        this.throwUntil = throwTimes;
     }
 
-    private RunCountingVoidOperation() {
+    private RunCountingOperationWithResult() {
         this.shouldThrow = false;
         this.throwUntil = 0;
     }
 
     /**
-     * Throws a {@code RuntimeException} if instructed to do so or does nothing.
+     * Throws a {@code RuntimeException} if instructed to do so or returns {@code Test} as a string.
      */
     @Override
-    public void run() {
+    public String run() {
         runCount++;
         if (shouldThrow && runCount < throwUntil) {
             throw new RuntimeException(format("Instructed to throw on %d execution.", runCount));
         }
+        return "Test";
     }
 
     /**
@@ -61,5 +65,4 @@ final class RunCountingVoidOperation implements VoidOperation {
     public int runCount() {
         return runCount;
     }
-
 }

@@ -7,13 +7,16 @@
 package io.spine.message.delivery.client;
 
 import com.google.common.testing.NullPointerTester;
+import io.spine.message.delivery.client.given.ExecutionCountingStrategy;
+import io.spine.message.delivery.client.given.RunCountingOperationWithResult;
+import io.spine.message.delivery.client.given.RunCountingVoidOperation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.message.delivery.client.RunCountingOperationWithResult.newRunCountingOperationWithResult;
-import static io.spine.message.delivery.client.RunCountingVoidOperation.newRunCountingVoidOperation;
+import static io.spine.message.delivery.client.given.RunCountingOperationWithResult.newRunCountingOperationWithResult;
+import static io.spine.message.delivery.client.given.RunCountingVoidOperation.newRunCountingVoidOperation;
 
 @DisplayName("StrategiesChain should")
 final class StrategyChainTest {
