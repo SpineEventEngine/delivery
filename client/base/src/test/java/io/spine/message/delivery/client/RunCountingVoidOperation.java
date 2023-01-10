@@ -28,10 +28,10 @@ final class RunCountingVoidOperation implements VoidOperation {
 
     /**
      * Creates a new {@code RunCountingVoidOperation} that throws {@code RuntimeException}s
-     * until the {@linkplain #run()} method will be executed {@code tryNumber} times.
+     * until the {@linkplain #run()} method will be executed {@code throwTimes} times.
      */
-    static RunCountingVoidOperation throwUntil(int tryNumber) {
-        return new RunCountingVoidOperation(tryNumber);
+    static RunCountingVoidOperation throwUntil(int throwTimes) {
+        return new RunCountingVoidOperation(throwTimes);
     }
 
     private RunCountingVoidOperation(int throwUntil) {

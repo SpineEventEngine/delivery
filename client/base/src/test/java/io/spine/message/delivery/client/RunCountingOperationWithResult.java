@@ -29,15 +29,15 @@ final class RunCountingOperationWithResult implements OperationWithResult<String
 
     /**
      * Creates a new {@code RunCountingOperationWithResult} that throws {@code RuntimeException}s
-     * until the {@linkplain #run()} method will be executed {@code tryNumber} times.
+     * until the {@linkplain #run()} method will be executed {@code throwTimes} times.
      */
-    static RunCountingOperationWithResult throwUntil(int tryNumber) {
-        return new RunCountingOperationWithResult(tryNumber);
+    static RunCountingOperationWithResult throwUntil(int throwTimes) {
+        return new RunCountingOperationWithResult(throwTimes);
     }
 
-    private RunCountingOperationWithResult(int tryNumber) {
+    private RunCountingOperationWithResult(int throwTimes) {
         this.shouldThrow = true;
-        this.throwUntil = tryNumber;
+        this.throwUntil = throwTimes;
     }
 
     private RunCountingOperationWithResult() {
