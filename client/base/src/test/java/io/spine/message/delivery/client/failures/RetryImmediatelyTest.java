@@ -17,7 +17,7 @@ import static io.spine.message.delivery.client.failures.RunCountingVoidOperation
 import static io.spine.message.delivery.client.failures.RunCountingVoidOperation.throwUntil;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@DisplayName("RetryImmediatelyTest error handling strategy should")
+@DisplayName("RetryImmediately error handling strategy should")
 final class RetryImmediatelyTest {
 
     private ErrorHandlingStrategy strategy;
@@ -28,7 +28,7 @@ final class RetryImmediatelyTest {
     }
 
     @Test
-    @DisplayName("do not allow nulls")
+    @DisplayName("do not allow `null`s")
     void beNpeSafe() {
         NullPointerTester tester = new NullPointerTester();
         tester.testAllPublicInstanceMethods(strategy);

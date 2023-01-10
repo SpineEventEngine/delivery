@@ -15,7 +15,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.message.delivery.client.failures.RunCountingOperationWithResult.newRunCountingOperationWithResult;
 import static io.spine.message.delivery.client.failures.RunCountingVoidOperation.newRunCountingVoidOperation;
 
-@DisplayName("StrategiesChainTest RetryImmediatelyTest")
+@DisplayName("StrategiesChain should")
 final class StrategiesChainTest {
 
     private ErrorHandlingStrategy strategy;
@@ -33,7 +33,7 @@ final class StrategiesChainTest {
     }
 
     @Test
-    @DisplayName("do not allow nulls")
+    @DisplayName("do not allow `null`s")
     void beNpeSafe() {
         NullPointerTester tester = new NullPointerTester();
         tester.testAllPublicInstanceMethods(strategy);

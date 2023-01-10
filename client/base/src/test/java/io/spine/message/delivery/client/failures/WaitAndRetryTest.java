@@ -33,7 +33,7 @@ final class WaitAndRetryTest {
     }
 
     @Test
-    @DisplayName("do not allow nulls")
+    @DisplayName("do not allow `null`s")
     void beNpeSafe() {
         NullPointerTester tester = new NullPointerTester();
         tester.testAllPublicInstanceMethods(strategy);
