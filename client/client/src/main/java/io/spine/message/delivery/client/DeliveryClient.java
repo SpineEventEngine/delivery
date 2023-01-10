@@ -177,7 +177,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         try {
 
             ShardPickedUp shardPickedUp = requestExecutionStrategy
-                    .runWithStrategy(() -> sessionRegistry.pickShard(pickUpShard));
+                    .runWith(() -> sessionRegistry.pickShard(pickUpShard));
             return Optional.of(shardPickedUp);
         } catch (ExecutionFailedException e) {
             ImmutableList<Exception> occurredExceptions = e.causes();
@@ -210,7 +210,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         );
 
         ExpiredSessionsReleased sessionsReleased = requestExecutionStrategy
-                .runWithStrategy(() -> sessionRegistry.releaseSessions(releaseExpiredSessions));
+                .runWith(() -> sessionRegistry.releaseSessions(releaseExpiredSessions));
         return sessionsReleased;
     }
 
@@ -221,7 +221,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 client.asGuest()
                       .select(InboxMessageHolder.class)
                       .byId(messageId);
-        List<InboxMessageHolder> result = requestExecutionStrategy.runWithStrategy(request::run);
+        List<InboxMessageHolder> result = requestExecutionStrategy.runWith(request::run);
         return result.stream()
                      .findFirst()
                      .map(InboxMessageHolder::getMessage);
@@ -247,7 +247,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                       .limit(pageSize)
                       .orderBy(Column.receivedAt(), OrderBy.Direction.ASCENDING);
         ImmutableList<InboxMessageHolder> result =
-                requestExecutionStrategy.runWithStrategy(request::run);
+                requestExecutionStrategy.runWith(request::run);
         return result.stream()
                      .map(InboxMessageHolder::getMessage)
                      .sorted(InboxMessageComparator.chronologically)
@@ -265,7 +265,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                       .limit(1);
 
         ImmutableList<InboxMessageHolder> result =
-                requestExecutionStrategy.runWithStrategy(request::run);
+                requestExecutionStrategy.runWith(request::run);
         return result.stream()
                      .findFirst()
                      .map(InboxMessageHolder::getMessage);
@@ -277,7 +277,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 client.asGuest()
                       .command(command)
                       .onServerError((msg, error) -> logServerError(command, error));
-        requestExecutionStrategy.runWithStrategy(request::postAndForget);
+        requestExecutionStrategy.runWith(request::postAndForget);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in non-related module. */)

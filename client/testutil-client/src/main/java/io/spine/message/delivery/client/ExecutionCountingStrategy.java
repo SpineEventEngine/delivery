@@ -26,7 +26,7 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
      * @throws ExecutionFailedException if the operation throws an exception.
      */
     @Override
-    public void runWithStrategy(VoidOperation operation) throws ExecutionFailedException {
+    public void runWith(VoidOperation operation) throws ExecutionFailedException {
         voidOperationExecutions++;
         try {
             operation.run();
@@ -44,7 +44,7 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
      * @throws ExecutionFailedException if the operation throws an exception.
      */
     @Override
-    public <R> R runWithStrategy(OperationWithResult<R> operation) throws ExecutionFailedException {
+    public <R> R runWith(OperationWithResult<R> operation) throws ExecutionFailedException {
         operationsWithResultExecutions++;
         try {
             return operation.run();

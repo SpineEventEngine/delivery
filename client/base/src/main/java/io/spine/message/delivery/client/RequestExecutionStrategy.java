@@ -18,7 +18,7 @@ public interface RequestExecutionStrategy {
      * @throws ExecutionFailedException
      *         if strategy is unable to handle the occurred exception.
      */
-    void runWithStrategy(VoidOperation operation) throws ExecutionFailedException;
+    void runWith(VoidOperation operation) throws ExecutionFailedException;
 
     /**
      * Executes the given {@code OperationWithResult} and handled occurred exceptions in the way
@@ -27,5 +27,5 @@ public interface RequestExecutionStrategy {
      * @throws ExecutionFailedException
      *         if strategy is unable to handle the occurred exception.
      */
-    <R> R runWithStrategy(OperationWithResult<R> operation) throws ExecutionFailedException;
+    <R> R runWith(OperationWithResult<R> operation) throws ExecutionFailedException;
 }

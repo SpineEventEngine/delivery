@@ -48,7 +48,7 @@ public final class WaitAndRetry implements RequestExecutionStrategy {
      *         if the retry attempts exceeded.
      */
     @Override
-    public void runWithStrategy(VoidOperation operation) throws ExecutionFailedException {
+    public void runWith(VoidOperation operation) throws ExecutionFailedException {
         checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
@@ -74,7 +74,7 @@ public final class WaitAndRetry implements RequestExecutionStrategy {
      *         if the retry attempts exceeded.
      */
     @Override
-    public <R> R runWithStrategy(OperationWithResult<R> operation) throws ExecutionFailedException {
+    public <R> R runWith(OperationWithResult<R> operation) throws ExecutionFailedException {
         checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);

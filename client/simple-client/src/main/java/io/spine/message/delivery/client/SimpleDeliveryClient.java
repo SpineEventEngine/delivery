@@ -76,7 +76,6 @@ public final class SimpleDeliveryClient
      * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
      * and {@code port} and uses the {@link Propagate} {@code RequestExecutionStrategy}.
      */
-    @SuppressWarnings("CheckReturnValue" /* We're fine to just `check` args. */)
     static SimpleDeliveryClient create(String host, int port) {
         return create(host, port, new Propagate());
     }
@@ -122,7 +121,7 @@ public final class SimpleDeliveryClient
         WriteMessage writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        requestExecutionStrategy.runWithStrategy(() -> inboxService.writeOne(writeMessage));
+        requestExecutionStrategy.runWith(() -> inboxService.writeOne(writeMessage));
     }
 
     @Override
@@ -133,7 +132,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        requestExecutionStrategy.runWithStrategy(() -> inboxService.writeMany(writeMessages));
+        requestExecutionStrategy.runWith(() -> inboxService.writeMany(writeMessages));
     }
 
     @Override
@@ -142,7 +141,7 @@ public final class SimpleDeliveryClient
         RemoveMessage removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
                 .vBuild();
-        requestExecutionStrategy.runWithStrategy(() -> inboxService.removeOne(removeMessage));
+        requestExecutionStrategy.runWith(() -> inboxService.removeOne(removeMessage));
     }
 
     @Override
@@ -153,7 +152,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .addAllMessage(messages)
                 .vBuild();
-        requestExecutionStrategy.runWithStrategy(() -> inboxService.removeMany(removeMessages));
+        requestExecutionStrategy.runWith(() -> inboxService.removeMany(removeMessages));
     }
 
     @Override
@@ -166,7 +165,7 @@ public final class SimpleDeliveryClient
                 .vBuild();
         try {
             ShardPickedUp shardPickedUp = requestExecutionStrategy
-                    .runWithStrategy(() -> shardService.pickShard(pickUpShard));
+                    .runWith(() -> shardService.pickShard(pickUpShard));
             return Optional.of(shardPickedUp);
         } catch (ExecutionFailedException e) {
             ImmutableList<Exception> occurredExceptions = e.causes();
@@ -185,7 +184,7 @@ public final class SimpleDeliveryClient
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        requestExecutionStrategy.runWithStrategy(() -> shardService.releaseSession(releaseShard));
+        requestExecutionStrategy.runWith(() -> shardService.releaseSession(releaseShard));
     }
 
     @Override
@@ -199,7 +198,7 @@ public final class SimpleDeliveryClient
                         " and waiting for a response event `ExpiredSessionsReleased`."
         );
         ExpiredSessionsReleased sessionsReleased =
-                requestExecutionStrategy.runWithStrategy(() -> shardService.releaseSessions(command));
+                requestExecutionStrategy.runWith(() -> shardService.releaseSessions(command));
         return sessionsReleased;
     }
 
@@ -208,7 +207,7 @@ public final class SimpleDeliveryClient
         checkNotDefaultArg(messageId);
 
         OptionalInboxMessage result =
-                requestExecutionStrategy.runWithStrategy(() -> inboxService.findOne(messageId));
+                requestExecutionStrategy.runWith(() -> inboxService.findOne(messageId));
         return asOptional(result);
     }
 
@@ -241,7 +240,7 @@ public final class SimpleDeliveryClient
         ReadMessagesSinceTime query = queryBuilder.vBuild();
 
         PageOfMessages page =
-                requestExecutionStrategy.runWithStrategy(() -> inboxService.findManyInShard(query));
+                requestExecutionStrategy.runWith(() -> inboxService.findManyInShard(query));
         ImmutableList<InboxMessage> result =
                 page.getMessageList()
                     .stream()
@@ -253,7 +252,7 @@ public final class SimpleDeliveryClient
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard) {
         OptionalInboxMessage message = requestExecutionStrategy
-                .runWithStrategy(() -> inboxService.newestMessageToDeliver(shard));
+                .runWith(() -> inboxService.newestMessageToDeliver(shard));
         return asOptional(message);
     }
 }

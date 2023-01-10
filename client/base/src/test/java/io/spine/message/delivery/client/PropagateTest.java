@@ -43,7 +43,7 @@ final class PropagateTest {
     @DisplayName("execute `VoidOperation`")
     void executeVoidOperation() {
         RunCountingVoidOperation operation = newRunCountingVoidOperation();
-        strategy.runWithStrategy(operation);
+        strategy.runWith(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
     }
@@ -52,7 +52,7 @@ final class PropagateTest {
     @DisplayName("execute `OperationWithResult`")
     void executeOperationWithResult() {
         RunCountingOperationWithResult operation = newRunCountingOperationWithResult();
-        strategy.runWithStrategy(operation);
+        strategy.runWith(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
     }
@@ -61,14 +61,14 @@ final class PropagateTest {
     @DisplayName("throw `StrategyFailedException` if `VoidOperation` failed.")
     void throwOnVoidOperationFailure() {
         assertThrows(ExecutionFailedException.class,
-                     () -> strategy.runWithStrategy(new ThrowingOperation())
+                     () -> strategy.runWith(new ThrowingOperation())
         );
     }
 
     @Test
     @DisplayName("throw `StrategyFailedException` if `OperationWithResult` failed.")
     void throwOnOperationWithResultFailure() {
-        assertThrows(ExecutionFailedException.class, () -> strategy.runWithStrategy(() -> {
+        assertThrows(ExecutionFailedException.class, () -> strategy.runWith(() -> {
             throw new RuntimeException("For testing");
         }));
     }
@@ -76,13 +76,13 @@ final class PropagateTest {
     @Test
     @DisplayName("do not throw exceptions if `VoidOperation` succeeded.")
     void doNotThrowOnVoidOperationSuccess() {
-        assertDoesNotThrow(() -> strategy.runWithStrategy(() -> {
+        assertDoesNotThrow(() -> strategy.runWith(() -> {
         }));
     }
 
     @Test
     @DisplayName("do not throw exceptions if `OperationWithResult` succeeded.")
     void doNotThrowOnOperationWithResultSuccess() {
-        assertDoesNotThrow(() -> strategy.runWithStrategy(() -> "Test"));
+        assertDoesNotThrow(() -> strategy.runWith(() -> "Test"));
     }
 }

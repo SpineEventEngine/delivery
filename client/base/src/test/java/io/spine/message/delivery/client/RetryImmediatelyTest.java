@@ -42,7 +42,7 @@ final class RetryImmediatelyTest {
     @DisplayName("execute `VoidOperation`")
     void executeVoidOperation() {
         RunCountingVoidOperation operation = newRunCountingVoidOperation();
-        strategy.runWithStrategy(operation);
+        strategy.runWith(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
     }
@@ -51,7 +51,7 @@ final class RetryImmediatelyTest {
     @DisplayName("execute `OperationWithResult`")
     void executeOperationWithResult() {
         RunCountingOperationWithResult operation = newRunCountingOperationWithResult();
-        strategy.runWithStrategy(operation);
+        strategy.runWith(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
     }
@@ -60,7 +60,7 @@ final class RetryImmediatelyTest {
     @DisplayName("retry `VoidOperation` on failure.")
     void retryVoidOperationOnFailure() {
         RunCountingVoidOperation operation = throwUntil(2);
-        strategy.runWithStrategy(operation);
+        strategy.runWith(operation);
 
         assertThat(operation.runCount()).isEqualTo(2);
     }
@@ -69,7 +69,7 @@ final class RetryImmediatelyTest {
     @DisplayName("retry `OperationWithResult` on failure.")
     void retryOperationWithResultOnFailure() {
         RunCountingOperationWithResult operation = RunCountingOperationWithResult.throwUntil(2);
-        strategy.runWithStrategy(operation);
+        strategy.runWith(operation);
 
         assertThat(operation.runCount()).isEqualTo(2);
     }
@@ -77,13 +77,13 @@ final class RetryImmediatelyTest {
     @Test
     @DisplayName("do not throw exceptions if `VoidOperation` succeeded.")
     void doNotThrowOnVoidOperationSuccess() {
-        assertDoesNotThrow(() -> strategy.runWithStrategy(() -> {
+        assertDoesNotThrow(() -> strategy.runWith(() -> {
         }));
     }
 
     @Test
     @DisplayName("do not throw exceptions if `OperationWithResult` succeeded.")
     void doNotThrowOnOperationWithResultSuccess() {
-        assertDoesNotThrow(() -> strategy.runWithStrategy(() -> "Test"));
+        assertDoesNotThrow(() -> strategy.runWith(() -> "Test"));
     }
 }

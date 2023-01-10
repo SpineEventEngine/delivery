@@ -48,7 +48,7 @@ final class StrategyChainTest {
     @DisplayName("use only first strategy if `VoidOperation` succeeds")
     void useOnlyFirstStrategyWithVoidOperation() {
         RunCountingVoidOperation operation = newRunCountingVoidOperation();
-        strategy.runWithStrategy(operation);
+        strategy.runWith(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
         assertThat(firstStrategy.voidOperationExecutions()).isEqualTo(1);
@@ -62,7 +62,7 @@ final class StrategyChainTest {
     @DisplayName("use only first strategy `OperationWithResult` succeeds")
     void useOnlyFirstStrategyWithOperationWithResult() {
         RunCountingOperationWithResult operation = newRunCountingOperationWithResult();
-        strategy.runWithStrategy(operation);
+        strategy.runWith(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
         assertThat(firstStrategy.voidOperationExecutions()).isEqualTo(0);
@@ -75,7 +75,7 @@ final class StrategyChainTest {
     @Test
     @DisplayName("use other strategy `VoidOperation` failed")
     void useOtherStrategiesOnVoidOperationFailed() {
-        strategy.runWithStrategy(RunCountingVoidOperation.throwUntil(2));
+        strategy.runWith(RunCountingVoidOperation.throwUntil(2));
 
         assertThat(firstStrategy.voidOperationExecutions()).isEqualTo(1);
         assertThat(firstStrategy.operationsWithResultExecutions()).isEqualTo(0);
@@ -87,7 +87,7 @@ final class StrategyChainTest {
     @Test
     @DisplayName("use other strategy `OperationWithResult` failed")
     void useOtherStrategiesOnOperationWithResultFailed() {
-        strategy.runWithStrategy(RunCountingOperationWithResult.throwUntil(2));
+        strategy.runWith(RunCountingOperationWithResult.throwUntil(2));
 
         assertThat(firstStrategy.voidOperationExecutions()).isEqualTo(0);
         assertThat(firstStrategy.operationsWithResultExecutions()).isEqualTo(1);
