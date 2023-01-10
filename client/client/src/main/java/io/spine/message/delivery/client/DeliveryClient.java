@@ -123,8 +123,17 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         return new DeliveryClient(channel, strategy);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle.
+     */
     @Override
-    public void writeMessage(InboxMessage message) {
+    public void writeMessage(InboxMessage message) throws ExecutionFailedException {
         checkNotDefaultArg(message);
         WriteMessage writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
@@ -132,8 +141,18 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         post(writeMessage);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle.
+     */
     @Override
-    public void writeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
+    public void writeMessages(ShardIndex shard, Iterable<InboxMessage> messages)
+            throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotNull(messages);
         WriteMessages writeMessages = WriteMessages.newBuilder()
@@ -143,8 +162,17 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         post(writeMessages);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle.
+     */
     @Override
-    public void removeMessage(InboxMessage message) {
+    public void removeMessage(InboxMessage message) throws ExecutionFailedException {
         checkNotDefaultArg(message);
         RemoveMessage removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
@@ -152,8 +180,18 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         post(removeMessage);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle.
+     */
     @Override
-    public void removeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
+    public void removeMessages(ShardIndex shard, Iterable<InboxMessage> messages)
+            throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotNull(messages);
         RemoveMessages removeMessages = RemoveMessages.newBuilder()
@@ -163,8 +201,18 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         post(removeMessages);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle.
+     */
     @Override
-    public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker) {
+    public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker)
+            throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
         PickUpShard pickUpShard = PickUpShard.newBuilder()
@@ -187,8 +235,17 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         return Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle.
+     */
     @Override
-    public void releaseShard(ShardIndex shard, WorkerId worker) {
+    public void releaseShard(ShardIndex shard, WorkerId worker) throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
         ReleaseShard releaseShard = ReleaseShard.newBuilder()
@@ -198,8 +255,18 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         post(releaseShard);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle.
+     */
     @Override
-    public ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod) {
+    public ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod)
+            throws ExecutionFailedException {
         checkNotDefaultArg(inactivityPeriod);
         ReleaseExpiredSessions releaseExpiredSessions = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(inactivityPeriod)
@@ -214,8 +281,17 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         return sessionsReleased;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle.
+     */
     @Override
-    public Optional<InboxMessage> find(InboxMessageId messageId) {
+    public Optional<InboxMessage> find(InboxMessageId messageId) throws ExecutionFailedException {
         checkNotDefaultArg(messageId);
         QueryRequest<InboxMessageHolder> request =
                 client.asGuest()
@@ -227,8 +303,18 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                      .map(InboxMessageHolder::getMessage);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle.
+     */
     @Override
-    public Page<InboxMessage> readAll(ShardIndex shard, int pageSize) {
+    public Page<InboxMessage> readAll(ShardIndex shard, int pageSize)
+            throws ExecutionFailedException {
         Page<InboxMessage> page = new InboxPage(sinceWhen -> readAll(shard, sinceWhen, pageSize));
         return page;
     }
@@ -255,8 +341,18 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle.
+     */
     @Override
-    public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard) {
+    public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard)
+            throws ExecutionFailedException {
         QueryRequest<InboxMessageHolder> request =
                 client.asGuest()
                       .select(InboxMessageHolder.class)

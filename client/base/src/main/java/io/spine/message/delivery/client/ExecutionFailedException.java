@@ -9,7 +9,8 @@ package io.spine.message.delivery.client;
 import com.google.common.collect.ImmutableList;
 
 /**
- * Occurs when a strategy failed to recover after exception thrown by an operation.
+ * Occurs when a {@link RequestExecutionStrategy} failed to recover after exception
+ * thrown by the request.
  */
 public final class ExecutionFailedException extends RuntimeException {
 
