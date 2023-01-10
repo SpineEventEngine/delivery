@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Occurs when a strategy failed to recover after exception thrown by an operation.
  */
-public class ExecutionFailedException extends RuntimeException {
+public final class ExecutionFailedException extends RuntimeException {
 
     private static final long serialVersionUID = -5015255727872841600L;
     private final ImmutableList<Exception> causes;
