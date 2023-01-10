@@ -54,14 +54,14 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
     }
 
     /**
-     * Returns an amount of {@code VoidOperations} executed with this strategy.
+     * Returns a number of {@code VoidOperation}s executed with this strategy.
      */
     public int voidOperationExecutions() {
         return voidOperationExecutions;
     }
 
     /**
-     * Returns an amount of {@code OperationWithResult} executed with this strategy.
+     * Returns a number of {@code OperationWithResult} executed with this strategy.
      */
     public int operationsWithResultExecutions() {
         return operationsWithResultExecutions;
