@@ -8,22 +8,22 @@ package io.spine.message.delivery.client.strategy;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.message.delivery.client.ExecutionFailedException;
-import io.spine.message.delivery.client.RequestExecutionStrategy;
-import io.spine.message.delivery.client.RequestWithResult;
-import io.spine.message.delivery.client.VoidRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Strategy that will be immediately retrying operations in case of failures.
  */
-public final class RetryImmediately implements RequestExecutionStrategy {
+public final class RetryImmediately extends AbstractExecutionStrategy {
 
     private final int retryCount;
+
+    private int attempts = 0;
+
+    private final List<RuntimeException> occurredExceptions = new ArrayList<>();
 
     /**
      * Create a new {@code RetryImmediately} strategy with the given amount of retry attempts.
@@ -37,48 +37,12 @@ public final class RetryImmediately implements RequestExecutionStrategy {
         retryCount = count;
     }
 
-    /**
-     * Executes the given operation and in case of failure immediately performs another attempt.
-     *
-     * @throws ExecutionFailedException
-     *         if the retry attempts exceeded.
-     */
     @Override
-    public void execute(VoidRequest operation) throws ExecutionFailedException {
-        checkNotNull(operation);
-        int attempts = 0;
-        List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
-        while (attempts < retryCount) {
-            try {
-                operation.run();
-                return;
-            } catch (RuntimeException e) {
-                caughtExceptions.add(e);
-                attempts++;
-            }
+    protected void handleException(RuntimeException e) throws ExecutionFailedException {
+        attempts++;
+        occurredExceptions.add(e);
+        if (attempts >= retryCount) {
+            throw new ExecutionFailedException(ImmutableList.copyOf(occurredExceptions));
         }
-        throw new ExecutionFailedException(ImmutableList.copyOf(caughtExceptions));
-    }
-
-    /**
-     * Executes the given operation and in case of failure immediately performs another attempt.
-     *
-     * @throws ExecutionFailedException
-     *         if the retry attempts exceeded.
-     */
-    @Override
-    public <R> R evaluate(RequestWithResult<R> operation) throws ExecutionFailedException {
-        checkNotNull(operation);
-        int attempts = 0;
-        List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
-        while (attempts < retryCount) {
-            try {
-                return operation.evaluate();
-            } catch (RuntimeException e) {
-                caughtExceptions.add(e);
-                attempts++;
-            }
-        }
-        throw new ExecutionFailedException(ImmutableList.copyOf(caughtExceptions));
     }
 }
