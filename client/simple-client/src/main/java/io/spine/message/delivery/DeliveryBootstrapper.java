@@ -20,7 +20,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Provides fluent API for building a {@link Delivery} backed by the Message Delivery Server and
- * based on the {@link SimpleDeliveryClient}.
+ * based on the {@link SimpleDeliveryClient} with {@link RequestExecutionStrategy}.
+ *
+ * <p> By default uses the {@link Propagate} strategy.
  */
 public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<DeliveryBootstrapper> {
 

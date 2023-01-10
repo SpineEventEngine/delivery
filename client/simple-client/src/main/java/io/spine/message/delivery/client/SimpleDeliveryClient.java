@@ -74,7 +74,7 @@ public final class SimpleDeliveryClient
 
     /**
      * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
-     * and {@code port}.
+     * and {@code port} and uses the {@link Propagate} {@code RequestExecutionStrategy}.
      */
     @SuppressWarnings("CheckReturnValue" /* We're fine to just `check` args. */)
     static SimpleDeliveryClient create(String host, int port) {
@@ -98,7 +98,7 @@ public final class SimpleDeliveryClient
 
     /**
      * Creates a new delivery client which connects to a gRPC server
-     * using specified {@code channel}.
+     * using specified {@code channel} and {@link Propagate} {@code RequestExecutionStrategy}.
      */
     public static SimpleDeliveryClient create(ManagedChannel channel) {
         return create(channel, new Propagate());
