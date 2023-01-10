@@ -18,9 +18,10 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
     private int operationsWithResultExecutions = 0;
 
     /**
-     * Increments the {@code voidOperationExecutions} and executes the given {@code operation}.
+     * Increments the execution counter for {@code VoidOperation} and executes
+     * the given {@code operation}.
      *
-     * Even if the operation throws an exception it will be counted as execution.
+     * <p> Even if the operation throws an exception it will be counted as execution.
      *
      * @throws ExecutionFailedException if the operation throws an exception.
      */
@@ -35,10 +36,10 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
     }
 
     /**
-     * Increments the {@code operationsWithResultExecutions} and executes
+     * Increments the execution counter for {@code OperationWithResult} and executes
      * the given {@code operation}.
      *
-     * Even if the operation throws an exception it will be counted as execution.
+     * <p> Even if the operation throws an exception it will be counted as execution.
      *
      * @throws ExecutionFailedException if the operation throws an exception.
      */
