@@ -17,11 +17,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Encapsulates a list of other strategies and will apply each encapsulated strategy
  * to the operation if previous strategy failed.
  */
-public final class StrategiesChain implements RequestExecutionStrategy {
+public final class StrategyChain implements RequestExecutionStrategy {
 
     private final ImmutableList<RequestExecutionStrategy> strategies;
 
-    private StrategiesChain(List<RequestExecutionStrategy> strategies) {
+    private StrategyChain(List<RequestExecutionStrategy> strategies) {
         this.strategies = ImmutableList.copyOf(strategies);
     }
 
@@ -106,8 +106,8 @@ public final class StrategiesChain implements RequestExecutionStrategy {
         /**
          * Builds the {@code StrategiesChain}.
          */
-        public StrategiesChain build() {
-            return new StrategiesChain(strategies);
+        public StrategyChain build() {
+            return new StrategyChain(strategies);
         }
     }
 }

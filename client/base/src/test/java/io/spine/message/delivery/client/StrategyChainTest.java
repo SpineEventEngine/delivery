@@ -16,7 +16,7 @@ import static io.spine.message.delivery.client.RunCountingOperationWithResult.ne
 import static io.spine.message.delivery.client.RunCountingVoidOperation.newRunCountingVoidOperation;
 
 @DisplayName("StrategiesChain should")
-final class StrategiesChainTest {
+final class StrategyChainTest {
 
     private RequestExecutionStrategy strategy;
 
@@ -27,9 +27,9 @@ final class StrategiesChainTest {
     void setup() {
         firstStrategy = new ExecutionCountingStrategy();
         secondStrategy = new ExecutionCountingStrategy();
-        strategy = StrategiesChain.with(firstStrategy)
-                                  .then(secondStrategy)
-                                  .build();
+        strategy = StrategyChain.with(firstStrategy)
+                                .then(secondStrategy)
+                                .build();
     }
 
     @Test
