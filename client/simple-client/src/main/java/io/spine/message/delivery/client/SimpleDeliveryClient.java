@@ -171,7 +171,7 @@ public final class SimpleDeliveryClient
         } catch (ExecutionFailedException e) {
             ImmutableList<Exception> occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
-            _trace().log("[SimpleClient] Unable to pick up shard `%s`: %s.",
+            _warn().log("[SimpleClient] Unable to pick up shard `%s`: %s.",
                          shard, getStackTraceAsString(last));
         }
         return Optional.empty();
