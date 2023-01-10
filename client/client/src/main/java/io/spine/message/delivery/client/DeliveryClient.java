@@ -23,6 +23,7 @@ import io.spine.client.QueryRequest;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.InboxMessageHolder.Column;
+import io.spine.message.delivery.client.strategy.Propagate;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.command.ReleaseShard;

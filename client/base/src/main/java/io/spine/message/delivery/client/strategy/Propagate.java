@@ -4,9 +4,13 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.client;
+package io.spine.message.delivery.client.strategy;
 
 import com.google.common.collect.ImmutableList;
+import io.spine.message.delivery.client.ExecutionFailedException;
+import io.spine.message.delivery.client.RequestExecutionStrategy;
+import io.spine.message.delivery.client.RequestWithResult;
+import io.spine.message.delivery.client.VoidRequest;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 

@@ -10,6 +10,7 @@ import com.google.common.testing.NullPointerTester;
 import io.spine.message.delivery.client.given.ExecutionCountingStrategy;
 import io.spine.message.delivery.client.given.RunCountingRequestWithResult;
 import io.spine.message.delivery.client.given.RunCountingVoidRequest;
+import io.spine.message.delivery.client.strategy.StrategyChain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
