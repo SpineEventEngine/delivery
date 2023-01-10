@@ -11,7 +11,7 @@ import static java.lang.String.format;
 /**
  * Operation for testing purposes that count executions of itself.
  *
- * Can be instructed to throw exceptions.
+ * <p> Can be instructed to throw exceptions.
  */
 final class RunCountingVoidOperation implements VoidOperation {
 
@@ -45,9 +45,7 @@ final class RunCountingVoidOperation implements VoidOperation {
     }
 
     /**
-     * Does nothing.
-     *
-     * Throws a {@code RuntimeException} if instructed to do so.
+     * Throws a {@code RuntimeException} if instructed to do so or does nothing.
      */
     @Override
     public void run() {

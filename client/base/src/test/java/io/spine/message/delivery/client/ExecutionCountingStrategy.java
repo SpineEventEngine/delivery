@@ -7,10 +7,6 @@
 package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.message.delivery.client.ExecutionFailedException;
-import io.spine.message.delivery.client.OperationWithResult;
-import io.spine.message.delivery.client.RequestExecutionStrategy;
-import io.spine.message.delivery.client.VoidOperation;
 
 /**
  * A strategy for testing that counts amount of operstions executed.
@@ -24,7 +20,7 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
     /**
      * Increments the {@code voidOperationExecutions} and executes the given {@code operation}.
      *
-     * Even if the operation throws an exception it will be counted as execution.
+     * <p> Even if the operation throws an exception it will be counted as execution.
      *
      * @throws ExecutionFailedException if the operation throws an exception.
      */
@@ -42,7 +38,7 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
      * Increments the {@code operationsWithResultExecutions} and executes
      * the given {@code operation}.
      *
-     * Even if the operation throws an exception it will be counted as execution.
+     * <p> Even if the operation throws an exception it will be counted as execution.
      *
      * @throws ExecutionFailedException if the operation throws an exception.
      */

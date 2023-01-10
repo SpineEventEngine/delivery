@@ -11,7 +11,7 @@ import static java.lang.String.format;
 /**
  * Operation for testing purposes that count executions of itself.
  *
- * Can be instructed to throw exceptions.
+ * <p> Can be instructed to throw exceptions.
  */
 final class RunCountingOperationWithResult implements OperationWithResult<String> {
 
@@ -46,8 +46,6 @@ final class RunCountingOperationWithResult implements OperationWithResult<String
     }
 
     /**
-     * Does nothing.
-     *
      * Throws a {@code RuntimeException} if instructed to do so or returns {@code Test} as a string.
      */
     @Override

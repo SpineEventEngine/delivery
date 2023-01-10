@@ -17,8 +17,8 @@ import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterrup
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
- * An error handling strategy that will be waiting a certain amount of time before retrying a failed
- * operation.
+ * An error handling strategy that will be waiting a certain amount of time before
+ * retrying a failed operation.
  */
 public final class WaitAndRetry implements RequestExecutionStrategy {
 
