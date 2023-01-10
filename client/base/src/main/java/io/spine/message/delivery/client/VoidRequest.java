@@ -9,7 +9,7 @@ package io.spine.message.delivery.client;
 /**
  * An operation that doesn't return value.
  */
-public interface VoidOperation {
+public interface VoidRequest {
 
     /**
      * Performs an action meant by the operation.

@@ -8,15 +8,15 @@ package io.spine.message.delivery.client;
 
 import com.google.common.testing.NullPointerTester;
 import io.spine.message.delivery.client.given.ExecutionCountingStrategy;
-import io.spine.message.delivery.client.given.RunCountingOperationWithResult;
-import io.spine.message.delivery.client.given.RunCountingVoidOperation;
+import io.spine.message.delivery.client.given.RunCountingRequestWithResult;
+import io.spine.message.delivery.client.given.RunCountingVoidRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.message.delivery.client.given.RunCountingOperationWithResult.newRunCountingOperationWithResult;
-import static io.spine.message.delivery.client.given.RunCountingVoidOperation.newRunCountingVoidOperation;
+import static io.spine.message.delivery.client.given.RunCountingRequestWithResult.newRunCountingRequestWithResult;
+import static io.spine.message.delivery.client.given.RunCountingVoidRequest.newRunCountingVoidRequest;
 
 @DisplayName("StrategyChain should")
 final class StrategyChainTest {
@@ -45,54 +45,54 @@ final class StrategyChainTest {
     }
 
     @Test
-    @DisplayName("use only first strategy if `VoidOperation` succeeds")
-    void useOnlyFirstStrategyWithVoidOperation() {
-        RunCountingVoidOperation operation = newRunCountingVoidOperation();
-        strategy.runWith(operation);
+    @DisplayName("use only first strategy if `VoidRequest` succeeds")
+    void useOnlyFirstStrategyWithVoidRequest() {
+        RunCountingVoidRequest operation = newRunCountingVoidRequest();
+        strategy.execute(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
-        assertThat(firstStrategy.voidOperationExecutions()).isEqualTo(1);
-        assertThat(firstStrategy.operationsWithResultExecutions()).isEqualTo(0);
+        assertThat(firstStrategy.voidExecutions()).isEqualTo(1);
+        assertThat(firstStrategy.withResultEvaluations()).isEqualTo(0);
 
-        assertThat(secondStrategy.voidOperationExecutions()).isEqualTo(0);
-        assertThat(secondStrategy.operationsWithResultExecutions()).isEqualTo(0);
+        assertThat(secondStrategy.voidExecutions()).isEqualTo(0);
+        assertThat(secondStrategy.withResultEvaluations()).isEqualTo(0);
     }
 
     @Test
-    @DisplayName("use only first strategy `OperationWithResult` succeeds")
-    void useOnlyFirstStrategyWithOperationWithResult() {
-        RunCountingOperationWithResult operation = newRunCountingOperationWithResult();
-        strategy.runWith(operation);
+    @DisplayName("use only first strategy `RequestWithResult` succeeds")
+    void useOnlyFirstStrategyWithRequestWithResult() {
+        RunCountingRequestWithResult operation = newRunCountingRequestWithResult();
+        strategy.evaluate(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
-        assertThat(firstStrategy.voidOperationExecutions()).isEqualTo(0);
-        assertThat(firstStrategy.operationsWithResultExecutions()).isEqualTo(1);
+        assertThat(firstStrategy.voidExecutions()).isEqualTo(0);
+        assertThat(firstStrategy.withResultEvaluations()).isEqualTo(1);
 
-        assertThat(secondStrategy.voidOperationExecutions()).isEqualTo(0);
-        assertThat(secondStrategy.operationsWithResultExecutions()).isEqualTo(0);
+        assertThat(secondStrategy.voidExecutions()).isEqualTo(0);
+        assertThat(secondStrategy.withResultEvaluations()).isEqualTo(0);
     }
 
     @Test
-    @DisplayName("use other strategy `VoidOperation` failed")
-    void useOtherStrategiesOnVoidOperationFailed() {
-        strategy.runWith(RunCountingVoidOperation.throwUntil(2));
+    @DisplayName("use other strategy `VoidRequest` failed")
+    void useOtherStrategiesOnVoidRequestFailed() {
+        strategy.execute(RunCountingVoidRequest.throwUntil(2));
 
-        assertThat(firstStrategy.voidOperationExecutions()).isEqualTo(1);
-        assertThat(firstStrategy.operationsWithResultExecutions()).isEqualTo(0);
+        assertThat(firstStrategy.voidExecutions()).isEqualTo(1);
+        assertThat(firstStrategy.withResultEvaluations()).isEqualTo(0);
 
-        assertThat(secondStrategy.voidOperationExecutions()).isEqualTo(1);
-        assertThat(secondStrategy.operationsWithResultExecutions()).isEqualTo(0);
+        assertThat(secondStrategy.voidExecutions()).isEqualTo(1);
+        assertThat(secondStrategy.withResultEvaluations()).isEqualTo(0);
     }
 
     @Test
-    @DisplayName("use other strategy `OperationWithResult` failed")
-    void useOtherStrategiesOnOperationWithResultFailed() {
-        strategy.runWith(RunCountingOperationWithResult.throwUntil(2));
+    @DisplayName("use other strategy `RequestWithResult` failed")
+    void useOtherStrategiesOnRequestWithResultFailed() {
+        strategy.evaluate(RunCountingRequestWithResult.throwUntil(2));
 
-        assertThat(firstStrategy.voidOperationExecutions()).isEqualTo(0);
-        assertThat(firstStrategy.operationsWithResultExecutions()).isEqualTo(1);
+        assertThat(firstStrategy.voidExecutions()).isEqualTo(0);
+        assertThat(firstStrategy.withResultEvaluations()).isEqualTo(1);
 
-        assertThat(secondStrategy.voidOperationExecutions()).isEqualTo(0);
-        assertThat(secondStrategy.operationsWithResultExecutions()).isEqualTo(1);
+        assertThat(secondStrategy.voidExecutions()).isEqualTo(0);
+        assertThat(secondStrategy.withResultEvaluations()).isEqualTo(1);
     }
 }

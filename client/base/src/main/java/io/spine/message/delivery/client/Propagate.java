@@ -23,7 +23,7 @@ public final class Propagate implements RequestExecutionStrategy {
      *         if any exceptions occurs.
      */
     @Override
-    public void runWith(VoidOperation operation) throws ExecutionFailedException {
+    public void execute(VoidRequest operation) throws ExecutionFailedException {
         checkNotNull(operation);
         try {
             operation.run();
@@ -40,10 +40,10 @@ public final class Propagate implements RequestExecutionStrategy {
      *         if any exceptions occurs.
      */
     @Override
-    public <R> R runWith(OperationWithResult<R> operation) throws ExecutionFailedException {
+    public <R> R evaluate(RequestWithResult<R> operation) throws ExecutionFailedException {
         checkNotNull(operation);
         try {
-            return operation.run();
+            return operation.evaluate();
         } catch (RuntimeException e) {
             throw new ExecutionFailedException(ImmutableList.of(e));
         }

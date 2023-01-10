@@ -109,9 +109,9 @@ final class SimpleDeliveryClientTest {
         void useStrategyPickingUpShard(){
             client.pickUpShard(shard, worker);
 
-            assertThat(strategy.voidOperationExecutions())
+            assertThat(strategy.voidExecutions())
                     .isEqualTo(0);
-            assertThat(strategy.operationsWithResultExecutions())
+            assertThat(strategy.withResultEvaluations())
                     .isEqualTo(1);
         }
 
@@ -121,9 +121,9 @@ final class SimpleDeliveryClientTest {
             client.pickUpShard(shard, worker);
             client.releaseShard(shard, worker);
 
-            assertThat(strategy.voidOperationExecutions())
+            assertThat(strategy.voidExecutions())
                     .isEqualTo(0);
-            assertThat(strategy.operationsWithResultExecutions())
+            assertThat(strategy.withResultEvaluations())
                     .isEqualTo(2);
         }
     }
@@ -191,9 +191,9 @@ final class SimpleDeliveryClientTest {
             InboxMessage message = newMessage();
             client.writeMessage(message);
 
-            assertThat(strategy.voidOperationExecutions())
+            assertThat(strategy.voidExecutions())
                     .isEqualTo(0);
-            assertThat(strategy.operationsWithResultExecutions())
+            assertThat(strategy.withResultEvaluations())
                     .isEqualTo(1);
         }
 
@@ -204,9 +204,9 @@ final class SimpleDeliveryClientTest {
             client.writeMessage(message);
             client.removeMessage(message);
 
-            assertThat(strategy.voidOperationExecutions())
+            assertThat(strategy.voidExecutions())
                     .isEqualTo(0);
-            assertThat(strategy.operationsWithResultExecutions())
+            assertThat(strategy.withResultEvaluations())
                     .isEqualTo(2);
         }
 
@@ -220,9 +220,9 @@ final class SimpleDeliveryClientTest {
                     shard, ImmutableList.of(firstMessage, secondMessage)
             );
 
-            assertThat(strategy.voidOperationExecutions())
+            assertThat(strategy.voidExecutions())
                     .isEqualTo(0);
-            assertThat(strategy.operationsWithResultExecutions())
+            assertThat(strategy.withResultEvaluations())
                     .isEqualTo(1);
         }
 
@@ -239,9 +239,9 @@ final class SimpleDeliveryClientTest {
                     shard, ImmutableList.of(firstMessage, secondMessage)
             );
 
-            assertThat(strategy.voidOperationExecutions())
+            assertThat(strategy.voidExecutions())
                     .isEqualTo(0);
-            assertThat(strategy.operationsWithResultExecutions())
+            assertThat(strategy.withResultEvaluations())
                     .isEqualTo(2);
         }
     }
@@ -322,9 +322,9 @@ final class SimpleDeliveryClientTest {
             InboxMessage message = newMessage();
             client.find(message.getId());
 
-            assertThat(strategy.voidOperationExecutions())
+            assertThat(strategy.voidExecutions())
                     .isEqualTo(0);
-            assertThat(strategy.operationsWithResultExecutions())
+            assertThat(strategy.withResultEvaluations())
                     .isEqualTo(1);
         }
 
@@ -339,9 +339,9 @@ final class SimpleDeliveryClientTest {
             int pageSize = 10;
             client.readAll(shard, pageSize);
 
-            assertThat(strategy.voidOperationExecutions())
+            assertThat(strategy.voidExecutions())
                     .isEqualTo(0);
-            assertThat(strategy.operationsWithResultExecutions())
+            assertThat(strategy.withResultEvaluations())
                     .isEqualTo(2);
         }
 
@@ -367,9 +367,9 @@ final class SimpleDeliveryClientTest {
             sleepUninterruptibly(1, TimeUnit.SECONDS);
             client.newestMessageToDeliver(olderMessage.shardIndex());
 
-            assertThat(strategy.voidOperationExecutions())
+            assertThat(strategy.voidExecutions())
                     .isEqualTo(0);
-            assertThat(strategy.operationsWithResultExecutions())
+            assertThat(strategy.withResultEvaluations())
                     .isEqualTo(2);
         }
 

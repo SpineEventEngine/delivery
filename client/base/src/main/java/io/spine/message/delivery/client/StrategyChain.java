@@ -46,12 +46,12 @@ public final class StrategyChain implements RequestExecutionStrategy {
      *         if none of the strategies could handle the occurred exception.
      */
     @Override
-    public void runWith(VoidOperation operation) throws ExecutionFailedException {
+    public void execute(VoidRequest operation) throws ExecutionFailedException {
         checkNotNull(operation);
         List<Exception> occurredExceptions = new ArrayList<>();
         for (RequestExecutionStrategy strategy : strategies) {
             try {
-                strategy.runWith(operation);
+                strategy.execute(operation);
                 return;
             } catch (ExecutionFailedException e) {
                 occurredExceptions.addAll(e.causes());
@@ -69,12 +69,12 @@ public final class StrategyChain implements RequestExecutionStrategy {
      *         if none of the strategies could handle the occurred exception.
      */
     @Override
-    public <R> R runWith(OperationWithResult<R> operation) throws ExecutionFailedException {
+    public <R> R evaluate(RequestWithResult<R> operation) throws ExecutionFailedException {
         checkNotNull(operation);
         List<Exception> occurredExceptions = new ArrayList<>();
         for (RequestExecutionStrategy strategy : strategies) {
             try {
-                return strategy.runWith(operation);
+                return strategy.evaluate(operation);
             } catch (ExecutionFailedException e) {
                 occurredExceptions.addAll(e.causes());
             }

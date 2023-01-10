@@ -7,16 +7,16 @@
 package io.spine.message.delivery.client;
 
 import com.google.common.testing.NullPointerTester;
-import io.spine.message.delivery.client.given.RunCountingOperationWithResult;
-import io.spine.message.delivery.client.given.RunCountingVoidOperation;
+import io.spine.message.delivery.client.given.RunCountingRequestWithResult;
+import io.spine.message.delivery.client.given.RunCountingVoidRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.message.delivery.client.given.RunCountingOperationWithResult.newRunCountingOperationWithResult;
-import static io.spine.message.delivery.client.given.RunCountingVoidOperation.newRunCountingVoidOperation;
-import static io.spine.message.delivery.client.given.RunCountingVoidOperation.throwUntil;
+import static io.spine.message.delivery.client.given.RunCountingRequestWithResult.newRunCountingRequestWithResult;
+import static io.spine.message.delivery.client.given.RunCountingVoidRequest.newRunCountingVoidRequest;
+import static io.spine.message.delivery.client.given.RunCountingVoidRequest.throwUntil;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @DisplayName("RetryImmediately error handling strategy should")
@@ -39,51 +39,51 @@ final class RetryImmediatelyTest {
     }
 
     @Test
-    @DisplayName("execute `VoidOperation`")
-    void executeVoidOperation() {
-        RunCountingVoidOperation operation = newRunCountingVoidOperation();
-        strategy.runWith(operation);
+    @DisplayName("execute `VoidRequest`")
+    void executeVoidRequest() {
+        RunCountingVoidRequest operation = newRunCountingVoidRequest();
+        strategy.execute(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("execute `OperationWithResult`")
-    void executeOperationWithResult() {
-        RunCountingOperationWithResult operation = newRunCountingOperationWithResult();
-        strategy.runWith(operation);
+    @DisplayName("execute `RequestWithResult`")
+    void executeRequestWithResult() {
+        RunCountingRequestWithResult operation = newRunCountingRequestWithResult();
+        strategy.evaluate(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("retry `VoidOperation` on failure.")
-    void retryVoidOperationOnFailure() {
-        RunCountingVoidOperation operation = throwUntil(2);
-        strategy.runWith(operation);
+    @DisplayName("retry `VoidRequest` on failure.")
+    void retryVoidRequestOnFailure() {
+        RunCountingVoidRequest operation = throwUntil(2);
+        strategy.execute(operation);
 
         assertThat(operation.runCount()).isEqualTo(2);
     }
 
     @Test
-    @DisplayName("retry `OperationWithResult` on failure.")
-    void retryOperationWithResultOnFailure() {
-        RunCountingOperationWithResult operation = RunCountingOperationWithResult.throwUntil(2);
-        strategy.runWith(operation);
+    @DisplayName("retry `RequestWithResult` on failure.")
+    void retryRequestWithResultOnFailure() {
+        RunCountingRequestWithResult operation = RunCountingRequestWithResult.throwUntil(2);
+        strategy.evaluate(operation);
 
         assertThat(operation.runCount()).isEqualTo(2);
     }
 
     @Test
-    @DisplayName("do not throw exceptions if `VoidOperation` succeeded.")
-    void doNotThrowOnVoidOperationSuccess() {
-        assertDoesNotThrow(() -> strategy.runWith(() -> {
+    @DisplayName("do not throw exceptions if `VoidRequest` succeeded.")
+    void doNotThrowOnVoidRequestSuccess() {
+        assertDoesNotThrow(() -> strategy.execute(() -> {
         }));
     }
 
     @Test
-    @DisplayName("do not throw exceptions if `OperationWithResult` succeeded.")
-    void doNotThrowOnOperationWithResultSuccess() {
-        assertDoesNotThrow(() -> strategy.runWith(() -> "Test"));
+    @DisplayName("do not throw exceptions if `RequestWithResult` succeeded.")
+    void doNotThrowOnRequestWithResultSuccess() {
+        assertDoesNotThrow(() -> strategy.evaluate(() -> "Test"));
     }
 }

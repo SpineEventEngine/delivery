@@ -6,7 +6,7 @@
 
 package io.spine.message.delivery.client.given;
 
-import io.spine.message.delivery.client.OperationWithResult;
+import io.spine.message.delivery.client.RequestWithResult;
 
 import static java.lang.String.format;
 
@@ -15,7 +15,7 @@ import static java.lang.String.format;
  *
  * <p> Can be instructed to throw exceptions.
  */
-public final class RunCountingOperationWithResult implements OperationWithResult<String> {
+public final class RunCountingRequestWithResult implements RequestWithResult<String> {
 
     private int runCount = 0;
 
@@ -23,26 +23,26 @@ public final class RunCountingOperationWithResult implements OperationWithResult
     private final int throwUntil;
 
     /**
-     * Creates a new {@code RunCountingOperationWithResult} that doesn't throw any exceptions.
+     * Creates a new {@code RunCountingRequestWithResult} that doesn't throw any exceptions.
      */
-    public static RunCountingOperationWithResult newRunCountingOperationWithResult() {
-        return new RunCountingOperationWithResult();
+    public static RunCountingRequestWithResult newRunCountingRequestWithResult() {
+        return new RunCountingRequestWithResult();
     }
 
     /**
-     * Creates a new {@code RunCountingOperationWithResult} that throws {@code RuntimeException}s
-     * until the {@linkplain #run()} method will be executed {@code throwTimes} times.
+     * Creates a new {@code RunCountingRequestWithResult} that throws {@code RuntimeException}s
+     * until the {@linkplain #evaluate()} method will be executed {@code throwTimes} times.
      */
-    public static RunCountingOperationWithResult throwUntil(int throwTimes) {
-        return new RunCountingOperationWithResult(throwTimes);
+    public static RunCountingRequestWithResult throwUntil(int throwTimes) {
+        return new RunCountingRequestWithResult(throwTimes);
     }
 
-    private RunCountingOperationWithResult(int throwTimes) {
+    private RunCountingRequestWithResult(int throwTimes) {
         this.shouldThrow = true;
         this.throwUntil = throwTimes;
     }
 
-    private RunCountingOperationWithResult() {
+    private RunCountingRequestWithResult() {
         this.shouldThrow = false;
         this.throwUntil = 0;
     }
@@ -51,7 +51,7 @@ public final class RunCountingOperationWithResult implements OperationWithResult
      * Throws a {@code RuntimeException} if instructed to do so or returns {@code Test} as a string.
      */
     @Override
-    public String run() {
+    public String evaluate() {
         runCount++;
         if (shouldThrow && runCount < throwUntil) {
             throw new RuntimeException(format("Instructed to throw on %d execution.", runCount));
@@ -60,7 +60,7 @@ public final class RunCountingOperationWithResult implements OperationWithResult
     }
 
     /**
-     * Returns the amount of tomes the {@linkplain #run()} method was called.
+     * Returns the amount of tomes the {@linkplain #evaluate()} method was called.
      */
     public int runCount() {
         return runCount;

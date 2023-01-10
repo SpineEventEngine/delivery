@@ -48,7 +48,7 @@ public final class WaitAndRetry implements RequestExecutionStrategy {
      *         if the retry attempts exceeded.
      */
     @Override
-    public void runWith(VoidOperation operation) throws ExecutionFailedException {
+    public void execute(VoidRequest operation) throws ExecutionFailedException {
         checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
@@ -74,13 +74,13 @@ public final class WaitAndRetry implements RequestExecutionStrategy {
      *         if the retry attempts exceeded.
      */
     @Override
-    public <R> R runWith(OperationWithResult<R> operation) throws ExecutionFailedException {
+    public <R> R evaluate(RequestWithResult<R> operation) throws ExecutionFailedException {
         checkNotNull(operation);
         int attempts = 0;
         List<RuntimeException> caughtExceptions = new ArrayList<>(retryCount);
         while (attempts < retryCount) {
             try {
-                return operation.run();
+                return operation.evaluate();
             } catch (RuntimeException e) {
                 caughtExceptions.add(e);
                 attempts++;

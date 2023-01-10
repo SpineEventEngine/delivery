@@ -12,10 +12,10 @@ package io.spine.message.delivery.client;
  * @param <R>
  *         type of the result.
  */
-public interface OperationWithResult<R> {
+public interface RequestWithResult<R> {
 
     /**
      * Performs an action meant by the operation and returns the result.
      */
-    R run();
+    R evaluate();
 }

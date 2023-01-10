@@ -6,7 +6,7 @@
 
 package io.spine.message.delivery.client.given;
 
-import io.spine.message.delivery.client.VoidOperation;
+import io.spine.message.delivery.client.VoidRequest;
 
 import static java.lang.String.format;
 
@@ -15,33 +15,33 @@ import static java.lang.String.format;
  *
  * <p> Can be instructed to throw exceptions.
  */
-public final class RunCountingVoidOperation implements VoidOperation {
+public final class RunCountingVoidRequest implements VoidRequest {
 
     private int runCount = 0;
     private final boolean shouldThrow;
     private final int throwUntil;
 
     /**
-     * Creates a new {@code RunCountingVoidOperation} that doesn't throw any exceptions.
+     * Creates a new {@code RunCountingVoidRequest} that doesn't throw any exceptions.
      */
-    public static RunCountingVoidOperation newRunCountingVoidOperation() {
-        return new RunCountingVoidOperation();
+    public static RunCountingVoidRequest newRunCountingVoidRequest() {
+        return new RunCountingVoidRequest();
     }
 
     /**
-     * Creates a new {@code RunCountingVoidOperation} that throws {@code RuntimeException}s
+     * Creates a new {@code RunCountingVoidRequest} that throws {@code RuntimeException}s
      * until the {@linkplain #run()} method will be executed {@code throwTimes} times.
      */
-    public static RunCountingVoidOperation throwUntil(int throwTimes) {
-        return new RunCountingVoidOperation(throwTimes);
+    public static RunCountingVoidRequest throwUntil(int throwTimes) {
+        return new RunCountingVoidRequest(throwTimes);
     }
 
-    private RunCountingVoidOperation(int throwUntil) {
+    private RunCountingVoidRequest(int throwUntil) {
         this.shouldThrow = true;
         this.throwUntil = throwUntil;
     }
 
-    private RunCountingVoidOperation() {
+    private RunCountingVoidRequest() {
         this.shouldThrow = false;
         this.throwUntil = 0;
     }

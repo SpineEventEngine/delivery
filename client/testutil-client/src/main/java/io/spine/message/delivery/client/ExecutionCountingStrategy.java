@@ -13,12 +13,12 @@ import com.google.common.collect.ImmutableList;
  */
 public final class ExecutionCountingStrategy implements RequestExecutionStrategy {
 
-    private int voidOperationExecutions = 0;
+    private int voidRequestExecutions = 0;
 
-    private int operationsWithResultExecutions = 0;
+    private int requestWithResultExecutions = 0;
 
     /**
-     * Increments the execution counter for {@code VoidOperation} and executes
+     * Increments the execution counter for {@code VoidRequest} and executes
      * the given {@code operation}.
      *
      * <p> Even if the operation throws an exception it will be counted as execution.
@@ -26,8 +26,8 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
      * @throws ExecutionFailedException if the operation throws an exception.
      */
     @Override
-    public void runWith(VoidOperation operation) throws ExecutionFailedException {
-        voidOperationExecutions++;
+    public void execute(VoidRequest operation) throws ExecutionFailedException {
+        voidRequestExecutions++;
         try {
             operation.run();
         } catch (RuntimeException e) {
@@ -36,7 +36,7 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
     }
 
     /**
-     * Increments the execution counter for {@code OperationWithResult} and executes
+     * Increments the execution counter for {@code RequestWithResult} and executes
      * the given {@code operation}.
      *
      * <p> Even if the operation throws an exception it will be counted as execution.
@@ -44,26 +44,26 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
      * @throws ExecutionFailedException if the operation throws an exception.
      */
     @Override
-    public <R> R runWith(OperationWithResult<R> operation) throws ExecutionFailedException {
-        operationsWithResultExecutions++;
+    public <R> R evaluate(RequestWithResult<R> operation) throws ExecutionFailedException {
+        requestWithResultExecutions++;
         try {
-            return operation.run();
+            return operation.evaluate();
         } catch (RuntimeException e) {
             throw new ExecutionFailedException(ImmutableList.of(e));
         }
     }
 
     /**
-     * Returns a number of {@code VoidOperation}s executed with this strategy.
+     * Returns a number of {@code VoidRequest}s executed with this strategy.
      */
-    public int voidOperationExecutions() {
-        return voidOperationExecutions;
+    public int voidExecutions() {
+        return voidRequestExecutions;
     }
 
     /**
-     * Returns a number of {@code OperationWithResult} executed with this strategy.
+     * Returns a number of {@code RequestWithResult} executed with this strategy.
      */
-    public int operationsWithResultExecutions() {
-        return operationsWithResultExecutions;
+    public int withResultEvaluations() {
+        return requestWithResultExecutions;
     }
 }
