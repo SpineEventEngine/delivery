@@ -17,7 +17,7 @@ import static io.spine.message.delivery.client.RunCountingVoidOperation.*;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("Propagate error handling strategy should")
+@DisplayName("`Propagate` error handling strategy should")
 final class PropagateTest {
 
     private RequestExecutionStrategy strategy;
@@ -28,7 +28,7 @@ final class PropagateTest {
     }
 
     @Test
-    @DisplayName("do not allow nulls")
+    @DisplayName("do not allow `null`s")
     void beNpeSafe() {
         NullPointerTester tester = new NullPointerTester();
         tester.testAllPublicInstanceMethods(strategy);
