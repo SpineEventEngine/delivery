@@ -8,8 +8,6 @@ package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 
-import java.util.List;
-
 /**
  * Occurs when a strategy failed to recover after exception thrown by an operation.
  */
@@ -18,9 +16,9 @@ public class ExecutionFailedException extends RuntimeException {
     private static final long serialVersionUID = -5015255727872841600L;
     private final ImmutableList<Exception> causes;
 
-    public ExecutionFailedException(List<Exception> causes) {
+    public ExecutionFailedException(ImmutableList<Exception> causes) {
         super("Strategy was unable to handle errors.");
-        this.causes = ImmutableList.copyOf(causes);
+        this.causes = causes;
     }
 
     /**
