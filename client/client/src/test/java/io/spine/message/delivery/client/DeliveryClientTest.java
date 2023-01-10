@@ -107,7 +107,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` picking up shard")
+        @DisplayName("use provided `RequestExecutionStrategy` picking up shard")
         void useStrategyPickingUpShard() {
             client.pickUpShard(shard, worker);
 
@@ -118,7 +118,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` releasing shard")
+        @DisplayName("use provided `RequestExecutionStrategy` releasing shard")
         void useStrategyReleasingShard() {
             client.pickUpShard(shard, worker);
             client.releaseShard(shard, worker);
@@ -190,7 +190,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` writing a message")
+        @DisplayName("use provided `RequestExecutionStrategy` writing a message")
         void useStrategyWritingMessage(){
             InboxMessage message = newMessage();
             client.writeMessage(message);
@@ -202,7 +202,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` removing a message")
+        @DisplayName("use provided `RequestExecutionStrategy` removing a message")
         void useStrategyRemovingMessage(){
             InboxMessage message = newMessage();
             client.writeMessage(message);
@@ -215,7 +215,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` writing multiple messages")
+        @DisplayName("use provided `RequestExecutionStrategy` writing multiple messages")
         void useStrategyWritingMessages(){
             InboxMessage firstMessage = newMessage();
             InboxMessage secondMessage = newMessage();
@@ -231,7 +231,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` removing multiple messages")
+        @DisplayName("use provided `RequestExecutionStrategy` removing multiple messages")
         void useStrategyRemovingMessages(){
             InboxMessage firstMessage = newMessage();
             InboxMessage secondMessage = newMessage();
@@ -321,7 +321,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` finding a message")
+        @DisplayName("use provided `RequestExecutionStrategy` finding a message")
         void useStrategyFinding(){
             InboxMessage message = newMessage();
             client.find(message.getId());
@@ -333,7 +333,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` finding multiple messages")
+        @DisplayName("use provided `RequestExecutionStrategy` finding multiple messages")
         void useStrategyFindingMany(){
             List<InboxMessage> messages = generate(30);
             ShardIndex shard = messages.get(0)
@@ -350,7 +350,7 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("use provided `ErrorHandlingStrategy` finding newest messages")
+        @DisplayName("use provided `RequestExecutionStrategy` finding newest messages")
         void useStrategyReadingNewest(){
             InboxMessage olderMessage = toDeliver(
                     Timestamps.fromSeconds(100000L),
