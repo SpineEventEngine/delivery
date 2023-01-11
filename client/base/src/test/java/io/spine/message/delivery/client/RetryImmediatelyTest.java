@@ -20,7 +20,7 @@ import static io.spine.message.delivery.client.given.RunCountingVoidRequest.newR
 import static io.spine.message.delivery.client.given.RunCountingVoidRequest.throwUntil;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@DisplayName("RetryImmediately error handling strategy should")
+@DisplayName("`RetryImmediately` error handling strategy should")
 final class RetryImmediatelyTest {
 
     private RequestExecutionStrategy strategy;

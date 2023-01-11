@@ -22,7 +22,7 @@ import static java.lang.System.*;
 import static java.time.Duration.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("WaitAndRetry error handling strategy should")
+@DisplayName("`WaitAndRetry` error handling strategy should")
 final class WaitAndRetryTest {
 
     private RequestExecutionStrategy strategy;
