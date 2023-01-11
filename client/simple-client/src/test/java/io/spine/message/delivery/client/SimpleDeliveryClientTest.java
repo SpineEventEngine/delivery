@@ -7,6 +7,7 @@
 package io.spine.message.delivery.client;
 
 import com.google.protobuf.util.Timestamps;
+import io.spine.message.delivery.client.given.ExecutionCountingStrategy;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.DeliveryStrategy;
