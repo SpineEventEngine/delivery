@@ -7,7 +7,7 @@
 package io.spine.message.delivery.client;
 
 /**
- * An operation that has result after execution.
+ * Request that has result after execution.
  *
  * @param <R>
  *         type of the result.
@@ -15,7 +15,7 @@ package io.spine.message.delivery.client;
 public interface RequestWithResult<R> {
 
     /**
-     * Performs an action meant by the operation and returns the result.
+     * Performs an action meant by the request and returns the result.
      */
     R evaluate();
 }

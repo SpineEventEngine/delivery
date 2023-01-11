@@ -18,7 +18,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * An error handling strategy that will be waiting a certain amount of time before
- * retrying a failed operation.
+ * retrying a failed request.
  */
 public final class WaitAndRetry extends AbstractExecutionStrategy {
 
@@ -33,7 +33,7 @@ public final class WaitAndRetry extends AbstractExecutionStrategy {
      * Starts creation chain for the {@code WaitAndRetry} strategy.
      *
      * @param seconds
-     *         amount of seconds to wait before trying to execute failed operation again.
+     *         amount of seconds to wait before trying to execute failed request again.
      */
     public static Builder forSeconds(int seconds) {
         checkArgument(seconds > 0, "Amount seconds should be positive. Encountered: %s.", seconds);

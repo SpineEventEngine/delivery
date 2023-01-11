@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableList;
 import io.spine.message.delivery.client.ExecutionFailedException;
 
 /**
- * Strategy that doesn't handle errors but propagates them if the operation failed.
+ * Strategy that doesn't handle errors but propagates them if the request failed.
  */
 public final class Propagate extends AbstractExecutionStrategy {
 

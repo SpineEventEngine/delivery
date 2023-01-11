@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Encapsulates a list of other strategies and will apply each encapsulated strategy
- * to the operation if previous strategy failed.
+ * to the request if previous strategy failed.
  */
 public final class StrategyChain implements RequestExecutionStrategy {
 
@@ -42,7 +42,7 @@ public final class StrategyChain implements RequestExecutionStrategy {
     }
 
     /**
-     * Executes the given {@code operation} applying one strategy after another in case if previous
+     * Executes the given {@code request} applying one strategy after another in case if previous
      * strategy could not handle the occurred exception (the {@code StrategyFailedException} was
      * thrown by the strategy).
      *
@@ -50,12 +50,12 @@ public final class StrategyChain implements RequestExecutionStrategy {
      *         if none of the strategies could handle the occurred exception.
      */
     @Override
-    public void execute(VoidRequest operation) throws ExecutionFailedException {
-        checkNotNull(operation);
+    public void execute(VoidRequest request) throws ExecutionFailedException {
+        checkNotNull(request);
         List<Exception> occurredExceptions = new ArrayList<>();
         for (RequestExecutionStrategy strategy : strategies) {
             try {
-                strategy.execute(operation);
+                strategy.execute(request);
                 return;
             } catch (ExecutionFailedException e) {
                 occurredExceptions.addAll(e.causes());
@@ -65,7 +65,7 @@ public final class StrategyChain implements RequestExecutionStrategy {
     }
 
     /**
-     * Executes the given {@code operation} applying one strategy after another in case if previous
+     * Executes the given {@code request} applying one strategy after another in case if previous
      * strategy could not handle the occurred exception (the {@code StrategyFailedException} was
      * thrown by the strategy).
      *
@@ -73,12 +73,12 @@ public final class StrategyChain implements RequestExecutionStrategy {
      *         if none of the strategies could handle the occurred exception.
      */
     @Override
-    public <R> R evaluate(RequestWithResult<R> operation) throws ExecutionFailedException {
-        checkNotNull(operation);
+    public <R> R evaluate(RequestWithResult<R> request) throws ExecutionFailedException {
+        checkNotNull(request);
         List<Exception> occurredExceptions = new ArrayList<>();
         for (RequestExecutionStrategy strategy : strategies) {
             try {
-                return strategy.evaluate(operation);
+                return strategy.evaluate(request);
             } catch (ExecutionFailedException e) {
                 occurredExceptions.addAll(e.causes());
             }

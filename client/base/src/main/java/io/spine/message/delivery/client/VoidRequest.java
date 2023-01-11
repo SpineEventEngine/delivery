@@ -7,12 +7,12 @@
 package io.spine.message.delivery.client;
 
 /**
- * An operation that doesn't return value.
+ * Request that doesn't return value.
  */
 public interface VoidRequest {
 
     /**
-     * Performs an action meant by the operation.
+     * Performs an action meant by the request.
      */
     void run();
 }

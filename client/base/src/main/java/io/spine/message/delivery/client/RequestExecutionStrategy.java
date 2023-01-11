@@ -7,7 +7,7 @@
 package io.spine.message.delivery.client;
 
 /**
- * Strategy that executes operations and decides how to handle errors if any occurred.
+ * Strategy that executes requests and decides how to handle errors if any occurred.
  */
 public interface RequestExecutionStrategy {
 

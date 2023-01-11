@@ -15,7 +15,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Strategy that will be immediately retrying operations in case of failures.
+ * Strategy that will be immediately retrying requests in case of failures.
  */
 public final class RetryImmediately extends AbstractExecutionStrategy {
 
