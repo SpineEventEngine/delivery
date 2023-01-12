@@ -21,7 +21,7 @@ public interface RequestExecutionStrategy {
     void execute(VoidRequest operation) throws ExecutionFailedException;
 
     /**
-     * Executes the given {@code RequestWithResult} and handled occurred exceptions in the way
+     * Executes the given {@code RequestWithResult} and handles occurred exceptions in the way
      * implemented in a particular strategy.
      *
      * @throws ExecutionFailedException

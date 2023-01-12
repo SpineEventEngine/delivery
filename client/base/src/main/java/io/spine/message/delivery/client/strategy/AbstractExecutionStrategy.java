@@ -61,7 +61,7 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
      *
      * <p>This method will be called only if some exception occurred during the request execution.
      *
-     * @return The {@code Decision} on what the strategy should do next.
+     * @return the {@code Decision} on what the strategy should do next
      */
     protected abstract Decision handleException(RuntimeException e);
 
