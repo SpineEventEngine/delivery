@@ -18,8 +18,10 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Encapsulates a list of other strategies and will apply each encapsulated strategy
- * to the request if previous strategy failed.
+ * A chain of execution strategies.
+ *
+ * <p>Executes a request starting with the first strategy in chain. In case the execution fails,
+ * the next strategy in chain is picked.
  */
 public final class StrategyChain implements RequestExecutionStrategy {
 
@@ -47,7 +49,7 @@ public final class StrategyChain implements RequestExecutionStrategy {
      * thrown by the strategy).
      *
      * @throws ExecutionFailedException
-     *         if none of the strategies could handle the occurred exception.
+     *         if none of the strategies could handle the occurred exception
      */
     @Override
     public void execute(VoidRequest request) throws ExecutionFailedException {
@@ -70,7 +72,7 @@ public final class StrategyChain implements RequestExecutionStrategy {
      * thrown by the strategy).
      *
      * @throws ExecutionFailedException
-     *         if none of the strategies could handle the occurred exception.
+     *         if none of the strategies could handle the occurred exception
      */
     @Override
     public <R> R evaluate(RequestWithResult<R> request) throws ExecutionFailedException {

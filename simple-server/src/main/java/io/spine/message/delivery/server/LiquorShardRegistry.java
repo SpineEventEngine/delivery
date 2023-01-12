@@ -71,7 +71,7 @@ public final class LiquorShardRegistry implements Logging {
      *     stale and released automatically.
      * </ol>
      *
-     * <p> A worker that obtained the session should perform the desired actions with
+     * <p>A worker that obtained the session should perform the desired actions with
      * the sharded messages and then {@linkplain LiquorShardSession#complete() complete}
      * the session.
      *

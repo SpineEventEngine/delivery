@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableList;
 
 /**
  * Occurs when a {@link RequestExecutionStrategy} failed to recover after exception
- * thrown by the request.
+ * occurred during the request execution.
  */
 public final class ExecutionFailedException extends RuntimeException {
 
@@ -18,12 +18,18 @@ public final class ExecutionFailedException extends RuntimeException {
     private final ImmutableList<Exception> causes;
 
     public ExecutionFailedException(ImmutableList<Exception> causes) {
-        super("Strategy was unable to handle errors.");
+        super("Error sending the request to the Liquor server, errors during the request execution could not be handled.");
         this.causes = causes;
     }
 
     /**
-     * Returns exceptions occurred during operation execution.
+     * Returns exceptions occurred during request execution.
+     *
+     * <p>Each element of the list is an exception occurred during a single try of
+     * the request execution. Depending on the implementation of
+     * the {@link RequestExecutionStrategy} there may be several retries.
+     *
+     * <p>The exception thrown first will be the first element in the list.
      */
     public ImmutableList<Exception> causes() {
         return causes;

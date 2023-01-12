@@ -16,7 +16,7 @@ public interface RequestExecutionStrategy {
      * implemented in a particular strategy.
      *
      * @throws ExecutionFailedException
-     *         if strategy is unable to handle the occurred exception.
+     *         if strategy is unable to handle the occurred exception
      */
     void execute(VoidRequest operation) throws ExecutionFailedException;
 
@@ -25,7 +25,7 @@ public interface RequestExecutionStrategy {
      * implemented in a particular strategy.
      *
      * @throws ExecutionFailedException
-     *         if strategy is unable to handle the occurred exception.
+     *         if strategy is unable to handle the occurred exception
      */
     <R> R evaluate(RequestWithResult<R> operation) throws ExecutionFailedException;
 }

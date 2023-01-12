@@ -119,11 +119,11 @@ public final class SimpleDeliveryClient
     /**
      * {@inheritDoc}
      *
-     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
      *         if there were some issues that chosen {@code RequestExecutionStrategy}
-     *         could not handle.
+     *         could not handle
      */
     @Override
     public void writeMessage(InboxMessage message) throws ExecutionFailedException {
@@ -137,11 +137,11 @@ public final class SimpleDeliveryClient
     /**
      * {@inheritDoc}
      *
-     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
      *         if there were some issues that chosen {@code RequestExecutionStrategy}
-     *         could not handle.
+     *         could not handle
      */
     @Override
     public void writeMessages(ShardIndex shard, Iterable<InboxMessage> messages)
@@ -158,11 +158,11 @@ public final class SimpleDeliveryClient
     /**
      * {@inheritDoc}
      *
-     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
      *         if there were some issues that chosen {@code RequestExecutionStrategy}
-     *         could not handle.
+     *         could not handle
      */
     @Override
     public void removeMessage(InboxMessage message) throws ExecutionFailedException {
@@ -176,11 +176,11 @@ public final class SimpleDeliveryClient
     /**
      * {@inheritDoc}
      *
-     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
      *         if there were some issues that chosen {@code RequestExecutionStrategy}
-     *         could not handle.
+     *         could not handle
      */
     @Override
     public void removeMessages(ShardIndex shard, Iterable<InboxMessage> messages)
@@ -197,11 +197,11 @@ public final class SimpleDeliveryClient
     /**
      * {@inheritDoc}
      *
-     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
      *         if there were some issues that chosen {@code RequestExecutionStrategy}
-     *         could not handle.
+     *         could not handle
      */
     @Override
     public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker)
@@ -228,11 +228,11 @@ public final class SimpleDeliveryClient
     /**
      * {@inheritDoc}
      *
-     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
      *         if there were some issues that chosen {@code RequestExecutionStrategy}
-     *         could not handle.
+     *         could not handle
      */
     @Override
     public void releaseShard(ShardIndex shard, WorkerId worker) throws ExecutionFailedException {
@@ -248,11 +248,11 @@ public final class SimpleDeliveryClient
     /**
      * {@inheritDoc}
      *
-     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
      *         if there were some issues that chosen {@code RequestExecutionStrategy}
-     *         could not handle.
+     *         could not handle
      */
     @Override
     public ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod)
@@ -273,11 +273,11 @@ public final class SimpleDeliveryClient
     /**
      * {@inheritDoc}
      *
-     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
      *         if there were some issues that chosen {@code RequestExecutionStrategy}
-     *         could not handle.
+     *         could not handle
      */
     @Override
     public Optional<InboxMessage> find(InboxMessageId messageId) throws ExecutionFailedException {
@@ -301,11 +301,11 @@ public final class SimpleDeliveryClient
     /**
      * {@inheritDoc}
      *
-     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
      *         if there were some issues that chosen {@code RequestExecutionStrategy}
-     *         could not handle.
+     *         could not handle
      */
     @Override
     public Page<InboxMessage> readAll(ShardIndex shard, int pageSize)
@@ -339,11 +339,11 @@ public final class SimpleDeliveryClient
     /**
      * {@inheritDoc}
      *
-     * <p> Uses the {@link RequestExecutionStrategy} to execute this request.
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
      *         if there were some issues that chosen {@code RequestExecutionStrategy}
-     *         could not handle.
+     *         could not handle
      */
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard)

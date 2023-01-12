@@ -25,9 +25,9 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
      * Increments the execution counter for {@code VoidRequest} and executes
      * the given {@code operation}.
      *
-     * <p> Even if the operation throws an exception it will be counted as execution.
+     * <p>Even if the operation throws an exception it will be counted as execution.
      *
-     * @throws ExecutionFailedException if the operation throws an exception.
+     * @throws ExecutionFailedException if the operation throws an exception
      */
     @Override
     public void execute(VoidRequest operation) throws ExecutionFailedException {
@@ -43,9 +43,9 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
      * Increments the execution counter for {@code RequestWithResult} and executes
      * the given {@code operation}.
      *
-     * <p> Even if the operation throws an exception it will be counted as execution.
+     * <p>Even if the operation throws an exception it will be counted as execution.
      *
-     * @throws ExecutionFailedException if the operation throws an exception.
+     * @throws ExecutionFailedException if the operation throws an exception
      */
     @Override
     public <R> R evaluate(RequestWithResult<R> operation) throws ExecutionFailedException {

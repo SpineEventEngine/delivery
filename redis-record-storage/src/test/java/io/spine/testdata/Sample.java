@@ -44,7 +44,7 @@ public class Sample {
      * Generates a new stub {@link Message.Builder} with all the fields set to
      * {@link Random random} values.
      *
-     * <p> All the fields are guaranteed to be not {@code null} and not default.
+     * <p>All the fields are guaranteed to be not {@code null} and not default.
      * Number and {@code boolean} fields may or may not have their default values ({@code 0} and
      * {@code false}).
      *
@@ -81,7 +81,7 @@ public class Sample {
     /**
      * Generates a new stub {@link Message} with all the fields set to {@link Random random} values.
      *
-     * <p> All the fields are guaranteed to be not {@code null} and not default.
+     * <p>All the fields are guaranteed to be not {@code null} and not default.
      * Number and {@code boolean} fields
      * may or may not have their default values ({@code 0} and {@code false}).
      *

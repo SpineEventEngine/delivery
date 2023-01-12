@@ -75,8 +75,8 @@ public abstract class AbstractDeliveryBootstrapper<T extends AbstractDeliveryBoo
     protected abstract T self();
 
     /**
-     * Returns configured {@code RequestExecutionStrategy} or {@link Propagate} strategy if
-     * was not configured.
+     * Returns configured {@code RequestExecutionStrategy} or {@link Propagate} strategy
+     * if it was not customized.
      */
     protected final RequestExecutionStrategy executionStrategy() {
         return strategy;

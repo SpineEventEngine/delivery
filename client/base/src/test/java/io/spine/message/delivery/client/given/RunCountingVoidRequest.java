@@ -13,7 +13,7 @@ import static java.lang.String.format;
 /**
  * Request for testing purposes that count executions of itself.
  *
- * <p> Can be instructed to throw exceptions.
+ * <p>Can be instructed to throw exceptions.
  */
 public final class RunCountingVoidRequest implements VoidRequest {
 

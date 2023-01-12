@@ -10,7 +10,7 @@ package io.spine.message.delivery.client;
  * Request that has result after execution.
  *
  * @param <R>
- *         type of the result.
+ *         type of the result
  */
 public interface RequestWithResult<R> {
 
