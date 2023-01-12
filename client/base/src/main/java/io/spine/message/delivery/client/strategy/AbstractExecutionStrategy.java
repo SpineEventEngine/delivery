@@ -6,10 +6,14 @@
 
 package io.spine.message.delivery.client.strategy;
 
+import com.google.common.collect.ImmutableList;
 import io.spine.message.delivery.client.ExecutionFailedException;
 import io.spine.message.delivery.client.RequestExecutionStrategy;
 import io.spine.message.delivery.client.RequestWithResult;
 import io.spine.message.delivery.client.VoidRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -22,12 +26,16 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
     @Override
     public final void execute(VoidRequest request) throws ExecutionFailedException {
         checkNotNull(request);
+        List<RuntimeException> occurredExceptions = new ArrayList<>();
         while (true) {
             try {
                 request.run();
                 return;
             } catch (RuntimeException e) {
-                handleException(e);
+                occurredExceptions.add(e);
+                if (handleException(e) == Decision.STOP_AND_THROW) {
+                    throw new ExecutionFailedException(ImmutableList.copyOf(occurredExceptions));
+                }
             }
         }
     }
@@ -35,11 +43,15 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
     @Override
     public final <R> R evaluate(RequestWithResult<R> request) throws ExecutionFailedException {
         checkNotNull(request);
+        List<RuntimeException> occurredExceptions = new ArrayList<>();
         while (true) {
             try {
                 return request.evaluate();
             } catch (RuntimeException e) {
-                handleException(e);
+                occurredExceptions.add(e);
+                if (handleException(e) == Decision.STOP_AND_THROW) {
+                    throw new ExecutionFailedException(ImmutableList.copyOf(occurredExceptions));
+                }
             }
         }
     }
@@ -49,9 +61,23 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
      *
      * <p>This method will be called only if some exception occurred during the request execution.
      *
-     * <p>If this method returns without throwing an exception, it means that some recovery steps
-     * were taken and the strategy can retry the request execution. The strategy will be retrying
-     * request executions until this method throws {@code ExecutionFailedException}.
+     * @return The {@code Decision} on what the strategy should do next.
      */
-    protected abstract void handleException(RuntimeException e) throws ExecutionFailedException;
+    protected abstract Decision handleException(RuntimeException e);
+
+    /**
+     * A decision made by the error handler about the next steps to take by the execution strategy.
+     */
+    protected enum Decision {
+
+        /**
+         * Retry the request execution.
+         */
+        RETRY,
+
+        /**
+         * Stop the execution and throw exception.
+         */
+        STOP_AND_THROW,
+    }
 }

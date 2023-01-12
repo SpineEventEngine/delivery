@@ -6,12 +6,6 @@
 
 package io.spine.message.delivery.client.strategy;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.message.delivery.client.ExecutionFailedException;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -22,8 +16,6 @@ public final class RetryImmediately extends AbstractExecutionStrategy {
     private final int retryCount;
 
     private int attempts = 0;
-
-    private final List<RuntimeException> occurredExceptions = new ArrayList<>();
 
     /**
      * Create a new {@code RetryImmediately} strategy with the given amount of retry attempts.
@@ -39,11 +31,11 @@ public final class RetryImmediately extends AbstractExecutionStrategy {
     }
 
     @Override
-    protected void handleException(RuntimeException e) throws ExecutionFailedException {
+    protected Decision handleException(RuntimeException e) {
         attempts++;
-        occurredExceptions.add(e);
         if (attempts >= retryCount) {
-            throw new ExecutionFailedException(ImmutableList.copyOf(occurredExceptions));
+            return Decision.STOP_AND_THROW;
         }
+        return Decision.RETRY;
     }
 }
