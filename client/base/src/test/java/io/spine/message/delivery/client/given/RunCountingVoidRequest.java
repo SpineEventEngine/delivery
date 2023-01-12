@@ -11,7 +11,7 @@ import io.spine.message.delivery.client.VoidRequest;
 import static java.lang.String.format;
 
 /**
- * Request for testing purposes that count executions of itself.
+ * Request for testing purposes that count executions of itself and returns nothing.
  *
  * <p>Can be instructed to throw exceptions.
  */

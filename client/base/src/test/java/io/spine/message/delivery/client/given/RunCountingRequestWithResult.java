@@ -11,7 +11,8 @@ import io.spine.message.delivery.client.RequestWithResult;
 import static java.lang.String.format;
 
 /**
- * Request for testing purposes that count executions of itself.
+ * Request for testing purposes that count executions of itself and returns a predefined
+ * string result.
  *
  * <p>Can be instructed to throw exceptions.
  */
