@@ -6,14 +6,12 @@
 
 package io.spine.message.delivery.client.strategy;
 
-import com.google.common.collect.ImmutableList;
 import io.spine.message.delivery.client.ExecutionFailedException;
 import io.spine.message.delivery.client.RequestExecutionStrategy;
 import io.spine.message.delivery.client.RequestWithResult;
 import io.spine.message.delivery.client.VoidRequest;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -26,58 +24,45 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
     @Override
     public final void execute(VoidRequest request) throws ExecutionFailedException {
         checkNotNull(request);
-        List<RuntimeException> occurredExceptions = new ArrayList<>();
-        while (true) {
-            try {
-                request.run();
-                return;
-            } catch (RuntimeException e) {
-                occurredExceptions.add(e);
-                if (handleException(e) == Decision.STOP_AND_THROW) {
-                    throw new ExecutionFailedException(ImmutableList.copyOf(occurredExceptions));
-                }
-            }
+        try {
+            request.run();
+        } catch (RuntimeException e) {
+            handleException(e, () -> execute(request)).run();
         }
     }
 
     @Override
     public final <R> R evaluate(RequestWithResult<R> request) throws ExecutionFailedException {
         checkNotNull(request);
-        List<RuntimeException> occurredExceptions = new ArrayList<>();
-        while (true) {
-            try {
-                return request.evaluate();
-            } catch (RuntimeException e) {
-                occurredExceptions.add(e);
-                if (handleException(e) == Decision.STOP_AND_THROW) {
-                    throw new ExecutionFailedException(ImmutableList.copyOf(occurredExceptions));
-                }
-            }
+        try {
+            return request.evaluate();
+        } catch (RuntimeException e) {
+            return this.handleException(e, () -> evaluate(request))
+                       .get();
         }
     }
 
     /**
-     * Handles the given exception as meant by the strategy.
+     * Handles the exception occurred during the {@code RequestWithResult} execution.
      *
-     * <p>This method will be called only if some exception occurred during the request execution.
-     *
-     * @return the {@code Decision} on what the strategy should do next
+     * @param e
+     *         occurred exception
+     * @param operation
+     *         executable operation
+     * @param <R>
+     *         type of the result
+     * @return an action that should be executed
      */
-    protected abstract Decision handleException(RuntimeException e);
+    protected abstract <R> Supplier<R> handleException(Exception e, Supplier<R> operation);
 
     /**
-     * A decision made by the error handler about the next steps to take by the execution strategy.
+     * Handles an exception occurred during the {@code VoidRequest} execution.
+     *
+     * @param e
+     *         occurred exception
+     * @param operation
+     *         executable operation
+     * @return an action that should be executed
      */
-    protected enum Decision {
-
-        /**
-         * Retry the request execution.
-         */
-        RETRY,
-
-        /**
-         * Stop the execution and throw exception.
-         */
-        STOP_AND_THROW,
-    }
+    protected abstract Runnable handleException(Exception e, Runnable operation);
 }

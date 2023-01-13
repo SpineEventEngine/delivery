@@ -6,16 +6,23 @@
 
 package io.spine.message.delivery.client.strategy;
 
+import com.google.common.collect.ImmutableList;
+import io.spine.message.delivery.client.ExecutionFailedException;
+
+import java.util.function.Supplier;
+
 /**
  * Strategy that doesn't handle errors but propagates them if the request failed.
  */
 public final class Propagate extends AbstractExecutionStrategy {
 
-    /**
-     * Always makes the strategy to stop execution and throw {@code ExecutionFailedException}.
-     */
     @Override
-    protected Decision handleException(RuntimeException e) {
-        return Decision.STOP_AND_THROW;
+    protected <R> Supplier<R> handleException(Exception e, Supplier<R> operation) {
+        throw new ExecutionFailedException(ImmutableList.of(e));
+    }
+
+    @Override
+    protected Runnable handleException(Exception e, Runnable operation) {
+        throw new ExecutionFailedException(ImmutableList.of(e));
     }
 }
