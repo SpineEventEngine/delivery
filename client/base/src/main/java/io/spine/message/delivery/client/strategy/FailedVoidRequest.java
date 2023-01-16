@@ -20,6 +20,15 @@ public final class FailedVoidRequest {
 
     private final ImmutableList<RuntimeException> allExceptions;
 
+    /**
+     * Create a new {@code FailedVoidRequest} with the given {@code retry} function and
+     * previously occurred exceptions.
+     *
+     * @param retry
+     *         function that will be retrying the original request.
+     * @param allExceptions
+     *         previously occurred exceptions.
+     */
     FailedVoidRequest(Runnable retry, ImmutableList<RuntimeException> allExceptions) {
         checkArgument(!allExceptions.isEmpty(), "The exception list should not be empty.");
         this.retry = retry;
