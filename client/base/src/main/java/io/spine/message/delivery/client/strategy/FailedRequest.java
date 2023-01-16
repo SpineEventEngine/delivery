@@ -6,10 +6,14 @@
 
 package io.spine.message.delivery.client.strategy;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import io.spine.message.delivery.client.ExecutionFailedException;
+import io.spine.util.Preconditions2;
 
 import java.util.function.Supplier;
+
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Summary of the {@code RequestWithResult} failure.
@@ -24,6 +28,7 @@ public final class FailedRequest<R> {
     private final ImmutableList<RuntimeException> allExceptions;
 
     FailedRequest(Supplier<R> retry, ImmutableList<RuntimeException> allExceptions) {
+        checkArgument(!allExceptions.isEmpty(), "The exception list should not be empty.");
         this.retry = retry;
         this.allExceptions = allExceptions;
     }

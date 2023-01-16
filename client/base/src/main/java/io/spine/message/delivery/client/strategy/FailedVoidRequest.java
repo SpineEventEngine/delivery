@@ -9,6 +9,8 @@ package io.spine.message.delivery.client.strategy;
 import com.google.common.collect.ImmutableList;
 import io.spine.message.delivery.client.ExecutionFailedException;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 /**
  * Summary of the {@code VoidRequest} failure.
  */
@@ -19,6 +21,7 @@ public final class FailedVoidRequest {
     private final ImmutableList<RuntimeException> allExceptions;
 
     FailedVoidRequest(Runnable retry, ImmutableList<RuntimeException> allExceptions) {
+        checkArgument(!allExceptions.isEmpty(), "The exception list should not be empty.");
         this.retry = retry;
         this.allExceptions = allExceptions;
     }
