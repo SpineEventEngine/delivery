@@ -6,11 +6,6 @@
 
 package io.spine.message.delivery.client.strategy;
 
-import com.google.common.collect.ImmutableList;
-import io.spine.message.delivery.client.ExecutionFailedException;
-
-import java.util.function.Supplier;
-
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
@@ -36,20 +31,21 @@ public final class RetryImmediately extends AbstractExecutionStrategy {
     }
 
     @Override
-    protected <R> Supplier<R> handleException(Exception e, Supplier<R> operation) {
+    protected <R> ActionWithResult<R> handleException(
+            FailureReportForNonVoidRequest<R> failure) {
         attempts++;
         if (attempts >= retryCount) {
-            throw new ExecutionFailedException(ImmutableList.of(e));
+            return failure.propagate();
         }
-        return operation;
+        return failure.retry();
     }
 
     @Override
-    protected Runnable handleException(Exception e, Runnable operation) {
+    protected Action handleException(FailureReport failure) {
         attempts++;
         if (attempts >= retryCount) {
-            throw new ExecutionFailedException(ImmutableList.of(e));
+            return failure.propagate();
         }
-        return operation;
+        return failure.retry();
     }
 }

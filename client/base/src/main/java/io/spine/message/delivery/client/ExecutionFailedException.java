@@ -15,9 +15,12 @@ import com.google.common.collect.ImmutableList;
 public final class ExecutionFailedException extends RuntimeException {
 
     private static final long serialVersionUID = -5015255727872841600L;
-    private final ImmutableList<Exception> causes;
+    private final ImmutableList<RuntimeException> causes;
 
-    public ExecutionFailedException(ImmutableList<Exception> causes) {
+    /**
+     * Creates a new {@code ExecutionFailedException} with the given {@code causes}.
+     */
+    public ExecutionFailedException(ImmutableList<RuntimeException> causes) {
         super("Error sending the request to the Liquor server, errors during the request execution could not be handled.");
         this.causes = causes;
     }
@@ -31,7 +34,7 @@ public final class ExecutionFailedException extends RuntimeException {
      *
      * <p>The exception thrown first will be the first element in the list.
      */
-    public ImmutableList<Exception> causes() {
+    public ImmutableList<RuntimeException> causes() {
         return causes;
     }
 }

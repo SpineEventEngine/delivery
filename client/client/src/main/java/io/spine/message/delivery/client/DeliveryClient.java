@@ -229,7 +229,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                     .evaluate(() -> sessionRegistry.pickShard(pickUpShard));
             return Optional.of(shardPickedUp);
         } catch (ExecutionFailedException e) {
-            ImmutableList<Exception> occurredExceptions = e.causes();
+            ImmutableList<RuntimeException> occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
             _warn().log("Unable to pick up shard `%s`: %s.", shard, getStackTraceAsString(last));
         }

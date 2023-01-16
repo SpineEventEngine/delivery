@@ -217,7 +217,7 @@ public final class SimpleDeliveryClient
                     .evaluate(() -> shardService.pickShard(pickUpShard));
             return Optional.of(shardPickedUp);
         } catch (ExecutionFailedException e) {
-            ImmutableList<Exception> occurredExceptions = e.causes();
+            ImmutableList<RuntimeException> occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
             _warn().log("[SimpleClient] Unable to pick up shard `%s`: %s.",
                         shard, getStackTraceAsString(last));
