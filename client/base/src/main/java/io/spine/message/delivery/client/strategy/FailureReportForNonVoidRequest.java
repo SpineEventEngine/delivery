@@ -54,6 +54,9 @@ public final class FailureReportForNonVoidRequest<R> {
 
     /**
      * Returns a list of all occurred exceptions.
+     *
+     * <p>The exception thrown first will be the first element in the list. The last element in
+     * the list is the exception that caused this failure.
      */
     public ImmutableList<RuntimeException> allExceptions() {
         return allExceptions;
