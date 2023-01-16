@@ -31,8 +31,7 @@ public final class RetryImmediately extends AbstractExecutionStrategy {
     }
 
     @Override
-    protected <R> ActionWithResult<R> handleException(
-            FailedRequest<R> failure) {
+    protected <R> ActionWithResult<R> handleException(FailedRequest<R> failure) {
         attempts++;
         if (attempts >= retryCount) {
             return failure.propagate();
