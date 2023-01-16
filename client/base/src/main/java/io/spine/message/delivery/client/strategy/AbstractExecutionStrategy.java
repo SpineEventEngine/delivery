@@ -137,6 +137,9 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
 
     /**
      * Summary of the {@code RequestWithResult} failure.
+     *
+     * @param <R>
+     *         type of result that have to be returned by the {@code RequestWithResult}.
      */
     protected static class FailureReportForNonVoidRequest<R> {
 
@@ -187,6 +190,10 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
 
     /**
      * An operation that is applied when {@code RequestWithResult} failed.
+     *
+     * @param <R>
+     *         type of result that have to be returned by the {@code RequestWithResult}. This
+     *         action can return a result instead of the request in case of request failure.
      */
     protected interface ActionWithResult<R> {
 
