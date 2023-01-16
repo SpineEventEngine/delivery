@@ -7,6 +7,7 @@
 package io.spine.message.delivery.client;
 
 import com.google.protobuf.util.Timestamps;
+import io.spine.message.delivery.client.given.ExecutionCountingStrategy;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.DeliveryStrategy;
@@ -28,11 +29,13 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.message.delivery.client.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -46,10 +49,14 @@ final class SimpleDeliveryClientTest {
 
     private @MonotonicNonNull SimpleDeliveryClient client;
 
+    private @MonotonicNonNull ExecutionCountingStrategy strategy;
+
     @BeforeEach
     void connectClient() {
         server.start();
-        client = SimpleDeliveryClient.create(server.getHost(), server.getFirstMappedPort());
+        strategy = new ExecutionCountingStrategy();
+        client = SimpleDeliveryClient
+                .create(server.getHost(), server.getFirstMappedPort(), strategy);
     }
 
     @AfterEach
@@ -96,6 +103,29 @@ final class SimpleDeliveryClientTest {
             Optional<ShardPickedUp> secondAttempt = client.pickUpShard(shard, worker);
             assertThat(secondAttempt)
                     .isEmpty();
+        }
+
+        @Test
+        @DisplayName("use provided `ExecutionCountingStrategy` picking up a shard.")
+        void useStrategyPickingUpShard(){
+            client.pickUpShard(shard, worker);
+
+            assertThat(strategy.voidExecutions())
+                    .isEqualTo(0);
+            assertThat(strategy.withResultEvaluations())
+                    .isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("use provided `ExecutionCountingStrategy` releasing a shard.")
+        void useStrategyReleasingShard(){
+            client.pickUpShard(shard, worker);
+            client.releaseShard(shard, worker);
+
+            assertThat(strategy.voidExecutions())
+                    .isEqualTo(0);
+            assertThat(strategy.withResultEvaluations())
+                    .isEqualTo(2);
         }
     }
 
@@ -154,6 +184,66 @@ final class SimpleDeliveryClientTest {
             Page<InboxMessage> writtenMessages = client.readAll(shard, 10);
             assertThat(writtenMessages.size())
                     .isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("use provided `RequestExecutionStrategy` writing a message")
+        void useStrategyWritingMessage(){
+            InboxMessage message = newMessage();
+            client.writeMessage(message);
+
+            assertThat(strategy.voidExecutions())
+                    .isEqualTo(0);
+            assertThat(strategy.withResultEvaluations())
+                    .isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("use provided `RequestExecutionStrategy` removing a message")
+        void useStrategyRemovingMessage(){
+            InboxMessage message = newMessage();
+            client.writeMessage(message);
+            client.removeMessage(message);
+
+            assertThat(strategy.voidExecutions())
+                    .isEqualTo(0);
+            assertThat(strategy.withResultEvaluations())
+                    .isEqualTo(2);
+        }
+
+        @Test
+        @DisplayName("use provided `RequestExecutionStrategy` writing multiple messages")
+        void useStrategyWritingMessages(){
+            InboxMessage firstMessage = newMessage();
+            InboxMessage secondMessage = newMessage();
+            ShardIndex shard = firstMessage.shardIndex();
+            client.writeMessages(
+                    shard, ImmutableList.of(firstMessage, secondMessage)
+            );
+
+            assertThat(strategy.voidExecutions())
+                    .isEqualTo(0);
+            assertThat(strategy.withResultEvaluations())
+                    .isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("use provided `RequestExecutionStrategy` removing multiple messages")
+        void useStrategyRemovingMessages(){
+            InboxMessage firstMessage = newMessage();
+            InboxMessage secondMessage = newMessage();
+            ShardIndex shard = firstMessage.shardIndex();
+            client.writeMessages(
+                    shard, ImmutableList.of(firstMessage, secondMessage)
+            );
+            client.removeMessages(
+                    shard, ImmutableList.of(firstMessage, secondMessage)
+            );
+
+            assertThat(strategy.voidExecutions())
+                    .isEqualTo(0);
+            assertThat(strategy.withResultEvaluations())
+                    .isEqualTo(2);
         }
     }
 
@@ -225,6 +315,63 @@ final class SimpleDeliveryClientTest {
                     client.newestMessageToDeliver(olderMessage.shardIndex());
             assertThat(actual)
                     .hasValue(newestMessage);
+        }
+
+        @Test
+        @DisplayName("use provided `RequestExecutionStrategy` finding a message")
+        void useStrategyFinding(){
+            InboxMessage message = newMessage();
+            client.find(message.getId());
+
+            assertThat(strategy.voidExecutions())
+                    .isEqualTo(0);
+            assertThat(strategy.withResultEvaluations())
+                    .isEqualTo(1);
+        }
+
+        @Test
+        @DisplayName("use provided `RequestExecutionStrategy` finding multiple messages")
+        void useStrategyFindingMany(){
+            List<InboxMessage> messages = generate(30);
+            ShardIndex shard = messages.get(0)
+                                       .shardIndex();
+            client.writeMessages(shard, messages);
+            sleepUninterruptibly(1, TimeUnit.SECONDS);
+            int pageSize = 10;
+            client.readAll(shard, pageSize);
+
+            assertThat(strategy.voidExecutions())
+                    .isEqualTo(0);
+            assertThat(strategy.withResultEvaluations())
+                    .isEqualTo(2);
+        }
+
+        @Test
+        @DisplayName("use provided `RequestExecutionStrategy` finding newest messages")
+        void useStrategyReadingNewest(){
+            InboxMessage olderMessage = toDeliver(
+                    Timestamps.fromSeconds(100000L),
+                    TypeUrl.from(Something.getDescriptor())
+            );
+            InboxMessage newerMessage = toDeliver(
+                    Timestamps.fromSeconds(100001L),
+                    TypeUrl.from(Something.getDescriptor())
+            );
+            InboxMessage newestMessage = toDeliver(
+                    Timestamps.fromSeconds(100002L),
+                    TypeUrl.from(Something.getDescriptor())
+            );
+            client.writeMessages(
+                    olderMessage.shardIndex(),
+                    ImmutableList.of(olderMessage, newestMessage, newerMessage)
+            );
+            sleepUninterruptibly(1, TimeUnit.SECONDS);
+            client.newestMessageToDeliver(olderMessage.shardIndex());
+
+            assertThat(strategy.voidExecutions())
+                    .isEqualTo(0);
+            assertThat(strategy.withResultEvaluations())
+                    .isEqualTo(2);
         }
 
         private List<InboxMessage> generate(int number) {

@@ -13,15 +13,17 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.grpc.StatusRuntimeException;
 import io.spine.base.CommandMessage;
 import io.spine.base.Error;
 import io.spine.client.Client;
+import io.spine.client.CommandRequest;
 import io.spine.client.OrderBy;
 import io.spine.client.QueryFilter;
+import io.spine.client.QueryRequest;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.InboxMessageHolder.Column;
+import io.spine.message.delivery.client.strategy.Propagate;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.command.ReleaseShard;
@@ -41,9 +43,12 @@ import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Throwables.getStackTraceAsString;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.Iterables.toArray;
 import static io.spine.client.OrderBy.Direction.DESCENDING;
@@ -52,7 +57,6 @@ import static io.spine.client.QueryFilter.gt;
 import static io.spine.server.delivery.InboxMessageStatus.TO_DELIVER;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
-import static io.spine.util.Preconditions2.checkPositive;
 
 /**
  * A client for working with the Message Delivery server.
@@ -65,8 +69,10 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
 
     private final Client client;
     private final ShardSessionRegistryServiceBlockingStub sessionRegistry;
+    private final RequestExecutionStrategy requestExecutionStrategy;
 
-    private DeliveryClient(ManagedChannel channel) {
+    private DeliveryClient(ManagedChannel channel, RequestExecutionStrategy strategy) {
+        requestExecutionStrategy = strategy;
         client = Client
                 .usingChannel(channel)
                 .withGuestId("DeliveryClient")
@@ -76,32 +82,59 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
 
     /**
      * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
-     * and {@code port}.
+     * and {@code port} and uses the {@link Propagate} {@code RequestExecutionStrategy}.
      */
     @SuppressWarnings("CheckReturnValue" /* We're fine to just `check` args. */)
     static DeliveryClient create(String host, int port) {
+        return create(host, port, new Propagate());
+    }
+
+    /**
+     * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
+     * and {@code port} and uses the given {@code RequestExecutionStrategy}.
+     */
+    static DeliveryClient create(String host, int port, RequestExecutionStrategy strategy) {
         checkNotEmptyOrBlank(host);
-        checkPositive(port);
+        checkArgument(port > 0, "A positive value expected. Encountered: %s.", port);
+        checkNotNull(strategy);
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(host, port)
                 .usePlaintext()
                 .build();
-        return new DeliveryClient(channel);
+        return new DeliveryClient(channel, strategy);
     }
 
     /**
      * Creates a new delivery client which connects to a gRPC server
-     * using specified {@code channel}.
+     * using specified {@code channel} and {@link Propagate} {@code RequestExecutionStrategy}.
      */
     public static DeliveryClient create(ManagedChannel channel) {
-        checkNotNull(channel);
-        logger.atConfig()
-              .log("Creating a `DeliveryClient` for the channel `%s`.", channel);
-        return new DeliveryClient(channel);
+        return create(channel, new Propagate());
     }
 
+    /**
+     * Creates a new delivery client which connects to a gRPC server
+     * using specified {@code channel} and uses the given {@code RequestExecutionStrategy}.
+     */
+    public static DeliveryClient create(ManagedChannel channel, RequestExecutionStrategy strategy) {
+        checkNotNull(channel);
+        checkNotNull(strategy);
+        logger.atConfig()
+              .log("Creating a `DeliveryClient` for the channel `%s`.", channel);
+        return new DeliveryClient(channel, strategy);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
     @Override
-    public void writeMessage(InboxMessage message) {
+    public void writeMessage(InboxMessage message) throws ExecutionFailedException {
         checkNotDefaultArg(message);
         WriteMessage writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
@@ -109,8 +142,18 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         post(writeMessage);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
     @Override
-    public void writeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
+    public void writeMessages(ShardIndex shard, Iterable<InboxMessage> messages)
+            throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotNull(messages);
         WriteMessages writeMessages = WriteMessages.newBuilder()
@@ -120,8 +163,17 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         post(writeMessages);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
     @Override
-    public void removeMessage(InboxMessage message) {
+    public void removeMessage(InboxMessage message) throws ExecutionFailedException {
         checkNotDefaultArg(message);
         RemoveMessage removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
@@ -129,8 +181,18 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         post(removeMessage);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
     @Override
-    public void removeMessages(ShardIndex shard, Iterable<InboxMessage> messages) {
+    public void removeMessages(ShardIndex shard, Iterable<InboxMessage> messages)
+            throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotNull(messages);
         RemoveMessages removeMessages = RemoveMessages.newBuilder()
@@ -140,8 +202,18 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         post(removeMessages);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
     @Override
-    public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker) {
+    public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker)
+            throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
         PickUpShard pickUpShard = PickUpShard.newBuilder()
@@ -152,16 +224,29 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 "Posting `PickUpShard` command and waiting for a response event `ShardPickedUp`."
         );
         try {
-            ShardPickedUp shardPickedUp = sessionRegistry.pickShard(pickUpShard);
+
+            ShardPickedUp shardPickedUp = requestExecutionStrategy
+                    .evaluate(() -> sessionRegistry.pickShard(pickUpShard));
             return Optional.of(shardPickedUp);
-        } catch (StatusRuntimeException e) {
-            _trace().log("Unable to pick up shard `%s`: %s.", shard, e.getStatus());
+        } catch (ExecutionFailedException e) {
+            ImmutableList<RuntimeException> occurredExceptions = e.causes();
+            Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
+            _warn().log("Unable to pick up shard `%s`: %s.", shard, getStackTraceAsString(last));
         }
         return Optional.empty();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
     @Override
-    public void releaseShard(ShardIndex shard, WorkerId worker) {
+    public void releaseShard(ShardIndex shard, WorkerId worker) throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
         ReleaseShard releaseShard = ReleaseShard.newBuilder()
@@ -171,8 +256,18 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         post(releaseShard);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
     @Override
-    public ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod) {
+    public ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod)
+            throws ExecutionFailedException {
         checkNotDefaultArg(inactivityPeriod);
         ReleaseExpiredSessions releaseExpiredSessions = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(inactivityPeriod)
@@ -181,25 +276,46 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 "Posting `ReleaseExpiredSessions` command " +
                         "and waiting for a response event `ExpiredSessionsReleased`."
         );
-        ExpiredSessionsReleased sessionsReleased =
-                sessionRegistry.releaseSessions(releaseExpiredSessions);
+
+        ExpiredSessionsReleased sessionsReleased = requestExecutionStrategy
+                .evaluate(() -> sessionRegistry.releaseSessions(releaseExpiredSessions));
         return sessionsReleased;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
     @Override
-    public Optional<InboxMessage> find(InboxMessageId messageId) {
+    public Optional<InboxMessage> find(InboxMessageId messageId) throws ExecutionFailedException {
         checkNotDefaultArg(messageId);
-        return client.asGuest()
-                     .select(InboxMessageHolder.class)
-                     .byId(messageId)
-                     .run()
-                     .stream()
+        QueryRequest<InboxMessageHolder> request =
+                client.asGuest()
+                      .select(InboxMessageHolder.class)
+                      .byId(messageId);
+        List<InboxMessageHolder> result = requestExecutionStrategy.evaluate(request::run);
+        return result.stream()
                      .findFirst()
                      .map(InboxMessageHolder::getMessage);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
     @Override
-    public Page<InboxMessage> readAll(ShardIndex shard, int pageSize) {
+    public Page<InboxMessage> readAll(ShardIndex shard, int pageSize)
+            throws ExecutionFailedException {
         Page<InboxMessage> page = new InboxPage(sinceWhen -> readAll(shard, sinceWhen, pageSize));
         return page;
     }
@@ -211,39 +327,54 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         if (sinceWhen != null) {
             filters.add(gt(Column.receivedAt(), sinceWhen));
         }
-        ImmutableList<InboxMessage> result =
+        QueryRequest<InboxMessageHolder> request =
                 client.asGuest()
                       .select(InboxMessageHolder.class)
                       .where(toArray(filters.build(), QueryFilter.class))
                       .limit(pageSize)
-                      .orderBy(Column.receivedAt(), OrderBy.Direction.ASCENDING)
-                      .run()
-                      .stream()
-                      .map(InboxMessageHolder::getMessage)
-                      .sorted(InboxMessageComparator.chronologically)
-                      .collect(toImmutableList());
-        return result;
+                      .orderBy(Column.receivedAt(), OrderBy.Direction.ASCENDING);
+        ImmutableList<InboxMessageHolder> result =
+                requestExecutionStrategy.evaluate(request::run);
+        return result.stream()
+                     .map(InboxMessageHolder::getMessage)
+                     .sorted(InboxMessageComparator.chronologically)
+                     .collect(toImmutableList());
+
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
     @Override
-    public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard) {
-        return client.asGuest()
-                     .select(InboxMessageHolder.class)
-                     .where(eq(Column.shard(), shard), eq(Column.status(), TO_DELIVER))
-                     .orderBy(Column.receivedAt(), DESCENDING)
-                     .limit(1)
-                     .run()
-                     .stream()
+    public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard)
+            throws ExecutionFailedException {
+        QueryRequest<InboxMessageHolder> request =
+                client.asGuest()
+                      .select(InboxMessageHolder.class)
+                      .where(eq(Column.shard(), shard), eq(Column.status(), TO_DELIVER))
+                      .orderBy(Column.receivedAt(), DESCENDING)
+                      .limit(1);
+
+        ImmutableList<InboxMessageHolder> result =
+                requestExecutionStrategy.evaluate(request::run);
+        return result.stream()
                      .findFirst()
                      .map(InboxMessageHolder::getMessage);
     }
 
     private <C extends CommandMessage> void post(C command) {
         _trace().log("Posting command `%s`.", command.getClass());
-        client.asGuest()
-              .command(command)
-              .onServerError((msg, error) -> logServerError(command, error))
-              .postAndForget();
+        CommandRequest request =
+                client.asGuest()
+                      .command(command)
+                      .onServerError((msg, error) -> logServerError(command, error));
+        requestExecutionStrategy.execute(request::postAndForget);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in non-related module. */)

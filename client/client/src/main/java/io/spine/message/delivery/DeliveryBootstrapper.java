@@ -9,6 +9,8 @@ package io.spine.message.delivery;
 import io.grpc.ManagedChannel;
 import io.spine.message.delivery.client.DeliveryClient;
 import io.spine.message.delivery.client.InboxClient;
+import io.spine.message.delivery.client.strategy.Propagate;
+import io.spine.message.delivery.client.RequestExecutionStrategy;
 import io.spine.message.delivery.client.SessionRegistryClient;
 import io.spine.server.delivery.Delivery;
 
@@ -16,7 +18,9 @@ import java.util.function.Supplier;
 
 /**
  * Provides fluent API for building a {@link Delivery} backed by the Message Delivery Server and
- * based on the {@link DeliveryClient}.
+ * based on the {@link DeliveryClient} with {@link RequestExecutionStrategy}.
+ *
+ * <p>By default uses the {@link Propagate} strategy.
  */
 public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<DeliveryBootstrapper> {
 
@@ -41,11 +45,11 @@ public final class DeliveryBootstrapper extends AbstractDeliveryBootstrapper<Del
 
     @Override
     protected InboxClient newInboxClient(Supplier<ManagedChannel> channel) {
-        return DeliveryClient.create(channel.get());
+        return DeliveryClient.create(channel.get(), executionStrategy());
     }
 
     @Override
     protected SessionRegistryClient newSessionRegistryClient(Supplier<ManagedChannel> channel) {
-        return DeliveryClient.create(channel.get());
+        return DeliveryClient.create(channel.get(), executionStrategy());
     }
 }

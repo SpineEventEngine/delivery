@@ -8,7 +8,9 @@ package io.spine.message.delivery;
 
 import io.grpc.ManagedChannel;
 import io.spine.message.delivery.client.InboxClient;
+import io.spine.message.delivery.client.strategy.Propagate;
 import io.spine.message.delivery.client.RemoteInboxStorage;
+import io.spine.message.delivery.client.RequestExecutionStrategy;
 import io.spine.message.delivery.client.SessionRegistryClient;
 import io.spine.message.delivery.client.WorkRegistry;
 import io.spine.server.delivery.Delivery;
@@ -32,11 +34,22 @@ public abstract class AbstractDeliveryBootstrapper<T extends AbstractDeliveryBoo
 
     private @MonotonicNonNull Supplier<ManagedChannel> channel;
 
+    private RequestExecutionStrategy strategy = new Propagate();
+
     /**
      * Configures the gRPC {@code channel} to be used by the delivery.
      */
     public final T withChannel(Supplier<ManagedChannel> channel) {
         this.channel = checkNotNull(channel);
+        return self();
+    }
+
+    /**
+     * Configures delivery to be using the given {@code strategy} to handle possible failures
+     * during interaction with server.
+     */
+    public final T withExecutionStrategy(RequestExecutionStrategy strategy) {
+        this.strategy = checkNotNull(strategy);
         return self();
     }
 
@@ -60,6 +73,14 @@ public abstract class AbstractDeliveryBootstrapper<T extends AbstractDeliveryBoo
      * Returns typed bootstrapper.
      */
     protected abstract T self();
+
+    /**
+     * Returns configured {@code RequestExecutionStrategy} or {@link Propagate} strategy
+     * if it was not customized.
+     */
+    protected final RequestExecutionStrategy executionStrategy() {
+        return strategy;
+    }
 
     /**
      * Creates a new {@code InboxClient} which uses supplied {@code channel}.

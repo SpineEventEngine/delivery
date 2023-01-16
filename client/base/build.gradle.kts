@@ -18,6 +18,10 @@ dependencies {
     testImplementation(Spine.Stable.Test.server)
 }
 
+apply {
+    from("test-artifacts.gradle")
+}
+
 // We're explicitly copying protos to ensure rejections are generated.
 // See https://github.com/SpineEventEngine/base/issues/650 for details.
 val copyExternalProtos = tasks.create<Copy>("copyExternalProtos") {

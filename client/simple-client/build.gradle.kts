@@ -15,6 +15,7 @@ dependencies {
     implementation(Spine.Stable.server)
     implementation(Spine.Stable.client)
     testImplementation(project(":testutil-client"))
+    testImplementation(project(path = ":base", configuration = "testArtifacts"))
     testImplementation(Testcontainers.lib)
     testImplementation(Testcontainers.junitJupiter)
     testRuntimeOnly(Grpc.nettyShaded)
