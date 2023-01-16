@@ -17,7 +17,7 @@ import java.util.function.Supplier;
  * @param <R>
  *         type of result that have to be returned by the {@code RequestWithResult}.
  */
-class FailureReportForNonVoidRequest<R> {
+final class FailureReportForNonVoidRequest<R> {
 
     private final Supplier<R> retry;
 

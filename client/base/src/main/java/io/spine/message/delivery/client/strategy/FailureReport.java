@@ -12,7 +12,7 @@ import io.spine.message.delivery.client.ExecutionFailedException;
 /**
  * Summary of the {@code VoidRequest} failure.
  */
-class FailureReport {
+final class FailureReport {
 
     private final Runnable retry;
 
