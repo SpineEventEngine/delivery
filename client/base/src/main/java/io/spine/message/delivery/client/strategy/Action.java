@@ -9,7 +9,7 @@ package io.spine.message.delivery.client.strategy;
 /**
  * An operation that is applied when {@code VoidRequest} failed.
  */
-interface Action {
+public interface Action {
 
     /**
      * Executes the action.

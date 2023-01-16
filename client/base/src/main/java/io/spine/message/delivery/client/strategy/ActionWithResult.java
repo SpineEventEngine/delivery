@@ -13,7 +13,7 @@ package io.spine.message.delivery.client.strategy;
  *         type of result that have to be returned by the {@code RequestWithResult}. This
  *         action can return a result instead of the request in case of request failure.
  */
-interface ActionWithResult<R> {
+public interface ActionWithResult<R> {
 
     /**
      * Executes the action.
