@@ -17,14 +17,13 @@ import java.util.function.Supplier;
  * @param <R>
  *         type of result that have to be returned by the {@code RequestWithResult}.
  */
-public final class FailureReportForNonVoidRequest<R> {
+public final class FailedRequest<R> {
 
     private final Supplier<R> retry;
 
     private final ImmutableList<RuntimeException> allExceptions;
 
-    FailureReportForNonVoidRequest(Supplier<R> retry,
-                                   ImmutableList<RuntimeException> allExceptions) {
+    FailedRequest(Supplier<R> retry, ImmutableList<RuntimeException> allExceptions) {
         this.retry = retry;
         this.allExceptions = allExceptions;
     }

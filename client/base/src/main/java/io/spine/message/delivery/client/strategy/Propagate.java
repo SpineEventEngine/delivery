@@ -12,13 +12,12 @@ package io.spine.message.delivery.client.strategy;
 public final class Propagate extends AbstractExecutionStrategy {
 
     @Override
-    protected <R> ActionWithResult<R> handleException(
-            FailureReportForNonVoidRequest<R> failure) {
+    protected <R> ActionWithResult<R> handleException(FailedRequest<R> failure) {
         return failure.propagate();
     }
 
     @Override
-    protected Action handleException(FailureReport failure) {
+    protected Action handleException(FailedVoidRequest failure) {
         return failure.propagate();
     }
 }

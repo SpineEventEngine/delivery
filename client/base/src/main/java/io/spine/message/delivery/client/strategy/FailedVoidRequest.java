@@ -12,13 +12,13 @@ import io.spine.message.delivery.client.ExecutionFailedException;
 /**
  * Summary of the {@code VoidRequest} failure.
  */
-public final class FailureReport {
+public final class FailedVoidRequest {
 
     private final Runnable retry;
 
     private final ImmutableList<RuntimeException> allExceptions;
 
-    FailureReport(Runnable retry, ImmutableList<RuntimeException> allExceptions) {
+    FailedVoidRequest(Runnable retry, ImmutableList<RuntimeException> allExceptions) {
         this.retry = retry;
         this.allExceptions = allExceptions;
     }

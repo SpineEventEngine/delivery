@@ -34,7 +34,7 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
 
     /**
      * Tries to execute the {@code request} and handles occurred exception
-     * using {@link #handleException(FailureReport)} if any.
+     * using {@link #handleException(FailedVoidRequest)} if any.
      */
     private void tryExecute(VoidRequest request, ImmutableList<RuntimeException> previous) {
         checkNotNull(request);
@@ -43,13 +43,13 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
         } catch (RuntimeException e) {
             ImmutableList<RuntimeException> allExceptions = append(previous, e);
             Runnable retry = () -> tryExecute(request, allExceptions);
-            handleException(new FailureReport(retry, allExceptions)).execute();
+            handleException(new FailedVoidRequest(retry, allExceptions)).execute();
         }
     }
 
     /**
      * Tries to evaluate the {@code request} and handles occurred exception
-     * using {@link #handleException(FailureReportForNonVoidRequest)} if any.
+     * using {@link #handleException(FailedRequest)} if any.
      */
     private <R> R
     tryEvaluate(RequestWithResult<R> request, ImmutableList<RuntimeException> previous) {
@@ -59,8 +59,7 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
         } catch (RuntimeException e) {
             ImmutableList<RuntimeException> allExceptions = append(previous, e);
             Supplier<R> retry = () -> tryEvaluate(request, allExceptions);
-            return handleException(
-                    new FailureReportForNonVoidRequest<>(retry, allExceptions)).execute();
+            return handleException(new FailedRequest<>(retry, allExceptions)).execute();
         }
     }
 
@@ -68,14 +67,13 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
      * Handles exceptions occurred during {@code RequestWithResult} execution and returns
      * an {@code ActionWithResult} that tells what to do next after the failure.
      */
-    protected abstract <R> ActionWithResult<R> handleException(
-            FailureReportForNonVoidRequest<R> failure);
+    protected abstract <R> ActionWithResult<R> handleException(FailedRequest<R> failure);
 
     /**
      * Handles exceptions occurred during {@code VoidRequest} execution and returns
      * an {@code Action} that tells what to do next after the failure.
      */
-    protected abstract Action handleException(FailureReport failure);
+    protected abstract Action handleException(FailedVoidRequest failure);
 
     /**
      * Returns a list of the given {@code elements} withe appended {@code element}.
