@@ -6,14 +6,12 @@
 
 package io.spine.message.delivery.client.strategy;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import io.spine.message.delivery.client.ExecutionFailedException;
-import io.spine.util.Preconditions2;
 
 import java.util.function.Supplier;
 
-import static com.google.common.base.Preconditions.*;
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Summary of the {@code RequestWithResult} failure.
