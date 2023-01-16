@@ -21,16 +21,12 @@ public final class FailureReportForNonVoidRequest<R> {
 
     private final Supplier<R> retry;
 
-    private final RuntimeException lastException;
-
-    private final ImmutableList<RuntimeException> previousExceptions;
+    private final ImmutableList<RuntimeException> allExceptions;
 
     FailureReportForNonVoidRequest(Supplier<R> retry,
-                                   ImmutableList<RuntimeException> previousExceptions,
-                                   RuntimeException lastException) {
+                                   ImmutableList<RuntimeException> allExceptions) {
         this.retry = retry;
-        this.previousExceptions = previousExceptions;
-        this.lastException = lastException;
+        this.allExceptions = allExceptions;
     }
 
     /**
@@ -46,24 +42,20 @@ public final class FailureReportForNonVoidRequest<R> {
      * occurred exceptions as an {@code ExecutionFailedException}.
      */
     public ActionWithResult<R> propagate() {
-        ImmutableList<RuntimeException> exceptions = ImmutableList.<RuntimeException>builder()
-                .addAll(previousExceptions)
-                .add(lastException)
-                .build();
-        throw new ExecutionFailedException(exceptions);
+        throw new ExecutionFailedException(allExceptions);
     }
 
     /**
      * Returns last occurred exception.
      */
     public Exception lastException() {
-        return lastException;
+        return allExceptions.get(allExceptions().size() - 1);
     }
 
     /**
-     * Returns a list of all previously occurred exceptions.
+     * Returns a list of all occurred exceptions.
      */
-    public ImmutableList<RuntimeException> previousExceptions() {
-        return previousExceptions;
+    public ImmutableList<RuntimeException> allExceptions() {
+        return allExceptions;
     }
 }

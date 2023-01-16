@@ -16,16 +16,11 @@ public final class FailureReport {
 
     private final Runnable retry;
 
-    private final RuntimeException lastException;
+    private final ImmutableList<RuntimeException> allExceptions;
 
-    private final ImmutableList<RuntimeException> previousExceptions;
-
-    FailureReport(Runnable retry,
-                  ImmutableList<RuntimeException> previousExceptions,
-                  RuntimeException lastException) {
+    FailureReport(Runnable retry, ImmutableList<RuntimeException> allExceptions) {
         this.retry = retry;
-        this.previousExceptions = previousExceptions;
-        this.lastException = lastException;
+        this.allExceptions = allExceptions;
     }
 
     /**
@@ -40,24 +35,20 @@ public final class FailureReport {
      * exceptions as an {@code ExecutionFailedException}.
      */
     public Action propagate() {
-        ImmutableList<RuntimeException> exceptions = ImmutableList.<RuntimeException>builder()
-                .addAll(previousExceptions)
-                .add(lastException)
-                .build();
-        throw new ExecutionFailedException(exceptions);
+        throw new ExecutionFailedException(allExceptions);
     }
 
     /**
      * Returns last occurred exception.
      */
     public Exception lastException() {
-        return lastException;
+        return allExceptions.get(allExceptions.size() - 1);
     }
 
     /**
-     * Returns a list of all previously occurred exceptions.
+     * Returns a list of all occurred exceptions.
      */
-    public ImmutableList<RuntimeException> previousExceptions() {
-        return previousExceptions;
+    public ImmutableList<RuntimeException> allExceptions() {
+        return allExceptions;
     }
 }
