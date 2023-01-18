@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery.admin.grpc";
+option java_outer_classname = "AdminServiceProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/empty.proto";
+
+import "spine/message/delivery/commands.proto";
+import "spine/message/delivery/events.proto";
+import "spine/server/delivery/inbox.proto";
+import "spine/server/delivery/delivery.proto";
+
+// Acts as a backend implementation for `AdminService`
+service AdminService {
+
+    // Subscribes to the shard info updates.
+    rpc ShardsInfo(SubscriptionRequest) returns (stream ShardInfoList);
+}
+
+// Request to subscribe to the shard information updates.
+message SubscriptionRequest {
+
+    // Specifies how often to receive updates from the server.
+    google.protobuf.Duration duration = 1;
+}
+
+// A list of `ShardInfo`
+message ShardInfoList {
+
+    repeated ShardInfo shards = 1;
+}
+
+message ShardInfo {
+
+    // Index of the shard.
+    spine.server.delivery.ShardIndex index = 1 [(required) = true];
+
+    // Shows whether the shard picked for delivery or not.
+    ShardStatus status = 2 [(required) = true];
+
+    // Number of messages present in the shard.
+    int32 messages = 3 [(required) = true];
+}
+
+// Current status of the shard.
+enum ShardStatus {
+    UNKNOWN = 0;
+
+    // Shard is picked for delivery.
+    PICKED = 1;
+
+    // Shad is not picked for delivery.
+    UNPICKED = 2;
+}
