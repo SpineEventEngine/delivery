@@ -12,6 +12,7 @@ import com.google.protobuf.util.Durations;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.spine.logging.Logging;
+import io.spine.message.delivery.server.admin.grpc.AdminService;
 import io.spine.message.delivery.server.grpc.HealthService;
 import io.spine.message.delivery.server.grpc.InboxService;
 import io.spine.message.delivery.server.grpc.ShardService;
@@ -109,14 +110,17 @@ public final class SimpleApp implements Logging {
         StorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
         ShardService shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
+        AdminService adminService = new AdminService(factory);
         healthService = new HealthService()
                 .register(inboxService)
-                .register(shardService);
+                .register(shardService)
+                .register(adminService);
         this.server = ServerBuilder
                 .forPort(PORT)
                 .executor(executor)
                 .addService(inboxService)
                 .addService(shardService)
+                .addService(adminService)
                 .addService(healthService)
                 .maxInboundMessageSize(MESSAGE_SIZE)
                 .build();
