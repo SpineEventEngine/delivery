@@ -61,7 +61,7 @@ public final class SingletonStorageFactory implements StorageFactory {
     }
 
     /**
-     * A hsh map key based on {@link ContextSpec} and {@link RecordSpec} objects.
+     * A hash map key based on {@link ContextSpec} and {@link RecordSpec} objects.
      */
     private static class Key {
 
