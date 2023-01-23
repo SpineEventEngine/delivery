@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.server.admin.grpc;
+package io.spine.message.delivery.server.grpc;
 
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;

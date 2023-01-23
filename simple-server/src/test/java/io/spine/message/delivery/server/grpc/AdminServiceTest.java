@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.server.admin.grpc;
+package io.spine.message.delivery.server.grpc;
 
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.server.WithApp;
@@ -15,11 +15,11 @@ import org.junit.jupiter.api.Test;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
-import static io.spine.message.delivery.server.admin.grpc.given.AdminServiceTestEnv.pickUpShard;
-import static io.spine.message.delivery.server.admin.grpc.given.AdminServiceTestEnv.releaseShard;
-import static io.spine.message.delivery.server.admin.grpc.given.AdminServiceTestEnv.request;
-import static io.spine.message.delivery.server.admin.grpc.given.AdminServiceTestEnv.shardInfo;
-import static io.spine.message.delivery.server.admin.grpc.given.AdminServiceTestEnv.testMessage;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.pickUpShard;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.releaseShard;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.request;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.shardInfo;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.testMessage;
 import static io.spine.server.delivery.DeliveryStrategy.newIndex;
 
 @DisplayName("`AdminService` should")

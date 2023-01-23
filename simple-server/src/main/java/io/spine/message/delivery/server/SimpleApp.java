@@ -12,7 +12,7 @@ import com.google.protobuf.util.Durations;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.spine.logging.Logging;
-import io.spine.message.delivery.server.admin.grpc.AdminService;
+import io.spine.message.delivery.server.grpc.AdminService;
 import io.spine.message.delivery.server.grpc.HealthService;
 import io.spine.message.delivery.server.grpc.InboxService;
 import io.spine.message.delivery.server.grpc.ShardService;

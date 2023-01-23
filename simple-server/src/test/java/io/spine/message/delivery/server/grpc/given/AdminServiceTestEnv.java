@@ -4,11 +4,10 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.server.admin.grpc.given;
+package io.spine.message.delivery.server.grpc.given;
 
 import com.google.protobuf.Any;
 import com.google.protobuf.Empty;
-import com.google.protobuf.Timestamp;
 import io.spine.base.Time;
 import io.spine.client.EntityId;
 import io.spine.core.Event;
