@@ -16,7 +16,6 @@ import io.spine.message.delivery.server.ExtendedInboxStorage;
 import io.spine.message.delivery.server.ShardRegistryStorage;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageId;
-import io.spine.server.delivery.Page;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.storage.StorageFactory;
@@ -24,7 +23,6 @@ import io.spine.server.storage.StorageFactory;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
@@ -43,6 +41,7 @@ public class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     private final ShardRegistryStorage shardStorage;
 
     public AdminService(StorageFactory factory) {
+        super();
         inboxStorage = new ExtendedInboxStorage(factory, false);
         shardStorage = new ShardRegistryStorage(factory);
     }
