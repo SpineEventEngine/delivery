@@ -16,6 +16,7 @@ import io.spine.message.delivery.server.grpc.AdminService;
 import io.spine.message.delivery.server.grpc.HealthService;
 import io.spine.message.delivery.server.grpc.InboxService;
 import io.spine.message.delivery.server.grpc.ShardService;
+import io.spine.message.delivery.server.grpc.UnableToCloseFactoryException;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.server.storage.redis.RedisStorageFactory;
@@ -164,16 +165,17 @@ public final class SimpleApp implements Logging {
     }
 
     /**
-     * Closes the given {@code closeable}.
+     * Closes the given {@code factory}.
      *
      * <p>Wraps the {@code close()} method into try / catch block and rethrows caught
-     * {@code Exception} as {@code RuntimeException}.
+     * {@code Exception} as {@code UnableToCloseStorageFactory}.
      */
-    private static void close(AutoCloseable closeable) {
+    @SuppressWarnings("AvoidThrowingRawExceptionTypes")
+    private static void close(StorageFactory factory) {
         try {
-            closeable.close();
+            factory.close();
         } catch (Exception e) {
-            throw new RuntimeException("Unable to close resource.", e);
+            throw new UnableToCloseFactoryException(e);
         }
     }
 
