@@ -197,7 +197,7 @@ public final class SimpleApp implements Logging {
             return RedisStorageFactory.newInstance();
         }
         _config().log("Using in-memory storage.");
-        return InMemoryStorageFactory.newInstance();
+        return new SingletonStorageFactory(InMemoryStorageFactory.newInstance());
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
