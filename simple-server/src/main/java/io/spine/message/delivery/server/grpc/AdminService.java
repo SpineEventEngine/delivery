@@ -14,7 +14,6 @@ import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
 import io.spine.message.delivery.server.ExtendedInboxStorage;
 import io.spine.message.delivery.server.ShardRegistryStorage;
-import io.spine.message.delivery.server.grpc.NamedHealthAwareService;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.Page;
