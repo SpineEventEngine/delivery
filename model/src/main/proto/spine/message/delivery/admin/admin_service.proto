@@ -27,10 +27,11 @@ import "spine/server/delivery/delivery.proto";
 // Acts as a backend implementation for `AdminService`
 service AdminService {
 
+    // Gets an information about shards on Liquor server.
     rpc GetShardInfo(google.protobuf.Empty) returns(ShardInfoList);
 }
 
-// A list of `ShardInfo`
+// A list of `ShardInfo`.
 message ShardInfoList {
 
     repeated ShardInfo shards = 1;
@@ -46,7 +47,7 @@ message ShardInfo {
 
     // When the shard was picked for delivery last time.
     //
-    // Can be not set if the shard has never been picked by workers.
+    // Can be unset if the shard has never been picked by workers.
     google.protobuf.Timestamp lastPicked = 3;
 
     // Number of messages present in the shard.
