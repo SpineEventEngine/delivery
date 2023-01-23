@@ -31,7 +31,7 @@ import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 
 /**
- * Allows getting information about .
+ * Allows getting information about the current state of the shards on the message delivery server.
  */
 public class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         implements Logging, NamedHealthAwareService {
