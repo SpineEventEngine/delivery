@@ -137,6 +137,8 @@ public final class SimpleApp implements Logging {
         } catch (Exception e) {
             _error().withCause(e)
                     .log("Error running the gRPC server.");
+        } finally {
+            close(factory);
         }
     }
 
@@ -159,6 +161,20 @@ public final class SimpleApp implements Logging {
     @VisibleForTesting
     public HealthService healthService() {
         return healthService;
+    }
+
+    /**
+     * Closes the given {@code closeable}.
+     *
+     * <p>Wraps the {@code close()} method into try / catch block and rethrows caught
+     * {@code Exception} as {@code RuntimeException}.
+     */
+    private static void close(AutoCloseable closeable) {
+        try {
+            closeable.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static int port() {
