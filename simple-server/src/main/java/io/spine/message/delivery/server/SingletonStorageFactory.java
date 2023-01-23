@@ -8,6 +8,7 @@ package io.spine.message.delivery.server;
 
 import com.google.protobuf.Message;
 import io.spine.server.ContextSpec;
+import io.spine.server.storage.AbstractStorage;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.RecordStorage;
 import io.spine.server.storage.StorageFactory;
@@ -22,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Factory that preserves created storages for further usages and doesn't create a new storage for
  * every request.
  */
-public class SingletonStorageFactory implements StorageFactory {
+public final class SingletonStorageFactory implements StorageFactory {
 
     private final StorageFactory delegate;
 
@@ -54,8 +55,9 @@ public class SingletonStorageFactory implements StorageFactory {
     }
 
     @Override
-    public void close() {
-        // NOP
+    public void close() throws Exception {
+        map.values().forEach(AbstractStorage::close);
+        delegate.close();
     }
 
     /**
