@@ -56,7 +56,7 @@ message ShardInfo {
 
 // Current status of the shard.
 enum ShardStatus {
-    UNKNOWN = 0;
+    SS_UNKNOWN = 0;
 
     // Shard is picked for delivery.
     PICKED = 1;
