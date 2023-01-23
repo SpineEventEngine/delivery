@@ -16,6 +16,7 @@ import io.spine.server.delivery.ShardIndex;
 import io.spine.server.storage.StorageFactory;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Iterator;
 import java.util.Optional;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -60,5 +61,10 @@ public final class ExtendedInboxStorage extends InboxStorage {
     public synchronized ImmutableList<InboxMessage>
     readAll(ShardIndex index, @Nullable Timestamp sinceWhen, int pageSize) {
         return super.readAll(index, sinceWhen, pageSize);
+    }
+
+    @Override
+    public Iterator<InboxMessage> readAll() {
+        return super.readAll();
     }
 }
