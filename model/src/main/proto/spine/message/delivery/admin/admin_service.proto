@@ -62,6 +62,6 @@ enum ShardStatus {
     // Shard is picked for delivery.
     PICKED = 1;
 
-    // Shad is not picked for delivery.
+    // Shard is not picked for delivery.
     NOT_PICKED = 2;
 }
