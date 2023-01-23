@@ -63,6 +63,13 @@ public final class ExtendedInboxStorage extends InboxStorage {
         return super.readAll(index, sinceWhen, pageSize);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Exposing this method for maintenance purposes.
+     *
+     * @return
+     */
     @Override
     public Iterator<InboxMessage> readAll() {
         return super.readAll();

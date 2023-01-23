@@ -37,6 +37,7 @@ message ShardInfoList {
     repeated ShardInfo shards = 1;
 }
 
+// Information about shard status on the Liquor server.
 message ShardInfo {
 
     // Index of the shard.
