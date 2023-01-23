@@ -9,6 +9,7 @@ package io.spine.message.delivery.server.grpc;
 import io.grpc.health.v1.HealthCheckRequest;
 import io.grpc.health.v1.HealthCheckResponse;
 import io.grpc.health.v1.HealthGrpc;
+import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.grpc.InboxServiceGrpc;
 import io.spine.message.delivery.grpc.ShardServiceGrpc;
 import io.spine.message.delivery.server.WithApp;
@@ -81,7 +82,8 @@ final class HealthServiceTest extends WithApp {
         return Stream.of(
                 Arguments.of(HealthGrpc.SERVICE_NAME),
                 Arguments.of(InboxServiceGrpc.SERVICE_NAME),
-                Arguments.of(ShardServiceGrpc.SERVICE_NAME)
+                Arguments.of(ShardServiceGrpc.SERVICE_NAME),
+                Arguments.of(AdminServiceGrpc.SERVICE_NAME)
         );
     }
 }
