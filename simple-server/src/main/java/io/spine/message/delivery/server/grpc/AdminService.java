@@ -36,8 +36,6 @@ import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 public class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         implements Logging, NamedHealthAwareService {
 
-    private static final int PAGE_SIZE = 400;
-
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     private final ExtendedInboxStorage inboxStorage;
@@ -113,20 +111,6 @@ public class AdminService extends AdminServiceGrpc.AdminServiceImplBase
             messagesCount.put(shardIndex, messagesCount.getOrDefault(shardIndex, 0) + 1);
         });
         return messagesCount;
-    }
-
-    /**
-     * Counts all elements starting from the given {@code firstPage} until last page in request.
-     */
-    private static int count(Page<InboxMessage> firstPage) {
-        var currentPage = Optional.of(firstPage);
-        int count = 0;
-        do {
-            Page<InboxMessage> page = currentPage.get();
-            count += page.size();
-            currentPage = page.next();
-        } while (currentPage.isPresent());
-        return count;
     }
 
     @Override
