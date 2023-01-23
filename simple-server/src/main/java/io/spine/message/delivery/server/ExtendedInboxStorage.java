@@ -67,8 +67,6 @@ public final class ExtendedInboxStorage extends InboxStorage {
      * {@inheritDoc}
      *
      * <p>Exposing this method for maintenance purposes.
-     *
-     * @return
      */
     @Override
     public Iterator<InboxMessage> readAll() {
