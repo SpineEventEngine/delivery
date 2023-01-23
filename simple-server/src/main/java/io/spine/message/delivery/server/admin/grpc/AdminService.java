@@ -6,28 +6,30 @@
 
 package io.spine.message.delivery.server.admin.grpc;
 
+import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
-import io.spine.message.delivery.admin.grpc.SubscriptionRequest;
 import io.spine.message.delivery.server.ExtendedInboxStorage;
 import io.spine.message.delivery.server.ShardRegistryStorage;
 import io.spine.message.delivery.server.grpc.NamedHealthAwareService;
 import io.spine.server.delivery.InboxMessage;
+import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.Page;
+import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.storage.StorageFactory;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.google.protobuf.util.Durations.toSeconds;
+import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
-import static io.spine.message.delivery.admin.grpc.ShardStatus.UNPICKED;
-import static java.util.concurrent.Executors.newScheduledThreadPool;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Allows getting information about .
@@ -49,29 +51,29 @@ public class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     }
 
     @Override
-    @SuppressWarnings("FutureReturnValueIgnored")
-    public void shardsInfo(SubscriptionRequest request, StreamObserver<ShardInfoList> response) {
-        var service = newScheduledThreadPool(1);
-        long seconds = toSeconds(request.getDuration());
-        service.scheduleWithFixedDelay(() -> fetchAndReport(response), 0, seconds, SECONDS);
+    public void getShardInfo(Empty request, StreamObserver<ShardInfoList> responseObserver) {
+        try {
+            responseObserver.onNext(fetch());
+            responseObserver.onCompleted();
+        } catch (RuntimeException e) {
+            responseObserver.onError(e);
+        }
     }
 
     /**
      * Fetches information about all shards and reports it to the given {@code observer}.
      */
-    private void fetchAndReport(StreamObserver<ShardInfoList> observer) {
-        try {
-            var shards = shardStorage.readAll();
-            var shardInfoListBuilder = ShardInfoList.newBuilder();
-            shards.forEachRemaining((shard) -> {
-                int count = count(inboxStorage.readAll(shard.getIndex(), PAGE_SIZE));
-                var shardInfo = shardInfo(shard, count);
-                shardInfoListBuilder.addShards(shardInfo);
-            });
-            observer.onNext(shardInfoListBuilder.vBuild());
-        } catch (RuntimeException e) {
-            observer.onError(e);
-        }
+    private ShardInfoList fetch() {
+        Map<ShardIndex, Integer> messagesCount = messagesInShards();
+        var shards = shardStorage.readAll();
+        var shardListBuilder = ShardInfoList.newBuilder();
+        shards.forEachRemaining(shard -> {
+            ShardInfo info = shardInfo(shard, messagesCount.getOrDefault(shard.getIndex(), 0));
+            shardListBuilder.addShards(info);
+            messagesCount.remove(shard.getIndex());
+        });
+        messagesCount.forEach((key, value) -> shardListBuilder.addShards(shardInfo(key, value)));
+        return shardListBuilder.vBuild();
     }
 
     /**
@@ -81,9 +83,37 @@ public class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         return ShardInfo
                 .newBuilder()
                 .setIndex(shardRecord.getIndex())
-                .setStatus(shardRecord.hasWorker() ? PICKED : UNPICKED)
+                .setLastPicked(shardRecord.getWhenLastPicked())
+                .setStatus(shardRecord.hasWorker() ? PICKED : NOT_PICKED)
                 .setMessages(messagesCount)
                 .vBuild();
+    }
+
+    /**
+     * Returns a new {@code ShardInfo} with the given {@code ShardIndex} and {@code messagesCount},
+     * sets the shard status to {@code NOT_PICKED}, and doesn't set the last picked time.
+     */
+    private static ShardInfo shardInfo(ShardIndex index, int messagesCount) {
+        return ShardInfo
+                .newBuilder()
+                .setIndex(index)
+                .setStatus(NOT_PICKED)
+                .setMessages(messagesCount)
+                .vBuild();
+    }
+
+    /**
+     * Reads all messages from the storage and counts the number of messages in each shard.
+     */
+    private Map<ShardIndex, Integer> messagesInShards() {
+        Map<ShardIndex, Integer> messagesCount = new HashMap<>();
+        Iterator<InboxMessage> messages = inboxStorage.readAll();
+        messages.forEachRemaining(message -> {
+            InboxMessageId inboxMessageId = message.getId();
+            ShardIndex shardIndex = inboxMessageId.getIndex();
+            messagesCount.put(shardIndex, messagesCount.getOrDefault(shardIndex, 0) + 1);
+        });
+        return messagesCount;
     }
 
     /**
