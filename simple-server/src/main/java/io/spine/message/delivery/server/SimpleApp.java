@@ -173,7 +173,7 @@ public final class SimpleApp implements Logging {
         try {
             closeable.close();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Unable to close resource.", e);
         }
     }
 
