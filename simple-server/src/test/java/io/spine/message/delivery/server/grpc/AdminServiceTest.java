@@ -23,7 +23,7 @@ import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.te
 import static io.spine.server.delivery.DeliveryStrategy.newIndex;
 
 @DisplayName("`AdminService` should")
-class AdminServiceTest extends WithApp {
+final class AdminServiceTest extends WithApp {
 
     @Test
     @DisplayName("get current information about shards")

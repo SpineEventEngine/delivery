@@ -31,7 +31,7 @@ import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 /**
  * Allows getting information about the current state of the shards on the message delivery server.
  */
-public class AdminService extends AdminServiceGrpc.AdminServiceImplBase
+public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         implements Logging, NamedHealthAwareService {
 
     private final AtomicBoolean healthy = new AtomicBoolean(true);
