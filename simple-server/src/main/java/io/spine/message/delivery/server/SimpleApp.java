@@ -170,7 +170,6 @@ public final class SimpleApp implements Logging {
      * <p>Wraps the {@code close()} method into try / catch block and rethrows caught
      * {@code Exception} as {@code UnableToCloseStorageFactory}.
      */
-    @SuppressWarnings("AvoidThrowingRawExceptionTypes")
     private static void close(StorageFactory factory) {
         try {
             factory.close();
