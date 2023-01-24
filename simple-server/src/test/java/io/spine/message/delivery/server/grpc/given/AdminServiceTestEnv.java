@@ -61,66 +61,27 @@ public final class AdminServiceTestEnv {
                 .vBuild();
     }
 
+    /**
+     * Creates a new {@code WriteMessage} command with the given {@code shardIndex}.
+     *
+     * <p>All other necessary parameters are predefined.
+     */
     public static WriteMessage testMessage(ShardIndex shardIndex) {
         String randomTestString = UUID
                 .randomUUID()
                 .toString();
-        TestEventId id = TestEventId
-                .newBuilder()
-                .setValue(randomTestString)
-                .vBuild();
-        TestEvent eventMessage = TestEvent
-                .newBuilder()
-                .setId(id)
-                .vBuild();
-        String uuid = UUID
-                .randomUUID()
-                .toString();
-        InboxMessageId inboxMessageId = InboxMessageId
-                .newBuilder()
-                .setUuid(uuid)
-                .setIndex(shardIndex)
-                .vBuild();
-        EntityId entityId = EntityId
-                .newBuilder()
-                .setId(Any.pack(id))
-                .vBuild();
+        TestEventId testEventId = testEventId(randomTestString);
         InboxId inboxId = InboxId
                 .newBuilder()
-                .setEntityId(entityId)
+                .setEntityId(entityId(testEventId))
                 .setTypeUrl("type.spine.io/spine.message.delivery.TestEvent")
-                .vBuild();
-        EventId eventId = EventId
-                .newBuilder()
-                .setValue(randomTestString)
-                .vBuild();
-        Version version = Version
-                .newBuilder()
-                .setNumber(1)
-                .setTimestamp(Time.currentTime())
-                .vBuild();
-        EventContext eventContext = EventContext
-                .newBuilder()
-                .setTimestamp(version.getTimestamp())
-                .setVersion(version)
-                .setProducerId(AnyPacker.pack(id))
-                .vBuild();
-        Event event = Event
-                .newBuilder()
-                .setId(eventId)
-                .setMessage(AnyPacker.pack(eventMessage))
-                .setContext(eventContext)
-                .vBuild();
-        InboxSignalId inboxSignalId = InboxSignalId
-                .newBuilder()
-                .setValue(randomTestString)
                 .vBuild();
         InboxMessage inboxMessage = InboxMessage
                 .newBuilder()
-                .setId(inboxMessageId)
+                .setId(inboxMessageId(shardIndex))
                 .setInboxId(inboxId)
-                .setSignalId(inboxSignalId)
-                .setEvent(event)
+                .setSignalId(inboxSignalId(randomTestString))
+                .setEvent(event(testEventId))
                 .setLabel(InboxLabel.REACT_UPON_EVENT)
                 .setStatus(InboxMessageStatus.TO_DELIVER)
                 .setWhenReceived(Time.currentTime())
@@ -165,10 +126,87 @@ public final class AdminServiceTestEnv {
                 .vBuild();
     }
 
+    /**
+     * Creates a new {@code Empty} request.
+     */
     public static Empty request() {
         return Empty
                 .newBuilder()
                 .build();
     }
 
+    /**
+     * Creates a new {@code Event} with the given {@code id}.
+     */
+    private static Event event(TestEventId id) {
+        TestEvent eventMessage = TestEvent
+                .newBuilder()
+                .setId(id)
+                .vBuild();
+        EventId eventId = EventId
+                .newBuilder()
+                .setValue(id.getValue())
+                .vBuild();
+        Version version = Version
+                .newBuilder()
+                .setNumber(1)
+                .setTimestamp(Time.currentTime())
+                .vBuild();
+        EventContext eventContext = EventContext
+                .newBuilder()
+                .setTimestamp(version.getTimestamp())
+                .setVersion(version)
+                .setProducerId(AnyPacker.pack(id))
+                .vBuild();
+        return Event
+                .newBuilder()
+                .setId(eventId)
+                .setMessage(AnyPacker.pack(eventMessage))
+                .setContext(eventContext)
+                .vBuild();
+    }
+
+    /**
+     * Creates new {@code InboxSignalId} with the given {@code value}.
+     */
+    private static InboxSignalId inboxSignalId(String value) {
+        return InboxSignalId
+                .newBuilder()
+                .setValue(value)
+                .vBuild();
+    }
+
+    /**
+     * Creates a new {@code InboxMessageId} with the given {@code index} and a new random UUID.
+     */
+    private static InboxMessageId inboxMessageId(ShardIndex index) {
+        String uuid = UUID
+                .randomUUID()
+                .toString();
+        return InboxMessageId
+                .newBuilder()
+                .setUuid(uuid)
+                .setIndex(index)
+                .vBuild();
+    }
+
+    /**
+     * Creates new {@code EntityId} with the given {@code eventId}.
+     */
+    private static EntityId entityId(TestEventId eventId) {
+        return EntityId
+                .newBuilder()
+                .setId(Any.pack(eventId))
+                .vBuild();
+    }
+
+    /**
+     * Creates new {@code TestEventId} with the given {@code value}.
+     */
+    private static TestEventId testEventId(String value) {
+        return TestEventId
+                .newBuilder()
+                .setValue(value)
+                .vBuild();
+    }
 }
