@@ -9,6 +9,8 @@ package io.spine.message.delivery.server;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.environment.Environment;
+import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
+import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.server.ServerEnvironment;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -21,15 +23,26 @@ import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterrup
 /**
  * Abstract base for test classes that need a running {@link App}.
  */
-public abstract class WithApp {
+public abstract class WithApp extends DeliveryTest {
 
     private final App app = new App();
+
+    private ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub sessionRegistry;
+
+    private AdminServiceGrpc.AdminServiceBlockingStub adminService;
 
     @BeforeEach
     void startApp() {
         var appThread = new Thread(app::initAndStart);
         appThread.start();
         sleepUninterruptibly(Duration.ofSeconds(3)); // allow the server to start.
+    }
+
+    @BeforeEach
+    void setupClients() {
+        var localChannel = localChannel();
+        sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(localChannel);
+        adminService = AdminServiceGrpc.newBlockingStub(localChannel);
     }
 
     @AfterEach
@@ -53,5 +66,14 @@ public abstract class WithApp {
                 .forAddress(App.HOST, App.PORT)
                 .usePlaintext()
                 .build();
+    }
+
+    protected ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub
+    sessionRegistry() {
+        return sessionRegistry;
+    }
+
+    protected AdminServiceGrpc.AdminServiceBlockingStub adminService() {
+        return adminService;
     }
 }

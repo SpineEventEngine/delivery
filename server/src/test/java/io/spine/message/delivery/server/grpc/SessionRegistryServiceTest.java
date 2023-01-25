@@ -14,15 +14,11 @@ import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.event.ExpiredSession;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
-import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
-import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -43,14 +39,6 @@ final class SessionRegistryServiceTest extends WithApp {
             .setNodeId(node)
             .setValue(SessionRegistryServiceTest.class.getName())
             .vBuild();
-    private @MonotonicNonNull ShardSessionRegistryServiceBlockingStub sessionRegistry;
-
-    @BeforeEach
-    void setupClients() {
-        var localChannel = localChannel();
-        sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(localChannel);
-    }
-
     @Test
     @DisplayName("pick up a shard")
     void pickUpShard() {
@@ -62,7 +50,7 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setShard(shard)
                 .setWorker(worker)
                 .buildPartial();
-        var response = sessionRegistry.pickShard(request);
+        var response = sessionRegistry().pickShard(request);
         assertThat(response)
                 .comparingExpectedFieldsOnly()
                 .isEqualTo(expected);
@@ -75,10 +63,10 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        var firstAttempt = sessionRegistry.pickShard(request);
+        var firstAttempt = sessionRegistry().pickShard(request);
         assertThat(firstAttempt)
                 .isNotEqualToDefaultInstance();
-        assertThrows(StatusRuntimeException.class, () -> sessionRegistry.pickShard(request));
+        assertThrows(StatusRuntimeException.class, () -> sessionRegistry().pickShard(request));
     }
 
     @Test
@@ -89,12 +77,12 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        sessionRegistry.pickShard(pickShard);
+        sessionRegistry().pickShard(pickShard);
         Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
-        ExpiredSessionsReleased result = sessionRegistry.releaseSessions(releaseExpired);
+        ExpiredSessionsReleased result = sessionRegistry().releaseSessions(releaseExpired);
         assertThat(result.getShardCount())
                 .isEqualTo(1);
         ExpiredSession expiredSession = result.getShard(0);
@@ -112,12 +100,12 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        sessionRegistry.pickShard(pickShard);
+        sessionRegistry().pickShard(pickShard);
         Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
-        ExpiredSessionsReleased released = sessionRegistry.releaseSessions(releaseExpired);
+        ExpiredSessionsReleased released = sessionRegistry().releaseSessions(releaseExpired);
         assertThat(released.getShardCount())
                 .isEqualTo(1);
         ExpiredSession expiredSession = released.getShard(0);
@@ -125,7 +113,7 @@ final class SessionRegistryServiceTest extends WithApp {
                 .isEqualTo(shard);
         assertThat(expiredSession.getWorker())
                 .isEqualTo(worker);
-        ExpiredSessionsReleased result = sessionRegistry.releaseSessions(releaseExpired);
+        ExpiredSessionsReleased result = sessionRegistry().releaseSessions(releaseExpired);
         assertThat(result.getShardCount())
                 .isEqualTo(0);
     }
@@ -138,11 +126,11 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        sessionRegistry.pickShard(pickShard);
+        sessionRegistry().pickShard(pickShard);
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(30))
                 .vBuild();
-        ExpiredSessionsReleased result = sessionRegistry.releaseSessions(releaseExpired);
+        ExpiredSessionsReleased result = sessionRegistry().releaseSessions(releaseExpired);
         assertThat(result.getShardCount())
                 .isEqualTo(0);
     }
