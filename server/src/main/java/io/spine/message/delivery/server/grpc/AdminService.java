@@ -81,11 +81,6 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
 
     /**
      * Returns a new {@code ShardInfo} from the given {@code shard} and {@code messagesCount}.
-     *
-     * @implNote According to the doc of {@link ShardSessionRegistry#getWhenPicked()}
-     *         the {@code whenPicked} field will be empty if the shard is not picked. This means
-     *         that we will be able to set our {@code lastPicked} field only if the shard is
-     *         in {@code PICKED} state.
      */
     private static ShardInfo shardInfo(ShardSessionRegistry shard, int messagesCount) {
         return ShardInfo
