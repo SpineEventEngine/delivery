@@ -57,7 +57,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     }
 
     /**
-     * Fetches information about all shards and reports it to the given {@code observer}.
+     * Fetches information about all shards.
      */
     private ShardInfoList fetch() {
         Map<ShardIndex, Integer> messagesCount = messagesInShards();
