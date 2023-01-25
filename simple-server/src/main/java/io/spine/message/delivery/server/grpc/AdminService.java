@@ -73,6 +73,20 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     }
 
     /**
+     * Reads all messages from the storage and counts the number of messages in each shard.
+     */
+    private Map<ShardIndex, Integer> messagesInShards() {
+        Map<ShardIndex, Integer> messagesCount = new HashMap<>();
+        Iterator<InboxMessage> messages = inboxStorage.readAll();
+        messages.forEachRemaining(message -> {
+            InboxMessageId inboxMessageId = message.getId();
+            ShardIndex shardIndex = inboxMessageId.getIndex();
+            messagesCount.put(shardIndex, messagesCount.getOrDefault(shardIndex, 0) + 1);
+        });
+        return messagesCount;
+    }
+
+    /**
      * Returns a new {@code ShardInfo} from the given {@code shardRecord} and {@code messagesCount}.
      */
     private static ShardInfo shardInfo(ShardSessionRecord shardRecord, int messagesCount) {
@@ -96,20 +110,6 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
                 .setStatus(NOT_PICKED)
                 .setMessages(messagesCount)
                 .vBuild();
-    }
-
-    /**
-     * Reads all messages from the storage and counts the number of messages in each shard.
-     */
-    private Map<ShardIndex, Integer> messagesInShards() {
-        Map<ShardIndex, Integer> messagesCount = new HashMap<>();
-        Iterator<InboxMessage> messages = inboxStorage.readAll();
-        messages.forEachRemaining(message -> {
-            InboxMessageId inboxMessageId = message.getId();
-            ShardIndex shardIndex = inboxMessageId.getIndex();
-            messagesCount.put(shardIndex, messagesCount.getOrDefault(shardIndex, 0) + 1);
-        });
-        return messagesCount;
     }
 
     @Override
