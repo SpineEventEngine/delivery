@@ -68,11 +68,17 @@ public abstract class WithApp extends DeliveryTest {
                 .build();
     }
 
+    /**
+     * Gets the {@code ShardSessionRegistryServiceBlockingStub} connected to the local server.
+     */
     protected ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub
     sessionRegistry() {
         return sessionRegistry;
     }
 
+    /**
+     * Gets the {@code AdminServiceBlockingStub} connected to the local server.
+     */
     protected AdminServiceGrpc.AdminServiceBlockingStub adminService() {
         return adminService;
     }
