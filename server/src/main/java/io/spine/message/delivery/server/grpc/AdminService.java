@@ -91,7 +91,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
         return ShardInfo
                 .newBuilder()
                 .setIndex(shard.getId())
-                .setLastPicked(shard.getWhenPicked())
+                .setLastPicked(shard.getWhenLastPicked())
                 .setStatus(shard.hasWorker() ? PICKED : NOT_PICKED)
                 .setMessages(messagesCount)
                 .vBuild();

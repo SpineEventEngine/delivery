@@ -68,6 +68,7 @@ final class SessionRegistryTest extends DeliveryTest {
                     .setWorker(worker)
                     .setId(shard)
                     .setWhenPicked(time)
+                    .setWhenLastPicked(time)
                     .vBuild();
             context().assertState(shard, expected);
         }
