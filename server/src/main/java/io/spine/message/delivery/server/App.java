@@ -11,6 +11,7 @@ import io.grpc.inprocess.InProcessChannelBuilder;
 import io.spine.client.Client;
 import io.spine.environment.Production;
 import io.spine.logging.Logging;
+import io.spine.message.delivery.server.grpc.AdminService;
 import io.spine.message.delivery.server.grpc.SessionRegistryService;
 import io.spine.server.GrpcContainer;
 import io.spine.server.ServerEnvironment;
@@ -115,6 +116,7 @@ public final class App implements Logging {
         var remoteGrpc =
                 registerContext(GrpcContainer.atPort(PORT), deliveryContext)
                         .addService(new SessionRegistryService(internalClient))
+                        .addService(new AdminService(internalClient))
                         .build();
         remoteGrpc.addShutdownHook();
         try {
