@@ -25,10 +25,16 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 
+/**
+ * Allows getting information about the current state of the shards on the message delivery server.
+ */
 public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
 
     private final Client client;
 
+    /**
+     * Creates a new {@code AdminService} with the given {@code client}.
+     */
     public AdminService(Supplier<Client> client) {
         this.client = checkNotNull(client.get());
     }
@@ -43,6 +49,9 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
         }
     }
 
+    /**
+     * Fetches information about all shards.
+     */
     private ShardInfoList fetch() {
         Map<ShardIndex, Integer> messagesCount = messagesInShards();
         var shards = readShards();
@@ -56,25 +65,9 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
         return shardListBuilder.vBuild();
     }
 
-    private static ShardInfo shardInfo(ShardIndex index, int messagesCount) {
-        return ShardInfo
-                .newBuilder()
-                .setIndex(index)
-                .setStatus(NOT_PICKED)
-                .setMessages(messagesCount)
-                .vBuild();
-    }
-
-    private static ShardInfo shardInfo(ShardSessionRegistry shard, int messagesCount) {
-        return ShardInfo
-                .newBuilder()
-                .setIndex(shard.getId())
-                .setLastPicked(shard.getWhenPicked())
-                .setStatus(shard.hasWorker() ? PICKED : NOT_PICKED)
-                .setMessages(messagesCount)
-                .vBuild();
-    }
-
+    /**
+     * Reads all messages from the storage and counts the number of messages in each shard.
+     */
     private Map<ShardIndex, Integer> messagesInShards() {
         Map<ShardIndex, Integer> messagesCount = new HashMap<>();
         ImmutableList<InboxMessageHolder> messages = readAllMessages();
@@ -85,6 +78,40 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
         return messagesCount;
     }
 
+    /**
+     * Returns a new {@code ShardInfo} from the given {@code shard} and {@code messagesCount}.
+     *
+     * @implNote According to the doc of {@link ShardSessionRegistry#getWhenPicked()}
+     *         the {@code whenPicked} field will be empty if the shard is not picked. This means
+     *         that we will be able to set our {@code lastPicked} field only if the shard is
+     *         in {@code PICKED} state.
+     */
+    private static ShardInfo shardInfo(ShardSessionRegistry shard, int messagesCount) {
+        return ShardInfo
+                .newBuilder()
+                .setIndex(shard.getId())
+                .setLastPicked(shard.getWhenPicked())
+                .setStatus(shard.hasWorker() ? PICKED : NOT_PICKED)
+                .setMessages(messagesCount)
+                .vBuild();
+    }
+
+    /**
+     * Returns a new {@code ShardInfo} with the given {@code ShardIndex} and {@code messagesCount},
+     * sets the shard status to {@code NOT_PICKED}, and doesn't set the last picked time.
+     */
+    private static ShardInfo shardInfo(ShardIndex index, int messagesCount) {
+        return ShardInfo
+                .newBuilder()
+                .setIndex(index)
+                .setStatus(NOT_PICKED)
+                .setMessages(messagesCount)
+                .vBuild();
+    }
+
+    /**
+     * Queries all {@code InboxMessageHolder}s.
+     */
     private ImmutableList<InboxMessageHolder> readAllMessages() {
         var query = InboxMessageHolder
                 .query()
@@ -93,6 +120,9 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
                      .run(query);
     }
 
+    /**
+     * Queries all {@code ShardSessionRegistry} records.
+     */
     private ImmutableList<ShardSessionRegistry> readShards() {
         ShardSessionRegistry.Query shardQuery = ShardSessionRegistry
                 .query()
