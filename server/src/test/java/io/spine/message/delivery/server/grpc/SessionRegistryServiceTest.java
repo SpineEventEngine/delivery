@@ -8,10 +8,7 @@ package io.spine.message.delivery.server.grpc;
 
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.protobuf.util.Durations;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.StatusRuntimeException;
-import io.spine.environment.Environment;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.event.ExpiredSession;
@@ -19,29 +16,24 @@ import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
-import io.spine.message.delivery.server.App;
+import io.spine.message.delivery.server.WithApp;
 import io.spine.server.NodeId;
-import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
-import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`SessionRegistryService` should")
-final class SessionRegistryServiceTest {
+final class SessionRegistryServiceTest extends WithApp {
 
     private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
     private final NodeId node = NodeId.newBuilder()
@@ -51,33 +43,12 @@ final class SessionRegistryServiceTest {
             .setNodeId(node)
             .setValue(SessionRegistryServiceTest.class.getName())
             .vBuild();
-    private final App app = new App();
     private @MonotonicNonNull ShardSessionRegistryServiceBlockingStub sessionRegistry;
-
-    @AfterAll
-    static void resetEnvs() {
-        Environment.instance()
-                .reset();
-        ServerEnvironment.instance()
-                .reset();
-    }
-
-    @BeforeEach
-    void startApp() {
-        var appThread = new Thread(app::initAndStart);
-        appThread.start();
-        sleepUninterruptibly(Duration.ofSeconds(3)); // allow the server to start.
-    }
 
     @BeforeEach
     void setupClients() {
-        var localServer = localServer();
-        sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(localServer);
-    }
-
-    @AfterEach
-    void shutdownApp() {
-        app.shutdown();
+        var localChannel = localChannel();
+        sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(localChannel);
     }
 
     @Test
@@ -174,12 +145,5 @@ final class SessionRegistryServiceTest {
         ExpiredSessionsReleased result = sessionRegistry.releaseSessions(releaseExpired);
         assertThat(result.getShardCount())
                 .isEqualTo(0);
-    }
-
-    private static ManagedChannel localServer() {
-        return ManagedChannelBuilder
-                .forAddress(App.HOST, App.PORT)
-                .usePlaintext()
-                .build();
     }
 }
