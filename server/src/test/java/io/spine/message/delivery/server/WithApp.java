@@ -42,9 +42,8 @@ public abstract class WithApp extends DeliveryTest {
 
     @BeforeEach
     void setupClients() {
-        var localChannel = localChannel();
-        sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(localChannel);
-        adminService = AdminServiceGrpc.newBlockingStub(localChannel);
+        sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(localChannel());
+        adminService = AdminServiceGrpc.newBlockingStub(localChannel());
     }
 
     @AfterEach
