@@ -113,10 +113,11 @@ public final class App implements Logging {
 
     private GrpcContainer
     startRemoteGrpc(DeliveryContext deliveryContext, Supplier<Client> internalClient) {
+        Client client = internalClient.get();
         var remoteGrpc =
                 registerContext(GrpcContainer.atPort(PORT), deliveryContext)
-                        .addService(new SessionRegistryService(internalClient))
-                        .addService(new AdminService(internalClient))
+                        .addService(new SessionRegistryService(client))
+                        .addService(new AdminService(client))
                         .build();
         remoteGrpc.addShutdownHook();
         try {

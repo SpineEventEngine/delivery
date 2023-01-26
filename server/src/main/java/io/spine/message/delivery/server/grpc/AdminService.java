@@ -35,9 +35,9 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
     /**
      * Creates a new {@code AdminService} with the given {@code client}.
      */
-    public AdminService(Supplier<Client> client) {
+    public AdminService(Client client) {
         super();
-        this.client = checkNotNull(client.get());
+        this.client = checkNotNull(client);
     }
 
     @Override
