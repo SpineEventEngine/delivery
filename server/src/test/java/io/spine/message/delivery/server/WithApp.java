@@ -19,6 +19,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 
@@ -33,6 +34,8 @@ public abstract class WithApp extends DeliveryTest {
 
     private AdminServiceBlockingStub adminService;
 
+    private ManagedChannel channel;
+
     @BeforeEach
     void startApp() {
         var appThread = new Thread(app::initAndStart);
@@ -42,12 +45,17 @@ public abstract class WithApp extends DeliveryTest {
 
     @BeforeEach
     void setupClients() {
-        sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(localChannel());
-        adminService = AdminServiceGrpc.newBlockingStub(localChannel());
+        channel = localChannel();
+        sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(channel);
+        adminService = AdminServiceGrpc.newBlockingStub(channel);
     }
 
     @AfterEach
-    void shutdownApp() {
+    void shutdownApp() throws InterruptedException {
+        channel.shutdownNow();
+        if(!channel.awaitTermination(5, TimeUnit.SECONDS)){
+            throw new RuntimeException("Cannot animate the channel!");
+        }
         app.shutdown();
     }
 
