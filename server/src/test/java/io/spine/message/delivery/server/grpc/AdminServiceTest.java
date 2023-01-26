@@ -32,7 +32,7 @@ final class AdminServiceTest extends WithApp {
 
     @Test
     @DisplayName("get current information about shards")
-    @SuppressWarnings("resource") // I don't want to close context in test method.
+    @SuppressWarnings("resource") // Context should not be closed in test method.
     void getShardInfo() {
         ShardIndex shard1 = newIndex(1, 5);
         ShardIndex shard2 = newIndex(2, 5);
