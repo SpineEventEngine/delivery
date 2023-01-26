@@ -14,7 +14,10 @@ import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
@@ -48,6 +51,8 @@ final class AdminServiceTest extends WithApp {
         var picked = sessionRegistry().pickShard(pickUpShard(shard3));
         sessionRegistry().pickShard(pickUpShard(shard4));
         context().receivesCommand(releasePickedUp(picked));
+
+        sleepUninterruptibly(Duration.ofSeconds(3));
 
         var actual = adminService()
                 .getShardInfo(request())
