@@ -11,7 +11,7 @@ import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import io.spine.client.Client;
 import io.spine.message.delivery.InboxMessageHolder;
-import io.spine.message.delivery.ShardSessionRegistry;
+import io.spine.message.delivery.ShardSessionHolder;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
@@ -19,7 +19,6 @@ import io.spine.server.delivery.ShardIndex;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
@@ -82,7 +81,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
     /**
      * Returns a new {@code ShardInfo} from the given {@code shard} and {@code messagesCount}.
      */
-    private static ShardInfo shardInfo(ShardSessionRegistry shard, int messagesCount) {
+    private static ShardInfo shardInfo(ShardSessionHolder shard, int messagesCount) {
         return ShardInfo
                 .newBuilder()
                 .setIndex(shard.getId())
@@ -117,10 +116,10 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
     }
 
     /**
-     * Queries all {@code ShardSessionRegistry} records.
+     * Queries all {@code ShardSessionHolder}s.
      */
-    private ImmutableList<ShardSessionRegistry> readShards() {
-        ShardSessionRegistry.Query shardQuery = ShardSessionRegistry
+    private ImmutableList<ShardSessionHolder> readShards() {
+        ShardSessionHolder.Query shardQuery = ShardSessionHolder
                 .query()
                 .build();
         return client.asGuest()
