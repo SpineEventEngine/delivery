@@ -10,7 +10,9 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.environment.Environment;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
+import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
+import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
 import io.spine.server.ServerEnvironment;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -27,9 +29,9 @@ public abstract class WithApp extends DeliveryTest {
 
     private final App app = new App();
 
-    private ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub sessionRegistry;
+    private ShardSessionRegistryServiceBlockingStub sessionRegistry;
 
-    private AdminServiceGrpc.AdminServiceBlockingStub adminService;
+    private AdminServiceBlockingStub adminService;
 
     @BeforeEach
     void startApp() {
@@ -71,7 +73,7 @@ public abstract class WithApp extends DeliveryTest {
     /**
      * Gets the {@code ShardSessionRegistryServiceBlockingStub} connected to the local server.
      */
-    protected ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub
+    protected ShardSessionRegistryServiceBlockingStub
     sessionRegistry() {
         return sessionRegistry;
     }
@@ -79,7 +81,7 @@ public abstract class WithApp extends DeliveryTest {
     /**
      * Gets the {@code AdminServiceBlockingStub} connected to the local server.
      */
-    protected AdminServiceGrpc.AdminServiceBlockingStub adminService() {
+    protected AdminServiceBlockingStub adminService() {
         return adminService;
     }
 }
