@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery";
+option java_outer_classname = "ShardSessionHolderProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "google/protobuf/timestamp.proto";
+
+import "spine/server/delivery/delivery.proto";
+
+// Projection that holds current shard state.
+message ShardSessionHolder {
+    option (entity).kind = PROJECTION;
+
+    // The index of the shard this registry is guarding.
+    spine.server.delivery.ShardIndex id = 1;
+
+    // The ID of the worker who picked up work from the shard.
+    //
+    // The value may be empty indicating that no one is currently working with the shard.
+    //
+    spine.server.delivery.WorkerId worker = 2;
+
+    // Time when the `worker` has picked up the shard last time.
+    //
+    google.protobuf.Timestamp when_last_picked = 4;
+}
