@@ -67,8 +67,7 @@ final class SessionRegistry
     @Apply
     private void on(ShardPickedUp e) {
         builder().setWorker(e.getWorker())
-                 .setWhenPicked(e.getWhenPicked())
-                 .setWhenLastPicked(e.getWhenPicked());
+                 .setWhenPicked(e.getWhenPicked());
     }
 
     @Assign

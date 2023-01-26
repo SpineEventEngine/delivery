@@ -44,11 +44,4 @@ message ShardSessionRegistry {
     // Must be empty when `worker` is also empty.
     //
     google.protobuf.Timestamp when_picked = 3 [(column) = true];
-
-    // Time when the `worker` has picked up the shard last time.
-    //
-    // This time remains set even if the worker already released the shard. The only case
-    // when this value is not set is when the shard has never been picked up.
-    //
-    google.protobuf.Timestamp when_last_picked = 4;
 }
