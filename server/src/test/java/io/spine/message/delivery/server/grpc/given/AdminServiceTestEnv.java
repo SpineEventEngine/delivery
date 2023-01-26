@@ -25,7 +25,7 @@ import static io.spine.server.delivery.InboxMessageMixin.generateIdWith;
 /**
  * A utility with given values for {@link AdminServiceTest} testing class.
  */
-public class AdminServiceTestEnv {
+public final class AdminServiceTestEnv {
 
     private AdminServiceTestEnv() {
     }
