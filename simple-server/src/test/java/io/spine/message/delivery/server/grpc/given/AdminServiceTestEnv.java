@@ -130,9 +130,7 @@ public final class AdminServiceTestEnv {
      * Creates a new {@code Empty} request.
      */
     public static Empty request() {
-        return Empty
-                .newBuilder()
-                .build();
+        return Empty.getDefaultInstance();
     }
 
     /**

@@ -6,44 +6,37 @@
 
 package io.spine.message.delivery.server.grpc;
 
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
-import io.spine.logging.Logging;
+import io.spine.client.Client;
+import io.spine.message.delivery.CurrentShardState;
+import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
-import io.spine.message.delivery.server.ExtendedInboxStorage;
-import io.spine.message.delivery.server.ShardRegistryStorage;
-import io.spine.server.delivery.InboxMessage;
-import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
-import io.spine.server.delivery.ShardSessionRecord;
-import io.spine.server.storage.StorageFactory;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 
 /**
  * Allows getting information about the current state of the shards on the message delivery server.
  */
-public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
-        implements Logging, NamedHealthAwareService {
+public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
 
-    private final AtomicBoolean healthy = new AtomicBoolean(true);
+    private final Client client;
 
-    private final ExtendedInboxStorage inboxStorage;
-
-    private final ShardRegistryStorage shardStorage;
-
-    public AdminService(StorageFactory factory) {
+    /**
+     * Creates a new {@code AdminService} with the given {@code client}.
+     */
+    public AdminService(Client client) {
         super();
-        inboxStorage = new ExtendedInboxStorage(factory, false);
-        shardStorage = new ShardRegistryStorage(factory);
+        this.client = checkNotNull(client);
     }
 
     @Override
@@ -61,12 +54,12 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
      */
     private ShardInfoList fetch() {
         Map<ShardIndex, Integer> messagesCount = messagesInShards();
-        var shards = shardStorage.readAll();
+        var shards = readShards();
         var shardListBuilder = ShardInfoList.newBuilder();
-        shards.forEachRemaining(shard -> {
-            ShardInfo info = shardInfo(shard, messagesCount.getOrDefault(shard.getIndex(), 0));
+        shards.forEach(shard -> {
+            ShardInfo info = shardInfo(shard, messagesCount.getOrDefault(shard.getId(), 0));
             shardListBuilder.addShards(info);
-            messagesCount.remove(shard.getIndex());
+            messagesCount.remove(shard.getId());
         });
         messagesCount.forEach((key, value) -> shardListBuilder.addShards(shardInfo(key, value)));
         return shardListBuilder.vBuild();
@@ -77,24 +70,23 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
      */
     private Map<ShardIndex, Integer> messagesInShards() {
         Map<ShardIndex, Integer> messagesCount = new HashMap<>();
-        Iterator<InboxMessage> messages = inboxStorage.readAll();
-        messages.forEachRemaining(message -> {
-            InboxMessageId inboxMessageId = message.getId();
-            ShardIndex shardIndex = inboxMessageId.getIndex();
+        ImmutableList<InboxMessageHolder> messages = readAllMessages();
+        messages.forEach(message -> {
+            ShardIndex shardIndex = message.getShard();
             messagesCount.put(shardIndex, messagesCount.getOrDefault(shardIndex, 0) + 1);
         });
         return messagesCount;
     }
 
     /**
-     * Returns a new {@code ShardInfo} from the given {@code shardRecord} and {@code messagesCount}.
+     * Returns a new {@code ShardInfo} from the given {@code shard} and {@code messagesCount}.
      */
-    private static ShardInfo shardInfo(ShardSessionRecord shardRecord, int messagesCount) {
+    private static ShardInfo shardInfo(CurrentShardState shard, int messagesCount) {
         return ShardInfo
                 .newBuilder()
-                .setIndex(shardRecord.getIndex())
-                .setLastPicked(shardRecord.getWhenLastPicked())
-                .setStatus(shardRecord.hasWorker() ? PICKED : NOT_PICKED)
+                .setIndex(shard.getId())
+                .setLastPicked(shard.getWhenLastPicked())
+                .setStatus(shard.hasWorker()? PICKED : NOT_PICKED)
                 .setMessages(messagesCount)
                 .vBuild();
     }
@@ -112,18 +104,25 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
                 .vBuild();
     }
 
-    @Override
-    public boolean healthy() {
-        return healthy.get();
+    /**
+     * Queries all {@code InboxMessageHolder}s.
+     */
+    private ImmutableList<InboxMessageHolder> readAllMessages() {
+        var query = InboxMessageHolder
+                .query()
+                .build();
+        return client.asGuest()
+                     .run(query);
     }
 
-    @Override
-    public void healthy(boolean value) {
-        healthy.set(value);
-    }
-
-    @Override
-    public String name() {
-        return AdminServiceGrpc.SERVICE_NAME;
+    /**
+     * Queries all {@code ShardSessionHolder}s.
+     */
+    private ImmutableList<CurrentShardState> readShards() {
+        CurrentShardState.Query shardQuery = CurrentShardState
+                .query()
+                .build();
+        return client.asGuest()
+                     .run(shardQuery);
     }
 }

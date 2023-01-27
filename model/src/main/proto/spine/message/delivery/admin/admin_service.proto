@@ -16,12 +16,8 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";
 
-import "spine/message/delivery/commands.proto";
-import "spine/message/delivery/events.proto";
-import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
 
 // Acts as a backend implementation for `AdminService`
@@ -49,7 +45,7 @@ message ShardInfo {
     // When the shard was picked for delivery last time.
     //
     // Can be unset if the shard has never been picked by workers.
-    google.protobuf.Timestamp lastPicked = 3;
+    google.protobuf.Timestamp last_picked = 3;
 
     // Number of messages present in the shard.
     int32 messages = 4 [(required) = true];

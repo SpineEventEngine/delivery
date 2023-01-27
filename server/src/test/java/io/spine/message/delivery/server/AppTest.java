@@ -38,29 +38,7 @@ import static io.spine.message.delivery.server.given.TestInboxMessages.toDeliver
 
 @Isolated
 @DisplayName("`App` should")
-final class AppTest {
-
-    private final App app = new App();
-
-    @AfterAll
-    static void resetEnvs() {
-        Environment.instance()
-                .reset();
-        ServerEnvironment.instance()
-                .reset();
-    }
-
-    @BeforeEach
-    void startApp() {
-        var appThread = new Thread(app::initAndStart);
-        appThread.start();
-        sleepUninterruptibly(Duration.ofSeconds(3)); // allow the server to start.
-    }
-
-    @AfterEach
-    void shutdownApp() {
-        app.shutdown();
-    }
+final class AppTest extends WithApp {
 
     @Test
     @DisplayName("expose gRPC client")
