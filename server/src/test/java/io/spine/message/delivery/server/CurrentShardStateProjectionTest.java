@@ -16,6 +16,7 @@ import io.spine.server.NodeId;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 import io.spine.time.testing.FrozenMadHatterParty;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -74,6 +75,11 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
         context().assertEntity(shard, CurrentShardStateProjection.class)
                  .hasStateThat()
                  .isEqualTo(expected);
+    }
+
+    @AfterEach
+    void restoreTime() {
+        Time.resetProvider();
     }
 
     /**
