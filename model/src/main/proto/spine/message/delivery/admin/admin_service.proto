@@ -16,14 +16,9 @@ option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/duration.proto";
 import "google/protobuf/empty.proto";
 
-import "spine/message/delivery/commands.proto";
-import "spine/message/delivery/events.proto";
-import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
-import "spine/message/delivery/current_shard_state.proto";
 
 // Acts as a backend implementation for `AdminService`
 service AdminService {
@@ -54,4 +49,15 @@ message ShardInfo {
 
     // Number of messages present in the shard.
     int32 messages = 4 [(required) = true];
+}
+
+// Current status of the shard.
+enum ShardStatus {
+    SS_UNKNOWN = 0;
+
+    // Shard is picked for delivery.
+    PICKED = 1;
+
+    // Shard is not picked for delivery.
+    NOT_PICKED = 2;
 }

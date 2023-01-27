@@ -13,9 +13,6 @@ import io.spine.message.delivery.event.ShardReleased;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.projection.Projection;
 
-import static io.spine.message.delivery.ShardStatus.NOT_PICKED;
-import static io.spine.message.delivery.ShardStatus.PICKED;
-
 /**
  * Represents the current state of a particular shard in the system.
  */
@@ -25,13 +22,11 @@ final class CurrentShardStateProjection
     @Subscribe
     void on(ShardPickedUp e) {
         builder().setWorker(e.getWorker())
-                 .setStatus(PICKED)
                  .setWhenLastPicked(e.getWhenPicked());
     }
 
     @Subscribe
     void on(ShardReleased e) {
-        builder().clearWorker()
-                 .setStatus(NOT_PICKED);
+        builder().clearWorker();
     }
 }

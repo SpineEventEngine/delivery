@@ -20,9 +20,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static io.spine.message.delivery.ShardStatus.NOT_PICKED;
-import static io.spine.message.delivery.ShardStatus.PICKED;
-
 @DisplayName("`SessionHolder` should")
 @SuppressWarnings("resource") // `context()` should not be closed in test methods.
 class CurrentShardStateProjectionTest extends DeliveryTest {
@@ -51,7 +48,6 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
                 .setId(shard)
                 .setWorker(worker)
                 .setWhenLastPicked(time)
-                .setStatus(PICKED)
                 .vBuild();
 
         context().assertState(shard, expected);
@@ -69,7 +65,6 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
                 .newBuilder()
                 .setId(shard)
                 .setWhenLastPicked(time)
-                .setStatus(NOT_PICKED)
                 .vBuild();
 
         context().assertEntity(shard, CurrentShardStateProjection.class)

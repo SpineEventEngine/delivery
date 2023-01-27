@@ -7,8 +7,8 @@
 package io.spine.message.delivery.server.grpc.given;
 
 import com.google.protobuf.Empty;
-import io.spine.message.delivery.ShardStatus;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
+import io.spine.message.delivery.admin.grpc.ShardStatus;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseShard;
 import io.spine.message.delivery.command.WriteMessage;

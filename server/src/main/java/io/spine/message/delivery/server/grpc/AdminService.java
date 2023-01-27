@@ -21,7 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.message.delivery.ShardStatus.NOT_PICKED;
+import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
+import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 
 /**
  * Allows getting information about the current state of the shards on the message delivery server.
@@ -85,7 +86,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
                 .newBuilder()
                 .setIndex(shard.getId())
                 .setLastPicked(shard.getWhenLastPicked())
-                .setStatus(shard.getStatus())
+                .setStatus(shard.hasWorker()? PICKED : NOT_PICKED)
                 .setMessages(messagesCount)
                 .vBuild();
     }
