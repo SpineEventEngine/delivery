@@ -50,7 +50,7 @@ message ShardInfo {
     // When the shard was picked for delivery last time.
     //
     // Can be unset if the shard has never been picked by workers.
-    google.protobuf.Timestamp lastPicked = 3;
+    google.protobuf.Timestamp last_picked = 3;
 
     // Number of messages present in the shard.
     int32 messages = 4 [(required) = true];
