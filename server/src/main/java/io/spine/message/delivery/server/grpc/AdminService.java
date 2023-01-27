@@ -10,8 +10,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import io.spine.client.Client;
+import io.spine.message.delivery.CurrentShardState;
 import io.spine.message.delivery.InboxMessageHolder;
-import io.spine.message.delivery.ShardSessionHolder;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
@@ -21,8 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
-import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
+import static io.spine.message.delivery.ShardStatus.NOT_PICKED;
 
 /**
  * Allows getting information about the current state of the shards on the message delivery server.
@@ -81,12 +80,12 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
     /**
      * Returns a new {@code ShardInfo} from the given {@code shard} and {@code messagesCount}.
      */
-    private static ShardInfo shardInfo(ShardSessionHolder shard, int messagesCount) {
+    private static ShardInfo shardInfo(CurrentShardState shard, int messagesCount) {
         return ShardInfo
                 .newBuilder()
                 .setIndex(shard.getId())
                 .setLastPicked(shard.getWhenLastPicked())
-                .setStatus(shard.hasWorker() ? PICKED : NOT_PICKED)
+                .setStatus(shard.getStatus())
                 .setMessages(messagesCount)
                 .vBuild();
     }
@@ -118,8 +117,8 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
     /**
      * Queries all {@code ShardSessionHolder}s.
      */
-    private ImmutableList<ShardSessionHolder> readShards() {
-        ShardSessionHolder.Query shardQuery = ShardSessionHolder
+    private ImmutableList<CurrentShardState> readShards() {
+        CurrentShardState.Query shardQuery = CurrentShardState
                 .query()
                 .build();
         return client.asGuest()

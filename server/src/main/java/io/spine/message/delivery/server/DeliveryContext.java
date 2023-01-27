@@ -111,7 +111,7 @@ public final class DeliveryContext {
             return BoundedContext
                     .singleTenant(NAME)
                     .add(SessionRegistry.class)
-                    .add(SessionHolder.class)
+                    .add(CurrentShardStateProjection.class)
                     .add(new InboxModifierRepo())
                     .add(new MessageHolderRepo())
                     .add(new SessionsCleanerProcessRepo(contextClient));

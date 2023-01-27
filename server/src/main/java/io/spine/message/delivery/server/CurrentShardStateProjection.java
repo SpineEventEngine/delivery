@@ -7,23 +7,28 @@
 package io.spine.message.delivery.server;
 
 import io.spine.core.Subscribe;
-import io.spine.message.delivery.ShardSessionHolder;
+import io.spine.message.delivery.CurrentShardState;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.projection.Projection;
 
-public class SessionHolder
-        extends Projection<ShardIndex, ShardSessionHolder, ShardSessionHolder.Builder> {
+import static io.spine.message.delivery.ShardStatus.NOT_PICKED;
+import static io.spine.message.delivery.ShardStatus.PICKED;
+
+public class CurrentShardStateProjection
+        extends Projection<ShardIndex, CurrentShardState, CurrentShardState.Builder> {
 
     @Subscribe
     void on(ShardPickedUp e) {
         builder().setWorker(e.getWorker())
+                 .setStatus(PICKED)
                  .setWhenLastPicked(e.getWhenPicked());
     }
 
     @Subscribe
     void on(ShardReleased e) {
-        builder().clearWorker();
+        builder().clearWorker()
+                 .setStatus(NOT_PICKED);
     }
 }

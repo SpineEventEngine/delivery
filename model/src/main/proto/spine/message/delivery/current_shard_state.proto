@@ -21,7 +21,7 @@ import "google/protobuf/timestamp.proto";
 import "spine/server/delivery/delivery.proto";
 
 // Projection that holds current shard state.
-message ShardSessionHolder {
+message CurrentShardState {
     option (entity).kind = PROJECTION;
 
     // The index of the shard this registry is guarding.
@@ -35,4 +35,18 @@ message ShardSessionHolder {
 
     // Time when the `worker` has picked up the shard last time.
     google.protobuf.Timestamp when_last_picked = 4;
+
+    // Status of the shard.
+    ShardStatus status = 5;
+}
+
+// Current status of the shard.
+enum ShardStatus {
+    SS_UNKNOWN = 0;
+
+    // Shard is picked for delivery.
+    PICKED = 1;
+
+    // Shard is not picked for delivery.
+    NOT_PICKED = 2;
 }

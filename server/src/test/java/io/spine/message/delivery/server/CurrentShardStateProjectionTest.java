@@ -9,7 +9,7 @@ package io.spine.message.delivery.server;
 import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
 import io.spine.base.Time;
-import io.spine.message.delivery.ShardSessionHolder;
+import io.spine.message.delivery.CurrentShardState;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseShard;
 import io.spine.server.NodeId;
@@ -19,9 +19,12 @@ import io.spine.time.testing.FrozenMadHatterParty;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static io.spine.message.delivery.ShardStatus.NOT_PICKED;
+import static io.spine.message.delivery.ShardStatus.PICKED;
+
 @DisplayName("`SessionHolder` should")
 @SuppressWarnings("resource") // `context()` should not be closed in test methods.
-class SessionHolderTest extends DeliveryTest {
+class CurrentShardStateProjectionTest extends DeliveryTest {
 
     private final ShardIndex shard = ShardIndex.newBuilder()
             .setIndex(0)
@@ -42,11 +45,12 @@ class SessionHolderTest extends DeliveryTest {
         Time.setProvider(new FrozenMadHatterParty(time));
         context().receivesCommand(pickUpShard());
 
-        ShardSessionHolder expected = ShardSessionHolder
+        CurrentShardState expected = CurrentShardState
                 .newBuilder()
                 .setId(shard)
                 .setWorker(worker)
                 .setWhenLastPicked(time)
+                .setStatus(PICKED)
                 .vBuild();
 
         context().assertState(shard, expected);
@@ -60,13 +64,14 @@ class SessionHolderTest extends DeliveryTest {
 
         context().receivesCommands(pickUpShard(), releaseShard());
 
-        ShardSessionHolder expected = ShardSessionHolder
+        CurrentShardState expected = CurrentShardState
                 .newBuilder()
                 .setId(shard)
                 .setWhenLastPicked(time)
+                .setStatus(NOT_PICKED)
                 .vBuild();
 
-        context().assertEntity(shard, SessionHolder.class)
+        context().assertEntity(shard, CurrentShardStateProjection.class)
                  .hasStateThat()
                  .isEqualTo(expected);
     }
