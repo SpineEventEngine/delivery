@@ -16,6 +16,9 @@ import io.spine.server.projection.Projection;
 import static io.spine.message.delivery.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.ShardStatus.PICKED;
 
+/**
+ * Represents the current state of a particular shard in the system.
+ */
 final class CurrentShardStateProjection
         extends Projection<ShardIndex, CurrentShardState, CurrentShardState.Builder> {
 
