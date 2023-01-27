@@ -27,14 +27,14 @@ import static io.spine.message.delivery.ShardStatus.PICKED;
 @SuppressWarnings("resource") // `context()` should not be closed in test methods.
 class CurrentShardStateProjectionTest extends DeliveryTest {
 
-    private final ShardIndex shard = ShardIndex.newBuilder()
+    private static final ShardIndex shard = ShardIndex.newBuilder()
             .setIndex(0)
             .setOfTotal(2)
             .vBuild();
-    private final NodeId node = NodeId.newBuilder()
+    private static final NodeId node = NodeId.newBuilder()
             .setValue(Identifier.newUuid())
             .vBuild();
-    private final WorkerId worker = WorkerId.newBuilder()
+    private static final WorkerId worker = WorkerId.newBuilder()
             .setNodeId(node)
             .setValue(Identifier.newUuid())
             .vBuild();
@@ -85,7 +85,7 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
     /**
      * Creates new {@code PickUpShard} command with predefined parameters.
      */
-    private PickUpShard pickUpShard() {
+    private static PickUpShard pickUpShard() {
         return PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
@@ -95,7 +95,7 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
     /**
      * Creates new {@code ReleaseShard} command with predefined parameters.
      */
-    private ReleaseShard releaseShard() {
+    private static ReleaseShard releaseShard() {
         return ReleaseShard
                 .newBuilder()
                 .setShard(shard)
