@@ -16,7 +16,7 @@ import io.spine.server.projection.Projection;
 import static io.spine.message.delivery.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.ShardStatus.PICKED;
 
-public class CurrentShardStateProjection
+final class CurrentShardStateProjection
         extends Projection<ShardIndex, CurrentShardState, CurrentShardState.Builder> {
 
     @Subscribe
