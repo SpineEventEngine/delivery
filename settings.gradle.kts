@@ -20,3 +20,4 @@ fun deployment(name: String) {
     include(path)
     project(path).projectDir = file("./deployment/${name}")
 }
+include("admin-server")
