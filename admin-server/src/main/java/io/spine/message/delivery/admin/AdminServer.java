@@ -11,9 +11,9 @@ import io.micronaut.runtime.Micronaut;
 /**
  * Spine Liquor admin server application.
  */
-final class App {
+public final class AdminServer {
 
-    private App() {
+    private AdminServer() {
     }
 
     public static void main(String[] args) {
