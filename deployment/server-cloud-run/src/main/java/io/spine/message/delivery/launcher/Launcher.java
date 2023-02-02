@@ -29,6 +29,15 @@ public class Launcher implements Logging {
         new Launcher().launch(args);
     }
 
+    /**
+     * Launches the Liquor server, also launches the Admin Server if configured.
+     *
+     * <p>Blocks execution until the Liquor server stops.
+     *
+     * @param args
+     *         command line arguments that were passed with the startup command. This parameter will
+     *         be passed to both Liquor and Admin server as is.
+     */
     private void launch(String[] args) throws InterruptedException {
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
         Thread liquor = liquor(threadFactory, args);
