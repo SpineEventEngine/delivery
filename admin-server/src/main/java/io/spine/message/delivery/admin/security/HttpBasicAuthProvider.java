@@ -27,11 +27,11 @@ import static io.micronaut.security.authentication.AuthenticationResponse.succes
 @Singleton
 final class HttpBasicAuthProvider implements AuthenticationProvider {
 
-    private final HttpBasicAuthCredentials correct;
+    private final HttpBasicAuthCredentials valid;
 
     @Inject
-    HttpBasicAuthProvider(HttpBasicAuthCredentials correct) {
-        this.correct = correct;
+    HttpBasicAuthProvider(HttpBasicAuthCredentials valid) {
+        this.valid = valid;
     }
 
     @Override
@@ -48,7 +48,7 @@ final class HttpBasicAuthProvider implements AuthenticationProvider {
     authenticate(AuthenticationRequest<?, ?> auth, FluxSink<AuthenticationResponse> emitter) {
         Object identity = auth.getIdentity();
         Object secret = auth.getSecret();
-        if (identity.equals(correct.username()) && secret.equals(correct.password())) {
+        if (identity.equals(valid.username()) && secret.equals(valid.password())) {
             emitter.next(success((String) identity));
             emitter.complete();
         } else {
