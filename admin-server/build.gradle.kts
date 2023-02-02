@@ -10,7 +10,7 @@ repositories {
 }
 
 application {
-    mainClass.set("io.spine.message.delivery.admin.App")
+    mainClass.set("io.spine.message.delivery.admin.AdminServer")
 }
 
 micronaut {
