@@ -1,4 +1,5 @@
 import io.spine.internal.dependency.Grpc
+import io.spine.internal.dependency.Micronaut
 
 plugins {
     id("java")
@@ -14,7 +15,7 @@ application {
 }
 
 micronaut {
-    version.set("3.5.1")
+    version.set(Micronaut.version)
 
     runtime("netty")
 
@@ -25,17 +26,17 @@ micronaut {
 }
 
 dependencies {
-    annotationProcessor("io.micronaut:micronaut-http-validation")
-    annotationProcessor("io.micronaut.security:micronaut-security-annotations")
+    annotationProcessor(Micronaut.AnnotationProcessor.httpValidation)
+    annotationProcessor(Micronaut.AnnotationProcessor.security)
 
-    implementation("io.micronaut:micronaut-runtime:3.8.1")
-    implementation("io.micronaut.reactor:micronaut-reactor")
-    implementation("io.micronaut.security:micronaut-security")
+    implementation(Micronaut.runtime)
+    implementation(Micronaut.reactor)
+    implementation(Micronaut.security)
     implementation("io.grpc:grpc-all:${Grpc.version}")
     implementation(Grpc.nettyShaded)
     implementation(project(":model"))
 
-    testImplementation("io.micronaut.test:micronaut-test-core")
-    testImplementation("io.micronaut.test:micronaut-test-junit5")
-    testImplementation("io.micronaut.reactor:micronaut-reactor-http-client")
+    testImplementation(Micronaut.Test.core)
+    testImplementation(Micronaut.Test.jUnit5)
+    testImplementation(Micronaut.httpClient)
 }
