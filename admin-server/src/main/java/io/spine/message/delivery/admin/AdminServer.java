@@ -16,6 +16,12 @@ public final class AdminServer {
     private AdminServer() {
     }
 
+    /**
+     * Runs the Micronaut-based {@code AdminServer}.
+     *
+     * @param args
+     *         command line arguments that will be passed to the Micronaut.
+     */
     public static void main(String[] args) {
         Micronaut.run(args);
     }

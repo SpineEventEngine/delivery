@@ -25,6 +25,13 @@ public final class Launcher implements Logging {
     private Launcher() {
     }
 
+    /**
+     * Starts the {@code Launcher}.
+     *
+     * @param args
+     *         arguments passed to the program through the command line. Those arguments
+     *         will be passed to Liquor and Admin services as is.
+     */
     public static void main(String[] args) throws InterruptedException {
         new Launcher().launch(args);
     }
