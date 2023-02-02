@@ -35,13 +35,7 @@ dependencies {
     implementation(Grpc.nettyShaded)
     implementation("io.grpc:grpc-all:${Grpc.version}")
 
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
     testImplementation("io.micronaut.test:micronaut-test-core")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
     testImplementation("io.micronaut.reactor:micronaut-reactor-http-client")
-}
-
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
 }
