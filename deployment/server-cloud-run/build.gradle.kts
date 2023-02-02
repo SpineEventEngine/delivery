@@ -23,6 +23,7 @@ dependencies {
     runtimeOnly(Log4j2.core)
     runtimeOnly(Flogger.Runtime.log4J2)
     implementation(project(":server"))
+    implementation(project(":admin-server"))
 }
 
 application {
@@ -31,7 +32,7 @@ application {
     )
 }
 
-val appClassName = "io.spine.message.delivery.server.App"
+val appClassName = "io.spine.message.delivery.launcher.Launcher"
 project.setProperty("mainClassName", appClassName)
 
 tasks.withType<ShadowJar> {
