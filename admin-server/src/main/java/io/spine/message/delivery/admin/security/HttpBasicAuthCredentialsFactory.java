@@ -16,7 +16,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * Creates {@code HttpBasicAuthCredentials} that the application was preconfigured to accept.
  *
- * <p>Correct credentials should be set in {@code ADMIN_USERNAME} and {@code ADMIN_PASSWORD}
+ * <p>Valid credentials should be set in {@code ADMIN_USERNAME} and {@code ADMIN_PASSWORD}
  * environment variables.
  */
 @Factory
