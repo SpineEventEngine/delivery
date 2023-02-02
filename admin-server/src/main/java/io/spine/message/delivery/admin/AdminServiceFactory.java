@@ -16,7 +16,7 @@ import jakarta.inject.Singleton;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
- * Factory for creating {@link ManagedChannel}s connected to the Liquor server running the
+ * Factory for creating {@link ManagedChannel}s connected to the Liquor server running on the
  * same instance.
  *
  * <p>The factory assumes that the Liquor server is running on the same instance, so it
