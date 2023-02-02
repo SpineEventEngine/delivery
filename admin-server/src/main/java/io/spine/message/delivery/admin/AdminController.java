@@ -23,6 +23,9 @@ import static io.micronaut.security.rules.SecurityRule.IS_AUTHENTICATED;
 import static io.spine.json.Json.toCompactJson;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+/**
+ * Micronaut controller for the {@code /admin} URL path.
+ */
 @Controller("/admin")
 @Secured(IS_AUTHENTICATED)
 final class AdminController {
@@ -36,7 +39,7 @@ final class AdminController {
 
     @Get("/shardInfo")
     @Produces(MediaType.TEXT_JSON)
-    public String getShardInfo() throws ExecutionException, InterruptedException, TimeoutException {
+    String getShardInfo() throws ExecutionException, InterruptedException, TimeoutException {
         ShardInfoList shardInfoList = adminService
                 .getShardInfo(Empty.getDefaultInstance())
                 .get(10, SECONDS);
