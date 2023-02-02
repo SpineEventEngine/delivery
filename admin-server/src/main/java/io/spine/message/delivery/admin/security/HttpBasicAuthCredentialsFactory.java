@@ -34,8 +34,8 @@ final class HttpBasicAuthCredentialsFactory {
     }
 
     /**
-     * Reads the correct credentials from environment variables or defaults to the {@code admin},
-     * {@code admin} login and password if not configured.
+     * Reads and returns valid credentials from environment variables or empty
+     * if variables are not set.
      */
     @SuppressWarnings("CallToSystemGetenv")
     private static Optional<HttpBasicAuthCredentials> fromEnvVars() {
