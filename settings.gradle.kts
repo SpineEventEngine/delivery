@@ -10,6 +10,7 @@ include("model")
 include("server")
 include("simple-server")
 include("testutil-server")
+include("admin-server")
 includeBuild("client")
 
 deployment("server-cloud-run")
@@ -20,4 +21,3 @@ fun deployment(name: String) {
     include(path)
     project(path).projectDir = file("./deployment/${name}")
 }
-include("admin-server")
