@@ -31,9 +31,9 @@ dependencies {
     implementation("io.micronaut:micronaut-runtime:3.8.1")
     implementation("io.micronaut.reactor:micronaut-reactor")
     implementation("io.micronaut.security:micronaut-security")
-    implementation(project(":model"))
-    implementation(Grpc.nettyShaded)
     implementation("io.grpc:grpc-all:${Grpc.version}")
+    implementation(Grpc.nettyShaded)
+    implementation(project(":model"))
 
     testImplementation("io.micronaut.test:micronaut-test-core")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
