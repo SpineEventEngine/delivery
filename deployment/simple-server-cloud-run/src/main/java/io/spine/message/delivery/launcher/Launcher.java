@@ -18,7 +18,7 @@ import static java.lang.Boolean.parseBoolean;
 /**
  * An entrypoint for launching Liquor server.
  */
-public class Launcher implements Logging {
+public final class Launcher implements Logging {
 
     private static final String ADMIN_SERVER_ENV = "ADMIN_SERVER";
 
