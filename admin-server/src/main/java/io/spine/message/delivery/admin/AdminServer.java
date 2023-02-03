@@ -20,7 +20,9 @@ public final class AdminServer {
      * Runs the Micronaut-based {@code AdminServer}.
      *
      * @param args
-     *         command line arguments that will be passed to the Micronaut.
+     *         command line arguments that will be passed to the Micronaut. In most cases
+     *         there is no need to pass any arguments to make the server run properly,
+     *         these arguments are provided for cases when some modification required
      */
     public static void main(String[] args) {
         Micronaut.run(args);
