@@ -11,6 +11,7 @@ include("server")
 include("simple-server")
 include("testutil-server")
 include("admin-server")
+include("admin-ui")
 includeBuild("client")
 
 deployment("server-cloud-run")
