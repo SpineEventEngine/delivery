@@ -33,7 +33,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((r) => r.meta.requiresAuth)) {
-    if (!AuthService.isAuthenticated()) {
+    if (!AuthService.isAuthenticated) {
       return next('login');
     }
   }
