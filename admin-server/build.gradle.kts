@@ -2,7 +2,6 @@ import io.spine.internal.dependency.Grpc
 import io.spine.internal.dependency.Micronaut
 
 plugins {
-    id("java")
     id("io.micronaut.application") version "3.7.0"
 }
 
