@@ -2,7 +2,10 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-toolbar-title>Liquor Admin</q-toolbar-title>
+        <q-avatar>
+          <img src="src/assets/spine-sign-white.svg" alt="spine-logo">
+        </q-avatar>
+        <q-toolbar-title >Liquor Admin</q-toolbar-title>
         <q-btn @click="logout"
                v-if="isAuth"
                icon="logout"
