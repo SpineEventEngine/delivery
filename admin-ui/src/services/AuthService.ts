@@ -38,6 +38,24 @@ export class AuthService {
   }
 
   /**
+   * Returns `true` if the user is authenticated.
+   *
+   * This method assumes that the user is authenticated is there is a login stored
+   * in a local storage.
+   */
+  static isAuthenticated(): boolean {
+    return !!AuthService.login();
+  }
+
+  /**
+   * Removes login and password form the local storage.
+   */
+  static logout() {
+    localStorage.removeItem("login");
+    localStorage.removeItem("password");
+  }
+
+  /**
    * Creates auth options for the `axios` request with the given `login` and `password`.
    * @private
    */
@@ -74,15 +92,5 @@ export class AuthService {
   static authOptions():
     { auth: { username: string, password: string } } {
     return this.options(AuthService.login(), AuthService.password());
-  }
-
-  /**
-   * Returns `true` if the user is authenticated.
-   *
-   * This method assumes that the user is authenticated is there is a login stored
-   * in a local storage.
-   */
-  static isAuthenticated(): boolean {
-    return !!AuthService.login();
   }
 }
