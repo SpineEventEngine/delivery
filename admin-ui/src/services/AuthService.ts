@@ -11,7 +11,6 @@ import { Api } from "src/services/Api";
  * Performs a user authentication with HTTP Basic Auth strategy.
  */
 export class AuthService {
-
   /**
    * Tries to authenticate a user with the given `login` and `password` and returns `true` if the
    * attempt is successfully or `false` otherwise.
