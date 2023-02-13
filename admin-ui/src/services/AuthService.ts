@@ -6,11 +6,14 @@
 
 import axios from 'axios';
 import { Api } from "src/services/Api";
+import { ref } from "vue";
 
 /**
  * Performs a user authentication with HTTP Basic Auth strategy.
  */
 export class AuthService {
+  static isAuthenticated = ref(!!AuthService.login());
+
   /**
    * Tries to authenticate a user with the given `login` and `password` and returns `true` if the
    * attempt is successfully or `false` otherwise.
@@ -22,6 +25,7 @@ export class AuthService {
           if (response.status === 200) {
             localStorage.login = login;
             localStorage.password = password;
+            this.isAuthenticated.value = true;
             resolve(true);
           } else {
             reject(response);
@@ -38,21 +42,12 @@ export class AuthService {
   }
 
   /**
-   * Returns `true` if the user is authenticated.
-   *
-   * This method assumes that the user is authenticated is there is a login stored
-   * in a local storage.
-   */
-  static isAuthenticated(): boolean {
-    return !!AuthService.login();
-  }
-
-  /**
    * Removes login and password form the local storage.
    */
   static logout() {
     localStorage.removeItem("login");
     localStorage.removeItem("password");
+    this.isAuthenticated.value = false;
   }
 
   /**
