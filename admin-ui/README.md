@@ -11,7 +11,9 @@ npm install
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
-quasar dev
+npx quasar dev
+# or using gradle task
+./gradlew :admin-ui:qserve
 ```
 
 
@@ -26,7 +28,9 @@ npm run lint
 
 ### Build the app for production
 ```bash
-quasar build
+npx quasar build
+#or using gradle task
+./gradlew :admin-ui:qbuild
 ```
 
 ### Customize the configuration
