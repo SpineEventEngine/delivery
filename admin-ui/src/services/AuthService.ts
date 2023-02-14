@@ -10,6 +10,10 @@ import { ref } from "vue";
 
 /**
  * Performs a user authentication with HTTP Basic Auth strategy.
+ *
+ * User credentials are stored in local storage openly and not encrypted. Stored credentials
+ * never expire, it means that the user stays authenticated until the `logout()`
+ * method will be called.
  */
 export class AuthService {
   static isAuthenticated = ref(!!AuthService.login());
