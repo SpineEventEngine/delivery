@@ -7,7 +7,7 @@
 /**
  * API endpoint of the application.
  */
-export const enum Api {
+export const enum ServerApi {
 
   ShardInfo = '/admin/shardInfo'
 }

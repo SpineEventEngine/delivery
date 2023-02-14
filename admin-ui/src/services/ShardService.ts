@@ -6,14 +6,14 @@
 
 import axios from 'axios';
 import { AuthService } from 'src/services/AuthService';
-import { Api } from 'src/services/Api';
+import { ServerApi } from 'src/services/ServerApi';
 import router from 'src/router/index';
 
 /**
  * Allows getting shard information.
  */
 export class ShardService {
-  private shard_info = Api.ShardInfo;
+  private shard_info = ServerApi.ShardInfo;
 
   /**
    * Requests current shard status from the server.
