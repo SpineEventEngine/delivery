@@ -16,7 +16,6 @@
 <script lang="ts" setup>
 import { inject, ref } from 'vue';
 import { ShardService } from 'src/services/ShardService';
-import { ShardInfoList } from "components/models";
 import ShardInfoComponent from "components/ShardInfoComponent.vue";
 
 const data = ref({});
@@ -24,7 +23,7 @@ const data = ref({});
 const shardService: ShardService = inject(ShardService.name)!;
 
 shardService.shardInfo().then((received) => {
-  data.value = received as ShardInfoList;
+  data.value = received;
 });
 
 </script>
