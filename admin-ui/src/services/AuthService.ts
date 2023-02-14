@@ -69,7 +69,7 @@ export class AuthService {
   }
 
   /**
-   * Returns user's login from the local storage.
+   * Returns user's login or `null` if the is no authenticated user.
    * @private
    */
   private static login(): string {
@@ -77,7 +77,7 @@ export class AuthService {
   }
 
   /**
-   * Returns user's password form the local storage.
+   * Returns user's password or `null` if the is no authenticated user.
    * @private
    */
   private static password(): string {
@@ -85,8 +85,10 @@ export class AuthService {
   }
 
   /**
-   * Creates auth options for the `axios` request with login and password retrieved
-   * from the local storage.
+   * Creates auth options for the `axios` request with the login and password of
+   * the currently authenticated user.
+   *
+   * If there is no authenticated user the fields will be `null`.
    */
   static authOptions():
     { auth: { username: string, password: string } } {
