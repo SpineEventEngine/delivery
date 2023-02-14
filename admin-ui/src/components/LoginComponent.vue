@@ -48,7 +48,7 @@ const login = ref('');
 const password = ref('');
 
 function onSubmit() {
-  AuthService.tryAuthenticate(login.value, password.value)
+  AuthService.tryLogin(login.value, password.value)
     .then((authenticated) => {
       if (authenticated) {
         router.push({ path: '/admin' });

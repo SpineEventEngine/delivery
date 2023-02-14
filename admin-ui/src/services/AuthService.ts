@@ -22,7 +22,7 @@ export class AuthService {
    * Tries to authenticate a user with the given `login` and `password` and returns `true` if the
    * attempt is successfully or `false` otherwise.
    */
-  static tryAuthenticate(login: string, password: string): Promise<boolean> {
+  static tryLogin(login: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       axios.head(`${ServerApi.ShardInfo}`, AuthService.options(login, password))
         .then((response) => {
