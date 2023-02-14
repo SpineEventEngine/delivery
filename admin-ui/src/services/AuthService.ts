@@ -5,7 +5,7 @@
  */
 
 import axios from 'axios';
-import { ServerApi } from "src/services/ServerApi";
+import { Endpoints } from "src/services/Endpoints";
 import { ref } from "vue";
 
 /**
@@ -24,7 +24,7 @@ export class AuthService {
    */
   static login(login: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      axios.head(`${ServerApi.ShardInfo}`, AuthService.options(login, password))
+      axios.head(`${Endpoints.ShardInfo}`, AuthService.options(login, password))
         .then((response) => {
           if (response.status === 200) {
             localStorage.login = login;

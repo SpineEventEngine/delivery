@@ -6,7 +6,7 @@
 
 import axios from 'axios';
 import { AuthService } from 'src/services/AuthService';
-import { ServerApi } from 'src/services/ServerApi';
+import { Endpoints } from 'src/services/Endpoints';
 import router from 'src/router/index';
 import { ShardInfoList } from "components/models";
 
@@ -14,7 +14,7 @@ import { ShardInfoList } from "components/models";
  * Allows getting shard information.
  */
 export class ShardService {
-  private shard_info = ServerApi.ShardInfo;
+  private shard_info = Endpoints.ShardInfo;
 
   /**
    * Requests current shard status from the server.
