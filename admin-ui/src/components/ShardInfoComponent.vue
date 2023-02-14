@@ -16,7 +16,8 @@
     </q-item-section>
 
     <q-item-section side top>
-      <q-item-label caption>{{shard.status}}</q-item-label>
+      <q-item-label caption v-if="shard.status === 'PICKED'">Picked</q-item-label>
+      <q-item-label caption v-if="shard.status === 'NOT_PICKED'">Not Picked</q-item-label>
     </q-item-section>
   </q-item>
 </template>
