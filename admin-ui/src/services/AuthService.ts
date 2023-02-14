@@ -16,13 +16,13 @@ import { ref } from "vue";
  * method will be called.
  */
 export class AuthService {
-  static isAuthenticated = ref(!!AuthService.login());
+  static isAuthenticated = ref(!!AuthService.username());
 
   /**
    * Tries to authenticate a user with the given `login` and `password` and returns `true` if the
    * attempt is successfully or `false` otherwise.
    */
-  static tryLogin(login: string, password: string): Promise<boolean> {
+  static login(login: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       axios.head(`${ServerApi.ShardInfo}`, AuthService.options(login, password))
         .then((response) => {
@@ -69,15 +69,15 @@ export class AuthService {
   }
 
   /**
-   * Returns user's login or `null` if the is no authenticated user.
+   * Returns user's login or `null` if there is no authenticated user.
    * @private
    */
-  private static login(): string {
+  private static username(): string {
     return localStorage.login;
   }
 
   /**
-   * Returns user's password or `null` if the is no authenticated user.
+   * Returns user's password or `null` if there is no authenticated user.
    * @private
    */
   private static password(): string {
@@ -92,6 +92,6 @@ export class AuthService {
    */
   static authOptions():
     { auth: { username: string, password: string } } {
-    return this.options(AuthService.login(), AuthService.password());
+    return this.options(AuthService.username(), AuthService.password());
   }
 }
