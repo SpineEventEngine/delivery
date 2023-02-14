@@ -5,11 +5,15 @@
  */
 
 import axios from 'axios';
-import { Api } from "src/services/Api";
+import { ServerApi } from "src/services/ServerApi";
 import { ref } from "vue";
 
 /**
  * Performs a user authentication with HTTP Basic Auth strategy.
+ *
+ * User credentials are stored in local storage openly and not encrypted. Stored credentials
+ * never expire, it means that the user stays authenticated until the `logout()`
+ * method will be called.
  */
 export class AuthService {
   static isAuthenticated = ref(!!AuthService.login());
@@ -18,9 +22,9 @@ export class AuthService {
    * Tries to authenticate a user with the given `login` and `password` and returns `true` if the
    * attempt is successfully or `false` otherwise.
    */
-  static tryAuthenticate(login: string, password: string): Promise<boolean> {
+  static tryLogin(login: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      axios.head(`${Api.ShardInfo}`, AuthService.options(login, password))
+      axios.head(`${ServerApi.ShardInfo}`, AuthService.options(login, password))
         .then((response) => {
           if (response.status === 200) {
             localStorage.login = login;
@@ -65,7 +69,7 @@ export class AuthService {
   }
 
   /**
-   * Returns user's login from the local storage.
+   * Returns user's login or `null` if the is no authenticated user.
    * @private
    */
   private static login(): string {
@@ -73,7 +77,7 @@ export class AuthService {
   }
 
   /**
-   * Returns user's password form the local storage.
+   * Returns user's password or `null` if the is no authenticated user.
    * @private
    */
   private static password(): string {
@@ -81,8 +85,10 @@ export class AuthService {
   }
 
   /**
-   * Creates auth options for the `axios` request with login and password retrieved
-   * from the local storage.
+   * Creates auth options for the `axios` request with the login and password of
+   * the currently authenticated user.
+   *
+   * If there is no authenticated user the fields will be `null`.
    */
   static authOptions():
     { auth: { username: string, password: string } } {
