@@ -24,6 +24,7 @@ dependencies {
     runtimeOnly(Flogger.Runtime.log4J2)
     implementation(project(":server"))
     implementation(project(":admin-server"))
+    implementation(project(":admin-ui"))
 }
 
 application {
@@ -52,5 +53,13 @@ jib {
     container {
         mainClass = appClassName
         ports = listOf("8080", "8484")
+    }
+    extraDirectories {
+        paths {
+            path {
+                setFrom(tasks.getByPath(":admin-ui:qbuild").outputs.files.asPath)
+                into = "/resources/static"
+            }
+        }
     }
 }
