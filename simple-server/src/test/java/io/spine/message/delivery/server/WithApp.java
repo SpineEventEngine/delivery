@@ -8,6 +8,8 @@ package io.spine.message.delivery.server;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
+import io.spine.message.delivery.grpc.InboxServiceGrpc;
 import io.spine.message.delivery.grpc.ShardServiceGrpc;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.junit.jupiter.api.AfterEach;
@@ -58,6 +60,20 @@ public abstract class WithApp {
      */
     protected final ShardServiceGrpc.ShardServiceBlockingStub syncShardService() {
         return ShardServiceGrpc.newBlockingStub(serverChannel());
+    }
+
+    /**
+     * Returns blocking {@code AdminService} connected to the app.
+     */
+    protected final AdminServiceGrpc.AdminServiceBlockingStub syncAdminService() {
+        return AdminServiceGrpc.newBlockingStub(serverChannel());
+    }
+
+    /**
+     * Returns blocking {@code InboxService} connected to the app.
+     */
+    protected final InboxServiceGrpc.InboxServiceBlockingStub syncInboxService() {
+        return InboxServiceGrpc.newBlockingStub(serverChannel());
     }
 
     /**

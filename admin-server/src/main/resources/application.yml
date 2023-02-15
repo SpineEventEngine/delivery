@@ -1,0 +1,17 @@
+micronaut:
+  server:
+    cors:
+      enabled: true
+  router:
+    static-resources:
+      default:
+        enabled: true
+        mapping: "/**"
+        paths: "file:/resources/static"
+  security:
+    enabled: true
+    interceptUrlMap:
+      - pattern: "/**"
+        httpMethod: GET
+        access:
+          - isAnonymous()

@@ -23,6 +23,8 @@ dependencies {
     runtimeOnly(Log4j2.core)
     runtimeOnly(Flogger.Runtime.log4J2)
     implementation(project(":server"))
+    implementation(project(":admin-server"))
+    implementation(project(":admin-ui"))
 }
 
 application {
@@ -31,7 +33,7 @@ application {
     )
 }
 
-val appClassName = "io.spine.message.delivery.server.App"
+val appClassName = "io.spine.message.delivery.launcher.Launcher"
 project.setProperty("mainClassName", appClassName)
 
 tasks.withType<ShadowJar> {
@@ -51,5 +53,13 @@ jib {
     container {
         mainClass = appClassName
         ports = listOf("8080", "8484")
+    }
+    extraDirectories {
+        paths {
+            path {
+                setFrom(tasks.getByPath(":admin-ui:qbuild").outputs.files.asPath)
+                into = "/resources/static"
+            }
+        }
     }
 }

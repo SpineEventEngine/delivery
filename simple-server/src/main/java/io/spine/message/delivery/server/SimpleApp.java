@@ -12,9 +12,11 @@ import com.google.protobuf.util.Durations;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.spine.logging.Logging;
+import io.spine.message.delivery.server.grpc.AdminService;
 import io.spine.message.delivery.server.grpc.HealthService;
 import io.spine.message.delivery.server.grpc.InboxService;
 import io.spine.message.delivery.server.grpc.ShardService;
+import io.spine.message.delivery.server.grpc.UnableToCloseFactoryException;
 import io.spine.server.storage.StorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.server.storage.redis.RedisStorageFactory;
@@ -109,14 +111,17 @@ public final class SimpleApp implements Logging {
         StorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
         ShardService shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
+        AdminService adminService = new AdminService(factory);
         healthService = new HealthService()
                 .register(inboxService)
-                .register(shardService);
+                .register(shardService)
+                .register(adminService);
         this.server = ServerBuilder
                 .forPort(PORT)
                 .executor(executor)
                 .addService(inboxService)
                 .addService(shardService)
+                .addService(adminService)
                 .addService(healthService)
                 .maxInboundMessageSize(MESSAGE_SIZE)
                 .build();
@@ -133,6 +138,8 @@ public final class SimpleApp implements Logging {
         } catch (Exception e) {
             _error().withCause(e)
                     .log("Error running the gRPC server.");
+        } finally {
+            close(factory);
         }
     }
 
@@ -155,6 +162,20 @@ public final class SimpleApp implements Logging {
     @VisibleForTesting
     public HealthService healthService() {
         return healthService;
+    }
+
+    /**
+     * Closes the given {@code factory}.
+     *
+     * <p>Wraps the {@code close()} method into try / catch block and rethrows caught
+     * {@code Exception} as {@code UnableToCloseStorageFactory}.
+     */
+    private static void close(StorageFactory factory) {
+        try {
+            factory.close();
+        } catch (Exception e) {
+            throw new UnableToCloseFactoryException(e);
+        }
     }
 
     private static int port() {
@@ -193,7 +214,7 @@ public final class SimpleApp implements Logging {
             return RedisStorageFactory.newInstance();
         }
         _config().log("Using in-memory storage.");
-        return InMemoryStorageFactory.newInstance();
+        return new SingletonStorageFactory(InMemoryStorageFactory.newInstance());
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")

@@ -1,0 +1,63 @@
+/*
+ * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery.admin.grpc";
+option java_outer_classname = "AdminServiceProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+import "spine/server/delivery/delivery.proto";
+
+// Acts as a backend implementation for `AdminService`
+service AdminService {
+
+    // Gets an information about shards on Liquor server.
+    rpc GetShardInfo(google.protobuf.Empty) returns(ShardInfoList);
+}
+
+// A list of `ShardInfo`.
+message ShardInfoList {
+
+    repeated ShardInfo shards = 1;
+}
+
+// Information about shard status on the Liquor server.
+message ShardInfo {
+
+    // Index of the shard.
+    spine.server.delivery.ShardIndex index = 1 [(required) = true];
+
+    // Shows whether the shard picked for delivery or not.
+    ShardStatus status = 2 [(required) = true];
+
+    // When the shard was picked for delivery last time.
+    //
+    // Can be unset if the shard has never been picked by workers.
+    google.protobuf.Timestamp last_picked = 3;
+
+    // Number of messages present in the shard.
+    int32 messages = 4 [(required) = true];
+}
+
+// Current status of the shard.
+enum ShardStatus {
+    SS_UNKNOWN = 0;
+
+    // Shard is picked for delivery.
+    PICKED = 1;
+
+    // Shard is not picked for delivery.
+    NOT_PICKED = 2;
+}

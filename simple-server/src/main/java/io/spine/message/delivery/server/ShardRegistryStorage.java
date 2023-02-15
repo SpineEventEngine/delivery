@@ -23,7 +23,7 @@ import static io.spine.server.ContextSpec.singleTenant;
  * <p>Delegates interactions with the storage implementation to a storage created by
  * the configured {@link StorageFactory}.
  */
-final class ShardRegistryStorage extends RecordStorageDelegate<ShardIndex, ShardSessionRecord> {
+public final class ShardRegistryStorage extends RecordStorageDelegate<ShardIndex, ShardSessionRecord> {
 
     private ShardRegistryStorage(ContextSpec contextSpec, StorageFactory factory) {
         super(contextSpec, factory.createRecordStorage(contextSpec, spec()));
@@ -32,7 +32,7 @@ final class ShardRegistryStorage extends RecordStorageDelegate<ShardIndex, Shard
     /**
      * Creates a new storage backed by the supplied {@code factory}.
      */
-    ShardRegistryStorage(StorageFactory factory) {
+    public ShardRegistryStorage(StorageFactory factory) {
         this(singleTenant("ShardRegistry"), factory);
     }
 

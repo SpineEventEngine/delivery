@@ -88,7 +88,7 @@ final class SessionRegistry
         var state = state();
         var currentWorker = state.getWorker();
         if (isDefault(currentWorker)) {
-            _debug().log("Shard `%s` is picked up. Nothing to release.", id());
+            _debug().log("Shard `%s` is not picked up. Nothing to release.", id());
             throw unableToRelease(c, shardNotPickedUp());
         }
         var workerToPickUpShard = c.getWorker();
