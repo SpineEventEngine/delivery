@@ -18,7 +18,7 @@
     </q-item-section>
 
     <q-item-section side top>
-      <q-item-label caption v-if="shard.status === 'PICKED'">Picked</q-item-label>
+      <q-item-label caption v-if="shard.status === 'PICKED'" class="bold">Picked</q-item-label>
       <q-item-label caption v-if="shard.status === 'NOT_PICKED'">Not Picked</q-item-label>
     </q-item-section>
   </q-item>
@@ -31,5 +31,7 @@ defineProps({ shard: ShardInfo });
 </script>
 
 <style scoped>
-
+.bold{
+  font-weight: bold;
+}
 </style>
