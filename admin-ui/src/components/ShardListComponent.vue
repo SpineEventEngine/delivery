@@ -5,10 +5,22 @@
   -->
 
 <template>
-  <q-list>
+  <q-list bordered padding>
+    <q-item>
+      <q-item-section>
+        <q-item-label header>Shard info</q-item-label>
+        <q-item-label caption>
+          This table shows the current state of shards on the Liquor server.
+        </q-item-label>
+      </q-item-section>
+    </q-item>
+    <q-separator spaced/>
+    <q-item>
+      <q-item-label overline>Shards:</q-item-label>
+    </q-item>
     <div v-for="shard in data.shards" :key="shard.index">
       <shard-info-component :shard="shard"></shard-info-component>
-      <q-separator spaced inset />
+      <q-separator spaced inset/>
     </div>
   </q-list>
 </template>

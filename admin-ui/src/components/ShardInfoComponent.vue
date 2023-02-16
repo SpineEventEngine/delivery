@@ -7,7 +7,7 @@
 <template>
   <q-item v-if="shard">
     <q-item-section>
-      <q-item-label>Shard: {{shard.index.index}} / {{shard.index.ofTotal}}</q-item-label>
+      <q-item-label>{{shard.index.index}} / {{shard.index.ofTotal}}</q-item-label>
       <q-item-label caption>Messages: {{shard.messages ? shard.messages : 0}}</q-item-label>
       <q-item-label caption v-if="shard.lastPicked">
         Last picked: {{new Date(shard.lastPicked).toLocaleString()}}
