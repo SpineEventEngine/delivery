@@ -21,8 +21,8 @@
 </template>
 
 <script lang="ts" setup>
-import {AuthService} from "src/services/AuthService";
-import {useRouter} from "vue-router";
+import { AuthService } from "src/services/AuthService";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 const isAuth = AuthService.isAuthenticated;
