@@ -59,6 +59,19 @@ jobs:
           ./gradlew build --stacktrace
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-admin-web-client:
+    name: Build Admin Web Client
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 19.6.0
+      - name: Build Quasar SPA
+        run: ./gradlew :admin-ui:qbuild --stacktrace
+
   publish-client:
     name: Publish Client
     runs-on: 'ubuntu-latest'
