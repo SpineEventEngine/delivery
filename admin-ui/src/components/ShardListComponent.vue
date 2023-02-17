@@ -45,7 +45,7 @@ import { ShardInfoList } from "components/models";
 
 const data = ref({} as ShardInfoList);
 
-const shardService: ShardService = inject(ShardService.name)!;
+const shardService: ShardService = inject(ShardService.name) as ShardService;
 
 shardService.shardInfo().then((received) => {
   data.value = received;

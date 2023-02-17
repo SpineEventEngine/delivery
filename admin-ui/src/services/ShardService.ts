@@ -8,7 +8,7 @@ import axios from 'axios';
 import { AuthService } from 'src/services/AuthService';
 import { Endpoints } from 'src/services/Endpoints';
 import router from 'src/router/index';
-import { ShardInfoList } from "components/models";
+import { ShardInfoList } from 'components/models';
 
 /**
  * Allows getting shard information.
