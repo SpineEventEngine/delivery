@@ -1,3 +1,4 @@
+import com.github.gradle.node.npm.task.NpmInstallTask
 import com.github.gradle.node.npm.task.NpxTask
 
 plugins {
@@ -45,9 +46,15 @@ abstract class Clean : NpxTask() {
   }
 }
 
+val npmInstall = tasks.getByName(NpmInstallTask.NAME)
+
 /**
  * Task names start with "q" that stands for "quasar".
  */
-tasks.register<Serve>("qserve")
-tasks.register<Build>("qbuild")
+tasks.register<Serve>("qserve") {
+  dependsOn.add(npmInstall)
+}
+tasks.register<Build>("qbuild") {
+  dependsOn.add(npmInstall)
+}
 tasks.register<Clean>("qclean")

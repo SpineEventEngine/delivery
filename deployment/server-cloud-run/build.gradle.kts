@@ -45,6 +45,8 @@ tasks.withType<ShadowJar> {
     }
 }
 
+var buildUi = tasks.getByPath(":admin-ui:qbuild")
+
 jib {
     to {
         image = "gcr.io/${extras.gcpProject}/message-delivery-server"
@@ -57,9 +59,11 @@ jib {
     extraDirectories {
         paths {
             path {
-                setFrom(tasks.getByPath(":admin-ui:qbuild").outputs.files.asPath)
+                setFrom(buildUi.outputs.files.asPath)
                 into = "/resources/static"
             }
         }
     }
 }
+tasks.getByName("jib").dependsOn.add(buildUi)
+tasks.getByName("jibDockerBuild").dependsOn.add(buildUi)

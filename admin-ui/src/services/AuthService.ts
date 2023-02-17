@@ -5,8 +5,8 @@
  */
 
 import axios from 'axios';
-import { Endpoints } from "src/services/Endpoints";
-import { ref } from "vue";
+import { Endpoints } from 'src/services/Endpoints';
+import { ref } from 'vue';
 
 /**
  * Performs a user authentication with HTTP Basic Auth strategy.
@@ -49,8 +49,8 @@ export class AuthService {
    * Removes login and password form the local storage.
    */
   static logout() {
-    localStorage.removeItem("login");
-    localStorage.removeItem("password");
+    localStorage.removeItem('login');
+    localStorage.removeItem('password');
     this.isAuthenticated.value = false;
   }
 

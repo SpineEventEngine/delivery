@@ -16,11 +16,11 @@
 <script lang="ts" setup>
 import { inject, ref } from 'vue';
 import { ShardService } from 'src/services/ShardService';
-import ShardInfoComponent from "components/ShardInfoComponent.vue";
+import ShardInfoComponent from 'components/ShardInfoComponent.vue';
 
 const data = ref({});
 
-const shardService: ShardService = inject(ShardService.name)!;
+const shardService: ShardService = inject(ShardService.name) as ShardService;
 
 shardService.shardInfo().then((received) => {
   data.value = received;
