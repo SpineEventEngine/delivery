@@ -29,6 +29,12 @@
           </q-td>
         </q-tr>
       </template>
+      <template v-slot:no-data="{ }">
+        <div class="full-width column flex-center text-accent q-gutter-sm">
+          <div>There are no messages in any shard.</div>
+          <div>None of the shards have ever been picked.</div>
+        </div>
+      </template>
     </q-table>
   </div>
 </template>
