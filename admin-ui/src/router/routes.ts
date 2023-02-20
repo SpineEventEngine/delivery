@@ -7,12 +7,16 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/admin',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/MasterDetailsLayout.vue'),
     children: [
       {
         path: '',
         component: () => import('pages/IndexPage.vue'),
-        children: [{ path: '', component: () => import('components/ShardListComponent.vue') }],
+        children: [{
+          path: '',
+          name: 'shardInfo',
+          component: () => import('components/ShardListComponent.vue'),
+        }],
       },
     ],
     meta: {
@@ -22,7 +26,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('layouts/MainLayout.vue'),
+    component: () => import('layouts/CenteredLayout.vue'),
     children: [
       {
         path: '',

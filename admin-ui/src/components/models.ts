@@ -5,10 +5,18 @@
  */
 
 /**
+ * An identifier of the shard.
+ */
+export interface ShardIndex {
+  index: number,
+  ofTotal: number,
+}
+
+/**
  * An information about shards.
  */
 export class ShardInfo {
-  index: { index: number, ofTotal: number, };
+  index: ShardIndex;
 
   /**
    * Number of messages in the shard.
@@ -28,7 +36,7 @@ export class ShardInfo {
   lastPicked: Date;
 
   constructor(
-    index: { index: number, ofTotal: number, },
+    index: ShardIndex,
     messages: number,
     status: string,
     lastPicked: Date,
