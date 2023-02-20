@@ -52,7 +52,7 @@
 <script lang="ts" setup>
 import { AuthService } from 'src/services/AuthService';
 import { useRouter } from 'vue-router';
-import { ref } from "vue";
+import { ref } from 'vue';
 
 const router = useRouter();
 const isAuth = AuthService.isAuthenticated;

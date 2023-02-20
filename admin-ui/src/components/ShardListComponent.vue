@@ -42,7 +42,7 @@
 <script lang="ts" setup>
 import { inject, ref } from 'vue';
 import { ShardService } from 'src/services/ShardService';
-import { ShardIndex, ShardInfoList } from "components/models";
+import { ShardIndex, ShardInfoList } from 'components/models';
 
 const data = ref({} as ShardInfoList);
 
@@ -54,29 +54,29 @@ shardService.shardInfo().then((received) => {
 
 const columns = [
   {
-    name: "index",
-    label: "Index",
-    field: "index",
+    name: 'index',
+    label: 'Index',
+    field: 'index',
     align: 'left',
     sortable: true,
     sort: (a: ShardIndex, b: ShardIndex) => a.index - b.index,
   },
   {
-    name: "messages",
-    label: "Messages count",
-    field: "messages",
+    name: 'messages',
+    label: 'Messages count',
+    field: 'messages',
     sortable: true,
   },
   {
-    name: "status",
-    label: "Status",
-    field: "status",
+    name: 'status',
+    label: 'Status',
+    field: 'status',
     sortable: true,
   },
   {
-    name: "lastPicked",
-    label: "Last Picked",
-    field: "lastPicked",
+    name: 'lastPicked',
+    label: 'Last Picked',
+    field: 'lastPicked',
     sortable: true,
   },
 ];
