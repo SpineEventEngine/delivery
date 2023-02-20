@@ -4,6 +4,9 @@
  * Use is subject to license terms.
  */
 
+/**
+ * An identifier of the shard.
+ */
 export interface ShardIndex {
   index: number,
   ofTotal: number,
