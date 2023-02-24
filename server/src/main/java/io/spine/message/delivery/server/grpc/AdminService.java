@@ -65,8 +65,8 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
     /**
      * Setups event listeners for Shard-related events to track shard status changes.
      *
-     * @implNote We are not preserving {@code Subscription}s returned by the {@code on()} method
-     * because there is no need to unsubscribe until the app shut down.
+     * @implNote We are not preserving {@code Subscription}s returned by the {@code on()}
+     *         method because there is no need to unsubscribe until the app shut down.
      */
     private void setupEventListener() {
         on(ShardPickedUp.class, pickedUp ->
@@ -96,8 +96,12 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
         });
     }
 
+    /**
+     * Updates the {@code statistic} of the messages in the given {@code index} on
+     * the given {@code delta}.
+     */
     private int updateCount(ShardIndex index, int delta) {
-        return statistic.merge(index, 0, (old, value) -> old + value + delta);
+        return statistic.merge(index, delta, Integer::sum);
     }
 
     /**
