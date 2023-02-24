@@ -17,12 +17,10 @@ import io.spine.message.delivery.CurrentShardState;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
-import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
+import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.event.MessageRemoved;
 import io.spine.message.delivery.event.MessageWritten;
-import io.spine.message.delivery.event.MessagesRemoved;
-import io.spine.message.delivery.event.MessagesWritten;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
 import io.spine.server.delivery.ShardIndex;
@@ -83,16 +81,6 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
                     .getMessage()
                     .shardIndex();
             notifySubs(messagesCountChangedTo(index, updateCount(index, -1)));
-        });
-        on(MessagesWritten.class, written -> {
-            ShardIndex index = written.getShard();
-            int count = written.getMessageCount();
-            notifySubs(messagesCountChangedTo(index, updateCount(index, count)));
-        });
-        on(MessagesRemoved.class, removed -> {
-            ShardIndex index = removed.getShard();
-            int count = -removed.getMessageCount();
-            notifySubs(messagesCountChangedTo(index, updateCount(index, count)));
         });
     }
 
