@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+
+package io.spine.message.delivery.admin;
+
+import com.google.protobuf.Timestamp;
+import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
+import io.spine.server.delivery.ShardIndex;
+
+import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
+import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
+import static io.spine.util.Preconditions2.checkNotDefaultArg;
+import static io.spine.util.Preconditions2.checkPositive;
+
+/**
+ * Utility to crete {@link ShardInfoUpdate}s.
+ */
+public final class ShardInfoUpdates {
+
+    private ShardInfoUpdates() {
+    }
+
+    /**
+     * Creates a new {@code ShardInfoUpdate} with the given shard {@code index} and
+     * {@code lastPicked} time, and shard status changed to {@code PICKED}.
+     */
+    public static ShardInfoUpdate shardPicked(ShardIndex index, Timestamp lastPicked) {
+        checkNotDefaultArg(lastPicked);
+        return changesFor(index)
+                .setStatusUpdatedTo(PICKED)
+                .setLastPickedUpdatedTo(checkNotDefaultArg(lastPicked))
+                .vBuild();
+    }
+
+    /**
+     * Creates a new {@code ShardInfoUpdate} with the given shard {@code index} and shard status
+     * changed to {@code NOT_PICKED}.
+     */
+    public static ShardInfoUpdate shardUnpicked(ShardIndex index) {
+        return changesFor(index)
+                .setStatusUpdatedTo(NOT_PICKED)
+                .vBuild();
+    }
+
+    /**
+     * Creates a new {@code ShardInfoUpdate} with the given shard {@code index} and
+     * the new {@code count} of messages in the shard.
+     */
+    public static ShardInfoUpdate messagesCountChangedTo(ShardIndex index, int count) {
+        checkNotDefaultArg(index);
+        checkPositive(count, "Messages count should pe positive.");
+        return changesFor(index)
+                .setMessagesCountUpdatedTo(count)
+                .vBuild();
+    }
+
+    /**
+     * Creates a new {@code ShardInfoUpdate.Builder} with the given shard {@code index} set.
+     */
+    private static ShardInfoUpdate.Builder changesFor(ShardIndex index) {
+        return ShardInfoUpdate
+                .newBuilder()
+                .setIndex(checkNotDefaultArg(index));
+    }
+}
