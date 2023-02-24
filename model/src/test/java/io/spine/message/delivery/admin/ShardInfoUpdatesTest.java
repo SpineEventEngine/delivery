@@ -13,6 +13,7 @@ import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 
 import static io.spine.base.Time.currentTime;
+import static io.spine.server.delivery.DeliveryStrategy.newIndex;
 
 @DisplayName("ShardInfoUpdates utility should")
 final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
@@ -23,12 +24,7 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
 
     @Override
     protected void configure(NullPointerTester tester) {
-        var index = ShardIndex
-                .newBuilder()
-                .setIndex(1)
-                .setOfTotal(5)
-                .vBuild();
-        tester.setDefault(ShardIndex.class, index);
+        tester.setDefault(ShardIndex.class, newIndex(1,5));
         tester.setDefault(Timestamp.class, currentTime());
     }
 }
