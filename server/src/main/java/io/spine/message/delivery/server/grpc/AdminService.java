@@ -7,20 +7,38 @@
 package io.spine.message.delivery.server.grpc;
 
 import com.google.common.collect.ImmutableList;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
+import io.spine.base.EventMessage;
 import io.spine.client.Client;
+import io.spine.client.Subscription;
 import io.spine.message.delivery.CurrentShardState;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
+import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
+import io.spine.message.delivery.event.MessageRemoved;
+import io.spine.message.delivery.event.MessageWritten;
+import io.spine.message.delivery.event.MessagesRemoved;
+import io.spine.message.delivery.event.MessagesWritten;
+import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.event.ShardReleased;
 import io.spine.server.delivery.ShardIndex;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static io.spine.message.delivery.admin.ShardInfoUpdates.messagesCountChangedTo;
+import static io.spine.message.delivery.admin.ShardInfoUpdates.shardPicked;
+import static io.spine.message.delivery.admin.ShardInfoUpdates.shardUnpicked;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 
@@ -30,6 +48,9 @@ import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
 
     private final Client client;
+    private final Set<StreamObserver<ShardInfoUpdate>> subscribers = new HashSet<>();
+
+    private final Map<ShardIndex, Integer> statistic;
 
     /**
      * Creates a new {@code AdminService} with the given {@code client}.
@@ -37,6 +58,77 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
     public AdminService(Client client) {
         super();
         this.client = checkNotNull(client);
+        setupEventListener();
+        statistic = messagesInShards();
+    }
+
+    /**
+     * Setups event listeners for Shard-related events to track shard status changes.
+     *
+     * @implNote We are not preserving {@code Subscription}s returned by the {@code on()} method
+     * because there is no need to unsubscribe until the app shut down.
+     */
+    private void setupEventListener() {
+        on(ShardPickedUp.class, pickedUp ->
+                notifySubs(shardPicked(pickedUp.getShard(), pickedUp.getWhenPicked())));
+        on(ShardReleased.class, released -> notifySubs(shardUnpicked(released.getShard())));
+        on(MessageWritten.class, written -> {
+            ShardIndex index = written
+                    .getMessage()
+                    .shardIndex();
+            notifySubs(messagesCountChangedTo(index, updateCount(index, 1)));
+        });
+        on(MessageRemoved.class, removed -> {
+            ShardIndex index = removed
+                    .getMessage()
+                    .shardIndex();
+            notifySubs(messagesCountChangedTo(index, updateCount(index, -1)));
+        });
+        on(MessagesWritten.class, written -> {
+            ShardIndex index = written.getShard();
+            int count = written.getMessageCount();
+            notifySubs(messagesCountChangedTo(index, updateCount(index, count)));
+        });
+        on(MessagesRemoved.class, removed -> {
+            ShardIndex index = removed.getShard();
+            int count = -removed.getMessageCount();
+            notifySubs(messagesCountChangedTo(index, updateCount(index, count)));
+        });
+    }
+
+    private int updateCount(ShardIndex index, int delta) {
+        return statistic.merge(index, 0, (old, value) -> old + value + delta);
+    }
+
+    /**
+     * Subscribes on the given {@code event} class.
+     */
+    @CanIgnoreReturnValue
+    private <E extends EventMessage> Subscription on(Class<E> event, Consumer<E> handler) {
+        return this.client
+                .asGuest()
+                .subscribeToEvent(event)
+                .observe(handler)
+                .post();
+    }
+
+    /**
+     * Notifies all existent subscriber about the new {@code ShardInfoChange}.
+     *
+     * If an error occurs when trying to notify subscriber it is marked as invalid and removed from
+     * the subscribers list.
+     */
+    private void notifySubs(ShardInfoUpdate update) {
+        List<StreamObserver<ShardInfoUpdate>> invalidSubs = new ArrayList<>();
+        for (var sub : subscribers) {
+            try {
+                sub.onNext(update);
+            } catch (RuntimeException e) {
+                invalidSubs.add(sub);
+                sub.onError(e);
+            }
+        }
+        invalidSubs.forEach(subscribers::remove);
     }
 
     @Override
@@ -49,11 +141,17 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
         }
     }
 
+    @Override
+    public void
+    subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> responseObserver) {
+        subscribers.add(responseObserver);
+    }
+
     /**
      * Fetches information about all shards.
      */
     private ShardInfoList fetch() {
-        Map<ShardIndex, Integer> messagesCount = messagesInShards();
+        Map<ShardIndex, Integer> messagesCount = new HashMap<>(statistic);
         var shards = readShards();
         var shardListBuilder = ShardInfoList.newBuilder();
         shards.forEach(shard -> {
@@ -86,7 +184,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
                 .newBuilder()
                 .setIndex(shard.getId())
                 .setLastPicked(shard.getWhenLastPicked())
-                .setStatus(shard.hasWorker()? PICKED : NOT_PICKED)
+                .setStatus(shard.hasWorker() ? PICKED : NOT_PICKED)
                 .setMessages(messagesCount)
                 .vBuild();
     }
