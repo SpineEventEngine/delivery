@@ -13,6 +13,7 @@ import io.grpc.stub.StreamObserver;
 import io.spine.base.EventMessage;
 import io.spine.client.Client;
 import io.spine.client.Subscription;
+import io.spine.logging.Logging;
 import io.spine.message.delivery.CurrentShardState;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
@@ -43,7 +44,7 @@ import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 /**
  * Allows getting information about the current state of the shards on the message delivery server.
  */
-public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
+public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase implements Logging {
 
     private final Client client;
     private final Set<StreamObserver<ShardInfoUpdate>> subscribers = new HashSet<>();
@@ -58,6 +59,23 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
         this.client = checkNotNull(client);
         setupEventListener();
         statistic = messagesInShards();
+    }
+
+    @Override
+    public void getShardInfo(Empty request, StreamObserver<ShardInfoList> responseObserver) {
+        try {
+            responseObserver.onNext(fetch());
+            responseObserver.onCompleted();
+        } catch (RuntimeException e) {
+            responseObserver.onError(e);
+        }
+    }
+
+    @Override
+    public void
+    subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> responseObserver) {
+        subscribers.add(responseObserver);
+        _debug().log("Added one subscriber, now subscribers: {}", subscribers.size());
     }
 
     /**
@@ -111,32 +129,19 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
      * the subscribers list.
      */
     private void notifySubs(ShardInfoUpdate update) {
-        List<StreamObserver<ShardInfoUpdate>> invalidSubs = new ArrayList<>();
+        _debug().log("Notifying {} subscribers about update.", subscribers.size());
+        var invalidSubs = new ArrayList<StreamObserver<ShardInfoUpdate>>();
         for (var sub : subscribers) {
             try {
                 sub.onNext(update);
             } catch (RuntimeException e) {
+                _debug().withCause(e)
+                        .log("Got exception, subscriber will be removed.");
                 invalidSubs.add(sub);
                 sub.onError(e);
             }
         }
         invalidSubs.forEach(subscribers::remove);
-    }
-
-    @Override
-    public void getShardInfo(Empty request, StreamObserver<ShardInfoList> responseObserver) {
-        try {
-            responseObserver.onNext(fetch());
-            responseObserver.onCompleted();
-        } catch (RuntimeException e) {
-            responseObserver.onError(e);
-        }
-    }
-
-    @Override
-    public void
-    subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> responseObserver) {
-        subscribers.add(responseObserver);
     }
 
     /**
@@ -169,6 +174,28 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
     }
 
     /**
+     * Queries all {@code InboxMessageHolder}s.
+     */
+    private ImmutableList<InboxMessageHolder> readAllMessages() {
+        var query = InboxMessageHolder
+                .query()
+                .build();
+        return client.asGuest()
+                     .run(query);
+    }
+
+    /**
+     * Queries all {@code ShardSessionHolder}s.
+     */
+    private ImmutableList<CurrentShardState> readShards() {
+        CurrentShardState.Query shardQuery = CurrentShardState
+                .query()
+                .build();
+        return client.asGuest()
+                     .run(shardQuery);
+    }
+
+    /**
      * Returns a new {@code ShardInfo} from the given {@code shard} and {@code messagesCount}.
      */
     private static ShardInfo shardInfo(CurrentShardState shard, int messagesCount) {
@@ -192,27 +219,5 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase {
                 .setStatus(NOT_PICKED)
                 .setMessages(messagesCount)
                 .vBuild();
-    }
-
-    /**
-     * Queries all {@code InboxMessageHolder}s.
-     */
-    private ImmutableList<InboxMessageHolder> readAllMessages() {
-        var query = InboxMessageHolder
-                .query()
-                .build();
-        return client.asGuest()
-                     .run(query);
-    }
-
-    /**
-     * Queries all {@code ShardSessionHolder}s.
-     */
-    private ImmutableList<CurrentShardState> readShards() {
-        CurrentShardState.Query shardQuery = CurrentShardState
-                .query()
-                .build();
-        return client.asGuest()
-                     .run(shardQuery);
     }
 }
