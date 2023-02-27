@@ -50,6 +50,8 @@ import static io.spine.server.delivery.DeliveryStrategy.newIndex;
 @DisplayName("`AdminService` should")
 final class AdminServiceTest extends WithApp {
 
+    private static final int SLEEP_SECONDS = 2;
+
     @Test
     @DisplayName("get current information about shards")
     void getShardInfo() {
@@ -69,8 +71,7 @@ final class AdminServiceTest extends WithApp {
         postToClient(pickUpShard(shard4));
         postToClient(releaseShard(pickUpShard3));
 
-        sleepUninterruptibly(Duration.ofSeconds(3));
-
+        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
         var actual = adminServiceBlocking()
                 .getShardInfo(request())
                 .getShardsList();
@@ -97,6 +98,8 @@ final class AdminServiceTest extends WithApp {
         postToClient(pickUpShard(index));
 
         ShardInfoUpdate expected = shardPicked(index, time);
+
+        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(expected);
     }
@@ -116,6 +119,8 @@ final class AdminServiceTest extends WithApp {
 
         ShardInfoUpdate pickedUpdate = shardPicked(index, time);
         ShardInfoUpdate unpickedUpdate = shardUnpicked(index);
+
+        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(pickedUpdate, unpickedUpdate);
     }
@@ -130,6 +135,8 @@ final class AdminServiceTest extends WithApp {
         postToClient(writeMessage(message));
 
         ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
+
+        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(messageWritten);
     }
@@ -146,6 +153,8 @@ final class AdminServiceTest extends WithApp {
 
         ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
         ShardInfoUpdate messageRemoved = messagesCountChangedTo(index, 0);
+
+        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(messageWritten, messageRemoved);
     }
@@ -163,6 +172,8 @@ final class AdminServiceTest extends WithApp {
 
         ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
+
+        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(message1Written, message2Written);
     }
@@ -183,6 +194,8 @@ final class AdminServiceTest extends WithApp {
         ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
         ShardInfoUpdate message1Removed = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Removed = messagesCountChangedTo(index, 0);
+
+        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(
                 message1Written,
