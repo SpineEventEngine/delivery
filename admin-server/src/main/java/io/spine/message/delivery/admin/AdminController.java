@@ -7,21 +7,23 @@
 package io.spine.message.delivery.admin;
 
 import com.google.protobuf.Empty;
+import io.grpc.Context;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.Produces;
+import io.micronaut.http.sse.Event;
 import io.micronaut.security.annotation.Secured;
-import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceFutureStub;
-import io.spine.message.delivery.admin.grpc.ShardInfoList;
+import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
 import jakarta.inject.Inject;
+import org.reactivestreams.Publisher;
+import reactor.core.publisher.Flux;
 
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
+import java.util.function.Function;
 
+import static com.google.common.collect.Iterators.transform;
 import static io.micronaut.security.rules.SecurityRule.IS_AUTHENTICATED;
 import static io.spine.json.Json.toCompactJson;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Micronaut controller for the {@code /admin} URL path.
@@ -30,19 +32,43 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Secured(IS_AUTHENTICATED)
 final class AdminController {
 
-    private final AdminServiceFutureStub adminService;
+    private final AdminServiceBlockingStub adminService;
 
     @Inject
-    AdminController(AdminServiceFutureStub service) {
-        adminService = service;
+    AdminController(AdminServiceBlockingStub adminService) {
+        this.adminService = adminService;
     }
 
     @Get("/shardInfo")
     @Produces(MediaType.TEXT_JSON)
-    String getShardInfo() throws ExecutionException, InterruptedException, TimeoutException {
-        ShardInfoList shardInfoList = adminService
-                .getShardInfo(Empty.getDefaultInstance())
-                .get(10, SECONDS);
-        return toCompactJson(shardInfoList);
+    String getShardInfo() {
+        return toCompactJson(adminService.getShardInfo(Empty.getDefaultInstance()));
+    }
+
+    @Get("/shardUpdates")
+    @Produces(MediaType.TEXT_EVENT_STREAM)
+    public Publisher<Event<String>> subscribeOnShardUpdates() throws Exception {
+        return withGrpcContext((context) -> {
+            var updates = adminService.subscribeToShardUpdates(Empty.getDefaultInstance());
+            return Flux.fromIterable(() -> transform(updates, upd -> Event.of(toCompactJson(upd))))
+                       .doFinally(signal -> context.close());
+        });
+    }
+
+    /**
+     * Calls the given {@code call} with the current gRPC {@link Context.CancellableContext}
+     * and returns result of the call.
+     *
+     * <p>Doesn't close the context after the call execution, the caller must close the context
+     * when it will be appropriate according to business logic of the {@code call}.
+     */
+
+    private static <T> T
+    withGrpcContext(Function<Context.CancellableContext, T> call) throws Exception {
+        @SuppressWarnings("resource") // Cannot close context before the call we be completed.
+        var context = Context
+                .current()
+                .withCancellation();
+        return context.call(() -> call.apply(context));
     }
 }
