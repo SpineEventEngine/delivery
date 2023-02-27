@@ -75,7 +75,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
     public void
     subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> responseObserver) {
         subscribers.add(responseObserver);
-        _debug().log("Added one subscriber, now subscribers: {}", subscribers.size());
+        _debug().log("Added one subscriber, now subscribers: %d", subscribers.size());
     }
 
     /**
@@ -129,7 +129,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
      * the subscribers list.
      */
     private void notifySubs(ShardInfoUpdate update) {
-        _debug().log("Notifying {} subscribers about update.", subscribers.size());
+        _debug().log("Notifying %d subscribers about update.", subscribers.size());
         var invalidSubs = new ArrayList<StreamObserver<ShardInfoUpdate>>();
         for (var sub : subscribers) {
             try {
