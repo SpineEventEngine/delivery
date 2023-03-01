@@ -6,7 +6,7 @@
 
 import axios from 'axios';
 import { AuthService } from 'src/services/AuthService';
-import { Endpoints } from 'src/services/Endpoints';
+import { useEndpoints } from 'src/services/endpoints';
 import router from 'src/router/index';
 import { ShardInfoList } from 'components/models';
 
@@ -14,14 +14,14 @@ import { ShardInfoList } from 'components/models';
  * Allows getting shard information.
  */
 export class ShardService {
-  private shard_info = Endpoints.ShardInfo;
+  private endpoints = useEndpoints();
 
   /**
    * Requests current shard status from the server.
    */
   shardInfo(): Promise<ShardInfoList> {
     return new Promise<ShardInfoList>((resolve, reject) => {
-      axios.get(`${this.shard_info}`, AuthService.authOptions())
+      axios.get(`${this.endpoints.shardInfo}`, AuthService.authOptions())
         .then((response) => {
           resolve(response.data);
         })

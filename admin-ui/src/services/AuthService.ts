@@ -5,8 +5,8 @@
  */
 
 import axios from 'axios';
-import { Endpoints } from 'src/services/Endpoints';
 import { ref } from 'vue';
+import { useEndpoints } from 'src/services/endpoints';
 
 /**
  * Performs a user authentication with HTTP Basic Auth strategy.
@@ -18,13 +18,15 @@ import { ref } from 'vue';
 export class AuthService {
   static isAuthenticated = ref(!!AuthService.username());
 
+  static endpoints = useEndpoints();
+
   /**
    * Tries to authenticate a user with the given `login` and `password` and returns `true` if the
    * attempt is successfully or `false` otherwise.
    */
   static login(login: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      axios.head(`${Endpoints.ShardInfo}`, AuthService.options(login, password))
+      axios.head(`${this.endpoints.shardInfo}`, AuthService.options(login, password))
         .then((response) => {
           if (response.status === 200) {
             localStorage.login = login;
