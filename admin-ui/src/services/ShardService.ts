@@ -21,7 +21,13 @@ export class ShardService {
    */
   shardInfo(): Promise<ShardInfoList> {
     return new Promise<ShardInfoList>((resolve, reject) => {
-      axios.get(`${this.endpoints.shardInfo}`, AuthService.authOptions())
+      const options = {
+        auth: {
+          username: AuthService.username(),
+          password: AuthService.password(),
+        },
+      };
+      axios.get(`${this.endpoints.shardInfo}`, options)
         .then((response) => {
           resolve(response.data);
         })
