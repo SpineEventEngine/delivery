@@ -18,7 +18,10 @@ import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardStatus;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseShard;
+import io.spine.message.delivery.command.RemoveMessage;
+import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
+import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.server.event.TestEvent;
 import io.spine.message.delivery.server.event.TestEventId;
@@ -33,7 +36,10 @@ import io.spine.server.delivery.InboxSignalId;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 
+import java.util.List;
 import java.util.UUID;
+
+import static io.spine.server.delivery.InboxMessageMixin.generateIdWith;
 
 /**
  * A utility with given values for {@link AdminServiceTest} testing class.
@@ -104,6 +110,18 @@ public final class AdminServiceTestEnv {
     }
 
     /**
+     * Creates a new {@code ReleaseShard} command acquiring the shard index and worker
+     * from the given {@code pickUpCommand}.
+     */
+    public static ReleaseShard releaseShard(PickUpShard pickUpCommand) {
+        return ReleaseShard
+                .newBuilder()
+                .setShard(pickUpCommand.getShard())
+                .setWorker(pickUpCommand.getWorker())
+                .vBuild();
+    }
+
+    /**
      * Creates a new {@code PickUpShard} request for the given {@code index}.
      */
     public static PickUpShard pickUpShard(ShardIndex index) {
@@ -123,6 +141,64 @@ public final class AdminServiceTestEnv {
                 .newBuilder()
                 .setShard(index)
                 .setWorker(workerId)
+                .vBuild();
+    }
+
+    /**
+     * Copies the given {@code message} replacing the shard index to the given {@code index}.
+     */
+    public static InboxMessage copyWithNewShard(InboxMessage message, ShardIndex index) {
+        return message.toBuilder()
+                .setId(generateIdWith(index))
+                .vBuild();
+    }
+
+    /**
+     * Creates a new {@code WriteMessage} command with the given {@code message}.
+     */
+    public static WriteMessage writeMessage(InboxMessage message) {
+        return WriteMessage.newBuilder()
+                .setMessage(message)
+                .vBuild();
+    }
+
+    /**
+     * Creates a new {@code RemoveMessage} command with the given {@code message}.
+     */
+    public static RemoveMessage removeMessage(InboxMessage message) {
+        return RemoveMessage.newBuilder()
+                .setMessage(message)
+                .vBuild();
+    }
+
+    /**
+     * Creates a new {@code WriteMessages} command with the given messages that will be written to
+     * the given {@code shard}.
+     */
+    public static WriteMessages
+    writeMessages(ShardIndex shard, InboxMessage first, InboxMessage second, InboxMessage... rest) {
+        return WriteMessages.newBuilder()
+                .setShard(shard)
+                .addMessage(first)
+                .addMessage(second)
+                .addAllMessage(List.of(rest))
+                .vBuild();
+    }
+
+    /**
+     * Creates a new {@code RemoveMessages} command with the given messages that will be removed
+     * from the given {@code shard}.
+     */
+    public static RemoveMessages removeMessages(
+            ShardIndex shard,
+            InboxMessage first,
+            InboxMessage second,
+            InboxMessage... rest) {
+        return RemoveMessages.newBuilder()
+                .setShard(shard)
+                .addMessage(first)
+                .addMessage(second)
+                .addAllMessage(List.of(rest))
                 .vBuild();
     }
 

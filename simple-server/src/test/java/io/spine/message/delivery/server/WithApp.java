@@ -9,9 +9,10 @@ package io.spine.message.delivery.server;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
+import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
+import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceStub;
 import io.spine.message.delivery.grpc.InboxServiceGrpc;
 import io.spine.message.delivery.grpc.ShardServiceGrpc;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -26,7 +27,11 @@ public abstract class WithApp {
 
     private final SimpleApp app = new SimpleApp();
 
-    private @MonotonicNonNull ManagedChannel serverChannel;
+    private AdminServiceBlockingStub adminServiceBlocking;
+
+    private AdminServiceStub adminService;
+
+    private ManagedChannel serverChannel;
 
     @BeforeEach
     void startApp() {
@@ -34,6 +39,8 @@ public abstract class WithApp {
         appThread.start();
         sleepUninterruptibly(Duration.ofSeconds(1)); // allow the server to start.
         serverChannel = newServerChannel();
+        adminServiceBlocking = AdminServiceGrpc.newBlockingStub(serverChannel);
+        adminService = AdminServiceGrpc.newStub(serverChannel);
     }
 
     @AfterEach
@@ -65,8 +72,15 @@ public abstract class WithApp {
     /**
      * Returns blocking {@code AdminService} connected to the app.
      */
-    protected final AdminServiceGrpc.AdminServiceBlockingStub syncAdminService() {
-        return AdminServiceGrpc.newBlockingStub(serverChannel());
+    protected final AdminServiceBlockingStub syncAdminService() {
+        return adminServiceBlocking;
+    }
+
+    /**
+     * Gets the {@code AdminServiceStub} connected to the local server.
+     */
+    protected AdminServiceStub adminService() {
+        return adminService;
     }
 
     /**

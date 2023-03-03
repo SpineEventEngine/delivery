@@ -27,3 +27,15 @@ message TestEvent {
 
     TestEventId id = 1;
 }
+
+// ID of another event message for testing purpose.
+message AnotherTestEventId {
+
+    string value = 1;
+}
+
+// Another meaningless event message for testing purpose.
+message AnotherTestEvent {
+
+    AnotherTestEventId id = 1;
+}
