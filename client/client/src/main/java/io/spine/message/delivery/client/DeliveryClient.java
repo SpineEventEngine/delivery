@@ -231,7 +231,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
         } catch (ExecutionFailedException e) {
             ImmutableList<RuntimeException> occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
-            _warn().log("Unable to pick up shard `%s`: %s.", shard, getStackTraceAsString(last));
+            _trace().log("Unable to pick up shard `%s`: %s.", shard, getStackTraceAsString(last));
         }
         return Optional.empty();
     }
