@@ -7,6 +7,7 @@
 package io.spine.message.delivery.server.grpc;
 
 import com.google.protobuf.Empty;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
@@ -59,7 +60,8 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         statistic = messagesInShards();
     }
 
-    @SuppressWarnings("HandleMethodResult") // We do not need to unsubscribe until the server is off.
+    @SuppressWarnings("HandleMethodResult")
+    // We do not need to unsubscribe until the server is off.
     private void setupSubscribers(ReportingStorageFactory factory) {
         factory.subscribe(
                 ShardIndex.class, ShardSessionRecord.class,
@@ -138,7 +140,10 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     @Override
     public void
     subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> responseObserver) {
+        var observer = (ServerCallStreamObserver<ShardInfoUpdate>) responseObserver;
         subscribers.add(responseObserver);
+        observer.setOnCancelHandler(() -> subscribers.remove(responseObserver));
+        _debug().log("Added one subscriber, now subscribers: %d", subscribers.size());
     }
 
     /**

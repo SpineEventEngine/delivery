@@ -9,6 +9,7 @@ package io.spine.message.delivery.server.grpc;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Empty;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.spine.base.EventMessage;
 import io.spine.client.Client;
@@ -76,7 +77,9 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
     @Override
     public void
     subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> responseObserver) {
+        var observer = (ServerCallStreamObserver<ShardInfoUpdate>) responseObserver;
         subscribers.add(responseObserver);
+        observer.setOnCancelHandler(() -> subscribers.remove(responseObserver));
         _debug().log("Added one subscriber, now subscribers: %d", subscribers.size());
     }
 
