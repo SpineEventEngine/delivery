@@ -12,19 +12,26 @@ import io.spine.logging.Logging;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
+import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.server.ExtendedInboxStorage;
+import io.spine.message.delivery.server.ReportingStorageFactory;
 import io.spine.message.delivery.server.ShardRegistryStorage;
+import io.spine.message.delivery.server.UpdateSubscriber;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardSessionRecord;
-import io.spine.server.storage.StorageFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static io.spine.message.delivery.admin.ShardInfoUpdates.messagesCountChangedTo;
+import static io.spine.message.delivery.admin.ShardInfoUpdates.shardPicked;
+import static io.spine.message.delivery.admin.ShardInfoUpdates.shardUnpicked;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 
@@ -40,10 +47,82 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
 
     private final ShardRegistryStorage shardStorage;
 
-    public AdminService(StorageFactory factory) {
+    private final List<StreamObserver<ShardInfoUpdate>> subscribers = new ArrayList<>();
+
+    private final Map<ShardIndex, Integer> statistic;
+
+    public AdminService(ReportingStorageFactory factory) {
         super();
         inboxStorage = new ExtendedInboxStorage(factory, false);
         shardStorage = new ShardRegistryStorage(factory);
+        setupSubscribers(factory);
+        statistic = messagesInShards();
+    }
+
+    @SuppressWarnings("HandleMethodResult") // We do not need to unsubscribe until the server is off.
+    private void setupSubscribers(ReportingStorageFactory factory) {
+        factory.subscribe(
+                ShardIndex.class, ShardSessionRecord.class,
+                new UpdateSubscriber<>() {
+                    @Override
+                    public void onWrite(ShardIndex id, ShardSessionRecord message) {
+                        ShardInfoUpdate update = message.hasWorker() ?
+                                                 shardPicked(id, message.getWhenLastPicked()) :
+                                                 shardUnpicked(id);
+                        notifySubs(update);
+                    }
+
+                    @Override
+                    public void onDelete(ShardIndex id) {
+                        // We don't delete shard records from database.
+                    }
+                });
+
+        factory.subscribe(
+                InboxMessageId.class, InboxMessage.class,
+                new UpdateSubscriber<>() {
+                    @Override
+                    public void onWrite(InboxMessageId id, InboxMessage message) {
+                        ShardIndex index = id.getIndex();
+                        notifySubs(messagesCountChangedTo(index, updateCount(index, 1)));
+                    }
+
+                    @Override
+                    public void onDelete(InboxMessageId id) {
+                        ShardIndex index = id.getIndex();
+                        notifySubs(messagesCountChangedTo(index, updateCount(index, -1)));
+                    }
+                });
+    }
+
+    /**
+     * Notifies all existent subscriber about the new {@code ShardInfoChange}.
+     *
+     * If an error occurs when trying to notify subscriber it is marked as invalid and removed from
+     * the subscribers list.
+     */
+    private void notifySubs(ShardInfoUpdate update) {
+        _debug().log("Notifying %d subscribers about update.", subscribers.size());
+        var invalidSubs = new ArrayList<StreamObserver<ShardInfoUpdate>>();
+        for (var sub : subscribers) {
+            try {
+                sub.onNext(update);
+            } catch (RuntimeException e) {
+                _debug().withCause(e)
+                        .log("Got exception, subscriber will be removed.");
+                invalidSubs.add(sub);
+                sub.onError(e);
+            }
+        }
+        invalidSubs.forEach(subscribers::remove);
+    }
+
+    /**
+     * Updates the {@code statistic} of the messages in the given {@code index} on
+     * the given {@code delta}.
+     */
+    private int updateCount(ShardIndex index, int delta) {
+        return statistic.merge(index, delta, Integer::sum);
     }
 
     @Override
@@ -56,11 +135,17 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         }
     }
 
+    @Override
+    public void
+    subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> responseObserver) {
+        subscribers.add(responseObserver);
+    }
+
     /**
      * Fetches information about all shards.
      */
     private ShardInfoList fetch() {
-        Map<ShardIndex, Integer> messagesCount = messagesInShards();
+        Map<ShardIndex, Integer> messagesCount = new HashMap<>(statistic);
         var shards = shardStorage.readAll();
         var shardListBuilder = ShardInfoList.newBuilder();
         shards.forEachRemaining(shard -> {
