@@ -76,7 +76,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
 
                     @Override
                     public void onDelete(ShardIndex id) {
-                        // We don't delete shard records from database.
+                        // We don't delete shard records from storage.
                     }
                 });
 
