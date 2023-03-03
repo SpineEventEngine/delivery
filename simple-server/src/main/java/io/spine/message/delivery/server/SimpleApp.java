@@ -108,7 +108,7 @@ public final class SimpleApp implements Logging {
     @VisibleForTesting
     @SuppressWarnings("OverlyBroadCatchBlock" /* We do want to catch all exceptions. */)
     void initAndStart() {
-        StorageFactory factory = storageFactory();
+        ReportingStorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
         ShardService shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
         AdminService adminService = new AdminService(factory);
@@ -208,13 +208,14 @@ public final class SimpleApp implements Logging {
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different module. */)
-    private StorageFactory storageFactory() {
+    private ReportingStorageFactory storageFactory() {
         if (useRedis()) {
             _config().log("Using Redis storage.");
-            return RedisStorageFactory.newInstance();
+            return new ReportingStorageFactory(RedisStorageFactory.newInstance());
         }
         _config().log("Using in-memory storage.");
-        return new SingletonStorageFactory(InMemoryStorageFactory.newInstance());
+        var factory = new SingletonStorageFactory(InMemoryStorageFactory.newInstance());
+        return new ReportingStorageFactory(factory);
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
