@@ -53,9 +53,7 @@ const columns = [
     field: 'index',
     align: 'left',
     sortable: true,
-    sort: (a: ShardIndex, b: ShardIndex) => {
-      return a.index - b.index;
-    },
+    sort: (a: ShardIndex, b: ShardIndex) => a.index - b.index,
   },
   {
     name: 'messages',
