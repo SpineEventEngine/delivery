@@ -63,15 +63,18 @@ abstract class GenerateTsProto : NpxTask() {
 }
 
 val npmInstall = tasks.getByName(NpmInstallTask.NAME)
+val generateProto = tasks.withType(GenerateTsProto::class)
 
 /**
  * Task names start with "q" that stands for "quasar".
  */
 tasks.register<Serve>("qserve") {
   dependsOn.add(npmInstall)
+  dependsOn.add(generateProto)
 }
 tasks.register<Build>("qbuild") {
   dependsOn.add(npmInstall)
+  dependsOn.add(generateProto)
 }
 tasks.register<Clean>("qclean")
 
