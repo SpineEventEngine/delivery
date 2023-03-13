@@ -63,38 +63,8 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     @SuppressWarnings("HandleMethodResult")
     // We do not need to unsubscribe until the server is off.
     private void setupSubscribers(ReportingStorageFactory factory) {
-        factory.subscribe(
-                ShardIndex.class, ShardSessionRecord.class,
-                new UpdateSubscriber<>() {
-                    @Override
-                    public void onWrite(ShardIndex id, ShardSessionRecord message) {
-                        ShardInfoUpdate update = message.hasWorker() ?
-                                                 shardPicked(id, message.getWhenLastPicked()) :
-                                                 shardUnpicked(id);
-                        notifySubs(update);
-                    }
-
-                    @Override
-                    public void onDelete(ShardIndex id) {
-                        // We don't delete shard records from storage.
-                    }
-                });
-
-        factory.subscribe(
-                InboxMessageId.class, InboxMessage.class,
-                new UpdateSubscriber<>() {
-                    @Override
-                    public void onWrite(InboxMessageId id, InboxMessage message) {
-                        ShardIndex index = id.getIndex();
-                        notifySubs(messagesCountChangedTo(index, updateCount(index, 1)));
-                    }
-
-                    @Override
-                    public void onDelete(InboxMessageId id) {
-                        ShardIndex index = id.getIndex();
-                        notifySubs(messagesCountChangedTo(index, updateCount(index, -1)));
-                    }
-                });
+        factory.subscribe(ShardIndex.class, ShardSessionRecord.class, new ShardUpdateSubscriber());
+        factory.subscribe(InboxMessageId.class, InboxMessage.class, new InboxUpdateSubscriber());
     }
 
     /**
@@ -226,5 +196,44 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     @Override
     public String name() {
         return AdminServiceGrpc.SERVICE_NAME;
+    }
+
+    /**
+     * Subscriber that tracks the inbox changes and notifies subscribers of the service about these
+     * changes.
+     */
+    private class InboxUpdateSubscriber implements UpdateSubscriber<InboxMessageId, InboxMessage> {
+
+        @Override
+        public void onWrite(InboxMessageId id, InboxMessage message) {
+            ShardIndex index = id.getIndex();
+            notifySubs(messagesCountChangedTo(index, updateCount(index, 1)));
+        }
+
+        @Override
+        public void onDelete(InboxMessageId id) {
+            ShardIndex index = id.getIndex();
+            notifySubs(messagesCountChangedTo(index, updateCount(index, -1)));
+        }
+    }
+
+    /**
+     * Subscriber that tracks shard changes and notifies subscribers of the service about these
+     * changes.
+     */
+    private class ShardUpdateSubscriber implements UpdateSubscriber<ShardIndex, ShardSessionRecord> {
+
+        @Override
+        public void onWrite(ShardIndex id, ShardSessionRecord message) {
+            ShardInfoUpdate update = message.hasWorker() ?
+                                     shardPicked(id, message.getWhenLastPicked()) :
+                                     shardUnpicked(id);
+            notifySubs(update);
+        }
+
+        @Override
+        public void onDelete(ShardIndex id) {
+            // We don't delete shard records from storage.
+        }
     }
 }
