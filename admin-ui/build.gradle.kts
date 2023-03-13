@@ -49,6 +49,18 @@ abstract class Clean : NpxTask() {
     args.set(listOf("clean"))
   }
 }
+abstract class GenerateTsProto : NpxTask() {
+  init {
+    description = "Generates a TypeScript files from `.proto` definitions."
+    command.set("buf")
+    args.set(
+      listOf(
+        "generate",
+        "build/extracted-include-protos/main",
+      )
+    )
+  }
+}
 
 val npmInstall = tasks.getByName(NpmInstallTask.NAME)
 
@@ -62,3 +74,8 @@ tasks.register<Build>("qbuild") {
   dependsOn.add(npmInstall)
 }
 tasks.register<Clean>("qclean")
+
+tasks.register<GenerateTsProto>("bbgen") {
+  dependsOn.add(npmInstall)
+  dependsOn.add(tasks.named("extractIncludeProto"))
+}
