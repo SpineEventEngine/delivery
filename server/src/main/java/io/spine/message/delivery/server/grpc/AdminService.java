@@ -74,10 +74,9 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
 
     @Override
     public void
-    subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> responseObserver) {
-        var observer = (ServerCallStreamObserver<ShardInfoUpdate>) responseObserver;
-        subscribers.add(responseObserver);
-        observer.setOnCancelHandler(() -> subscribers.remove(responseObserver));
+    subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> observer) {
+        subscribers.add(observer);
+        toServerCall(observer).setOnCancelHandler(() -> subscribers.remove(observer));
         _debug().log("Added one subscriber, now subscribers: %d", subscribers.size());
     }
 
@@ -222,5 +221,17 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
                 .setStatus(NOT_PICKED)
                 .setMessages(messagesCount)
                 .vBuild();
+    }
+
+    /**
+     * Casts the given {@code observer} to the {@code ServerCallStreamObserver}.
+     *
+     * <p>According to the {@link ServerCallStreamObserver} docs It's safe to cast
+     * {@code StreamObserver} to {@code ServerCallStreamObserver} in server side implementation
+     * of the service.
+     */
+    private static ServerCallStreamObserver<ShardInfoUpdate>
+    toServerCall(StreamObserver<ShardInfoUpdate> observer) {
+        return (ServerCallStreamObserver<ShardInfoUpdate>) observer;
     }
 }
