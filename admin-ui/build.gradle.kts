@@ -5,6 +5,10 @@ plugins {
   id("com.github.node-gradle.node") version "3.5.1"
 }
 
+dependencies {
+  implementation(project(":model"))
+}
+
 node {
   version.set("19.6.0")
   download.set(true)
