@@ -42,8 +42,6 @@ import static io.spine.message.delivery.admin.ShardInfoUpdates.shardUnpicked;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 
-// TODO:2023-02-27:nick.dolhii: Decouple this class into 2: one for fetching data and another for
-//   subscription management.
 /**
  * Allows getting information about the current state of the shards on the message delivery server.
  */
