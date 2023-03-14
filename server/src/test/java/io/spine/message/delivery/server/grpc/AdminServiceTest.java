@@ -25,8 +25,6 @@ import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
-
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.base.Identifier.newUuid;
@@ -46,6 +44,7 @@ import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.sh
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.writeMessage;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.writeMessages;
 import static io.spine.server.delivery.DeliveryStrategy.newIndex;
+import static java.time.Duration.ofSeconds;
 
 @DisplayName("`AdminService` should")
 final class AdminServiceTest extends WithApp {
@@ -71,7 +70,7 @@ final class AdminServiceTest extends WithApp {
         postToClient(pickUpShard(shard4));
         postToClient(releaseShard(pickUpShard3));
 
-        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         var actual = adminServiceBlocking()
                 .getShardInfo(request())
                 .getShardsList();
@@ -99,7 +98,7 @@ final class AdminServiceTest extends WithApp {
 
         ShardInfoUpdate expected = shardPicked(index, time);
 
-        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(expected);
     }
@@ -120,7 +119,7 @@ final class AdminServiceTest extends WithApp {
         ShardInfoUpdate pickedUpdate = shardPicked(index, time);
         ShardInfoUpdate unpickedUpdate = shardUnpicked(index);
 
-        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(pickedUpdate, unpickedUpdate);
     }
@@ -136,7 +135,7 @@ final class AdminServiceTest extends WithApp {
 
         ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
 
-        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(messageWritten);
     }
@@ -154,7 +153,7 @@ final class AdminServiceTest extends WithApp {
         ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
         ShardInfoUpdate messageRemoved = messagesCountChangedTo(index, 0);
 
-        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(messageWritten, messageRemoved);
     }
@@ -173,7 +172,7 @@ final class AdminServiceTest extends WithApp {
         ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
 
-        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(message1Written, message2Written);
     }
@@ -195,7 +194,7 @@ final class AdminServiceTest extends WithApp {
         ShardInfoUpdate message1Removed = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Removed = messagesCountChangedTo(index, 0);
 
-        sleepUninterruptibly(Duration.ofSeconds(SLEEP_SECONDS));
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(
                 message1Written,
