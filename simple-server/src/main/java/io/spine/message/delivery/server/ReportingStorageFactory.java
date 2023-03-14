@@ -125,6 +125,11 @@ public final class ReportingStorageFactory implements StorageFactory {
 
     /**
      * Subscription for multiple storages of the same type.
+     *
+     * @param <I>
+     *         the type of the record identifiers
+     * @param <R>
+     *         the type of the message records
      */
     private static final class ComplexSubscription<I, R extends Message> {
 

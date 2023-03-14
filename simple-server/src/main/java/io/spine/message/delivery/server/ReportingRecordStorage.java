@@ -20,6 +20,11 @@ import static java.util.UUID.randomUUID;
 
 /**
  * Storage that can report update operation performed with its records to subscribers.
+ *
+ * @param <I>
+ *         the type of the record identifiers
+ * @param <R>
+ *         the type of the message records
  */
 public final class ReportingRecordStorage<I, R extends Message> extends RecordStorageDelegate<I, R> {
 
@@ -79,7 +84,7 @@ public final class ReportingRecordStorage<I, R extends Message> extends RecordSt
     @CanIgnoreReturnValue
     @Override
     protected boolean deleteRecord(I id) {
-        if(super.deleteRecord(id)){
+        if (super.deleteRecord(id)) {
             notifyDeleted(id);
             return true;
         }
