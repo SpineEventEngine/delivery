@@ -33,8 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("`SessionRegistryService` should")
 final class SessionRegistryServiceTest extends WithApp {
 
-    private static final int SLEEP_SECONDS = 5;
-
     private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
     private final NodeId node = NodeId.newBuilder()
             .setValue(SessionRegistryServiceTest.class.getName())
@@ -87,7 +85,6 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
         ExpiredSessionsReleased result = sessionRegistry().releaseSessions(releaseExpired);
-        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertThat(result.getShardCount())
                 .isEqualTo(1);
         ExpiredSession expiredSession = result.getShard(0);
@@ -111,7 +108,6 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
         ExpiredSessionsReleased released = sessionRegistry().releaseSessions(releaseExpired);
-        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertThat(released.getShardCount())
                 .isEqualTo(1);
         ExpiredSession expiredSession = released.getShard(0);
