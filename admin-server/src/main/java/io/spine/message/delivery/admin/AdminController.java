@@ -58,7 +58,7 @@ final class AdminController {
     }
 
     /**
-     * Creates a new {@code Event} conversing the given {@code update} to compact JSON
+     * Creates a new {@code Event} converting the given {@code update} to compact JSON
      * and generating a new {@code UUID} for the event.
      */
     private static Event<String> toEvent(ShardInfoUpdate update) {
