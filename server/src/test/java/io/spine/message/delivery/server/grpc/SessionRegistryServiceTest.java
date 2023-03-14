@@ -26,10 +26,14 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
+import static java.time.Duration.ofSeconds;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`SessionRegistryService` should")
 final class SessionRegistryServiceTest extends WithApp {
+
+    private static final int SLEEP_SECONDS = 2;
 
     private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
     private final NodeId node = NodeId.newBuilder()
@@ -83,6 +87,7 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
         ExpiredSessionsReleased result = sessionRegistry().releaseSessions(releaseExpired);
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertThat(result.getShardCount())
                 .isEqualTo(1);
         ExpiredSession expiredSession = result.getShard(0);
@@ -106,6 +111,7 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
         ExpiredSessionsReleased released = sessionRegistry().releaseSessions(releaseExpired);
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertThat(released.getShardCount())
                 .isEqualTo(1);
         ExpiredSession expiredSession = released.getShard(0);
