@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("`SessionRegistryService` should")
 final class SessionRegistryServiceTest extends WithApp {
 
-    private static final int SLEEP_SECONDS = 2;
+    private static final int SLEEP_SECONDS = 5;
 
     private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
     private final NodeId node = NodeId.newBuilder()
