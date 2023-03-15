@@ -225,7 +225,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
     /**
      * Casts the given {@code observer} to the {@code ServerCallStreamObserver}.
      *
-     * <p>According to the {@link ServerCallStreamObserver} docs It's safe to cast
+     * <p>According to the {@link ServerCallStreamObserver} docs it's safe to cast
      * {@code StreamObserver} to {@code ServerCallStreamObserver} in server side implementation
      * of the service.
      */
