@@ -43,7 +43,7 @@ final class AdminController {
 
     @Get("/shardInfo")
     @Produces(MediaType.TEXT_JSON)
-    String getShardInfo() {
+    String shardInfo() {
         return toCompactJson(adminService.getShardInfo(Empty.getDefaultInstance()));
     }
 
