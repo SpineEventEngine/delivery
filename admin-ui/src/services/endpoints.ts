@@ -8,8 +8,8 @@
  * Server API endpoints.
  */
 export function useEndpoints() {
-  const shardInfo = 'http://localhost:8080/admin/shardInfo';
-  const shardUpdates = 'http://localhost:8080/admin/shardUpdates';
+  const shardInfo = '/admin/shardInfo';
+  const shardUpdates = '/admin/shardUpdates';
 
   return { shardInfo, shardUpdates };
 }
