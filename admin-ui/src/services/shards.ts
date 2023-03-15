@@ -102,7 +102,7 @@ export function useShards() {
         const infoUpdate = ShardInfoUpdate.fromJsonString(event.data);
         applyUpdate(infoUpdate);
       },
-    }).then();
+    });
   }
 
   /**
