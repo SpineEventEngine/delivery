@@ -88,6 +88,10 @@ export function useShards() {
     }
   }
 
+  /**
+   * Subscribes to the event source on the server, and updates stored shard info according to
+   * received updates.
+   */
   function startUpdateInfo() {
     const credentials = btoa(`${AuthService.username()}:${AuthService.password()}`);
     const authHeader = { Authorization: `Basic ${credentials}` };
