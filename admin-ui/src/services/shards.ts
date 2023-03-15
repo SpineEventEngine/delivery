@@ -32,9 +32,12 @@ export function useShards() {
   const { client } = useAxios();
 
   /**
-   * Requests current shard status from the server.
+   * Reads the information about currently known shards from the server,
+   * and subscribes to the server-side updates.
+   *
+   * Returns a `Promise` that resolves when the ShardInfo received.
    */
-  function getShardInfo(): Promise<ShardInfoList> {
+  function synchronizeShardInfo(): Promise<ShardInfoList> {
     return new Promise<ShardInfoList>((resolve, reject) => {
       const options = {
         auth: {
@@ -105,10 +108,7 @@ export function useShards() {
     });
   }
 
-  /**
-   * Requests shard info from the server, and subscribes to the auto updates from the server.
-   */
-  getShardInfo().then((shardInfoList) => {
+  synchronizeShardInfo().then((shardInfoList) => {
     shardInfoList.shards?.forEach((info) => {
       shards.value.set((info.index as ShardIndex).toJsonString(), info);
     });
