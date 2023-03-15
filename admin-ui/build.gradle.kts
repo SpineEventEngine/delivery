@@ -51,7 +51,7 @@ abstract class Clean : NpxTask() {
 }
 abstract class GenerateTsProto : NpxTask() {
   init {
-    description = "Generates a TypeScript files from `.proto` definitions."
+    description = "Generates TypeScript files from `.proto` definitions."
     command.set("buf")
     args.set(
       listOf(
