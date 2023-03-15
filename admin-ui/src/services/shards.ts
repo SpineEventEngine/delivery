@@ -19,7 +19,7 @@ import {
 import { ShardIndex } from 'src/gen/spine/server/delivery/delivery_pb';
 
 /**
- * Composable that gives access to shard information form the server.
+ * Composable that gives access to shard information from the server.
  *
  * The shard info will be updated automatically on server updates.
  */
@@ -57,7 +57,8 @@ export function useShards() {
   }
 
   /**
-   * Gets the existent shard info or creates and remembers a new default one.
+   * Returns the info of the existing shard, or creates and remembers a new one,
+   * with a default value.
    */
   function getShard(index: ShardIndex): ShardInfo {
     const key = index.toJsonString();
