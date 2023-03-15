@@ -18,6 +18,11 @@ import {
 } from 'src/gen/spine/message/delivery/admin/admin_service_pb';
 import { ShardIndex } from 'src/gen/spine/server/delivery/delivery_pb';
 
+/**
+ * Composable that gives access to shard information form the server.
+ *
+ * The shard info will be updated automatically on server updates.
+ */
 export function useShards() {
   const shards = ref(new Map());
   const isLoaded = ref(false);
@@ -51,6 +56,9 @@ export function useShards() {
     });
   }
 
+  /**
+   * Gets the existent shard info or creates and remembers a new default one.
+   */
   function getShard(index: ShardIndex): ShardInfo {
     const key = index.toJsonString();
     if (shards.value.has(key)) {
@@ -64,27 +72,37 @@ export function useShards() {
     return shards.value.get(key);
   }
 
+  /**
+   * Applies the given `update` to a stored shard info.
+   */
+  function updateShard(update: ShardInfoUpdate) {
+    const shard = getShard(update.index!);
+    if (update.messagesCountUpdatedTo) {
+      shard.messages = update.messagesCountUpdatedTo;
+    }
+    if (update.statusUpdatedTo) {
+      shard.status = update.statusUpdatedTo;
+    }
+    if (update.lastPickedUpdatedTo) {
+      shard.lastPicked = update.lastPickedUpdatedTo;
+    }
+  }
+
   function startUpdateInfo() {
     const credentials = btoa(`${AuthService.username()}:${AuthService.password()}`);
     const authHeader = { Authorization: `Basic ${credentials}` };
     fetchEventSource(shardUpdates, {
       headers: authHeader,
       onmessage(event) {
-        const update = ShardInfoUpdate.fromJsonString(event.data);
-        const shard = getShard(update.index!);
-        if (update.messagesCountUpdatedTo) {
-          shard.messages = update.messagesCountUpdatedTo;
-        }
-        if (update.statusUpdatedTo) {
-          shard.status = update.statusUpdatedTo;
-        }
-        if (update.lastPickedUpdatedTo) {
-          shard.lastPicked = update.lastPickedUpdatedTo;
-        }
+        const infoUpdate = ShardInfoUpdate.fromJsonString(event.data);
+        updateShard(infoUpdate);
       },
     }).then();
   }
 
+  /**
+   * Requests shard info from the server, and subscribes to the auto updates from the server.
+   */
   getShardInfo().then((shardInfoList) => {
     shardInfoList.shards?.forEach((info) => {
       shards.value.set(info.index!.toJsonString(), info);
