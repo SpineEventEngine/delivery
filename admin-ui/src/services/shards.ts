@@ -76,7 +76,7 @@ export function useShards() {
    * Applies the given `update` to a stored shard info.
    */
   function updateShard(update: ShardInfoUpdate) {
-    const shard = getShard(update.index!);
+    const shard = getShard(update.index as ShardIndex);
     if (update.messagesCountUpdatedTo) {
       shard.messages = update.messagesCountUpdatedTo;
     }
@@ -105,7 +105,7 @@ export function useShards() {
    */
   getShardInfo().then((shardInfoList) => {
     shardInfoList.shards?.forEach((info) => {
-      shards.value.set(info.index!.toJsonString(), info);
+      shards.value.set((info.index as ShardIndex).toJsonString(), info);
     });
     isLoaded.value = true;
     startUpdateInfo();
