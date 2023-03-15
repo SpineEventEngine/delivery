@@ -16,7 +16,7 @@ import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
- * Utility to crete {@link ShardInfoUpdate}s.
+ * Utility to create {@link ShardInfoUpdate}s.
  */
 public final class ShardInfoUpdates {
 
