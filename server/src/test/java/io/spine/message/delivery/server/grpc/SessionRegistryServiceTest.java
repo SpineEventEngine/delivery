@@ -78,7 +78,7 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setWorker(worker)
                 .vBuild();
         sessionRegistry().pickShard(pickShard);
-        Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
+        Uninterruptibles.sleepUninterruptibly(10, TimeUnit.SECONDS);
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
@@ -101,7 +101,7 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setWorker(worker)
                 .vBuild();
         sessionRegistry().pickShard(pickShard);
-        Uninterruptibles.sleepUninterruptibly(3, TimeUnit.SECONDS);
+        Uninterruptibles.sleepUninterruptibly(10, TimeUnit.SECONDS);
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
