@@ -50,7 +50,7 @@ public class MemoizingUpdateSubscriber<I, R extends Message> implements UpdateSu
     }
 
     /**
-     * Represents a single write operation that the {@code MemoizingUpdateSubscriber} gave been
+     * Represents a single write operation that the {@code MemoizingUpdateSubscriber} have been
      * notified about.
      */
     public static class SingleWrite<I, R extends Message> {
