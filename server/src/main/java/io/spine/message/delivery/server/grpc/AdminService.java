@@ -104,7 +104,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
     }
 
     /**
-     * Updates the {@code statistic} of the messages in the given {@code index} on
+     * Updates the {@code statistic} of the messages count for the given {@code index} on
      * the given {@code delta}.
      */
     private int updateCount(ShardIndex index, int delta) {
