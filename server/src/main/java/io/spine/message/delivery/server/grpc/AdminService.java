@@ -91,7 +91,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
     subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> observer) {
         subscribers.add(observer);
         toServerCall(observer).setOnCancelHandler(() -> subscribers.remove(observer));
-        _debug().log("Added one subscriber, now subscribers: %d", subscribers.size());
+        _debug().log("Added one subscriber, current number of subscribers = %d", subscribers.size());
     }
 
     /**
