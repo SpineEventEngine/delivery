@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -47,9 +48,23 @@ import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase implements Logging {
 
     private final Client client;
+
+    /**
+     * Subscribers of the {@code AdminService}.
+     */
     private final Set<StreamObserver<ShardInfoUpdate>> subscribers = new HashSet<>();
 
-    private final Map<ShardIndex, Integer> statistic;
+    /**
+     * Maps a {@code ShardIndex} to the number of messages currently available in the shard.
+     *
+     * <p>This field is created to provide the info about each shard. The information
+     * updated using subscriptions that notify the service about changes in shards.
+     *
+     * <p>Accumulating the number is faster than fetching it on demand, because storage doesn't
+     * support {@code count} queries, so fetching basically means read all the shards and then read
+     * all the messages in each shard to count the number.
+     */
+    private final Map<ShardIndex, Integer> messagesInShards;
 
     /**
      * Creates a new {@code AdminService} with the given {@code client}.
@@ -58,7 +73,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
         super();
         this.client = checkNotNull(client);
         setupEventListener();
-        statistic = messagesInShards();
+        messagesInShards = new ConcurrentHashMap<>(messagesInShards());
     }
 
     @Override
@@ -104,11 +119,10 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
     }
 
     /**
-     * Updates the {@code statistic} of the messages count for the given {@code index} on
-     * the given {@code delta}.
+     * Updates the {@code messagesInShards} for the given {@code index} on the given {@code delta}.
      */
     private int updateCount(ShardIndex index, int delta) {
-        return statistic.merge(index, delta, Integer::sum);
+        return messagesInShards.merge(index, delta, Integer::sum);
     }
 
     /**
@@ -149,7 +163,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
      * Fetches information about all shards.
      */
     private ShardInfoList fetch() {
-        Map<ShardIndex, Integer> messagesCount = new HashMap<>(statistic);
+        Map<ShardIndex, Integer> messagesCount = new HashMap<>(messagesInShards);
         var shards = readShards();
         var shardListBuilder = ShardInfoList.newBuilder();
         shards.forEach(shard -> {
