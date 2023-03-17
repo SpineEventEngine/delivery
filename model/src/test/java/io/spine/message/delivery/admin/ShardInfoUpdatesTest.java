@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import static io.spine.base.Time.currentTime;
 import static io.spine.server.delivery.DeliveryStrategy.newIndex;
 
-@DisplayName("ShardInfoUpdates utility should")
+@DisplayName("`ShardInfoUpdates` utility should")
 final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
 
     ShardInfoUpdatesTest() {
