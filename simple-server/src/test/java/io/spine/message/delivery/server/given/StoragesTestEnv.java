@@ -27,34 +27,12 @@ public final class StoragesTestEnv {
     }
 
     /**
-     * Creates a new {@code TestEventId} with a random {@code UUID} as its value.
-     */
-    public static TestEventId randomId() {
-        UUID uuid = UUID.randomUUID();
-        return TestEventId
-                .newBuilder()
-                .setValue(uuid.toString())
-                .vBuild();
-    }
-
-    /**
      * Creates a new {@code TestEvent} with the given {@code id}.
      */
     public static TestEvent testEventWith(TestEventId id) {
         return TestEvent
                 .newBuilder()
                 .setId(id)
-                .vBuild();
-    }
-
-    /**
-     * Creates a new {@code AnotherTestEventID} with a random {@code UUID} as its value.
-     */
-    public static AnotherTestEventId anotherRandomId() {
-        UUID uuid = UUID.randomUUID();
-        return AnotherTestEventId
-                .newBuilder()
-                .setValue(uuid.toString())
                 .vBuild();
     }
 

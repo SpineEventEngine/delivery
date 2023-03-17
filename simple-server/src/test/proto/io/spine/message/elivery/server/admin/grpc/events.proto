@@ -19,7 +19,7 @@ option java_generate_equals_and_hash = true;
 // ID of the event message for testing purposes.
 message TestEventId {
 
-    string value = 1;
+    string uuid = 1;
 }
 
 // Meaningless event message for testing purposes.
@@ -31,7 +31,7 @@ message TestEvent {
 // ID of another event message for testing purpose.
 message AnotherTestEventId {
 
-    string value = 1;
+    string uuid = 1;
 }
 
 // Another meaningless event message for testing purpose.

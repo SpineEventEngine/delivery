@@ -219,7 +219,7 @@ public final class AdminServiceTestEnv {
                 .vBuild();
         EventId eventId = EventId
                 .newBuilder()
-                .setValue(id.getValue())
+                .setValue(id.getUuid())
                 .vBuild();
         Version version = Version
                 .newBuilder()
@@ -280,7 +280,7 @@ public final class AdminServiceTestEnv {
     private static TestEventId testEventId(String value) {
         return TestEventId
                 .newBuilder()
-                .setValue(value)
+                .setUuid(value)
                 .vBuild();
     }
 }

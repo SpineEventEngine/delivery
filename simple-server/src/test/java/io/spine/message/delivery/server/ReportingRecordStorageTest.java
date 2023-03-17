@@ -22,7 +22,6 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.message.delivery.server.given.StoragesTestEnv.newTestContext;
-import static io.spine.message.delivery.server.given.StoragesTestEnv.randomId;
 import static io.spine.message.delivery.server.given.StoragesTestEnv.testEventWith;
 
 @DisplayName("`ReportingRecordStorage` should")
@@ -36,13 +35,13 @@ final class ReportingRecordStorageTest {
         var subscriber = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
         var subscription = underTest.subscribe(subscriber);
 
-        TestEventId firstId = randomId();
+        TestEventId firstId = TestEventId.generate();
         TestEvent firstRecord = testEventWith(firstId);
 
         underTest.write(firstId, firstRecord);
         subscription.cancel();
 
-        TestEventId secondId = randomId();
+        TestEventId secondId =TestEventId.generate();
         TestEvent secondRecord = testEventWith(secondId);
 
         underTest.write(secondId, secondRecord);
@@ -70,7 +69,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
 
             underTest.write(id, record);
@@ -85,7 +84,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
 
             underTest.write(RecordWithColumns.of(id, record));
@@ -100,7 +99,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
 
             underTest.writeRecord(RecordWithColumns.of(id, record));
@@ -115,7 +114,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
 
             underTest.writeAll(List.of(RecordWithColumns.of(id, record)));
@@ -130,7 +129,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
 
             underTest.writeAllRecords(List.of(RecordWithColumns.of(id, record)));
@@ -145,10 +144,10 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId firstId = randomId();
+            TestEventId firstId = TestEventId.generate();
             TestEvent firstRecord = testEventWith(firstId);
 
-            TestEventId secondId = randomId();
+            TestEventId secondId = TestEventId.generate();
             TestEvent secondRecord = testEventWith(secondId);
 
             underTest.writeAll(List.of(RecordWithColumns.of(firstId, firstRecord),
@@ -165,10 +164,10 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId firstId = randomId();
+            TestEventId firstId = TestEventId.generate();
             TestEvent firstRecord = testEventWith(firstId);
 
-            TestEventId secondId = randomId();
+            TestEventId secondId = TestEventId.generate();
             TestEvent secondRecord = testEventWith(secondId);
 
             underTest.writeAllRecords(List.of(RecordWithColumns.of(firstId, firstRecord),
@@ -185,7 +184,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
             underTest.write(id, record);
 
@@ -201,7 +200,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
             underTest.write(id, record);
 
@@ -217,10 +216,10 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId firstId = randomId();
+            TestEventId firstId = TestEventId.generate();
             TestEvent firstRecord = testEventWith(firstId);
 
-            TestEventId secondId = randomId();
+            TestEventId secondId = TestEventId.generate();
             TestEvent secondRecord = testEventWith(secondId);
 
             underTest.writeAllRecords(List.of(RecordWithColumns.of(firstId, firstRecord),
@@ -238,7 +237,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
             underTest.write(id, record);
 
@@ -255,7 +254,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
             underTest.write(id, record);
 
@@ -272,10 +271,10 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId firstId = randomId();
+            TestEventId firstId = TestEventId.generate();
             TestEvent firstRecord = testEventWith(firstId);
 
-            TestEventId secondId = randomId();
+            TestEventId secondId = TestEventId.generate();
             TestEvent secondRecord = testEventWith(secondId);
 
             underTest.writeAllRecords(List.of(RecordWithColumns.of(firstId, firstRecord),
@@ -297,7 +296,7 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId id = randomId();
+                TestEventId id = TestEventId.generate();
                 TestEvent record = testEventWith(id);
 
                 underTest.write(id, record);
@@ -313,7 +312,7 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId id = randomId();
+                TestEventId id = TestEventId.generate();
                 TestEvent record = testEventWith(id);
 
                 underTest.write(RecordWithColumns.of(id, record));
@@ -329,7 +328,7 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId id = randomId();
+                TestEventId id = TestEventId.generate();
                 TestEvent record = testEventWith(id);
 
                 underTest.writeRecord(RecordWithColumns.of(id, record));
@@ -345,7 +344,7 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId id = randomId();
+                TestEventId id = TestEventId.generate();
                 TestEvent record = testEventWith(id);
 
                 underTest.writeAll(List.of(RecordWithColumns.of(id, record)));
@@ -361,7 +360,7 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId id = randomId();
+                TestEventId id = TestEventId.generate();
                 TestEvent record = testEventWith(id);
 
                 underTest.writeAllRecords(List.of(RecordWithColumns.of(id, record)));
@@ -377,10 +376,10 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId firstId = randomId();
+                TestEventId firstId = TestEventId.generate();
                 TestEvent firstRecord = testEventWith(firstId);
 
-                TestEventId secondId = randomId();
+                TestEventId secondId = TestEventId.generate();
                 TestEvent secondRecord = testEventWith(secondId);
 
                 underTest.writeAll(List.of(RecordWithColumns.of(firstId, firstRecord),
@@ -401,10 +400,10 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId firstId = randomId();
+                TestEventId firstId = TestEventId.generate();
                 TestEvent firstRecord = testEventWith(firstId);
 
-                TestEventId secondId = randomId();
+                TestEventId secondId = TestEventId.generate();
                 TestEvent secondRecord = testEventWith(secondId);
 
                 underTest.writeAllRecords(List.of(RecordWithColumns.of(firstId, firstRecord),
@@ -440,7 +439,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
 
             underTest.write(id, record);
@@ -455,7 +454,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
 
             underTest.write(RecordWithColumns.of(id, record));
@@ -470,7 +469,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
 
             underTest.writeRecord(RecordWithColumns.of(id, record));
@@ -485,7 +484,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
 
             underTest.writeAll(List.of(RecordWithColumns.of(id, record)));
@@ -500,7 +499,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
 
             underTest.writeAllRecords(List.of(RecordWithColumns.of(id, record)));
@@ -515,10 +514,10 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId firstId = randomId();
+            TestEventId firstId = TestEventId.generate();
             TestEvent firstRecord = testEventWith(firstId);
 
-            TestEventId secondId = randomId();
+            TestEventId secondId = TestEventId.generate();
             TestEvent secondRecord = testEventWith(secondId);
 
             underTest.writeAll(List.of(RecordWithColumns.of(firstId, firstRecord),
@@ -535,10 +534,10 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId firstId = randomId();
+            TestEventId firstId = TestEventId.generate();
             TestEvent firstRecord = testEventWith(firstId);
 
-            TestEventId secondId = randomId();
+            TestEventId secondId = TestEventId.generate();
             TestEvent secondRecord = testEventWith(secondId);
 
             underTest.writeAllRecords(List.of(RecordWithColumns.of(firstId, firstRecord),
@@ -555,7 +554,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
             underTest.write(id, record);
 
@@ -571,7 +570,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
             underTest.write(id, record);
 
@@ -587,10 +586,10 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId firstId = randomId();
+            TestEventId firstId = TestEventId.generate();
             TestEvent firstRecord = testEventWith(firstId);
 
-            TestEventId secondId = randomId();
+            TestEventId secondId = TestEventId.generate();
             TestEvent secondRecord = testEventWith(secondId);
 
             underTest.writeAllRecords(List.of(RecordWithColumns.of(firstId, firstRecord),
@@ -608,7 +607,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
             underTest.write(id, record);
 
@@ -625,7 +624,7 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId id = randomId();
+            TestEventId id = TestEventId.generate();
             TestEvent record = testEventWith(id);
             underTest.write(id, record);
 
@@ -642,10 +641,10 @@ final class ReportingRecordStorageTest {
             var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
-            TestEventId firstId = randomId();
+            TestEventId firstId = TestEventId.generate();
             TestEvent firstRecord = testEventWith(firstId);
 
-            TestEventId secondId = randomId();
+            TestEventId secondId = TestEventId.generate();
             TestEvent secondRecord = testEventWith(secondId);
 
             underTest.writeAllRecords(List.of(RecordWithColumns.of(firstId, firstRecord),
@@ -667,7 +666,7 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId id = randomId();
+                TestEventId id = TestEventId.generate();
                 TestEvent record = testEventWith(id);
 
                 underTest.write(id, record);
@@ -683,7 +682,7 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId id = randomId();
+                TestEventId id = TestEventId.generate();
                 TestEvent record = testEventWith(id);
 
                 underTest.write(RecordWithColumns.of(id, record));
@@ -699,7 +698,7 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId id = randomId();
+                TestEventId id = TestEventId.generate();
                 TestEvent record = testEventWith(id);
 
                 underTest.writeRecord(RecordWithColumns.of(id, record));
@@ -715,7 +714,7 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId id = randomId();
+                TestEventId id = TestEventId.generate();
                 TestEvent record = testEventWith(id);
 
                 underTest.writeAll(List.of(RecordWithColumns.of(id, record)));
@@ -731,7 +730,7 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId id = randomId();
+                TestEventId id = TestEventId.generate();
                 TestEvent record = testEventWith(id);
 
                 underTest.writeAllRecords(List.of(RecordWithColumns.of(id, record)));
@@ -747,10 +746,10 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId firstId = randomId();
+                TestEventId firstId = TestEventId.generate();
                 TestEvent firstRecord = testEventWith(firstId);
 
-                TestEventId secondId = randomId();
+                TestEventId secondId = TestEventId.generate();
                 TestEvent secondRecord = testEventWith(secondId);
 
                 underTest.writeAll(List.of(RecordWithColumns.of(firstId, firstRecord),
@@ -771,10 +770,10 @@ final class ReportingRecordStorageTest {
                 var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
-                TestEventId firstId = randomId();
+                TestEventId firstId = TestEventId.generate();
                 TestEvent firstRecord = testEventWith(firstId);
 
-                TestEventId secondId = randomId();
+                TestEventId secondId = TestEventId.generate();
                 TestEvent secondRecord = testEventWith(secondId);
 
                 underTest.writeAllRecords(List.of(RecordWithColumns.of(firstId, firstRecord),
