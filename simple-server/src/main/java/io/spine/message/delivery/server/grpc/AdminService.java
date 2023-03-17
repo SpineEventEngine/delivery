@@ -84,7 +84,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     /**
      * Notifies all existent subscribers about the new {@code ShardInfoChange}.
      *
-     * If an error occurs when trying to notify subscriber it is marked as invalid and removed from
+     * <p>If an error occurs when trying to notify subscriber it is marked as invalid and removed from
      * the subscribers list.
      */
     private void notifySubs(ShardInfoUpdate update) {
