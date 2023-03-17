@@ -100,7 +100,7 @@ final class AdminServiceTest extends WithApp {
     }
 
     @Test
-    @DisplayName("notify if shard unpicked.")
+    @DisplayName("notify if shard is released.")
     void notifyUnpicked() {
         Timestamp time = Time.currentTime();
         Time.setProvider(new FrozenMadHatterParty(time));
@@ -121,7 +121,7 @@ final class AdminServiceTest extends WithApp {
     }
 
     @Test
-    @DisplayName("notify when message written")
+    @DisplayName("notify when message is written")
     void notifyMessageWritten() {
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
@@ -138,7 +138,7 @@ final class AdminServiceTest extends WithApp {
     }
 
     @Test
-    @DisplayName("notify when message removed")
+    @DisplayName("notify when message is removed")
     void notifyMessageRemoved() {
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
