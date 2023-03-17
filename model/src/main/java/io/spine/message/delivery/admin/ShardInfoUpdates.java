@@ -31,7 +31,7 @@ public final class ShardInfoUpdates {
         checkNotDefaultArg(lastPicked);
         return changesFor(index)
                 .setStatusUpdatedTo(PICKED)
-                .setLastPickedUpdatedTo(checkNotDefaultArg(lastPicked))
+                .setLastPickedUpdatedTo(lastPicked)
                 .vBuild();
     }
 
@@ -40,6 +40,7 @@ public final class ShardInfoUpdates {
      * changed to {@code NOT_PICKED}.
      */
     public static ShardInfoUpdate shardUnpicked(ShardIndex index) {
+        checkNotDefaultArg(index);
         return changesFor(index)
                 .setStatusUpdatedTo(NOT_PICKED)
                 .vBuild();
@@ -61,8 +62,9 @@ public final class ShardInfoUpdates {
      * Creates a new {@code ShardInfoUpdate.Builder} with the given shard {@code index} set.
      */
     private static ShardInfoUpdate.Builder changesFor(ShardIndex index) {
+        checkNotDefaultArg(index);
         return ShardInfoUpdate
                 .newBuilder()
-                .setIndex(checkNotDefaultArg(index));
+                .setIndex(index);
     }
 }
