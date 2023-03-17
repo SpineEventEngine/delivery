@@ -34,6 +34,13 @@ import static java.util.UUID.randomUUID;
 @Secured(IS_AUTHENTICATED)
 final class AdminController {
 
+    /**
+     * Empty request that is used to invoke gRPC methods of {@code AdminService}.
+     *
+     * <p>Requests don't need any parameters right now but {@code .proto} gRPC definition requires
+     * some input parameters anyway.
+     */
+    private static final Empty REQUEST = Empty.getDefaultInstance();
     private final AdminServiceBlockingStub adminService;
 
     @Inject
@@ -44,14 +51,14 @@ final class AdminController {
     @Get("/shardInfo")
     @Produces(MediaType.TEXT_JSON)
     String shardInfo() {
-        return toCompactJson(adminService.getShardInfo(Empty.getDefaultInstance()));
+        return toCompactJson(adminService.getShardInfo(REQUEST));
     }
 
     @Get("/shardUpdates")
     @Produces(MediaType.TEXT_EVENT_STREAM)
     public Publisher<Event<String>> subscribeOnShardUpdates() throws Exception {
         return withGrpcContext((context) -> {
-            var updates = adminService.subscribeToShardUpdates(Empty.getDefaultInstance());
+            var updates = adminService.subscribeToShardUpdates(REQUEST);
             return Flux.fromIterable(() -> transform(updates, AdminController::toEvent))
                        .doFinally(signal -> context.close());
         });
