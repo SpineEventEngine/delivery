@@ -11,10 +11,10 @@ import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.StorageFactory;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static java.util.Optional.ofNullable;
@@ -27,9 +27,19 @@ public final class ReportingStorageFactory implements StorageFactory {
 
     private final StorageFactory delegate;
 
-    private final Map<TypeSpec<?, ?>, Set<ReportingRecordStorage<?, ?>>> storages = new HashMap<>();
+    /**
+     * The field preserves all storages that is created by this factory.
+     *
+     * <p>This is done to add new subscriptions to already created storages.
+     */
+    private final Map<TypeSpec<?, ?>, Set<ReportingRecordStorage<?, ?>>> storages = new ConcurrentHashMap<>();
 
-    private final Map<String, ComplexSubscription<?, ?>> subscriptions = new HashMap<>();
+    /**
+     * The field preserves subscriptions that is passed to the factory.
+     *
+     * <p>This is done to add already existent subscriptions to a newly created storages.
+     */
+    private final Map<String, ComplexSubscription<?, ?>> subscriptions = new ConcurrentHashMap<>();
 
     public ReportingStorageFactory(StorageFactory delegate) {
         this.delegate = delegate;
