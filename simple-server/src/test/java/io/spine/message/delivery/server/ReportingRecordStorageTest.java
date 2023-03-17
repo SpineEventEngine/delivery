@@ -8,8 +8,8 @@ package io.spine.message.delivery.server;
 
 import io.spine.message.delivery.server.event.TestEvent;
 import io.spine.message.delivery.server.event.TestEventId;
-import io.spine.message.delivery.server.given.MemoizingUpdateSubscriber;
-import io.spine.message.delivery.server.given.MemoizingUpdateSubscriber.SingleWrite;
+import io.spine.message.delivery.server.given.MemoizingStorageSubscriber;
+import io.spine.message.delivery.server.given.MemoizingStorageSubscriber.SingleWrite;
 import io.spine.message.delivery.server.given.MultipleResponsibilityStorage;
 import io.spine.message.delivery.server.given.SingleResponsibilityStorage;
 import io.spine.server.storage.RecordWithColumns;
@@ -24,7 +24,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.message.delivery.server.given.StoragesTestEnv.newTestContext;
 import static io.spine.message.delivery.server.given.StoragesTestEnv.randomId;
 import static io.spine.message.delivery.server.given.StoragesTestEnv.testEventWith;
-import static io.spine.server.ContextSpec.singleTenant;
 
 @DisplayName("`ReportingRecordStorage` should")
 final class ReportingRecordStorageTest {
@@ -34,7 +33,7 @@ final class ReportingRecordStorageTest {
     void unsubscribe() {
         var underTest =
                 new ReportingRecordStorage<>(newTestContext(), new SingleResponsibilityStorage());
-        var subscriber = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+        var subscriber = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
         var subscription = underTest.subscribe(subscriber);
 
         TestEventId firstId = randomId();
@@ -68,7 +67,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `write(id, record)` call once.")
         void reportWriteOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -83,7 +82,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `write(record)` call once.")
         void reportWriteWithRecordOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -98,7 +97,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `writeRecord(record)` call once.")
         void reportWriteRecordOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -113,7 +112,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `writeAll(records)` call once.")
         void reportWriteAllOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -128,7 +127,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `writeAllRecords(records)` call once.")
         void reportWriteAllRecordsOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -143,7 +142,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report all entities written with `writeAll(records)` call once.")
         void reportAllWriteAllOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId firstId = randomId();
@@ -163,7 +162,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report all entities written with `writeAllRecords(records)` call once.")
         void reportAllWriteAllRecordsOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId firstId = randomId();
@@ -183,7 +182,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `delete(id)` call once.")
         void reportDeleteOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -199,7 +198,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `deleteRecord(id)` call once.")
         void reportDeleteRecordOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -215,7 +214,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report all deletions with `deleteAll(ids)` call once.")
         void reportAllDeleteAllIdsOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId firstId = randomId();
@@ -236,7 +235,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report only actually deleted entities with `delete(id)` call.")
         void reportOnlyDeletedWithDelete() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -253,7 +252,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report only actually deleted entities with `deleteRecord(id)` call.")
         void reportOnlyDeletedWithDeleteRecord() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -270,7 +269,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report all if deleting duplicates with `deleteAll(ids)` call.")
         void reportAllIfDeleteAll() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId firstId = randomId();
@@ -295,7 +294,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all calls to `write(id, record)`.")
             void reportAllWrites() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId id = randomId();
@@ -311,7 +310,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all calls to `write(record)`.")
             void reportWriteWithRecord() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId id = randomId();
@@ -327,7 +326,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all calls to `writeRecord(record)`.")
             void reportWriteRecord() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId id = randomId();
@@ -343,7 +342,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all calls to `writeAll(records)`.")
             void reportWriteAll() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId id = randomId();
@@ -359,7 +358,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all calls to `writeAllRecords(records)`.")
             void reportWriteAllRecords() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId id = randomId();
@@ -375,7 +374,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all entities in all calls written with `writeAll(records)`.")
             void reportAllWriteAll() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId firstId = randomId();
@@ -399,7 +398,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all entities in all calls written with `writeAllRecords(records)`.")
             void reportAllWriteAllRecords() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId firstId = randomId();
@@ -438,7 +437,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `write(id, record)` call once.")
         void reportWriteOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -453,7 +452,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `write(record)` call once.")
         void reportWriteWithRecordOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -468,7 +467,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `writeRecord(record)` call once.")
         void reportWriteRecordOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -483,7 +482,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `writeAll(records)` call once.")
         void reportWriteAllOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -498,7 +497,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `writeAllRecords(records)` call once.")
         void reportWriteAllRecordsOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -513,7 +512,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report all entities written with `writeAll(records)` call once.")
         void reportAllWriteAllOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId firstId = randomId();
@@ -533,7 +532,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report all entities written with `writeAllRecords(records)` call once.")
         void reportAllWriteAllRecordsOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId firstId = randomId();
@@ -553,7 +552,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `delete(id)` call once.")
         void reportDeleteOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -569,7 +568,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report `deleteRecord(id)` call once.")
         void reportDeleteRecordOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -585,7 +584,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report all deletions with `deleteAll(ids)` call once.")
         void reportAllDeleteAllIdsOnce() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId firstId = randomId();
@@ -606,7 +605,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report only actually deleted entities with `delete(id)` call.")
         void reportOnlyDeletedWithDelete() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -623,7 +622,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report only actually deleted entities with `deleteRecord(id)` call.")
         void reportOnlyDeletedWithDeleteRecord() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId id = randomId();
@@ -640,7 +639,7 @@ final class ReportingRecordStorageTest {
         @Test
         @DisplayName("report all if deleting duplicates with `deleteAll(ids)` call.")
         void reportAllIfDeleteAll() {
-            var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+            var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
             underTest.subscribe(sub);
 
             TestEventId firstId = randomId();
@@ -665,7 +664,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all calls to `write(id, record)`.")
             void reportAllWrites() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId id = randomId();
@@ -681,7 +680,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all calls to `write(record)`.")
             void reportWriteWithRecord() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId id = randomId();
@@ -697,7 +696,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all calls to `writeRecord(record)`.")
             void reportWriteRecord() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId id = randomId();
@@ -713,7 +712,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all calls to `writeAll(records)`.")
             void reportWriteAll() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId id = randomId();
@@ -729,7 +728,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all calls to `writeAllRecords(records)`.")
             void reportWriteAllRecords() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId id = randomId();
@@ -745,7 +744,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all entities in all calls written with `writeAll(records)`.")
             void reportAllWriteAll() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId firstId = randomId();
@@ -769,7 +768,7 @@ final class ReportingRecordStorageTest {
             @Test
             @DisplayName("report all entities in all calls written with `writeAllRecords(records)`.")
             void reportAllWriteAllRecords() {
-                var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+                var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
                 underTest.subscribe(sub);
 
                 TestEventId firstId = randomId();

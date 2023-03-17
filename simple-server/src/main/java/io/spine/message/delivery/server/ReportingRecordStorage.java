@@ -28,7 +28,7 @@ import static java.util.UUID.randomUUID;
  */
 public final class ReportingRecordStorage<I, R extends Message> extends RecordStorageDelegate<I, R> {
 
-    private final Map<String, UpdateSubscriber<I, R>> subscriptions = new HashMap<>();
+    private final Map<String, StorageSubscriber<I, R>> subscriptions = new HashMap<>();
 
     /**
      * Initializes this storage with the instance to delegate the execution of operations to.
@@ -45,7 +45,7 @@ public final class ReportingRecordStorage<I, R extends Message> extends RecordSt
     /**
      * Subscribes to the update operations of this storage with the given {@code subscriber}.
      */
-    public UpdateSubscription subscribe(UpdateSubscriber<I, R> subscriber) {
+    public StorageSubscription subscribe(StorageSubscriber<I, R> subscriber) {
         String id = randomUUID().toString();
         this.subscriptions.put(id, subscriber);
         return () -> subscriptions.remove(id);

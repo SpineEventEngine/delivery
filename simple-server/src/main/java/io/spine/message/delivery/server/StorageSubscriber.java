@@ -13,11 +13,11 @@ import com.google.protobuf.Message;
  * {@link  ReportingRecordStorage}.
  *
  * @param <I>
- *         type of ID stored in the storage.
+ *         type of ID stored in the storage
  * @param <R>
- *         type of records stored in the storage.
+ *         type of records stored in the storage
  */
-public interface UpdateSubscriber<I, R extends Message> {
+public interface StorageSubscriber<I, R extends Message> {
 
     /**
      * Handles the notification about the “write” operation that this subscriber is notified about.

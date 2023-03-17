@@ -17,7 +17,7 @@ import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.server.ExtendedInboxStorage;
 import io.spine.message.delivery.server.ReportingStorageFactory;
 import io.spine.message.delivery.server.ShardRegistryStorage;
-import io.spine.message.delivery.server.UpdateSubscriber;
+import io.spine.message.delivery.server.StorageSubscriber;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
@@ -77,8 +77,8 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     @SuppressWarnings("HandleMethodResult")
     // We do not need to unsubscribe until the server is off.
     private void setupSubscribers(ReportingStorageFactory factory) {
-        factory.subscribe(ShardIndex.class, ShardSessionRecord.class, new ShardUpdateSubscriber());
-        factory.subscribe(InboxMessageId.class, InboxMessage.class, new InboxUpdateSubscriber());
+        factory.subscribe(ShardIndex.class, ShardSessionRecord.class, new ShardStorageSubscriber());
+        factory.subscribe(InboxMessageId.class, InboxMessage.class, new InboxStorageSubscriber());
     }
 
     /**
@@ -215,7 +215,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
      * Subscriber that tracks the inbox changes and notifies subscribers of the service about these
      * changes.
      */
-    private class InboxUpdateSubscriber implements UpdateSubscriber<InboxMessageId, InboxMessage> {
+    private class InboxStorageSubscriber implements StorageSubscriber<InboxMessageId, InboxMessage> {
 
         @Override
         public void onWrite(InboxMessageId id, InboxMessage message) {
@@ -234,7 +234,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
      * Subscriber that tracks shard changes and notifies subscribers of the service about these
      * changes.
      */
-    private class ShardUpdateSubscriber implements UpdateSubscriber<ShardIndex, ShardSessionRecord> {
+    private class ShardStorageSubscriber implements StorageSubscriber<ShardIndex, ShardSessionRecord> {
 
         @Override
         public void onWrite(ShardIndex id, ShardSessionRecord message) {

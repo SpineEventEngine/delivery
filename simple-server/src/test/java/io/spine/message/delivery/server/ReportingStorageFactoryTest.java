@@ -10,8 +10,8 @@ import io.spine.message.delivery.server.event.AnotherTestEvent;
 import io.spine.message.delivery.server.event.AnotherTestEventId;
 import io.spine.message.delivery.server.event.TestEvent;
 import io.spine.message.delivery.server.event.TestEventId;
-import io.spine.message.delivery.server.given.MemoizingUpdateSubscriber;
-import io.spine.message.delivery.server.given.MemoizingUpdateSubscriber.SingleWrite;
+import io.spine.message.delivery.server.given.MemoizingStorageSubscriber;
+import io.spine.message.delivery.server.given.MemoizingStorageSubscriber.SingleWrite;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,7 +39,7 @@ class ReportingStorageFactoryTest {
     @Test
     @DisplayName("subscribe to updates before storage creation.")
     void subscribeBeforeCreation() {
-        var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+        var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
         factory.subscribe(TestEventId.class, TestEvent.class, sub);
         var storage = factory.createRecordStorage(newTestContext(), specForTestEvent());
@@ -56,7 +56,7 @@ class ReportingStorageFactoryTest {
     @Test
     @DisplayName("subscribe to updates from already created storages.")
     void subscribeToAlreadyCreated() {
-        var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+        var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
         var storage = factory.createRecordStorage(newTestContext(), specForTestEvent());
         factory.subscribe(TestEventId.class, TestEvent.class, sub);
@@ -73,7 +73,7 @@ class ReportingStorageFactoryTest {
     @Test
     @DisplayName("subscribe to a storage of a particular type.")
     void subscribeByParticularStorageType() {
-        var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+        var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
         var storage = factory.createRecordStorage(newTestContext(), specForAnotherTestEvent());
         // Subscription to another storage type.
@@ -90,7 +90,7 @@ class ReportingStorageFactoryTest {
     @Test
     @DisplayName("handle unsubscribe correctly.")
     void unsubscribe() {
-        var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+        var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
         var storage = factory.createRecordStorage(newTestContext(), specForTestEvent());
         var subscription = factory.subscribe(TestEventId.class, TestEvent.class, sub);
@@ -111,7 +111,7 @@ class ReportingStorageFactoryTest {
     @Test
     @DisplayName("does not subscribe to future storages if already unsubscribed")
     void unsubscribeFromFuture() {
-        var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+        var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
         factory.createRecordStorage(newTestContext(), specForTestEvent());
         var subscription = factory.subscribe(TestEventId.class, TestEvent.class, sub);
@@ -131,8 +131,8 @@ class ReportingStorageFactoryTest {
     @Test
     @DisplayName("handle multiple subscribers")
     void handleMultipleSubscribers() {
-        var firstSub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
-        var secondSub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+        var firstSub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
+        var secondSub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
         var storage = factory.createRecordStorage(newTestContext(), specForTestEvent());
         factory.subscribe(TestEventId.class, TestEvent.class, firstSub);
@@ -152,8 +152,8 @@ class ReportingStorageFactoryTest {
     @Test
     @DisplayName("handle unsubscribe of each sub individually.")
     void unsubscribeIndividually() {
-        var firstSub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
-        var secondSub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+        var firstSub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
+        var secondSub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
         var storage = factory.createRecordStorage(newTestContext(), specForTestEvent());
         factory.subscribe(TestEventId.class, TestEvent.class, firstSub);
@@ -175,7 +175,7 @@ class ReportingStorageFactoryTest {
     @Test
     @DisplayName("subscribe to multiple storages.")
     void subscribeToMultipleStorages() {
-        var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+        var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
         factory.subscribe(TestEventId.class, TestEvent.class, sub);
         var storage1 = factory.createRecordStorage(newTestContext(), specForTestEvent());
@@ -194,7 +194,7 @@ class ReportingStorageFactoryTest {
     @Test
     @DisplayName("unsubscribe from all storages.")
     void unsubscribeFromAllStorages() {
-        var sub = new MemoizingUpdateSubscriber<TestEventId, TestEvent>();
+        var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
         var subscription = factory.subscribe(TestEventId.class, TestEvent.class, sub);
         var storage1 = factory.createRecordStorage(newTestContext(), specForTestEvent());

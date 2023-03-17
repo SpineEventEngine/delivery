@@ -73,8 +73,8 @@ public final class ReportingStorageFactory implements StorageFactory {
      * the given subscription and adds it to storages of the given types that will be created in the
      * future.
      */
-    public <I, R extends Message> UpdateSubscription
-    subscribe(Class<I> idType, Class<R> recordType, UpdateSubscriber<I, R> subscriber) {
+    public <I, R extends Message> StorageSubscription
+    subscribe(Class<I> idType, Class<R> recordType, StorageSubscriber<I, R> subscriber) {
         TypeSpec<I, R> typeSpec = new TypeSpec<>(idType, recordType);
         var subscriptions = subscribeOnExistentStorages(typeSpec, subscriber);
         return remember(new ComplexSubscription<>(typeSpec, subscriber, subscriptions));
@@ -84,9 +84,9 @@ public final class ReportingStorageFactory implements StorageFactory {
      * Adds the given {@code subscriber} to already created storages with the given {@code spec}.
      */
     @SuppressWarnings("unchecked") // We ensure types using `typeSpec`.
-    private <I, R extends Message> Set<UpdateSubscription>
-    subscribeOnExistentStorages(TypeSpec<I, R> spec, UpdateSubscriber<I, R> subscriber) {
-        Set<UpdateSubscription> subscriptions = new HashSet<>();
+    private <I, R extends Message> Set<StorageSubscription>
+    subscribeOnExistentStorages(TypeSpec<I, R> spec, StorageSubscriber<I, R> subscriber) {
+        Set<StorageSubscription> subscriptions = new HashSet<>();
         storages(spec).forEach(storage -> {
             ReportingRecordStorage<I, R> typedStorage = (ReportingRecordStorage<I, R>) storage;
             subscriptions.add(typedStorage.subscribe(subscriber));
@@ -98,7 +98,7 @@ public final class ReportingStorageFactory implements StorageFactory {
      * Saves the given {@code subscription} and returns such {@code UpdateSubscription} that will
      * remove the subscription if canceled.
      */
-    private <I, R extends Message> UpdateSubscription
+    private <I, R extends Message> StorageSubscription
     remember(ComplexSubscription<I, R> subscription) {
         String id = randomUUID().toString();
         this.subscriptions.put(id, subscription);
@@ -135,17 +135,17 @@ public final class ReportingStorageFactory implements StorageFactory {
 
         private final TypeSpec<I, R> typeSpec;
 
-        private final UpdateSubscriber<I, R> subscriber;
+        private final StorageSubscriber<I, R> subscriber;
 
-        private final Set<UpdateSubscription> subscriptions = new HashSet<>();
+        private final Set<StorageSubscription> subscriptions = new HashSet<>();
 
         /**
          * Creates a new {@code ComplexSubscription} with the given {@code typeSpec},
          * {@code subscriber}, and {@code subscriptions}.
          */
         private ComplexSubscription(TypeSpec<I, R> typeSpec,
-                                    UpdateSubscriber<I, R> subscriber,
-                                    Set<UpdateSubscription> subscriptions) {
+                                    StorageSubscriber<I, R> subscriber,
+                                    Set<StorageSubscription> subscriptions) {
             this.typeSpec = typeSpec;
             this.subscriber = subscriber;
             this.subscriptions.addAll(subscriptions);
@@ -161,7 +161,7 @@ public final class ReportingStorageFactory implements StorageFactory {
         /**
          * Returns {@code UpdateSubscriber} associated with this subscription.
          */
-        public UpdateSubscriber<I, R> subscriber() {
+        public StorageSubscriber<I, R> subscriber() {
             return subscriber;
         }
 
@@ -169,13 +169,13 @@ public final class ReportingStorageFactory implements StorageFactory {
          * Cancels all underlying subscriptions.
          */
         public void unsubscribeAll() {
-            subscriptions.forEach(UpdateSubscription::cancel);
+            subscriptions.forEach(StorageSubscription::cancel);
         }
 
         /**
          * Adds a new {@code subscription} to this complex subscription.
          */
-        public void addSubscription(UpdateSubscription subscription) {
+        public void addSubscription(StorageSubscription subscription) {
             checkNotNull(subscription);
             subscriptions.add(subscription);
         }

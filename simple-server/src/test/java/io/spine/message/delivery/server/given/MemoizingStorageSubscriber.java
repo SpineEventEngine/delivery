@@ -8,7 +8,7 @@ package io.spine.message.delivery.server.given;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Message;
-import io.spine.message.delivery.server.UpdateSubscriber;
+import io.spine.message.delivery.server.StorageSubscriber;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A subscriber that memoizes all write and delete updates sent to it.
  */
-public class MemoizingUpdateSubscriber<I, R extends Message> implements UpdateSubscriber<I, R> {
+public class MemoizingStorageSubscriber<I, R extends Message> implements StorageSubscriber<I, R> {
 
     private final List<SingleWrite<I, R>> writes = new ArrayList<>();
 

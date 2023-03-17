@@ -9,7 +9,7 @@ package io.spine.message.delivery.server;
 /**
  * Acknowledgement of the successful subscription.
  */
-public interface UpdateSubscription {
+public interface StorageSubscription {
 
     /**
      * Cancels this subscription.
