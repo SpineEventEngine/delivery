@@ -96,7 +96,7 @@ export function useShards() {
    * Subscribes to the event source on the server, and updates stored shard info according to
    * received updates.
    */
-  function startUpdateInfo() {
+  function subscribeOnShards() {
     const credentials = btoa(`${AuthService.username()}:${AuthService.password()}`);
     const authHeader = { Authorization: `Basic ${credentials}` };
     fetchEventSource(shardUpdates, {
@@ -113,7 +113,7 @@ export function useShards() {
       shards.value.set((info.index as ShardIndex).toJsonString(), info);
     });
     isLoaded.value = true;
-    startUpdateInfo();
+    subscribeOnShards();
   });
 
   return { shards, isLoaded };
