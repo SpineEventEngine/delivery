@@ -8,6 +8,7 @@ package io.spine.message.delivery.server;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.spine.base.Time;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceStub;
@@ -46,6 +47,11 @@ public abstract class WithApp {
     @AfterEach
     void shutdownApp() {
         app.shutdown();
+    }
+
+    @AfterEach
+    void resetTimeProvider() {
+        Time.resetProvider();
     }
 
     /**
