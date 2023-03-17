@@ -24,13 +24,13 @@ import "spine/server/delivery/delivery.proto";
 service AdminService {
 
     // Gets an information about shards on Liquor server.
-    rpc GetShardInfo(google.protobuf.Empty) returns(ShardInfoList);
+    rpc GetShardInfo(google.protobuf.Empty) returns (ShardInfoList);
 
     // Subscribes to the updates of shard info.
     //
     // Each update will be sent as a single `ShardInfoUpdate`.
     //
-    rpc SubscribeToShardUpdates(google.protobuf.Empty) returns(stream ShardInfoUpdate);
+    rpc SubscribeToShardUpdates(google.protobuf.Empty) returns (stream ShardInfoUpdate);
 }
 
 // An update of the shard info.
