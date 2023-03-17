@@ -84,7 +84,8 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     /**
      * Notifies all existent subscribers about the new {@code ShardInfoChange}.
      *
-     * <p>If an error occurs when trying to notify subscriber it is marked as invalid and removed from
+     * <p>If an error occurs when trying to notify subscriber it is marked as invalid and removed
+     * from
      * the subscribers list.
      */
     private void notifySubs(ShardInfoUpdate update) {
@@ -125,7 +126,8 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> observer) {
         subscribers.add(observer);
         toServerCall(observer).setOnCancelHandler(() -> subscribers.remove(observer));
-        _debug().log("Added one subscriber, current number of subscribers = %d", subscribers.size());
+        _debug().log("Added one subscriber, current number of subscribers = %d",
+                     subscribers.size());
     }
 
     /**
@@ -212,10 +214,11 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     }
 
     /**
-     * Subscriber that tracks the inbox changes and notifies subscribers of the service about these
-     * changes.
+     * Subscriber that tracks the inbox changes and notifies subscribers of the service
+     * about these changes.
      */
-    private class InboxStorageSubscriber implements StorageSubscriber<InboxMessageId, InboxMessage> {
+    private final class InboxStorageSubscriber
+            implements StorageSubscriber<InboxMessageId, InboxMessage> {
 
         @Override
         public void onWrite(InboxMessageId id, InboxMessage message) {
@@ -231,10 +234,11 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     }
 
     /**
-     * Subscriber that tracks shard changes and notifies subscribers of the service about these
-     * changes.
+     * Subscriber that tracks shard changes and notifies subscribers of the service
+     * about these changes.
      */
-    private class ShardStorageSubscriber implements StorageSubscriber<ShardIndex, ShardSessionRecord> {
+    private final class ShardStorageSubscriber
+            implements StorageSubscriber<ShardIndex, ShardSessionRecord> {
 
         @Override
         public void onWrite(ShardIndex id, ShardSessionRecord message) {
