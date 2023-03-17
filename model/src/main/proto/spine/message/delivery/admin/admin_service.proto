@@ -39,13 +39,13 @@ message ShardInfoUpdate {
     spine.server.delivery.ShardIndex index = 1 [(required) = true];
 
     // New status of the shard.
-    ShardStatus status_updated_to = 2;
+    ShardStatus new_status = 2;
 
     // New time when the shard was picked for delivery last time.
-    google.protobuf.Timestamp last_picked_updated_to = 3;
+    google.protobuf.Timestamp when_last_picked = 3;
 
     // New number of messages present in the shard.
-    int32 messages_count_updated_to = 4;
+    int32 new_messages_count = 4;
 }
 
 // A list of `ShardInfo`.

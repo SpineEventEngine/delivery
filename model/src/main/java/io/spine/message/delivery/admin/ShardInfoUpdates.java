@@ -30,8 +30,8 @@ public final class ShardInfoUpdates {
     public static ShardInfoUpdate shardPicked(ShardIndex index, Timestamp lastPicked) {
         checkNotDefaultArg(lastPicked);
         return changesFor(index)
-                .setStatusUpdatedTo(PICKED)
-                .setLastPickedUpdatedTo(lastPicked)
+                .setNewStatus(PICKED)
+                .setWhenLastPicked(lastPicked)
                 .vBuild();
     }
 
@@ -42,7 +42,7 @@ public final class ShardInfoUpdates {
     public static ShardInfoUpdate shardUnpicked(ShardIndex index) {
         checkNotDefaultArg(index);
         return changesFor(index)
-                .setStatusUpdatedTo(NOT_PICKED)
+                .setNewStatus(NOT_PICKED)
                 .vBuild();
     }
 
@@ -54,7 +54,7 @@ public final class ShardInfoUpdates {
         checkNotDefaultArg(index);
         checkArgument(count >= 0, "Messages count cannot be negative.");
         return changesFor(index)
-                .setMessagesCountUpdatedTo(count)
+                .setNewMessagesCount(count)
                 .vBuild();
     }
 

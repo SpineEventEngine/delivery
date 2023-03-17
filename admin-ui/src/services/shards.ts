@@ -81,14 +81,14 @@ export function useShards() {
    */
   function applyUpdate(update: ShardInfoUpdate) {
     const shard = getShard(update.index as ShardIndex);
-    if (update.messagesCountUpdatedTo) {
-      shard.messages = update.messagesCountUpdatedTo;
+    if (update.newMessagesCount) {
+      shard.messages = update.newMessagesCount;
     }
-    if (update.statusUpdatedTo) {
-      shard.status = update.statusUpdatedTo;
+    if (update.newStatus) {
+      shard.status = update.newStatus;
     }
-    if (update.lastPickedUpdatedTo) {
-      shard.lastPicked = update.lastPickedUpdatedTo;
+    if (update.whenLastPicked) {
+      shard.lastPicked = update.whenLastPicked;
     }
   }
 
