@@ -87,7 +87,7 @@ public abstract class WithApp {
     }
 
     /**
-     * Gets the {@code ShardSessionRegistryServiceBlockingStub} connected to the local server.
+     * Returns the {@code ShardSessionRegistryServiceBlockingStub} connected to the local server.
      */
     protected ShardSessionRegistryServiceBlockingStub
     sessionRegistry() {
@@ -95,21 +95,21 @@ public abstract class WithApp {
     }
 
     /**
-     * Gets the {@code AdminServiceBlockingStub} connected to the local server.
+     * Returns the {@code AdminServiceBlockingStub} connected to the local server.
      */
     protected AdminServiceBlockingStub adminServiceBlocking() {
         return adminServiceBlocking;
     }
 
     /**
-     * Gets the {@code AdminServiceStub} connected to the local server.
+     * Returns the {@code AdminServiceStub} connected to the local server.
      */
     protected AdminServiceStub adminService() {
         return adminService;
     }
 
     /**
-     * Gets a new {@code Client} connected to the local server.
+     * v a new {@code Client} connected to the local server.
      */
     public Client client() {
         return client;

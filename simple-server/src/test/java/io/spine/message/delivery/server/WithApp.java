@@ -83,7 +83,7 @@ public abstract class WithApp {
     }
 
     /**
-     * Gets the {@code AdminServiceStub} connected to the local server.
+     * Returns the {@code AdminServiceStub} connected to the local server.
      */
     protected AdminServiceStub adminService() {
         return adminService;
