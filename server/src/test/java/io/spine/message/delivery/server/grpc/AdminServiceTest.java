@@ -13,10 +13,10 @@ import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
 import io.spine.base.CommandMessage;
 import io.spine.base.Time;
+import io.spine.grpc.MemoizingObserver;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.server.WithApp;
-import io.spine.message.delivery.server.grpc.given.CollectingStreamObserver;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.test.message.delivery.server.Something;
@@ -24,6 +24,8 @@ import io.spine.time.testing.FrozenMadHatterParty;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
 
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
@@ -207,8 +209,8 @@ final class AdminServiceTest extends WithApp {
     /**
      * Asserts that the given observer has no error.
      */
-    private static <T> void assertHasNoError(CollectingStreamObserver<T> observer) {
-        Truth8.assertThat(observer.error())
+    private static <T> void assertHasNoError(MemoizingObserver<T> observer) {
+        Truth8.assertThat(Optional.ofNullable(observer.getError()))
               .isEmpty();
     }
 
@@ -216,16 +218,16 @@ final class AdminServiceTest extends WithApp {
      * Starts an assertion chain for updates list stored in the given {@code observer}.
      */
     private static <T extends Message>
-    IterableOfProtosFluentAssertion<T> assertUpdatesIn(CollectingStreamObserver<T> observer) {
-        return assertThat(observer.values()).comparingExpectedFieldsOnly();
+    IterableOfProtosFluentAssertion<T> assertUpdatesIn(MemoizingObserver<T> observer) {
+        return assertThat(observer.responses()).comparingExpectedFieldsOnly();
     }
 
     /**
      * Subscribes to the shard updates on the {@code AdminService} and returns an observer that
      * collects all updates for further assertions.
      */
-    private CollectingStreamObserver<ShardInfoUpdate> subscribeToUpdates() {
-        var observer = new CollectingStreamObserver<ShardInfoUpdate>();
+    private MemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
+        var observer = new MemoizingObserver<ShardInfoUpdate>();
         adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), observer);
         return observer;
     }
