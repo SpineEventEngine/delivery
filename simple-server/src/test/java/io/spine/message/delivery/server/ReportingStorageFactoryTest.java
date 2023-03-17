@@ -37,7 +37,7 @@ class ReportingStorageFactoryTest {
     }
 
     @Test
-    @DisplayName("subscribe to updates before storage creation.")
+    @DisplayName("subscribe to updates before storage creation")
     void subscribeBeforeCreation() {
         var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
@@ -54,7 +54,7 @@ class ReportingStorageFactoryTest {
     }
 
     @Test
-    @DisplayName("subscribe to updates from already created storages.")
+    @DisplayName("subscribe to updates from already created storages")
     void subscribeToAlreadyCreated() {
         var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
@@ -71,7 +71,7 @@ class ReportingStorageFactoryTest {
     }
 
     @Test
-    @DisplayName("subscribe to a storage of a particular type.")
+    @DisplayName("subscribe to a storage of a particular type")
     void subscribeByParticularStorageType() {
         var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
@@ -88,7 +88,7 @@ class ReportingStorageFactoryTest {
     }
 
     @Test
-    @DisplayName("handle unsubscribe correctly.")
+    @DisplayName("handle unsubscribe correctly")
     void unsubscribe() {
         var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
@@ -150,7 +150,7 @@ class ReportingStorageFactoryTest {
     }
 
     @Test
-    @DisplayName("handle unsubscribe of each sub individually.")
+    @DisplayName("handle unsubscribe of each sub individually")
     void unsubscribeIndividually() {
         var firstSub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
         var secondSub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
@@ -173,7 +173,7 @@ class ReportingStorageFactoryTest {
     }
 
     @Test
-    @DisplayName("subscribe to multiple storages.")
+    @DisplayName("subscribe to multiple storages")
     void subscribeToMultipleStorages() {
         var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 
@@ -192,7 +192,7 @@ class ReportingStorageFactoryTest {
     }
 
     @Test
-    @DisplayName("unsubscribe from all storages.")
+    @DisplayName("unsubscribe from all storages")
     void unsubscribeFromAllStorages() {
         var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
 

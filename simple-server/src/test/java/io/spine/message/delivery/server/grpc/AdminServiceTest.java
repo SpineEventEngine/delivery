@@ -84,7 +84,7 @@ final class AdminServiceTest extends WithApp {
     }
 
     @Test
-    @DisplayName("notify if shard picked.")
+    @DisplayName("notify if shard picked")
     void notifyPicked() {
         Timestamp time = Time.currentTime();
         Time.setProvider(new FrozenMadHatterParty(time));
@@ -102,7 +102,7 @@ final class AdminServiceTest extends WithApp {
     }
 
     @Test
-    @DisplayName("notify if shard is released.")
+    @DisplayName("notify if shard is released")
     void notifyUnpicked() {
         Timestamp time = Time.currentTime();
         Time.setProvider(new FrozenMadHatterParty(time));
