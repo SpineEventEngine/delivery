@@ -10,7 +10,7 @@ import com.google.protobuf.Message;
 
 /**
  * Subscriber that is able to receive updates on each “write” or “delete” operations in some
- * {@link  ReportingRecordStorage}.
+ * {@link ReportingRecordStorage}.
  *
  * @param <I>
  *         type of ID stored in the storage
