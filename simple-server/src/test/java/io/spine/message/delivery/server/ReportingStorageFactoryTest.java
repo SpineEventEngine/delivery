@@ -18,10 +18,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.message.delivery.server.given.StoragesTestEnv.anotherRandomId;
 import static io.spine.message.delivery.server.given.StoragesTestEnv.anotherTestEventWith;
 import static io.spine.message.delivery.server.given.StoragesTestEnv.newTestContext;
-import static io.spine.message.delivery.server.given.StoragesTestEnv.randomId;
 import static io.spine.message.delivery.server.given.StoragesTestEnv.specForAnotherTestEvent;
 import static io.spine.message.delivery.server.given.StoragesTestEnv.specForTestEvent;
 import static io.spine.message.delivery.server.given.StoragesTestEnv.testEventWith;
@@ -44,7 +42,7 @@ class ReportingStorageFactoryTest {
         factory.subscribe(TestEventId.class, TestEvent.class, sub);
         var storage = factory.createRecordStorage(newTestContext(), specForTestEvent());
 
-        TestEventId id = randomId();
+        TestEventId id = TestEventId.generate();
         TestEvent record = testEventWith(id);
 
         storage.write(id, record);
@@ -61,7 +59,7 @@ class ReportingStorageFactoryTest {
         var storage = factory.createRecordStorage(newTestContext(), specForTestEvent());
         factory.subscribe(TestEventId.class, TestEvent.class, sub);
 
-        TestEventId id = randomId();
+        TestEventId id = TestEventId.generate();
         TestEvent record = testEventWith(id);
 
         storage.write(id, record);
@@ -79,7 +77,7 @@ class ReportingStorageFactoryTest {
         // Subscription to another storage type.
         factory.subscribe(TestEventId.class, TestEvent.class, sub);
 
-        AnotherTestEventId id = anotherRandomId();
+        AnotherTestEventId id = AnotherTestEventId.generate();
         AnotherTestEvent record = anotherTestEventWith(id);
 
         storage.write(id, record);
@@ -95,7 +93,7 @@ class ReportingStorageFactoryTest {
         var storage = factory.createRecordStorage(newTestContext(), specForTestEvent());
         var subscription = factory.subscribe(TestEventId.class, TestEvent.class, sub);
 
-        TestEventId id = randomId();
+        TestEventId id = TestEventId.generate();
         TestEvent record = testEventWith(id);
 
         storage.write(id, record);
@@ -116,7 +114,7 @@ class ReportingStorageFactoryTest {
         factory.createRecordStorage(newTestContext(), specForTestEvent());
         var subscription = factory.subscribe(TestEventId.class, TestEvent.class, sub);
 
-        TestEventId id = randomId();
+        TestEventId id = TestEventId.generate();
         TestEvent record = testEventWith(id);
 
         subscription.cancel();
@@ -138,7 +136,7 @@ class ReportingStorageFactoryTest {
         factory.subscribe(TestEventId.class, TestEvent.class, firstSub);
         factory.subscribe(TestEventId.class, TestEvent.class, secondSub);
 
-        TestEventId id = randomId();
+        TestEventId id = TestEventId.generate();
         TestEvent record = testEventWith(id);
 
         storage.write(id, record);
@@ -159,7 +157,7 @@ class ReportingStorageFactoryTest {
         factory.subscribe(TestEventId.class, TestEvent.class, firstSub);
         var secondSubscription = factory.subscribe(TestEventId.class, TestEvent.class, secondSub);
 
-        TestEventId id = randomId();
+        TestEventId id = TestEventId.generate();
         TestEvent record = testEventWith(id);
 
         storage.write(id, record);
@@ -181,7 +179,7 @@ class ReportingStorageFactoryTest {
         var storage1 = factory.createRecordStorage(newTestContext(), specForTestEvent());
         var storage2 = factory.createRecordStorage(newTestContext(), specForTestEvent());
 
-        TestEventId id = randomId();
+        TestEventId id = TestEventId.generate();
         TestEvent record = testEventWith(id);
 
         storage1.write(id, record);
@@ -200,7 +198,7 @@ class ReportingStorageFactoryTest {
         var storage1 = factory.createRecordStorage(newTestContext(), specForTestEvent());
         var storage2 = factory.createRecordStorage(newTestContext(), specForTestEvent());
 
-        TestEventId id = randomId();
+        TestEventId id = TestEventId.generate();
         TestEvent record = testEventWith(id);
 
         storage1.write(id, record);
