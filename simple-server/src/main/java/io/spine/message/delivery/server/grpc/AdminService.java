@@ -25,9 +25,10 @@ import io.spine.server.delivery.ShardSessionRecord;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -52,7 +53,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     /**
      * Subscribers of the {@code AdminService}.
      */
-    private final List<StreamObserver<ShardInfoUpdate>> subscribers = new ArrayList<>();
+    private final Set<StreamObserver<ShardInfoUpdate>> subscribers = new HashSet<>();
 
     /**
      * Maps a {@code ShardIndex} to the number of messages currently available in the shard.
