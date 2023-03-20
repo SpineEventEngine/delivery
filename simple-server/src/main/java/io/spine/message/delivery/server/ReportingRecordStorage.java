@@ -13,8 +13,8 @@ import io.spine.server.storage.RecordStorage;
 import io.spine.server.storage.RecordStorageDelegate;
 import io.spine.server.storage.RecordWithColumns;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.UUID.randomUUID;
 
@@ -28,7 +28,14 @@ import static java.util.UUID.randomUUID;
  */
 public final class ReportingRecordStorage<I, R extends Message> extends RecordStorageDelegate<I, R> {
 
-    private final Map<String, StorageSubscriber<I, R>> subscriptions = new HashMap<>();
+    /**
+     * Stores subscriptions of this storage.
+     *
+     * <p>The implementation is {@code ConcurrentHashMap} to avoid
+     * the {@code ConcurrentModificationException} in cases when we iterate over the map values
+     * to notify subscribers and a new subscriber appears.
+     */
+    private final Map<String, StorageSubscriber<I, R>> subscriptions = new ConcurrentHashMap<>();
 
     /**
      * Initializes this storage with the instance to delegate the execution of operations to.
