@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.Sets.newConcurrentHashSet;
 import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 
@@ -130,7 +131,7 @@ public final class ReportingStorageFactory implements StorageFactory {
      * <p>If there is no storages for the given types returns an empty {@code Set}.
      */
     private Set<ReportingRecordStorage<?, ?>> storages(TypeSpec<?, ?> typeSpec) {
-        return storages.computeIfAbsent(typeSpec, k -> new HashSet<>());
+        return storages.computeIfAbsent(typeSpec, k -> newConcurrentHashSet());
     }
 
     /**
@@ -147,7 +148,7 @@ public final class ReportingStorageFactory implements StorageFactory {
 
         private final StorageSubscriber<I, R> subscriber;
 
-        private final Set<StorageSubscription> subscriptions = new HashSet<>();
+        private final Set<StorageSubscription> subscriptions = newConcurrentHashSet();
 
         /**
          * Creates a new {@code ComplexSubscription} with the given {@code typeSpec},
