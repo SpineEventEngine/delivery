@@ -63,8 +63,13 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
      * <p>Accumulating the number is faster than fetching it on demand, because storage doesn't
      * support {@code count} queries, so fetching basically means read all the shards and then read
      * all the messages in each shard to count the number.
+     *
+     * <p>The {@code ConcurrentHashMap} is chosen because we want to protect write operations and
+     * do not block read operations.
+     *
+     * @see #updateCount(ShardIndex, int)
      */
-    private final Map<ShardIndex, Integer> messagesInShards;
+    private final ConcurrentHashMap<ShardIndex, Integer> messagesInShards;
 
     /**
      * Creates a new {@code AdminService} with the given {@code client}.
@@ -91,7 +96,8 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
     subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> observer) {
         subscribers.add(observer);
         toServerCall(observer).setOnCancelHandler(() -> subscribers.remove(observer));
-        _debug().log("Added one subscriber, current number of subscribers = %d", subscribers.size());
+        _debug().log("Added one subscriber, current number of subscribers = %d",
+                     subscribers.size());
     }
 
     /**
@@ -120,6 +126,19 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
 
     /**
      * Updates the {@code messagesInShards} for the given {@code index} on the given {@code delta}.
+     *
+     * @implNote In the implementation we rely on the fact that the {@code merge()}
+     *         operation is atomic in the {@code ConcurrentHashMap}. If one update of the map
+     *         is in progress other updates will be postponed by the time when
+     *         the first update pass.
+     *
+     *         <p>In some rare cases if the {@code delta} is {@code -1} (message removed) and the
+     *         map doesn't contain any info about the shard with the {@code index} the count will
+     *         become {@code -1}. This means that we have events misordering and
+     *         the “MessageRemoved” update arrived earlier than the “MessageWritten”.
+     *         That's why we don't force the count to be always positive, hoping that
+     *         the “MessageWritten” will arrive shortly and will make
+     *         the state consistent — ({@code 0}).
      */
     private int updateCount(ShardIndex index, int delta) {
         return messagesInShards.merge(index, delta, Integer::sum);
@@ -140,8 +159,8 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
     /**
      * Notifies all existent subscribers about the new {@code ShardInfoChange}.
      *
-     * <p>If an error occurs when trying to notify subscriber it is marked as invalid and removed from
-     * the subscribers list.
+     * <p>If an error occurs when trying to notify subscriber it is marked as invalid and removed
+     * from the subscribers list.
      */
     private void notifySubs(ShardInfoUpdate update) {
         _debug().log("Notifying %d subscribers about update.", subscribers.size());
