@@ -10,8 +10,8 @@ import io.spine.message.delivery.server.event.TestEvent;
 import io.spine.message.delivery.server.event.TestEventId;
 import io.spine.message.delivery.server.given.MemoizingStorageSubscriber;
 import io.spine.message.delivery.server.given.MemoizingStorageSubscriber.SingleWrite;
-import io.spine.message.delivery.server.given.MultipleResponsibilityStorage;
-import io.spine.message.delivery.server.given.SingleResponsibilityStorage;
+import io.spine.message.delivery.server.given.DirectCallStorage;
+import io.spine.message.delivery.server.given.ChainingCallStorage;
 import io.spine.server.storage.RecordWithColumns;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +31,7 @@ final class ReportingRecordStorageTest {
     @DisplayName("handle `unsubscribe` of the subscription properly")
     void unsubscribe() {
         var underTest =
-                new ReportingRecordStorage<>(newTestContext(), new SingleResponsibilityStorage());
+                new ReportingRecordStorage<>(newTestContext(), new ChainingCallStorage());
         var subscriber = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
         var subscription = underTest.subscribe(subscriber);
 
@@ -52,14 +52,14 @@ final class ReportingRecordStorageTest {
 
     @Nested
     @DisplayName("if storage methods delegate to each other")
-    class WithSingleResponsibilityStorage {
+    class WithChainingCallStorage {
 
         private ReportingRecordStorage<TestEventId, TestEvent> underTest;
 
         @BeforeEach
         void setup() {
             underTest = new ReportingRecordStorage<>(
-                    newTestContext(), new SingleResponsibilityStorage()
+                    newTestContext(), new ChainingCallStorage()
             );
         }
 
@@ -422,14 +422,14 @@ final class ReportingRecordStorageTest {
 
     @Nested
     @DisplayName("if storage methods doesn't delegate to each other")
-    class WithMultipleResponsibilityStorage {
+    class WithDirectCallStorage {
 
         private ReportingRecordStorage<TestEventId, TestEvent> underTest;
 
         @BeforeEach
         void setup() {
             underTest = new ReportingRecordStorage<>(
-                    newTestContext(), new MultipleResponsibilityStorage()
+                    newTestContext(), new DirectCallStorage()
             );
         }
 

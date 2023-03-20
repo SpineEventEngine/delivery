@@ -23,17 +23,21 @@ import static io.spine.message.delivery.server.given.StoragesTestEnv.newTestCont
 import static io.spine.message.delivery.server.given.StoragesTestEnv.specForTestEvent;
 
 /**
- * In memory storage that implemented in the way where each method responsible for saving or
- * deleting data and never delegates this work to another method of this storage.
+ * In-memory storage that implemented in the way where all methods delegate their work to other
+ * methods of this class, and only {@code writeRecord()} and {@code deleteRecord()} do the actual
+ * saving to the underlying storage.
  *
- * @see SingleResponsibilityStorage
+ * @see DirectCallStorage
  */
 @VisibleForTesting
-public final class MultipleResponsibilityStorage extends RecordStorage<TestEventId, TestEvent> {
+public final class ChainingCallStorage extends RecordStorage<TestEventId, TestEvent> {
 
     private final Map<TestEventId, TestEvent> store = new HashMap<>();
 
-    public MultipleResponsibilityStorage() {
+    /**
+     * Creates the new storage instance.
+     */
+    public ChainingCallStorage() {
         super(newTestContext(), specForTestEvent());
     }
 
@@ -62,7 +66,7 @@ public final class MultipleResponsibilityStorage extends RecordStorage<TestEvent
     @Override
     public void
     writeAllRecords(Iterable<? extends RecordWithColumns<TestEventId, TestEvent>> records) {
-        records.forEach(record -> store.put(record.id(), record.record()));
+        records.forEach(this::writeRecord);
     }
 
     @CanIgnoreReturnValue
@@ -74,28 +78,27 @@ public final class MultipleResponsibilityStorage extends RecordStorage<TestEvent
 
     @Override
     public void write(TestEventId id, TestEvent record) {
-        store.put(id, record);
+        writeRecord(RecordWithColumns.of(id, record));
     }
 
     @Override
     public void write(RecordWithColumns<TestEventId, TestEvent> record) {
-        store.put(record.id(), record.record());
+        writeRecord(record);
     }
 
     @Override
     public void writeAll(Iterable<? extends RecordWithColumns<TestEventId, TestEvent>> records) {
-        records.forEach(record -> store.put(record.id(), record.record()));
+        records.forEach(this::write);
     }
 
     @CanIgnoreReturnValue
     @Override
     protected boolean delete(TestEventId id) {
-        return Optional.ofNullable(store.remove(id))
-                       .isPresent();
+        return deleteRecord(id);
     }
 
     @Override
     protected void deleteAll(Iterable<TestEventId> ids) {
-        ids.forEach(store::remove);
+        ids.forEach(this::delete);
     }
 }

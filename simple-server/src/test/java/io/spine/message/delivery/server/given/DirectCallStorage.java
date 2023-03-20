@@ -23,21 +23,17 @@ import static io.spine.message.delivery.server.given.StoragesTestEnv.newTestCont
 import static io.spine.message.delivery.server.given.StoragesTestEnv.specForTestEvent;
 
 /**
- * In memory storage that implemented in the way where all methods delegate their work to other
- * methods of this class, and only {@code writeRecord()} and {@code deleteRecord()} are responsible
- * for actual write or delete operation.
+ * In-memory storage that implemented in the way where each method saves the data directly to the
+ * underlying storage.
  *
- * @see MultipleResponsibilityStorage
+ * @see ChainingCallStorage
  */
 @VisibleForTesting
-public final class SingleResponsibilityStorage extends RecordStorage<TestEventId, TestEvent> {
+public final class DirectCallStorage extends RecordStorage<TestEventId, TestEvent> {
 
     private final Map<TestEventId, TestEvent> store = new HashMap<>();
 
-    /**
-     * Creates the new storage instance.
-     */
-    public SingleResponsibilityStorage() {
+    public DirectCallStorage() {
         super(newTestContext(), specForTestEvent());
     }
 
@@ -66,7 +62,7 @@ public final class SingleResponsibilityStorage extends RecordStorage<TestEventId
     @Override
     public void
     writeAllRecords(Iterable<? extends RecordWithColumns<TestEventId, TestEvent>> records) {
-        records.forEach(this::writeRecord);
+        records.forEach(record -> store.put(record.id(), record.record()));
     }
 
     @CanIgnoreReturnValue
@@ -78,27 +74,28 @@ public final class SingleResponsibilityStorage extends RecordStorage<TestEventId
 
     @Override
     public void write(TestEventId id, TestEvent record) {
-        writeRecord(RecordWithColumns.of(id, record));
+        store.put(id, record);
     }
 
     @Override
     public void write(RecordWithColumns<TestEventId, TestEvent> record) {
-        writeRecord(record);
+        store.put(record.id(), record.record());
     }
 
     @Override
     public void writeAll(Iterable<? extends RecordWithColumns<TestEventId, TestEvent>> records) {
-        records.forEach(this::write);
+        records.forEach(record -> store.put(record.id(), record.record()));
     }
 
     @CanIgnoreReturnValue
     @Override
     protected boolean delete(TestEventId id) {
-        return deleteRecord(id);
+        return Optional.ofNullable(store.remove(id))
+                       .isPresent();
     }
 
     @Override
     protected void deleteAll(Iterable<TestEventId> ids) {
-        ids.forEach(this::delete);
+        ids.forEach(store::remove);
     }
 }
