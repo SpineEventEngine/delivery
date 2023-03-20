@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`SessionRegistryService` should")
@@ -78,7 +79,7 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setWorker(worker)
                 .vBuild();
         sessionRegistry().pickShard(pickShard);
-        Uninterruptibles.sleepUninterruptibly(10, TimeUnit.SECONDS);
+        sleepUninterruptibly(2, TimeUnit.SECONDS);
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
@@ -101,7 +102,7 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setWorker(worker)
                 .vBuild();
         sessionRegistry().pickShard(pickShard);
-        Uninterruptibles.sleepUninterruptibly(10, TimeUnit.SECONDS);
+        sleepUninterruptibly(2, TimeUnit.SECONDS);
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();

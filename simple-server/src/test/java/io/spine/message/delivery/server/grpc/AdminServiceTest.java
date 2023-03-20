@@ -51,7 +51,7 @@ import static java.time.Duration.ofSeconds;
 @DisplayName("`AdminService` should")
 final class AdminServiceTest extends WithApp {
 
-    private static final int SLEEP_SECONDS = 5;
+    private static final int SLEEP_SECONDS = 2;
 
     @Test
     @DisplayName("get current information about shards")
