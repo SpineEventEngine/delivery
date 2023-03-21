@@ -83,7 +83,7 @@ final class AdminController {
      */
     private static <T> T
     withGrpcContext(Function<Context.CancellableContext, T> call) throws Exception {
-        @SuppressWarnings("resource") // Cannot close context before the call we be completed.
+        @SuppressWarnings("resource") // Cannot close context before the call well be completed.
         var context = Context
                 .current()
                 .withCancellation();
