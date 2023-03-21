@@ -214,10 +214,14 @@ final class AdminServiceTest extends WithApp {
     /**
      * Subscribes to the shard updates on the {@code AdminService} and returns an observer that
      * collects all updates for further assertions.
+     *
+     * <p>Also waits for {@link #SLEEP_SECONDS} to ensure that the subscription is created
+     * on the server.
      */
     private MemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
         var observer = new MemoizingObserver<ShardInfoUpdate>();
         adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), observer);
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         return observer;
     }
 }
