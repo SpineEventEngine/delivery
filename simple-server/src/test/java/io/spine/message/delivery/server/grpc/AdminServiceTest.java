@@ -10,8 +10,6 @@ import com.google.common.truth.Truth8;
 import com.google.common.truth.extensions.proto.IterableOfProtosFluentAssertion;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-import com.google.protobuf.Timestamp;
-import io.spine.base.Time;
 import io.spine.grpc.MemoizingObserver;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.command.PickUpShard;
@@ -19,7 +17,6 @@ import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.test.message.delivery.server.Something;
-import io.spine.time.testing.FrozenMadHatterParty;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +27,6 @@ import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.messagesCountChangedTo;
-import static io.spine.message.delivery.admin.ShardInfoUpdates.shardPicked;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.shardUnpicked;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
@@ -42,6 +38,7 @@ import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.re
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.removeMessages;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.request;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.shardInfo;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.shardPickedWithoutTime;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.testMessage;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.writeMessage;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.writeMessages;
@@ -86,15 +83,12 @@ final class AdminServiceTest extends WithApp {
     @Test
     @DisplayName("notify if shard picked")
     void notifyPicked() {
-        Timestamp time = Time.currentTime();
-        Time.setProvider(new FrozenMadHatterParty(time));
-
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
 
         syncShardService().pickShard(pickUpShard(index));
 
-        ShardInfoUpdate expected = shardPicked(index, time);
+        ShardInfoUpdate expected = shardPickedWithoutTime(index);
 
         sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
@@ -104,9 +98,6 @@ final class AdminServiceTest extends WithApp {
     @Test
     @DisplayName("notify if shard is released")
     void notifyUnpicked() {
-        Timestamp time = Time.currentTime();
-        Time.setProvider(new FrozenMadHatterParty(time));
-
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
 
@@ -114,7 +105,7 @@ final class AdminServiceTest extends WithApp {
         ShardPickedUp pickedUp = syncShardService().pickShard(pickUpShard);
         syncShardService().releaseSession(releaseShard(pickedUp));
 
-        ShardInfoUpdate pickedUpdate = shardPicked(index, time);
+        ShardInfoUpdate pickedUpdate = shardPickedWithoutTime(index);
         ShardInfoUpdate unpickedUpdate = shardUnpicked(index);
 
         sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));

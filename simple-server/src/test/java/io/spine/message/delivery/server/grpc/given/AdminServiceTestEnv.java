@@ -15,6 +15,7 @@ import io.spine.core.EventContext;
 import io.spine.core.EventId;
 import io.spine.core.Version;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
+import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.admin.grpc.ShardStatus;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseShard;
@@ -39,6 +40,7 @@ import io.spine.server.delivery.WorkerId;
 import java.util.List;
 import java.util.UUID;
 
+import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 import static io.spine.server.delivery.InboxMessageMixin.generateIdWith;
 
 /**
@@ -207,6 +209,24 @@ public final class AdminServiceTestEnv {
      */
     public static Empty request() {
         return Empty.getDefaultInstance();
+    }
+
+    /**
+     * Create a new {@code ShardInfoUpdate} indicating that the shard with the given {@code index}
+     * is picked.
+     *
+     * <p>Does not set the {@code whenLastPicked} field.
+     *
+     * @implNote Even though the {@code whenLastPicked} field is not required by definition
+     *         and {@code vBuild()} would work as well, we use {@code buildPartial()} to indicate
+     *         that the object create with such parameters is not complete.
+     */
+    public static ShardInfoUpdate shardPickedWithoutTime(ShardIndex index) {
+        return ShardInfoUpdate
+                .newBuilder()
+                .setIndex(index)
+                .setNewStatus(PICKED)
+                .buildPartial();
     }
 
     /**
