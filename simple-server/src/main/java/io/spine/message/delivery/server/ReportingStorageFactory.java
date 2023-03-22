@@ -13,12 +13,12 @@ import io.spine.server.storage.StorageFactory;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newConcurrentHashSet;
-import static java.util.Optional.ofNullable;
 import static java.util.UUID.randomUUID;
 
 /**
@@ -113,8 +113,10 @@ public final class ReportingStorageFactory implements StorageFactory {
     remember(ComplexSubscription<I, R> subscription) {
         String id = randomUUID().toString();
         this.subscriptions.put(id, subscription);
-        return () -> ofNullable(this.subscriptions.remove(id))
+        StorageSubscription storageSubscription = () -> Optional
+                .ofNullable(this.subscriptions.remove(id))
                 .ifPresent(ComplexSubscription::unsubscribeAll);
+        return storageSubscription;
     }
 
     /**
