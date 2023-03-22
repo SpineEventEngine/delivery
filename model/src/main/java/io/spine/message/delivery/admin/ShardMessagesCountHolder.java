@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @ThreadSafe
 public final class ShardMessagesCountHolder implements Logging {
 
-    private final Map<ShardIndex, Integer> messagesInShards;
+    private final ConcurrentHashMap<ShardIndex, Integer> messagesInShards;
 
     /**
      * Creates a new {@code ShardMessagesHolder}.
