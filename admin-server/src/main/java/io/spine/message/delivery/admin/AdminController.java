@@ -41,6 +41,7 @@ final class AdminController {
      * some input parameters anyway.
      */
     private static final Empty REQUEST = Empty.getDefaultInstance();
+
     private final AdminServiceBlockingStub adminService;
 
     @Inject
