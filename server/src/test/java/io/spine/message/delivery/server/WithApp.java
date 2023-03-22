@@ -109,7 +109,7 @@ public abstract class WithApp {
     }
 
     /**
-     * v a new {@code Client} connected to the local server.
+     * Returns a new {@code Client} connected to the local server.
      */
     public Client client() {
         return client;
