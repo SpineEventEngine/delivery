@@ -54,14 +54,16 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
      *
      * <p>We use {@code newConcurrentHashSet()} to avoid {@code ConcurrentModificationException}
      * in cases when we are iterating over the set to notify subscribers and a new subscriber
-     * arrives and the neighbor thread modifies the collection. Also, it's possible that one thread
-     * iterates over the set to notify subscribers and one subscriber is being closed at this moment
-     * and removed from the collection. In the last scenario if we started to iterate over
-     * the collection before the subscriber is closed and removed most probably we will get
-     * the closed subscriber during the iteration and will try to notify it. But this will not lead
-     * to a problem because the {@link #notifySubs(ShardInfoUpdate)} handles invalid subscribers
-     * removing them from the collection, which is not a problem also, even if we will try
-     * to remove an already removed element.
+     * arrives and the neighbor thread modifies the collection.
+     *
+     * <p>It's possible that one thread iterates over the set to notify subscribers and
+     * one subscriber is being closed at this moment and removed from the collection.
+     * In this scenario if we started to iterate over the collection before the subscriber
+     * is closed and removed most probably we will get the closed subscriber during the iteration
+     * and will try to notify it. But this will not lead to a problem because
+     * the {@link #notifySubs(ShardInfoUpdate)} handles invalid subscribers removing them from
+     * the collection, which is not a problem also, even if we will try to remove an already
+     * removed element.
      */
     private final Set<StreamObserver<ShardInfoUpdate>> subscribers = newConcurrentHashSet();
 
