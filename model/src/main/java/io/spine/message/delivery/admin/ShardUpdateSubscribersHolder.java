@@ -36,7 +36,7 @@ import static com.google.common.collect.Sets.newConcurrentHashSet;
  * removed element.
  */
 @ThreadSafe
-public class ShardUpdateSubscribersHolder implements Logging {
+public final class ShardUpdateSubscribersHolder implements Logging {
 
     private final Set<StreamObserver<ShardInfoUpdate>> subscribers = newConcurrentHashSet();
 
