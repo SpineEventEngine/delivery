@@ -10,6 +10,7 @@ import com.google.protobuf.Empty;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.spine.logging.Logging;
+import io.spine.message.delivery.admin.ShardUpdateSubscribersHolder;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
@@ -23,11 +24,9 @@ import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardSessionRecord;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -50,23 +49,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
 
     private final ShardRegistryStorage shardStorage;
 
-    /**
-     * Subscribers of the {@code AdminService}.
-     *
-     * <p>We use {@code newConcurrentHashSet()} to avoid {@code ConcurrentModificationException}
-     * in cases when we are iterating over the set to notify subscribers and a new subscriber
-     * arrives and the neighbor thread modifies the collection.
-     *
-     * <p>It's possible that one thread iterates over the set to notify subscribers and
-     * one subscriber is being closed at this moment and removed from the collection.
-     * In this scenario if we started to iterate over the collection before the subscriber
-     * is closed and removed most probably we will get the closed subscriber during the iteration
-     * and will try to notify it. But this will not lead to a problem because
-     * the {@link #notifySubs(ShardInfoUpdate)} handles invalid subscribers removing them from
-     * the collection, which is not a problem also, even if we will try to remove an already
-     * removed element.
-     */
-    private final Set<StreamObserver<ShardInfoUpdate>> subscribers = newConcurrentHashSet();
+    private final ShardUpdateSubscribersHolder subscribers = new ShardUpdateSubscribersHolder();
 
     /**
      * Maps a {@code ShardIndex} to the number of messages currently available in the shard.
@@ -98,28 +81,6 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     private void setupSubscribers(ReportingStorageFactory factory) {
         factory.subscribe(ShardIndex.class, ShardSessionRecord.class, new ShardStorageSubscriber());
         factory.subscribe(InboxMessageId.class, InboxMessage.class, new InboxStorageSubscriber());
-    }
-
-    /**
-     * Notifies all existent subscribers about the new {@code ShardInfoChange}.
-     *
-     * <p>If an error occurs when trying to notify subscriber it is marked as invalid and removed
-     * from the subscribers list.
-     */
-    private void notifySubs(ShardInfoUpdate update) {
-        _debug().log("Notifying %d subscribers about update.", subscribers.size());
-        var invalidSubs = new ArrayList<StreamObserver<ShardInfoUpdate>>();
-        for (var sub : subscribers) {
-            try {
-                sub.onNext(update);
-            } catch (RuntimeException e) {
-                _debug().withCause(e)
-                        .log("Got exception, subscriber will be removed.");
-                invalidSubs.add(sub);
-                sub.onError(e);
-            }
-        }
-        invalidSubs.forEach(subscribers::remove);
     }
 
     /**
@@ -155,10 +116,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     @Override
     public void
     subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> observer) {
-        subscribers.add(observer);
-        toServerCall(observer).setOnCancelHandler(() -> subscribers.remove(observer));
-        _debug().log("Added one subscriber, current number of subscribers = %d",
-                     subscribers.size());
+        subscribers.addSubscriber(observer);
     }
 
     /**
@@ -254,13 +212,13 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         @Override
         public void onWrite(InboxMessageId id, InboxMessage message) {
             ShardIndex index = id.getIndex();
-            notifySubs(messagesCountChangedTo(index, updateCount(index, 1)));
+            subscribers.notifySubs(messagesCountChangedTo(index, updateCount(index, 1)));
         }
 
         @Override
         public void onDelete(InboxMessageId id) {
             ShardIndex index = id.getIndex();
-            notifySubs(messagesCountChangedTo(index, updateCount(index, -1)));
+            subscribers.notifySubs(messagesCountChangedTo(index, updateCount(index, -1)));
         }
     }
 
@@ -276,7 +234,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
             ShardInfoUpdate update = message.hasWorker() ?
                                      shardPicked(id, message.getWhenLastPicked()) :
                                      shardUnpicked(id);
-            notifySubs(update);
+            subscribers.notifySubs(update);
         }
 
         @Override

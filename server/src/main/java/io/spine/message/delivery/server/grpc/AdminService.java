@@ -9,7 +9,6 @@ package io.spine.message.delivery.server.grpc;
 import com.google.common.collect.ImmutableList;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Empty;
-import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.spine.base.EventMessage;
 import io.spine.client.Client;
@@ -17,6 +16,7 @@ import io.spine.client.Subscription;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.CurrentShardState;
 import io.spine.message.delivery.InboxMessageHolder;
+import io.spine.message.delivery.admin.ShardUpdateSubscribersHolder;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
@@ -27,15 +27,12 @@ import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
 import io.spine.server.delivery.ShardIndex;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.Sets.newConcurrentHashSet;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.messagesCountChangedTo;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.shardPicked;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.shardUnpicked;
@@ -49,23 +46,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
 
     private final Client client;
 
-    /**
-     * Subscribers of the {@code AdminService}.
-     *
-     * <p>We use {@code newConcurrentHashSet()} to avoid {@code ConcurrentModificationException}
-     * in cases when we are iterating over the set to notify subscribers and a new subscriber
-     * arrives and the neighbor thread modifies the collection.
-     *
-     * <p>It's possible that one thread iterates over the set to notify subscribers and
-     * one subscriber is being closed at this moment and removed from the collection.
-     * In this scenario if we started to iterate over the collection before the subscriber
-     * is closed and removed most probably we will get the closed subscriber during the iteration
-     * and will try to notify it. But this will not lead to a problem because
-     * the {@link #notifySubs(ShardInfoUpdate)} handles invalid subscribers removing them from
-     * the collection, which is not a problem also, even if we will try to remove an already
-     * removed element.
-     */
-    private final Set<StreamObserver<ShardInfoUpdate>> subscribers = newConcurrentHashSet();
+    private final ShardUpdateSubscribersHolder subscribers = new ShardUpdateSubscribersHolder();
 
     /**
      * Maps a {@code ShardIndex} to the number of messages currently available in the shard.
@@ -107,10 +88,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
     @Override
     public void
     subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> observer) {
-        subscribers.add(observer);
-        toServerCall(observer).setOnCancelHandler(() -> subscribers.remove(observer));
-        _debug().log("Added one subscriber, current number of subscribers = %d",
-                     subscribers.size());
+        subscribers.addSubscriber(observer);
     }
 
     /**
@@ -121,19 +99,20 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
      */
     private void setupEventListener() {
         on(ShardPickedUp.class, pickedUp ->
-                notifySubs(shardPicked(pickedUp.getShard(), pickedUp.getWhenPicked())));
-        on(ShardReleased.class, released -> notifySubs(shardUnpicked(released.getShard())));
+                subscribers.notifySubs(shardPicked(pickedUp.getShard(), pickedUp.getWhenPicked())));
+        on(ShardReleased.class, released ->
+                subscribers.notifySubs(shardUnpicked(released.getShard())));
         on(MessageWritten.class, written -> {
             ShardIndex index = written
                     .getMessage()
                     .shardIndex();
-            notifySubs(messagesCountChangedTo(index, updateCount(index, 1)));
+            subscribers.notifySubs(messagesCountChangedTo(index, updateCount(index, 1)));
         });
         on(MessageRemoved.class, removed -> {
             ShardIndex index = removed
                     .getMessage()
                     .shardIndex();
-            notifySubs(messagesCountChangedTo(index, updateCount(index, -1)));
+            subscribers.notifySubs(messagesCountChangedTo(index, updateCount(index, -1)));
         });
     }
 
@@ -167,28 +146,6 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
                 .subscribeToEvent(event)
                 .observe(handler)
                 .post();
-    }
-
-    /**
-     * Notifies all existent subscribers about the new {@code ShardInfoChange}.
-     *
-     * <p>If an error occurs when trying to notify subscriber it is marked as invalid and removed
-     * from the subscribers list.
-     */
-    private void notifySubs(ShardInfoUpdate update) {
-        _debug().log("Notifying %d subscribers about update.", subscribers.size());
-        var invalidSubs = new ArrayList<StreamObserver<ShardInfoUpdate>>();
-        for (var sub : subscribers) {
-            try {
-                sub.onNext(update);
-            } catch (RuntimeException e) {
-                _debug().withCause(e)
-                        .log("Got exception, subscriber will be removed.");
-                invalidSubs.add(sub);
-                sub.onError(e);
-            }
-        }
-        invalidSubs.forEach(subscribers::remove);
     }
 
     /**
@@ -266,17 +223,5 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
                 .setStatus(NOT_PICKED)
                 .setMessages(messagesCount)
                 .vBuild();
-    }
-
-    /**
-     * Casts the given {@code observer} to the {@code ServerCallStreamObserver}.
-     *
-     * <p>According to the {@link ServerCallStreamObserver} docs it's safe to cast
-     * {@code StreamObserver} to {@code ServerCallStreamObserver} in server side implementation
-     * of the service.
-     */
-    private static ServerCallStreamObserver<ShardInfoUpdate>
-    toServerCall(StreamObserver<ShardInfoUpdate> observer) {
-        return (ServerCallStreamObserver<ShardInfoUpdate>) observer;
     }
 }
