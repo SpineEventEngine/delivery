@@ -16,6 +16,7 @@ import io.spine.client.Subscription;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.CurrentShardState;
 import io.spine.message.delivery.InboxMessageHolder;
+import io.spine.message.delivery.admin.ShardMessagesCountHolder;
 import io.spine.message.delivery.admin.ShardUpdateSubscribersHolder;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
@@ -29,7 +30,6 @@ import io.spine.server.delivery.ShardIndex;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -48,22 +48,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
 
     private final ShardUpdateSubscribersHolder subscribers = new ShardUpdateSubscribersHolder();
 
-    /**
-     * Maps a {@code ShardIndex} to the number of messages currently available in the shard.
-     *
-     * <p>This field is created to provide the info about each shard. The information
-     * updated using subscriptions that notify the service about changes in shards.
-     *
-     * <p>Accumulating the number is faster than fetching it on demand, because storage doesn't
-     * support {@code count} queries, so fetching basically means read all the shards and then read
-     * all the messages in each shard to count the number.
-     *
-     * <p>The {@code ConcurrentHashMap} is chosen because we want to protect write operations and
-     * do not block read operations.
-     *
-     * @see #updateCount(ShardIndex, int)
-     */
-    private final ConcurrentHashMap<ShardIndex, Integer> messagesInShards;
+    private final ShardMessagesCountHolder messagesCount;
 
     /**
      * Creates a new {@code AdminService} with the given {@code client}.
@@ -72,7 +57,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
         super();
         this.client = checkNotNull(client);
         setupEventListener();
-        messagesInShards = new ConcurrentHashMap<>(messagesInShards());
+        messagesCount = new ShardMessagesCountHolder(messagesInShards());
     }
 
     @Override
@@ -106,34 +91,16 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
             ShardIndex index = written
                     .getMessage()
                     .shardIndex();
-            subscribers.notifySubs(messagesCountChangedTo(index, updateCount(index, 1)));
+            var update = messagesCountChangedTo(index, messagesCount.updateCount(index, 1));
+            subscribers.notifySubs(update);
         });
         on(MessageRemoved.class, removed -> {
             ShardIndex index = removed
                     .getMessage()
                     .shardIndex();
-            subscribers.notifySubs(messagesCountChangedTo(index, updateCount(index, -1)));
+            var update = messagesCountChangedTo(index, messagesCount.updateCount(index, -1));
+            subscribers.notifySubs(update);
         });
-    }
-
-    /**
-     * Updates the {@code messagesInShards} for the given {@code index} on the given {@code delta}.
-     *
-     * @implNote In the implementation we rely on the fact that the {@code merge()}
-     *         operation is atomic in the {@code ConcurrentHashMap}. If one update of the map
-     *         is in progress other updates will be postponed by the time when
-     *         the first update pass.
-     *
-     *         <p>In some rare cases if the {@code delta} is {@code -1} (message removed) and the
-     *         map doesn't contain any info about the shard with the {@code index} the count will
-     *         become {@code -1}. This means that we have events misordering and
-     *         the “MessageRemoved” update arrived earlier than the “MessageWritten”.
-     *         That's why we don't force the count to be always positive, hoping that
-     *         the “MessageWritten” will arrive shortly and will make
-     *         the state consistent — ({@code 0}).
-     */
-    private int updateCount(ShardIndex index, int delta) {
-        return messagesInShards.merge(index, delta, Integer::sum);
     }
 
     /**
@@ -152,7 +119,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
      * Fetches information about all shards.
      */
     private ShardInfoList fetch() {
-        Map<ShardIndex, Integer> messagesCount = new HashMap<>(messagesInShards);
+        Map<ShardIndex, Integer> messagesCount = this.messagesCount.toMutableMap();
         var shards = readShards();
         var shardListBuilder = ShardInfoList.newBuilder();
         shards.forEach(shard -> {
