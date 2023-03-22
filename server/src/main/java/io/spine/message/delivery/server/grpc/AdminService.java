@@ -114,7 +114,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
     }
 
     /**
-     * Setups event listeners for Shard-related events to track shard status changes.
+     * Sets up event listeners for Shard-related events to track shard status changes.
      *
      * @implNote We are not preserving {@code Subscription}s returned by the {@code on()}
      *         method because there is no need to unsubscribe until the app shut down.
