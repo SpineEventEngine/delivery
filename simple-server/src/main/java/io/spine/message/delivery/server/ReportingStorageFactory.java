@@ -40,7 +40,7 @@ public final class ReportingStorageFactory implements StorageFactory {
      *
      * <p>This is done to add already existent subscriptions to a newly created storages.
      */
-    private final Map<String, ComplexSubscription<?, ?>> subscriptions = new ConcurrentHashMap<>();
+    private final Map<String, CompositeSubscription<?, ?>> subscriptions = new ConcurrentHashMap<>();
 
     public ReportingStorageFactory(StorageFactory delegate) {
         this.delegate = delegate;
@@ -67,7 +67,7 @@ public final class ReportingStorageFactory implements StorageFactory {
                 .values()
                 .stream()
                 .filter(s -> typeSpec.equals(s.typeSpec()))
-                .map(s -> (ComplexSubscription<I, R>) s)
+                .map(s -> (CompositeSubscription<I, R>) s)
                 .forEach(s -> s.addSubscription(storage.subscribe(s.subscriber())));
     }
 
@@ -88,7 +88,7 @@ public final class ReportingStorageFactory implements StorageFactory {
     subscribe(Class<I> idType, Class<R> recordType, StorageSubscriber<I, R> subscriber) {
         TypeSpec<I, R> typeSpec = new TypeSpec<>(idType, recordType);
         var subscriptions = subscribeOnExistentStorages(typeSpec, subscriber);
-        return remember(new ComplexSubscription<>(typeSpec, subscriber, subscriptions));
+        return remember(new CompositeSubscription<>(typeSpec, subscriber, subscriptions));
     }
 
     /**
@@ -110,12 +110,12 @@ public final class ReportingStorageFactory implements StorageFactory {
      * remove the subscription if canceled.
      */
     private <I, R extends Message> StorageSubscription
-    remember(ComplexSubscription<I, R> subscription) {
+    remember(CompositeSubscription<I, R> subscription) {
         String id = randomUUID().toString();
         this.subscriptions.put(id, subscription);
         StorageSubscription storageSubscription = () -> Optional
                 .ofNullable(this.subscriptions.remove(id))
-                .ifPresent(ComplexSubscription::unsubscribeAll);
+                .ifPresent(CompositeSubscription::unsubscribeAll);
         return storageSubscription;
     }
 
@@ -139,12 +139,21 @@ public final class ReportingStorageFactory implements StorageFactory {
     /**
      * Subscription for multiple storages of the same type.
      *
+     * <p>Holds and manages several subscriptions to a different storage instances
+     * of the same {@code ID} and {@code Record} types.
+     *
+     * <p>Since the factory allows to subscribe to stored types instead of particular
+     * storage it's possible that the factory will create several storages managing the same types
+     * of records. The factory then have to manage subscriptions of all storages of the same type.
+     * That's why this class represents a “subscription” that points to several subscriptions,
+     * for different storage each.
+     *
      * @param <I>
      *         the type of the record identifiers
      * @param <R>
      *         the type of the message records
      */
-    private static final class ComplexSubscription<I, R extends Message> {
+    private static final class CompositeSubscription<I, R extends Message> {
 
         private final TypeSpec<I, R> typeSpec;
 
@@ -156,9 +165,9 @@ public final class ReportingStorageFactory implements StorageFactory {
          * Creates a new {@code ComplexSubscription} with the given {@code typeSpec},
          * {@code subscriber}, and {@code subscriptions}.
          */
-        private ComplexSubscription(TypeSpec<I, R> typeSpec,
-                                    StorageSubscriber<I, R> subscriber,
-                                    Set<StorageSubscription> subscriptions) {
+        private CompositeSubscription(TypeSpec<I, R> typeSpec,
+                                      StorageSubscriber<I, R> subscriber,
+                                      Set<StorageSubscription> subscriptions) {
             this.typeSpec = typeSpec;
             this.subscriber = subscriber;
             this.subscriptions.addAll(subscriptions);
