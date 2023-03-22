@@ -42,9 +42,12 @@ public final class ShardUpdateSubscribersHolder implements Logging {
 
     public void addSubscriber(StreamObserver<ShardInfoUpdate> subscriber) {
         subscribers.add(subscriber);
-        toServerCall(subscriber).setOnCancelHandler(() -> subscribers.remove(subscriber));
-        _debug().log("Added one subscriber, current number of subscribers = %d",
-                     subscribers.size());
+        _debug().log("Added one subscriber [%d], current number of subscribers = %d",
+                     subscriber.hashCode(), subscribers.size());
+        toServerCall(subscriber).setOnCancelHandler(() -> {
+            _debug().log("Subscriber [%d] closed. Removing.", subscriber.hashCode());
+            subscribers.remove(subscriber);
+        });
     }
 
     /**
@@ -61,7 +64,8 @@ public final class ShardUpdateSubscribersHolder implements Logging {
                 sub.onNext(update);
             } catch (RuntimeException e) {
                 _debug().withCause(e)
-                        .log("Error notifying the subscriber; it will be removed.");
+                        .log("Error notifying the subscriber [%d]; it will be removed.",
+                             sub.hashCode());
                 invalidSubs.add(sub);
                 sub.onError(e);
             }
