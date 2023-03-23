@@ -13,16 +13,16 @@ import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.ArrayList;
-import java.util.Set;
-
-import static com.google.common.collect.Sets.newConcurrentHashSet;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Collection of the {@code StreamObserver} for {@code ShardInfoUpdate}.
  *
  * <p>Holds and manges several {@code StreamObserver<ShardInfoUpdate>} in a thread-safe manner.
  *
- * <p>We use {@code newConcurrentHashSet()} to avoid {@code ConcurrentModificationException}
+ * <p>We use {@code ConcurrentHashMap} to avoid {@code ConcurrentModificationException}
  * in cases when we are iterating over the set to notify subscribers and a new subscriber
  * arrives and the neighbor thread modifies the collection.
  *
@@ -38,15 +38,18 @@ import static com.google.common.collect.Sets.newConcurrentHashSet;
 @ThreadSafe
 public final class ShardUpdateSubscribersHolder implements Logging {
 
-    private final Set<StreamObserver<ShardInfoUpdate>> subscribers = newConcurrentHashSet();
+    private final ConcurrentHashMap<String, StreamObserver<ShardInfoUpdate>> subscribers =
+            new ConcurrentHashMap<>();
 
     public void addSubscriber(StreamObserver<ShardInfoUpdate> subscriber) {
-        subscribers.add(subscriber);
-        _debug().log("Added one subscriber [%d], current number of subscribers = %d",
-                     subscriber.hashCode(), subscribers.size());
+        String uuid = UUID.randomUUID()
+                          .toString();
+        subscribers.put(uuid, subscriber);
+        _debug().log("Added new subscriber [%s], current number of subscribers = %d",
+                     uuid, subscribers.size());
         toServerCall(subscriber).setOnCancelHandler(() -> {
-            _debug().log("Subscriber [%d] closed. Removing.", subscriber.hashCode());
-            subscribers.remove(subscriber);
+            _debug().log("Subscriber [%s] closed. Removing...", uuid);
+            removeVerbose(uuid);
         });
     }
 
@@ -58,19 +61,21 @@ public final class ShardUpdateSubscribersHolder implements Logging {
      */
     public void notifySubs(ShardInfoUpdate update) {
         _debug().log("Notifying %d subscribers about update.", subscribers.size());
-        var invalidSubs = new ArrayList<StreamObserver<ShardInfoUpdate>>();
-        for (var sub : subscribers) {
+        var invalidSubIds = new ArrayList<String>();
+        for (var entry : subscribers.entrySet()) {
             try {
-                sub.onNext(update);
+                entry.getValue()
+                     .onNext(update);
             } catch (RuntimeException e) {
                 _debug().withCause(e)
-                        .log("Error notifying the subscriber [%d]; it will be removed.",
-                             sub.hashCode());
-                invalidSubs.add(sub);
-                sub.onError(e);
+                        .log("Error notifying the subscriber [%s]; it will be removed.",
+                             entry.getKey());
+                invalidSubIds.add(entry.getKey());
+                entry.getValue()
+                     .onError(e);
             }
         }
-        invalidSubs.forEach(subscribers::remove);
+        invalidSubIds.forEach(this::removeVerbose);
     }
 
     /**
@@ -83,5 +88,16 @@ public final class ShardUpdateSubscribersHolder implements Logging {
     private static ServerCallStreamObserver<ShardInfoUpdate>
     toServerCall(StreamObserver<ShardInfoUpdate> observer) {
         return (ServerCallStreamObserver<ShardInfoUpdate>) observer;
+    }
+
+    /**
+     * Removes a subscriber with the given {@code uuid} and logs the result of the removal.
+     */
+    private void removeVerbose(String uuid) {
+        Optional.ofNullable(subscribers.remove(uuid))
+                .ifPresentOrElse(
+                        (r) -> _debug().log("Subscriber [%s] removed.", uuid),
+                        () -> _debug().log("Subscriber [%s] not found.", uuid)
+                );
     }
 }
