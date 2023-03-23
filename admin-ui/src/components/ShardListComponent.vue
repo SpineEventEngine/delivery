@@ -8,9 +8,9 @@
   <div class="q-pa-md">
     <q-table
       title="Shards"
-      :rows="data.shards"
+      :rows="[...shards.values()]"
       :columns="columns"
-      row-key="name"
+      row-key="index.index"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -21,11 +21,11 @@
             {{ props.row.messages ? props.row.messages : 0 }}
           </q-td>
           <q-td key="status" :props="props">
-            <div v-if="props.row.status === 'PICKED'" class="bold">Picked</div>
+            <div v-if="props.row.status === ShardStatus.PICKED" class="bold">Picked</div>
             <div v-else>Not Picked</div>
           </q-td>
           <q-td key="lastPicked" :props="props">
-            {{ props.row.lastPicked ? new Date(props.row.lastPicked).toLocaleString() : 'Never' }}
+            {{ props.row.lastPicked ? props.row.lastPicked.toDate().toLocaleString() : 'Never' }}
           </q-td>
         </q-tr>
       </template>
@@ -40,17 +40,11 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, ref } from 'vue';
-import { ShardService } from 'src/services/ShardService';
-import { ShardIndex, ShardInfoList } from 'components/models';
+import { useShards } from 'src/services/shards';
+import { ShardIndex } from 'src/gen/spine/server/delivery/delivery_pb';
+import { ShardStatus } from 'src/gen/spine/message/delivery/admin/admin_service_pb';
 
-const data = ref({} as ShardInfoList);
-
-const shardService: ShardService = inject(ShardService.name) as ShardService;
-
-shardService.shardInfo().then((received) => {
-  data.value = received;
-});
+const { shards } = useShards();
 
 const columns = [
   {

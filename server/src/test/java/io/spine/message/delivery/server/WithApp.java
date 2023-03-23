@@ -8,9 +8,11 @@ package io.spine.message.delivery.server;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.spine.client.Client;
 import io.spine.environment.Environment;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
+import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceStub;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
 import io.spine.server.ServerEnvironment;
@@ -26,15 +28,19 @@ import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterrup
 /**
  * Abstract base for test classes that need a running {@link App}.
  */
-public abstract class WithApp extends DeliveryTest {
+public abstract class WithApp {
 
     private final App app = new App();
 
     private ShardSessionRegistryServiceBlockingStub sessionRegistry;
 
-    private AdminServiceBlockingStub adminService;
+    private AdminServiceBlockingStub adminServiceBlocking;
+
+    private AdminServiceStub adminService;
 
     private ManagedChannel channel;
+
+    private Client client;
 
     @BeforeEach
     void startApp() {
@@ -47,13 +53,16 @@ public abstract class WithApp extends DeliveryTest {
     void setupClients() {
         channel = localChannel();
         sessionRegistry = ShardSessionRegistryServiceGrpc.newBlockingStub(channel);
-        adminService = AdminServiceGrpc.newBlockingStub(channel);
+        adminServiceBlocking = AdminServiceGrpc.newBlockingStub(channel);
+        adminService = AdminServiceGrpc.newStub(channel);
+        client = Client.usingChannel(channel)
+                       .build();
     }
 
     @AfterEach
     void shutdownApp() throws InterruptedException {
         channel.shutdownNow();
-        if(!channel.awaitTermination(5, TimeUnit.SECONDS)){
+        if (!channel.awaitTermination(5, TimeUnit.SECONDS)) {
             throw new RuntimeException("Cannot animate the channel!");
         }
         app.shutdown();
@@ -78,7 +87,7 @@ public abstract class WithApp extends DeliveryTest {
     }
 
     /**
-     * Gets the {@code ShardSessionRegistryServiceBlockingStub} connected to the local server.
+     * Returns the {@code ShardSessionRegistryServiceBlockingStub} connected to the local server.
      */
     protected ShardSessionRegistryServiceBlockingStub
     sessionRegistry() {
@@ -86,9 +95,23 @@ public abstract class WithApp extends DeliveryTest {
     }
 
     /**
-     * Gets the {@code AdminServiceBlockingStub} connected to the local server.
+     * Returns the {@code AdminServiceBlockingStub} connected to the local server.
      */
-    protected AdminServiceBlockingStub adminService() {
+    protected AdminServiceBlockingStub adminServiceBlocking() {
+        return adminServiceBlocking;
+    }
+
+    /**
+     * Returns the {@code AdminServiceStub} connected to the local server.
+     */
+    protected AdminServiceStub adminService() {
         return adminService;
+    }
+
+    /**
+     * Returns a new {@code Client} connected to the local server.
+     */
+    public Client client() {
+        return client;
     }
 }

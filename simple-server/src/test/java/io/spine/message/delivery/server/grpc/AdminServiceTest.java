@@ -6,24 +6,49 @@
 
 package io.spine.message.delivery.server.grpc;
 
+import com.google.common.truth.Truth8;
+import com.google.common.truth.extensions.proto.IterableOfProtosFluentAssertion;
+import com.google.protobuf.Empty;
+import com.google.protobuf.Message;
+import io.spine.grpc.MemoizingObserver;
+import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
+import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.test.message.delivery.server.Something;
+import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
+import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
+import static io.spine.base.Identifier.newUuid;
+import static io.spine.message.delivery.admin.ShardInfoUpdates.messagesCountChangedTo;
+import static io.spine.message.delivery.admin.ShardInfoUpdates.shardUnpicked;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
+import static io.spine.message.delivery.server.given.TestInboxMessages.toDeliver;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.copyWithNewShard;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.pickUpShard;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.releaseShard;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.removeMessage;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.removeMessages;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.request;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.shardInfo;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.shardPickedWithoutTime;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.testMessage;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.writeMessage;
+import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.writeMessages;
 import static io.spine.server.delivery.DeliveryStrategy.newIndex;
+import static java.time.Duration.ofSeconds;
 
 @DisplayName("`AdminService` should")
 final class AdminServiceTest extends WithApp {
+
+    private static final int SLEEP_SECONDS = 2;
 
     @Test
     @DisplayName("get current information about shards")
@@ -53,5 +78,150 @@ final class AdminServiceTest extends WithApp {
                         shardInfo(shard3, NOT_PICKED, 0),
                         shardInfo(shard4, PICKED, 0)
                 );
+    }
+
+    @Test
+    @DisplayName("notify if shard picked")
+    void notifyPicked() {
+        ShardIndex index = newIndex(1, 5);
+        var observer = subscribeToUpdates();
+
+        syncShardService().pickShard(pickUpShard(index));
+
+        ShardInfoUpdate expected = shardPickedWithoutTime(index);
+
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertHasNoError(observer);
+        assertUpdatesIn(observer).containsExactly(expected);
+    }
+
+    @Test
+    @DisplayName("notify if shard is released")
+    void notifyUnpicked() {
+        ShardIndex index = newIndex(1, 5);
+        var observer = subscribeToUpdates();
+
+        PickUpShard pickUpShard = pickUpShard(index);
+        ShardPickedUp pickedUp = syncShardService().pickShard(pickUpShard);
+        syncShardService().releaseSession(releaseShard(pickedUp));
+
+        ShardInfoUpdate pickedUpdate = shardPickedWithoutTime(index);
+        ShardInfoUpdate unpickedUpdate = shardUnpicked(index);
+
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertHasNoError(observer);
+        assertUpdatesIn(observer).containsExactly(pickedUpdate, unpickedUpdate);
+    }
+
+    @Test
+    @DisplayName("notify when message is written")
+    void notifyMessageWritten() {
+        ShardIndex index = newIndex(1, 5);
+        var observer = subscribeToUpdates();
+
+        var message = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
+
+        syncInboxService().writeOne(writeMessage(message));
+
+        ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
+
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertHasNoError(observer);
+        assertUpdatesIn(observer).containsExactly(messageWritten);
+    }
+
+    @Test
+    @DisplayName("notify when message is removed")
+    void notifyMessageRemoved() {
+        ShardIndex index = newIndex(1, 5);
+        var observer = subscribeToUpdates();
+
+        var message = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
+
+        syncInboxService().writeOne(writeMessage(message));
+        syncInboxService().removeOne(removeMessage(message));
+
+        ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
+        ShardInfoUpdate messageRemoved = messagesCountChangedTo(index, 0);
+
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertHasNoError(observer);
+        assertUpdatesIn(observer).containsExactly(messageWritten, messageRemoved);
+    }
+
+    @Test
+    @DisplayName("notify when multiple messages are written")
+    void notifyMessagesWritten() {
+        ShardIndex index = newIndex(1, 5);
+        var observer = subscribeToUpdates();
+
+        var message1 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
+        var message2 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
+
+        syncInboxService().writeMany(writeMessages(index, message1, message2));
+
+        ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
+        ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
+
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertHasNoError(observer);
+        assertUpdatesIn(observer).containsExactly(message1Written, message2Written);
+    }
+
+    @Test
+    @DisplayName("notify when multiple messages are removed")
+    void notifyMessagesRemoved() {
+        ShardIndex index = newIndex(1, 5);
+        var observer = subscribeToUpdates();
+
+        var message1 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
+        var message2 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
+
+        syncInboxService().writeMany(writeMessages(index, message1, message2));
+        syncInboxService().removeMany(removeMessages(index, message1, message2));
+
+        ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
+        ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
+        ShardInfoUpdate message1Removed = messagesCountChangedTo(index, 1);
+        ShardInfoUpdate message2Removed = messagesCountChangedTo(index, 0);
+
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertHasNoError(observer);
+        assertUpdatesIn(observer).containsExactly(
+                message1Written,
+                message2Written,
+                message1Removed,
+                message2Removed
+        );
+    }
+
+    /**
+     * Asserts that the given observer has no error.
+     */
+    private static <T> void assertHasNoError(MemoizingObserver<T> observer) {
+        Truth8.assertThat(Optional.ofNullable(observer.getError()))
+              .isEmpty();
+    }
+
+    /**
+     * Starts an assertion chain for updates list stored in the given {@code observer}.
+     */
+    private static <T extends Message>
+    IterableOfProtosFluentAssertion<T> assertUpdatesIn(MemoizingObserver<T> observer) {
+        return assertThat(observer.responses()).comparingExpectedFieldsOnly();
+    }
+
+    /**
+     * Subscribes to the shard updates on the {@code AdminService} and returns an observer that
+     * collects all updates for further assertions.
+     *
+     * <p>Also waits for {@link #SLEEP_SECONDS} to ensure that the subscription is created
+     * on the server.
+     */
+    private MemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
+        var observer = new MemoizingObserver<ShardInfoUpdate>();
+        adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), observer);
+        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        return observer;
     }
 }

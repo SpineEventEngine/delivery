@@ -5,6 +5,10 @@ plugins {
   id("com.github.node-gradle.node") version "3.5.1"
 }
 
+dependencies {
+  implementation(project(":model"))
+}
+
 node {
   version.set("19.6.0")
   download.set(true)
@@ -46,15 +50,58 @@ abstract class Clean : NpxTask() {
   }
 }
 
+/**
+ * A task that runs the `npx buf generate build/extracted-include-protos/main` command.
+ */
+abstract class GenerateTsProto : NpxTask() {
+  init {
+    description = "Generates TypeScript files from `.proto` definitions."
+    command.set("buf")
+    args.set(
+      listOf(
+        "generate",
+        "build/extracted-include-protos/main",
+      )
+    )
+  }
+}
+
 val npmInstall = tasks.getByName(NpmInstallTask.NAME)
+val generateProto = tasks.withType(GenerateTsProto::class)
 
 /**
- * Task names start with "q" that stands for "quasar".
+ * Runs `npx quasar dev` command.
+ *
+ * @see Serve
  */
 tasks.register<Serve>("qserve") {
   dependsOn.add(npmInstall)
+  dependsOn.add(generateProto)
 }
+
+/**
+ * Runs `npx quasar build` command.
+ *
+ * @see Build
+ */
 tasks.register<Build>("qbuild") {
   dependsOn.add(npmInstall)
+  dependsOn.add(generateProto)
 }
+
+/**
+ * Runs `npx quasar clean` command.
+ *
+ * @see Clean
+ */
 tasks.register<Clean>("qclean")
+
+/**
+ * Runs the `npx buf generate` command.
+ *
+ * @see GenerateTsProto
+ */
+tasks.register<GenerateTsProto>("bbgen") {
+  dependsOn.add(npmInstall)
+  dependsOn.add(tasks.named("extractIncludeProto"))
+}

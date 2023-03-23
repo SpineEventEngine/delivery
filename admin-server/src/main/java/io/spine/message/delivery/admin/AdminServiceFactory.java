@@ -10,7 +10,6 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.micronaut.context.annotation.Factory;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
-import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceFutureStub;
 import jakarta.inject.Singleton;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -37,12 +36,12 @@ final class AdminServiceFactory {
             .build();
 
     /**
-     * Creates a new {@code AdminServiceFutureStub} connected to the Liquor server running on
+     * Creates a new {@code AdminServiceBlockingStub} connected to the Liquor server running on
      * the same instance.
      */
     @Singleton
-    public AdminServiceFutureStub adminService() {
-        return AdminServiceGrpc.newFutureStub(channel);
+    public AdminServiceGrpc.AdminServiceBlockingStub blockingAdminService() {
+        return AdminServiceGrpc.newBlockingStub(channel);
     }
 
     /**

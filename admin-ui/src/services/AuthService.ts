@@ -5,8 +5,8 @@
  */
 
 import axios from 'axios';
-import { Endpoints } from 'src/services/Endpoints';
 import { ref } from 'vue';
+import { useEndpoints } from 'src/services/endpoints';
 
 /**
  * Performs a user authentication with HTTP Basic Auth strategy.
@@ -18,13 +18,21 @@ import { ref } from 'vue';
 export class AuthService {
   static isAuthenticated = ref(!!AuthService.username());
 
+  static endpoints = useEndpoints();
+
   /**
    * Tries to authenticate a user with the given `login` and `password` and returns `true` if the
    * attempt is successfully or `false` otherwise.
    */
   static login(login: string, password: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      axios.head(`${Endpoints.ShardInfo}`, AuthService.options(login, password))
+      const options = {
+        auth: {
+          username: login,
+          password,
+        },
+      };
+      axios.head(`${this.endpoints.shardInfo}`, options)
         .then((response) => {
           if (response.status === 200) {
             localStorage.login = login;
@@ -72,7 +80,7 @@ export class AuthService {
    * Returns user's login or `null` if there is no authenticated user.
    * @private
    */
-  private static username(): string {
+  static username(): string {
     return localStorage.login;
   }
 
@@ -80,18 +88,7 @@ export class AuthService {
    * Returns user's password or `null` if there is no authenticated user.
    * @private
    */
-  private static password(): string {
+  static password(): string {
     return localStorage.password;
-  }
-
-  /**
-   * Creates auth options for the `axios` request with the login and password of
-   * the currently authenticated user.
-   *
-   * If there is no authenticated user the fields will be `null`.
-   */
-  static authOptions():
-    { auth: { username: string, password: string } } {
-    return this.options(AuthService.username(), AuthService.password());
   }
 }

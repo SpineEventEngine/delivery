@@ -7,24 +7,32 @@
 package io.spine.message.delivery.server.grpc;
 
 import com.google.protobuf.Empty;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.spine.logging.Logging;
+import io.spine.message.delivery.admin.ShardMessagesCountHolder;
+import io.spine.message.delivery.admin.ShardUpdateSubscribersHolder;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
+import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.server.ExtendedInboxStorage;
+import io.spine.message.delivery.server.ReportingStorageFactory;
 import io.spine.message.delivery.server.ShardRegistryStorage;
+import io.spine.message.delivery.server.StorageSubscriber;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardSessionRecord;
-import io.spine.server.storage.StorageFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static io.spine.message.delivery.admin.ShardInfoUpdates.messagesCountChangedTo;
+import static io.spine.message.delivery.admin.ShardInfoUpdates.shardPicked;
+import static io.spine.message.delivery.admin.ShardInfoUpdates.shardUnpicked;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 
@@ -40,10 +48,23 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
 
     private final ShardRegistryStorage shardStorage;
 
-    public AdminService(StorageFactory factory) {
+    private final ShardUpdateSubscribersHolder subscribers = new ShardUpdateSubscribersHolder();
+
+    private final ShardMessagesCountHolder messagesCount;
+
+    public AdminService(ReportingStorageFactory factory) {
         super();
         inboxStorage = new ExtendedInboxStorage(factory, false);
         shardStorage = new ShardRegistryStorage(factory);
+        setupSubscribers(factory);
+        messagesCount = new ShardMessagesCountHolder(messagesInShards());
+    }
+
+    @SuppressWarnings("HandleMethodResult")
+    // We do not need to unsubscribe until the server is off.
+    private void setupSubscribers(ReportingStorageFactory factory) {
+        factory.subscribe(ShardIndex.class, ShardSessionRecord.class, new ShardStorageSubscriber());
+        factory.subscribe(InboxMessageId.class, InboxMessage.class, new InboxStorageSubscriber());
     }
 
     @Override
@@ -56,11 +77,17 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         }
     }
 
+    @Override
+    public void
+    subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> observer) {
+        subscribers.addSubscriber(observer);
+    }
+
     /**
      * Fetches information about all shards.
      */
     private ShardInfoList fetch() {
-        Map<ShardIndex, Integer> messagesCount = messagesInShards();
+        Map<ShardIndex, Integer> messagesCount = this.messagesCount.toMutableMap();
         var shards = shardStorage.readAll();
         var shardListBuilder = ShardInfoList.newBuilder();
         shards.forEachRemaining(shard -> {
@@ -112,6 +139,18 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
                 .vBuild();
     }
 
+    /**
+     * Casts the given {@code observer} to the {@code ServerCallStreamObserver}.
+     *
+     * <p>According to the {@link ServerCallStreamObserver} docs it's safe to cast
+     * {@code StreamObserver} to {@code ServerCallStreamObserver} in server side implementation
+     * of the service.
+     */
+    private static ServerCallStreamObserver<ShardInfoUpdate>
+    toServerCall(StreamObserver<ShardInfoUpdate> observer) {
+        return (ServerCallStreamObserver<ShardInfoUpdate>) observer;
+    }
+
     @Override
     public boolean healthy() {
         return healthy.get();
@@ -125,5 +164,48 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     @Override
     public String name() {
         return AdminServiceGrpc.SERVICE_NAME;
+    }
+
+    /**
+     * Subscriber that tracks the inbox changes and notifies subscribers of the service
+     * about these changes.
+     */
+    private final class InboxStorageSubscriber
+            implements StorageSubscriber<InboxMessageId, InboxMessage> {
+
+        @Override
+        public void onWrite(InboxMessageId id, InboxMessage message) {
+            ShardIndex index = id.getIndex();
+            var update = messagesCountChangedTo(index, messagesCount.updateCount(index, 1));
+            subscribers.notifySubs(update);
+        }
+
+        @Override
+        public void onDelete(InboxMessageId id) {
+            ShardIndex index = id.getIndex();
+            var update = messagesCountChangedTo(index, messagesCount.updateCount(index, -1));
+            subscribers.notifySubs(update);
+        }
+    }
+
+    /**
+     * Subscriber that tracks shard changes and notifies subscribers of the service
+     * about these changes.
+     */
+    private final class ShardStorageSubscriber
+            implements StorageSubscriber<ShardIndex, ShardSessionRecord> {
+
+        @Override
+        public void onWrite(ShardIndex id, ShardSessionRecord message) {
+            ShardInfoUpdate update = message.hasWorker() ?
+                                     shardPicked(id, message.getWhenLastPicked()) :
+                                     shardUnpicked(id);
+            subscribers.notifySubs(update);
+        }
+
+        @Override
+        public void onDelete(ShardIndex id) {
+            // We don't delete shard records from storage.
+        }
     }
 }
