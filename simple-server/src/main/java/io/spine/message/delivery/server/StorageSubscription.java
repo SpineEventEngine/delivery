@@ -8,6 +8,10 @@ package io.spine.message.delivery.server;
 
 /**
  * Acknowledgement of the successful subscription.
+ *
+ * @see StorageSubscriber
+ * @see ReportingRecordStorage
+ * @see ReportingStorageFactory
  */
 public interface StorageSubscription {
 

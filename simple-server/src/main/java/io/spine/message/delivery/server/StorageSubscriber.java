@@ -9,8 +9,10 @@ package io.spine.message.delivery.server;
 import com.google.protobuf.Message;
 
 /**
- * Subscriber that is receives updates on each “write” or “delete” operations in some
- * {@link ReportingRecordStorage}.
+ * Receives updates on each “write” or “delete” operation in a storage.
+ *
+ * @see ReportingRecordStorage
+ * @see ReportingStorageFactory
  *
  * @param <I>
  *         type of record ID stored in the storage this subscription belongs to
