@@ -159,9 +159,9 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
      * Queries all {@code ShardSessionHolder}s.
      */
     private ImmutableList<CurrentShardState> readShards() {
-        CurrentShardState.Query shardQuery = CurrentShardState
-                .query()
-                .build();
+        CurrentShardState.Query shardQuery =
+                CurrentShardState.query()
+                                 .build();
         return client.asGuest()
                      .run(shardQuery);
     }
