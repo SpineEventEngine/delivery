@@ -20,6 +20,7 @@ import "google/protobuf/empty.proto";
 
 import "spine/message/delivery/commands.proto";
 import "spine/message/delivery/events.proto";
+import "spine/message/delivery/rejections.proto";
 import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
 
@@ -53,13 +54,30 @@ service InboxService {
 service ShardService {
 
     // Picks up the shard for processing.
-    rpc PickShard(PickUpShard) returns (ShardPickedUp);
+    rpc PickShard(PickUpShard) returns (ShardPickUpResult);
 
     // Releases the shard after its processing is done.
     rpc ReleaseSession(ReleaseShard) returns (google.protobuf.Empty);
 
     // Releases sessions which were picked up earlier that the configured inactivity period.
     rpc ReleaseSessions(ReleaseExpiredSessions) returns (ExpiredSessionsReleased);
+}
+
+// Result of the `PickUpShard` request.
+//
+// Represents a response that can contain one of 2 options:
+// `ShardPickedUp` or `ShardAlreadyPickedUp`.
+//
+message ShardPickUpResult {
+
+    oneof result {
+
+        // Shard picked up successfully.
+        ShardPickedUp pickedUp = 1;
+
+        // Shard cannot be picked because it's already picked by another worker.
+        ShardAlreadyPickedUp alreadyPicked = 2;
+    }
 }
 
 // A query to read `InboxMessage`s.
