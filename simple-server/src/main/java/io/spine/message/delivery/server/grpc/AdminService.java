@@ -80,7 +80,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     @Override
     public void
     subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> observer) {
-        System.out.println("= = Received a new subscription request.");
+        _debug().log("= = Received new subscription request.");
         subscribers.addSubscriber(observer);
     }
 

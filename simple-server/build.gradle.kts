@@ -10,6 +10,10 @@ import io.spine.internal.dependency.Spine
 
 dependencies {
     implementation(Log4j2.api)
+
+    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+    implementation("org.slf4j:slf4j-simple:2.0.7")
+
     implementation(project(":model"))
     implementation(project(":redis-record-storage"))
     implementation(Grpc.core)
