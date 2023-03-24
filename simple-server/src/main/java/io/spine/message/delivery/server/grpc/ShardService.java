@@ -17,6 +17,7 @@ import io.spine.message.delivery.command.ReleaseShard;
 import io.spine.message.delivery.event.ExpiredSession;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.ShardPickUpResult;
 import io.spine.message.delivery.grpc.ShardServiceGrpc;
 import io.spine.message.delivery.server.LiquorShardRegistry;
 import io.spine.server.delivery.ShardSessionRecord;
@@ -25,7 +26,6 @@ import io.spine.server.storage.StorageFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.message.delivery.server.grpc.Responses.alreadyPicked;
 import static io.spine.message.delivery.server.grpc.Responses.completeCall;
 
 /**
@@ -53,19 +53,22 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     }
 
     @Override
-    public void pickShard(PickUpShard request, StreamObserver<ShardPickedUp> response) {
+    public void pickShard(PickUpShard request, StreamObserver<ShardPickUpResult> response) {
         var shard = request.getShard();
         int index = shard.getIndex();
         var worker = request.getWorker();
         var session = registry.pickUp(shard, worker);
         if (session.isPresent()) {
-            ShardPickedUp pickedUp = Responses.shardPickedUp(shard, worker);
             log("Shard %d picked up.", index);
-            response.onNext(pickedUp);
+            response.onNext(Responses.pickedUp(shard, worker));
             response.onCompleted();
         } else {
             log("Shard %d NOT available.", index);
-            alreadyPicked(response, shard, worker);
+            // TODO:2023-03-23:nick.dolhii: The `worker` here corresponds to the worker that is requesting
+            //      the shard. But in docs of `ShardAlreadyPickedUp` the `worker` field should contain
+            //      the work who already owns the session.
+            response.onNext(Responses.alreadyPickedUp(shard, worker));
+            response.onCompleted();
         }
     }
 
