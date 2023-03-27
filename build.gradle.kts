@@ -22,9 +22,7 @@ subprojects {
     apply<SpinePlugin>()
 
     dependencies {
-        add("implementation", "org.slf4j:slf4j-simple:2.0.7")
-        // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-//        implementation("org.slf4j:slf4j-simple:2.0.7")
+        add("implementation", io.spine.internal.dependency.Log4j2.slf4jBridge)
     }
 }
 

@@ -10,6 +10,7 @@ import io.spine.internal.dependency.Spine
 
 dependencies {
     implementation(Log4j2.api)
+    implementation(Log4j2.slf4jBridge)
 
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     implementation("org.slf4j:slf4j-simple:2.0.7")
