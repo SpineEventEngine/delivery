@@ -20,10 +20,6 @@ subprojects {
     apply<DependencyManagementPlugin>()
     apply<CodeQualityPlugin>()
     apply<SpinePlugin>()
-
-    dependencies {
-        add("implementation", io.spine.internal.dependency.Log4j2.slf4jBridge)
-    }
 }
 
 spinePublishing {
