@@ -9,6 +9,7 @@ package io.spine.message.delivery.server.grpc;
 import com.google.protobuf.Empty;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
+import io.spine.json.Json;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.admin.ShardMessagesCountHolder;
 import io.spine.message.delivery.admin.ShardUpdateSubscribersHolder;
@@ -178,6 +179,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         public void onWrite(InboxMessageId id, InboxMessage message) {
             ShardIndex index = id.getIndex();
             var update = messagesCountChangedTo(index, messagesCount.updateCount(index, 1));
+            System.out.printf("= = Received a new WRITE update. ID: [%s], Message: [%s], Update: [%s]\n", Json.toCompactJson(id), Json.toCompactJson(message), Json.toCompactJson(update));
             subscribers.notifySubs(update);
         }
 
@@ -185,6 +187,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         public void onDelete(InboxMessageId id) {
             ShardIndex index = id.getIndex();
             var update = messagesCountChangedTo(index, messagesCount.updateCount(index, -1));
+            System.out.printf("= = Received a new DELETE update. ID: [%s], Update: [%s]\n", Json.toCompactJson(id), Json.toCompactJson(update));
             subscribers.notifySubs(update);
         }
     }
@@ -201,11 +204,13 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
             ShardInfoUpdate update = message.hasWorker() ?
                                      shardPicked(id, message.getWhenLastPicked()) :
                                      shardUnpicked(id);
+            System.out.printf("= = Received a new WRITE update. ID: [%s], Message: [%s], Update: [%s]\n", Json.toCompactJson(id), Json.toCompactJson(message), Json.toCompactJson(update));
             subscribers.notifySubs(update);
         }
 
         @Override
         public void onDelete(ShardIndex id) {
+            System.out.printf("= = Received a new untracked DELETE update. ID: [%s]\n", Json.toCompactJson(id));
             // We don't delete shard records from storage.
         }
     }

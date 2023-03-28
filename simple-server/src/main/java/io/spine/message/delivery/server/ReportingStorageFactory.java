@@ -7,6 +7,7 @@
 package io.spine.message.delivery.server;
 
 import com.google.protobuf.Message;
+import io.spine.logging.Logging;
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.StorageFactory;
@@ -24,7 +25,7 @@ import static java.util.UUID.randomUUID;
 /**
  * Storage factory that allows subscribing to update operations of its storages.
  */
-public final class ReportingStorageFactory implements StorageFactory {
+public final class ReportingStorageFactory implements StorageFactory, Logging {
 
     private final StorageFactory delegate;
 
@@ -49,9 +50,10 @@ public final class ReportingStorageFactory implements StorageFactory {
     @Override
     public <I, R extends Message> ReportingRecordStorage<I, R>
     createRecordStorage(ContextSpec context, RecordSpec<I, R, ?> spec) {
+        TypeSpec<I, R> typeSpec = TypeSpec.of(spec);
+        System.out.printf("= = Creating a new storage for %s\n", typeSpec);
         var storage = delegate.createRecordStorage(context, spec);
         var reportingStorage = new ReportingRecordStorage<>(context, storage);
-        TypeSpec<I, R> typeSpec = TypeSpec.of(spec);
         remember(typeSpec, reportingStorage);
         addExistentSubscribers(typeSpec, reportingStorage);
         return reportingStorage;
@@ -63,12 +65,17 @@ public final class ReportingStorageFactory implements StorageFactory {
     @SuppressWarnings("unchecked") // We ensure types using `key`.
     private <I, R extends Message> void
     addExistentSubscribers(TypeSpec<I, R> typeSpec, ReportingRecordStorage<I, R> storage) {
+        System.out.printf("= = Adding existent subscribers to a new storage %s\n", typeSpec);
         subscriptions
                 .values()
                 .stream()
                 .filter(s -> typeSpec.equals(s.typeSpec()))
                 .map(s -> (CompositeSubscription<I, R>) s)
-                .forEach(s -> s.addSubscription(storage.subscribe(s.subscriber())));
+                .forEach(s -> {
+                    System.out.printf("= = Found a storage matching the spec: %s\n", typeSpec);
+                    s.addSubscription(storage.subscribe(s.subscriber()));
+                });
+        System.out.printf("= = Added all existent subscribers for a storage %s\n", typeSpec);
     }
 
     @Override
@@ -86,6 +93,7 @@ public final class ReportingStorageFactory implements StorageFactory {
      */
     public <I, R extends Message> StorageSubscription
     subscribe(Class<I> idType, Class<R> recordType, StorageSubscriber<I, R> subscriber) {
+        System.out.printf("= = Adding a new subscriber to the factory.\n");
         TypeSpec<I, R> typeSpec = new TypeSpec<>(idType, recordType);
         var subscriptions = subscribeOnExistentStorages(typeSpec, subscriber);
         return remember(new CompositeSubscription<>(typeSpec, subscriber, subscriptions));
@@ -97,11 +105,15 @@ public final class ReportingStorageFactory implements StorageFactory {
     @SuppressWarnings("unchecked") // We ensure types using `typeSpec`.
     private <I, R extends Message> Set<StorageSubscription>
     subscribeOnExistentStorages(TypeSpec<I, R> spec, StorageSubscriber<I, R> subscriber) {
+        System.out.printf("= = Subscribing on existent storages...\n");
         Set<StorageSubscription> subscriptions = new HashSet<>();
         storages(spec).forEach(storage -> {
+            System.out.printf("= = = Found a storage that matches the subscription type, subscribing...\n");
             ReportingRecordStorage<I, R> typedStorage = (ReportingRecordStorage<I, R>) storage;
             subscriptions.add(typedStorage.subscribe(subscriber));
+            System.out.printf("= = = Subscribed.\n");
         });
+        System.out.printf("= = Subscribed on all existent storages.\n");
         return subscriptions;
     }
 
@@ -112,7 +124,9 @@ public final class ReportingStorageFactory implements StorageFactory {
     private <I, R extends Message> StorageSubscription
     remember(CompositeSubscription<I, R> subscription) {
         String id = randomUUID().toString();
+        System.out.printf("= = Remembering a new composite subscription [%s]...\n", id);
         this.subscriptions.put(id, subscription);
+        System.out.printf("= = A new composite subscription [%s] saved.\n", id);
         StorageSubscription storageSubscription = () -> Optional
                 .ofNullable(this.subscriptions.remove(id))
                 .ifPresent(CompositeSubscription::unsubscribeAll);
@@ -124,7 +138,9 @@ public final class ReportingStorageFactory implements StorageFactory {
      */
     private <I, R extends Message> void
     remember(TypeSpec<I, R> typeSpec, ReportingRecordStorage<I, R> storage) {
+        System.out.printf("= = Remembering storage %s\n", typeSpec);
         storages(typeSpec).add(storage);
+        System.out.printf("= = Storage %s saved\n", typeSpec);
     }
 
     /**
@@ -233,6 +249,11 @@ public final class ReportingStorageFactory implements StorageFactory {
         private TypeSpec(Class<I> idType, Class<R> recordType) {
             this.idType = checkNotNull(idType);
             this.recordType = checkNotNull(recordType);
+        }
+
+        @Override
+        public String toString() {
+            return '[' + idType.getSimpleName() + " | " +recordType.getSimpleName() + ']';
         }
 
         @Override

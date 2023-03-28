@@ -8,6 +8,8 @@ package io.spine.message.delivery.server;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
+import io.spine.json.Json;
+import io.spine.logging.Logging;
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordStorage;
 import io.spine.server.storage.RecordStorageDelegate;
@@ -26,7 +28,8 @@ import static java.util.UUID.randomUUID;
  * @param <R>
  *         the type of the message records
  */
-public final class ReportingRecordStorage<I, R extends Message> extends RecordStorageDelegate<I, R> {
+public final class ReportingRecordStorage<I, R extends Message> extends RecordStorageDelegate<I, R>
+        implements Logging {
 
     /**
      * Stores subscriptions of this storage.
@@ -54,8 +57,17 @@ public final class ReportingRecordStorage<I, R extends Message> extends RecordSt
      */
     public StorageSubscription subscribe(StorageSubscriber<I, R> subscriber) {
         String id = randomUUID().toString();
+        System.out.printf("= = Adding a new subscription [%s] to the storage...\n", id);
         this.subscriptions.put(id, subscriber);
-        return () -> subscriptions.remove(id);
+        System.out.printf("= = Subscription [%s] added.\n", id);
+        return () -> {
+            System.out.printf("= = Removing subscription [%s] as cancelled.\n", id);
+            if (subscriptions.remove(id) != null) {
+                System.out.printf("= = Subscription [%s] removed.\n", id);
+            } else {
+                System.out.printf("= = Subscription [%s] not found.\n", id);
+            }
+        };
     }
 
     @Override
@@ -119,15 +131,23 @@ public final class ReportingRecordStorage<I, R extends Message> extends RecordSt
      * {@code record} with the given {@code id}.
      */
     private void notifyWrite(I id, R record) {
-        subscriptions.values()
-                     .forEach(sub -> sub.onWrite(id, record));
+        subscriptions.forEach((key, value) -> {
+            System.out.printf("= = Notifying [%s] about a new write of [%s]\n", key,
+                         Json.toCompactJson(record));
+            value.onWrite(id, record);
+            System.out.printf("= = Sub [%s] notified about a new write of [%s]\n", key,
+                         Json.toCompactJson(record));
+        });
     }
 
     /**
      * Notifies all the subscribers about a new delete operation performed on the given {@code id}.
      */
     private void notifyDeleted(I id) {
-        subscriptions.values()
-                     .forEach(sub -> sub.onDelete(id));
+        subscriptions.forEach((key, value) -> {
+            System.out.printf("= = Notifying [%s] about a deletion of [%s]\n", key, id);
+            value.onDelete(id);
+            System.out.printf("= = Sub [%s] notified about deletion of [%s]\n", key, id);
+        });
     }
 }
