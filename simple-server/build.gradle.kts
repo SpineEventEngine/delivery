@@ -10,6 +10,7 @@ import io.spine.internal.dependency.Spine
 
 dependencies {
     implementation(Log4j2.api)
+    implementation(Log4j2.slf4jBridge)
 
     implementation(project(":model"))
     implementation(project(":redis-record-storage"))
