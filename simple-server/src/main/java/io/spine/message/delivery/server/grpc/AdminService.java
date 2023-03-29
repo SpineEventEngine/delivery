@@ -179,7 +179,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         public void onWrite(InboxMessageId id, InboxMessage message) {
             ShardIndex index = id.getIndex();
             var update = messagesCountChangedTo(index, messagesCount.updateCount(index, 1));
-            System.out.printf("= = Received a new WRITE update. ID: [%s], Message: [%s], Update: [%s]\n", Json.toCompactJson(id), Json.toCompactJson(message), Json.toCompactJson(update));
+            System.out.printf("= = Received a new inbox WRITE update. ID: [%s], Message: [%s], Update: [%s]\n", Json.toCompactJson(id), Json.toCompactJson(message), Json.toCompactJson(update));
             subscribers.notifySubs(update);
         }
 
@@ -204,7 +204,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
             ShardInfoUpdate update = message.hasWorker() ?
                                      shardPicked(id, message.getWhenLastPicked()) :
                                      shardUnpicked(id);
-            System.out.printf("= = Received a new WRITE update. ID: [%s], Message: [%s], Update: [%s]\n", Json.toCompactJson(id), Json.toCompactJson(message), Json.toCompactJson(update));
+            System.out.printf("= = Received a new shard WRITE update. ID: [%s], Message: [%s], Update: [%s]\n", Json.toCompactJson(id), Json.toCompactJson(message), Json.toCompactJson(update));
             subscribers.notifySubs(update);
         }
 
