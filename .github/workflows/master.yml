@@ -26,7 +26,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       - name: Build Server
-        run: ./gradlew :simple-server:test --debug
+        run: ./gradlew :simple-server:build --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
