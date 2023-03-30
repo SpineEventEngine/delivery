@@ -56,7 +56,7 @@ jobs:
       - name: Build Client
         run: |
           cd client
-          ./gradlew build --stacktrace
+          ./gradlew build --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
