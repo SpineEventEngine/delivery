@@ -6,7 +6,6 @@
 
 package io.spine.message.delivery.client;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 import static com.google.common.base.Throwables.getStackTraceAsString;
