@@ -240,7 +240,6 @@ final class AdminServiceTest extends WithApp implements Logging {
         var observer = new MemoizingObserver<ShardInfoUpdate>();
         System.out.printf("+ + Subscribing to updates...\n");
         adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), observer);
-        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         System.out.printf("+ + Subscribed.\n");
         return observer;
     }
