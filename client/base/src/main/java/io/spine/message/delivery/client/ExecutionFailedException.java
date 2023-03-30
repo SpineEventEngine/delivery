@@ -51,7 +51,7 @@ public final class ExecutionFailedException extends RuntimeException {
         causes.forEach(cause -> builder.append(lineSeparator())
                                        .append("- Caused by: ")
                                        .append(cause.getMessage())
-                                       .append(System.lineSeparator())
+                                       .append(lineSeparator())
                                        .append("- Stacktrace: ")
                                        .append(getStackTraceAsString(cause))
                                        .append("- - - - - - - - - -")
