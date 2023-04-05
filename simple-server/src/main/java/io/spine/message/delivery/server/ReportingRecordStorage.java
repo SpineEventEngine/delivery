@@ -57,15 +57,15 @@ public final class ReportingRecordStorage<I, R extends Message> extends RecordSt
      */
     public StorageSubscription subscribe(StorageSubscriber<I, R> subscriber) {
         String id = randomUUID().toString();
-        System.out.printf("= = Adding a new subscription [%s] to the storage...\n", id);
+//        System.out.printf("= = Adding a new subscription [%s] to the storage...\n", id);
         this.subscriptions.put(id, subscriber);
-        System.out.printf("= = Subscription [%s] added.\n", id);
+//        System.out.printf("= = Subscription [%s] added.\n", id);
         return () -> {
-            System.out.printf("= = Removing subscription [%s] as cancelled.\n", id);
+//            System.out.printf("= = Removing subscription [%s] as cancelled.\n", id);
             if (subscriptions.remove(id) != null) {
-                System.out.printf("= = Subscription [%s] removed.\n", id);
+//                System.out.printf("= = Subscription [%s] removed.\n", id);
             } else {
-                System.out.printf("= = Subscription [%s] not found.\n", id);
+//                System.out.printf("= = Subscription [%s] not found.\n", id);
             }
         };
     }
@@ -132,11 +132,11 @@ public final class ReportingRecordStorage<I, R extends Message> extends RecordSt
      */
     private void notifyWrite(I id, R record) {
         subscriptions.forEach((key, value) -> {
-            System.out.printf("= = Notifying [%s] about a new write of [%s]\n", key,
-                         Json.toCompactJson(record));
+//            System.out.printf("= = Notifying [%s] about a new write of [%s]\n", key,
+//                         Json.toCompactJson(record));
             value.onWrite(id, record);
-            System.out.printf("= = Sub [%s] notified about a new write of [%s]\n", key,
-                         Json.toCompactJson(record));
+//            System.out.printf("= = Sub [%s] notified about a new write of [%s]\n", key,
+//                         Json.toCompactJson(record));
         });
     }
 
@@ -145,9 +145,9 @@ public final class ReportingRecordStorage<I, R extends Message> extends RecordSt
      */
     private void notifyDeleted(I id) {
         subscriptions.forEach((key, value) -> {
-            System.out.printf("= = Notifying [%s] about a deletion of [%s]\n", key, id);
+//            System.out.printf("= = Notifying [%s] about a deletion of [%s]\n", key, id);
             value.onDelete(id);
-            System.out.printf("= = Sub [%s] notified about deletion of [%s]\n", key, id);
+//            System.out.printf("= = Sub [%s] notified about deletion of [%s]\n", key, id);
         });
     }
 }
