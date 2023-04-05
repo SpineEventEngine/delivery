@@ -91,7 +91,9 @@ final class AdminServiceTest extends WithApp implements Logging {
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
 
+        System.out.printf("+ + Picking shard... `%s` \n", Json.toCompactJson(index));
         syncShardService().pickShard(pickUpShard(index));
+        System.out.printf("+ + Shard picked! `%s` \n", Json.toCompactJson(index));
 
         ShardInfoUpdate expected = shardPickedWithoutTime(index);
 
