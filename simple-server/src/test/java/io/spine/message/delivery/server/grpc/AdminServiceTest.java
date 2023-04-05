@@ -244,13 +244,13 @@ final class AdminServiceTest extends WithApp implements Logging {
         var observer = new MemoizingObserver<ShardInfoUpdate>() {
             @Override
             public void onNext(ShardInfoUpdate value) {
-                System.out.printf("+ + onNext(), ``\n", Json.toCompactJson(value));
+                System.out.printf("+ + onNext(), `%s`\n", Json.toCompactJson(value));
                 super.onNext(value);
             }
 
             @Override
             public void onError(Throwable t) {
-                System.out.printf("+ + onError(), ``\n", t);
+                System.out.printf("+ + onError(), `%s`\n", t);
                 super.onError(t);
             }
 
