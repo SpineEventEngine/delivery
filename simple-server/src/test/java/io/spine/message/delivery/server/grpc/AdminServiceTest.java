@@ -21,6 +21,7 @@ import io.spine.server.delivery.ShardIndex;
 import io.spine.test.message.delivery.server.Something;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -47,6 +48,7 @@ import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.wr
 import static io.spine.server.delivery.DeliveryStrategy.newIndex;
 import static java.time.Duration.ofSeconds;
 
+@Tag("admin")
 @DisplayName("`AdminService` should")
 final class AdminServiceTest extends WithApp implements Logging {
 
