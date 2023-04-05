@@ -10,6 +10,7 @@ import com.google.common.truth.Truth8;
 import com.google.common.truth.extensions.proto.IterableOfProtosFluentAssertion;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.grpc.stub.StreamObserver;
 import io.spine.grpc.MemoizingObserver;
 import io.spine.json.Json;
 import io.spine.logging.Logging;
@@ -102,6 +103,7 @@ final class AdminServiceTest extends WithApp implements Logging {
     @Test
     @DisplayName("notify if shard is released")
     void notifyUnpicked() {
+
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
 
@@ -239,7 +241,25 @@ final class AdminServiceTest extends WithApp implements Logging {
      * on the server.
      */
     private MemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
-        var observer = new MemoizingObserver<ShardInfoUpdate>();
+        var observer = new MemoizingObserver<ShardInfoUpdate>() {
+            @Override
+            public void onNext(ShardInfoUpdate value) {
+                System.out.printf("+ + onNext(), ``\n", Json.toCompactJson(value));
+                super.onNext(value);
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                System.out.printf("+ + onError(), ``\n", t);
+                super.onError(t);
+            }
+
+            @Override
+            public void onCompleted() {
+                System.out.printf("+ + Observer completed.\n");
+                super.onCompleted();
+            }
+        };
         System.out.printf("+ + Subscribing to updates...\n");
         adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), observer);
         System.out.printf("+ + Subscribed.\n");
