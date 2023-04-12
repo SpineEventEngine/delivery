@@ -10,7 +10,6 @@ import com.google.common.truth.Truth8;
 import com.google.common.truth.extensions.proto.IterableOfProtosFluentAssertion;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
-import io.grpc.stub.StreamObserver;
 import io.spine.grpc.MemoizingObserver;
 import io.spine.json.Json;
 import io.spine.logging.Logging;
@@ -25,6 +24,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
 import java.util.Optional;
 
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
@@ -97,7 +97,7 @@ final class AdminServiceTest extends WithApp implements Logging {
 
         ShardInfoUpdate expected = shardPickedWithoutTime(index);
 
-        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(expected);
     }
@@ -116,7 +116,7 @@ final class AdminServiceTest extends WithApp implements Logging {
         ShardInfoUpdate pickedUpdate = shardPickedWithoutTime(index);
         ShardInfoUpdate unpickedUpdate = shardUnpicked(index);
 
-        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(pickedUpdate, unpickedUpdate);
     }
@@ -135,7 +135,7 @@ final class AdminServiceTest extends WithApp implements Logging {
 
         ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
 
-        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(messageWritten);
@@ -159,7 +159,7 @@ final class AdminServiceTest extends WithApp implements Logging {
         ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
         ShardInfoUpdate messageRemoved = messagesCountChangedTo(index, 0);
 
-        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(messageWritten, messageRemoved);
@@ -174,14 +174,16 @@ final class AdminServiceTest extends WithApp implements Logging {
         var message1 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
         var message2 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
-        System.out.printf("+ + Writing messages: `%s`, `%s`\n", Json.toCompactJson(message1), Json.toCompactJson(message2));
+        System.out.printf("+ + Writing messages: `%s`, `%s`\n", Json.toCompactJson(message1),
+                          Json.toCompactJson(message2));
         syncInboxService().writeMany(writeMessages(index, message1, message2));
-        System.out.printf("+ + Messages written: `%s`, `%s`\n", Json.toCompactJson(message1), Json.toCompactJson(message2));
+        System.out.printf("+ + Messages written: `%s`, `%s`\n", Json.toCompactJson(message1),
+                          Json.toCompactJson(message2));
 
         ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
 
-        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(message1Written, message2Written);
@@ -196,19 +198,23 @@ final class AdminServiceTest extends WithApp implements Logging {
         var message1 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
         var message2 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
-        System.out.printf("+ + Writing messages: `%s`, `%s`\n", Json.toCompactJson(message1), Json.toCompactJson(message2));
+        System.out.printf("+ + Writing messages: `%s`, `%s`\n", Json.toCompactJson(message1),
+                          Json.toCompactJson(message2));
         syncInboxService().writeMany(writeMessages(index, message1, message2));
-        System.out.printf("+ + Messages written: `%s`, `%s`\n", Json.toCompactJson(message1), Json.toCompactJson(message2));
-        System.out.printf("+ + Removing messages: `%s`, `%s`\n", Json.toCompactJson(message1), Json.toCompactJson(message2));
+        System.out.printf("+ + Messages written: `%s`, `%s`\n", Json.toCompactJson(message1),
+                          Json.toCompactJson(message2));
+        System.out.printf("+ + Removing messages: `%s`, `%s`\n", Json.toCompactJson(message1),
+                          Json.toCompactJson(message2));
         syncInboxService().removeMany(removeMessages(index, message1, message2));
-        System.out.printf("+ + Messages removed: `%s`, `%s`\n", Json.toCompactJson(message1), Json.toCompactJson(message2));
+        System.out.printf("+ + Messages removed: `%s`, `%s`\n", Json.toCompactJson(message1),
+                          Json.toCompactJson(message2));
 
         ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
         ShardInfoUpdate message1Removed = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Removed = messagesCountChangedTo(index, 0);
 
-        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
         assertHasNoError(observer);
         System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(

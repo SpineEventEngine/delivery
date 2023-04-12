@@ -102,12 +102,19 @@ public final class SimpleApp implements Logging {
         var app = new SimpleApp();
         Runtime.getRuntime()
                .addShutdownHook(new Thread(app::shutdown));
-        app.initAndStart();
+        app.initAndStart(productionServerBuilder());
     }
 
+    /**
+     * Initialises and starts the {@code Server} build with the given {@code serverBuilder}.
+     *
+     * <p>This method adds all necessary services to run the server and sets
+     * the {@linkplain ServerBuilder#maxInboundMessageSize(int) maxInboundMessageSize()}
+     * to the predefined {@linkplain #MESSAGE_SIZE size}.
+     */
     @VisibleForTesting
     @SuppressWarnings("OverlyBroadCatchBlock" /* We do want to catch all exceptions. */)
-    void initAndStart() {
+    void initAndStart(ServerBuilder<? extends ServerBuilder<?>> serverBuilder) {
         ReportingStorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
         ShardService shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
@@ -116,9 +123,7 @@ public final class SimpleApp implements Logging {
                 .register(inboxService)
                 .register(shardService)
                 .register(adminService);
-        this.server = ServerBuilder
-                .forPort(PORT)
-                .executor(executor)
+        this.server = serverBuilder
                 .addService(inboxService)
                 .addService(shardService)
                 .addService(adminService)
@@ -141,6 +146,16 @@ public final class SimpleApp implements Logging {
         } finally {
             close(factory);
         }
+    }
+
+    /**
+     * Creates a new {@code ServerBuilder} for a server running on this instance
+     * on the predefined {@linkplain #PORT port} and uses the {@linkplain #executor}.
+     */
+    private static ServerBuilder<?> productionServerBuilder() {
+        return ServerBuilder
+                .forPort(PORT)
+                .executor(executor);
     }
 
     /**
