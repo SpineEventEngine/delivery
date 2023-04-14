@@ -9,7 +9,6 @@ package io.spine.message.delivery.server.grpc;
 import com.google.protobuf.Empty;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
-import io.spine.json.Json;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.admin.ShardMessagesCountHolder;
 import io.spine.message.delivery.admin.ShardUpdateSubscribersHolder;
@@ -17,6 +16,7 @@ import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
+import io.spine.message.delivery.admin.grpc.SubscriptionResponse;
 import io.spine.message.delivery.server.ExtendedInboxStorage;
 import io.spine.message.delivery.server.ReportingStorageFactory;
 import io.spine.message.delivery.server.ShardRegistryStorage;
@@ -80,9 +80,25 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
 
     @Override
     public void
-    subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> observer) {
+    subscribeToShardUpdates(Empty request, StreamObserver<SubscriptionResponse> observer) {
         _debug().log("= = Received new subscription request.");
-        subscribers.addSubscriber(observer);
+        ServerCallStreamObserver<SubscriptionResponse> serverCallObserver = toServerCall(observer);
+        subscribers.addSubscriber(new MappingStreamObserver<>(serverCallObserver, AdminService::toResponse));
+        serverCallObserver.onNext(ack());
+    }
+
+    private static SubscriptionResponse ack() {
+        return SubscriptionResponse
+                .newBuilder()
+                .setCreated(true)
+                .vBuild();
+    }
+
+    private static SubscriptionResponse toResponse(ShardInfoUpdate update) {
+        return SubscriptionResponse
+                .newBuilder()
+                .setUpdate(update)
+                .vBuild();
     }
 
     /**
@@ -148,9 +164,9 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
      * {@code StreamObserver} to {@code ServerCallStreamObserver} in server side implementation
      * of the service.
      */
-    private static ServerCallStreamObserver<ShardInfoUpdate>
-    toServerCall(StreamObserver<ShardInfoUpdate> observer) {
-        return (ServerCallStreamObserver<ShardInfoUpdate>) observer;
+    private static <T> ServerCallStreamObserver<T>
+    toServerCall(StreamObserver<T> observer) {
+        return (ServerCallStreamObserver<T>) observer;
     }
 
     @Override

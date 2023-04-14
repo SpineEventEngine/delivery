@@ -8,13 +8,16 @@ package io.spine.message.delivery.server.grpc;
 
 import com.google.common.truth.Truth8;
 import com.google.common.truth.extensions.proto.IterableOfProtosFluentAssertion;
+import com.google.common.util.concurrent.SettableFuture;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
+import io.grpc.stub.StreamObserver;
 import io.spine.grpc.MemoizingObserver;
 import io.spine.json.Json;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
+import io.spine.message.delivery.admin.grpc.SubscriptionResponse;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.server.FutureMemoizingObserver;
@@ -26,6 +29,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -319,8 +324,55 @@ final class AdminServiceTest extends WithApp implements Logging {
             }
         };
         System.out.printf("+ + Subscribing to updates...\n");
-        adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), observer);
+        WithAckObserver ackObserver = new WithAckObserver(observer);
+        adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), ackObserver);
+        ackObserver.waitForAcknowledgment();
         System.out.printf("+ + Subscribed.\n");
         return observer;
+    }
+
+    private class WithAckObserver implements StreamObserver<SubscriptionResponse> {
+
+        private final SettableFuture<Boolean> ack = SettableFuture.create();
+
+        private final StreamObserver<ShardInfoUpdate> observer;
+
+        private final List<ShardInfoUpdate> beforeAck = new ArrayList<>();
+
+        private WithAckObserver(StreamObserver<ShardInfoUpdate> observer) {
+            this.observer = observer;
+        }
+
+        @Override
+        public void onNext(SubscriptionResponse value) {
+            if (value.hasCreated()) {
+                ack.set(true);
+                beforeAck.forEach(observer::onNext);
+            } else {
+                if (ack.isDone()) {
+                    observer.onNext(value.getUpdate());
+                } else {
+                    beforeAck.add(value.getUpdate());
+                }
+            }
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            observer.onError(t);
+        }
+
+        @Override
+        public void onCompleted() {
+            observer.onCompleted();
+        }
+
+        public void waitForAcknowledgment() {
+            try {
+                ack.get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }

@@ -102,7 +102,7 @@ public final class SimpleApp implements Logging {
         var app = new SimpleApp();
         Runtime.getRuntime()
                .addShutdownHook(new Thread(app::shutdown));
-        app.initAndStart(productionServerBuilder());
+        app.initAndStart();
     }
 
     /**
@@ -114,7 +114,7 @@ public final class SimpleApp implements Logging {
      */
     @VisibleForTesting
     @SuppressWarnings("OverlyBroadCatchBlock" /* We do want to catch all exceptions. */)
-    void initAndStart(ServerBuilder<? extends ServerBuilder<?>> serverBuilder) {
+    void initAndStart() {
         ReportingStorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
         ShardService shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
@@ -123,7 +123,9 @@ public final class SimpleApp implements Logging {
                 .register(inboxService)
                 .register(shardService)
                 .register(adminService);
-        this.server = serverBuilder
+        this.server = ServerBuilder
+                .forPort(PORT)
+                .executor(executor)
                 .addService(inboxService)
                 .addService(shardService)
                 .addService(adminService)
@@ -146,16 +148,6 @@ public final class SimpleApp implements Logging {
         } finally {
             close(factory);
         }
-    }
-
-    /**
-     * Creates a new {@code ServerBuilder} for a server running on this instance
-     * on the predefined {@linkplain #PORT port} and uses the {@linkplain #executor}.
-     */
-    private static ServerBuilder<?> productionServerBuilder() {
-        return ServerBuilder
-                .forPort(PORT)
-                .executor(executor);
     }
 
     /**

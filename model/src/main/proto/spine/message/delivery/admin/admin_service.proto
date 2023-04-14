@@ -30,7 +30,15 @@ service AdminService {
     //
     // Each update will be sent as a single `ShardInfoUpdate`.
     //
-    rpc SubscribeToShardUpdates(google.protobuf.Empty) returns (stream ShardInfoUpdate);
+    rpc SubscribeToShardUpdates(google.protobuf.Empty) returns (stream SubscriptionResponse);
+}
+
+message SubscriptionResponse {
+
+    oneof value {
+        bool created = 1;
+        ShardInfoUpdate update = 2;
+    }
 }
 
 // An update of the shard info.
