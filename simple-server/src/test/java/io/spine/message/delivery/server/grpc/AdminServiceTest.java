@@ -8,6 +8,7 @@ package io.spine.message.delivery.server.grpc;
 
 import com.google.common.truth.Truth8;
 import com.google.common.truth.extensions.proto.IterableOfProtosFluentAssertion;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Message;
 import io.spine.grpc.MemoizingObserver;
@@ -16,6 +17,7 @@ import io.spine.logging.Logging;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.server.FutureMemoizingObserver;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.test.message.delivery.server.Something;
@@ -24,11 +26,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.util.Iterator;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
-import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.messagesCountChangedTo;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.shardUnpicked;
@@ -47,13 +51,12 @@ import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.te
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.writeMessage;
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.writeMessages;
 import static io.spine.server.delivery.DeliveryStrategy.newIndex;
-import static java.time.Duration.ofSeconds;
 
 @Tag("admin")
 @DisplayName("`AdminService` should")
 final class AdminServiceTest extends WithApp implements Logging {
 
-    private static final int SLEEP_SECONDS = 2;
+    private static final int WAIT_SECONDS = 2;
 
     @Test
     @DisplayName("get current information about shards")
@@ -91,13 +94,14 @@ final class AdminServiceTest extends WithApp implements Logging {
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
 
+        Future<ShardInfoUpdate> future = observer.nextOnNext();
         System.out.printf("+ + Picking shard... `%s` \n", Json.toCompactJson(index));
         syncShardService().pickShard(pickUpShard(index));
         System.out.printf("+ + Shard picked! `%s` \n", Json.toCompactJson(index));
 
         ShardInfoUpdate expected = shardPickedWithoutTime(index);
 
-//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertContains(future, expected);
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(expected);
     }
@@ -109,6 +113,11 @@ final class AdminServiceTest extends WithApp implements Logging {
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
 
+        var pickedFuture =
+                observer.nextOnNextMatching(update -> update.getNewStatus() == PICKED);
+        var notPickedFuture =
+                observer.nextOnNextMatching(update -> update.getNewStatus() == NOT_PICKED);
+
         PickUpShard pickUpShard = pickUpShard(index);
         ShardPickedUp pickedUp = syncShardService().pickShard(pickUpShard);
         syncShardService().releaseSession(releaseShard(pickedUp));
@@ -116,7 +125,8 @@ final class AdminServiceTest extends WithApp implements Logging {
         ShardInfoUpdate pickedUpdate = shardPickedWithoutTime(index);
         ShardInfoUpdate unpickedUpdate = shardUnpicked(index);
 
-//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertContains(pickedFuture, pickedUpdate);
+        assertContains(notPickedFuture, unpickedUpdate);
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(pickedUpdate, unpickedUpdate);
     }
@@ -126,6 +136,7 @@ final class AdminServiceTest extends WithApp implements Logging {
     void notifyMessageWritten() {
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
+        var messageWrittenFuture = observer.nextOnNext();
 
         var message = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
@@ -135,7 +146,7 @@ final class AdminServiceTest extends WithApp implements Logging {
 
         ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
 
-//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertContains(messageWrittenFuture, messageWritten);
         assertHasNoError(observer);
         System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(messageWritten);
@@ -146,6 +157,10 @@ final class AdminServiceTest extends WithApp implements Logging {
     void notifyMessageRemoved() {
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
+        var messageWrittenFuture =
+                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 1);
+        var messageRemovedFuture =
+                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 0);
 
         var message = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
@@ -159,7 +174,8 @@ final class AdminServiceTest extends WithApp implements Logging {
         ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
         ShardInfoUpdate messageRemoved = messagesCountChangedTo(index, 0);
 
-//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertContains(messageWrittenFuture, messageWritten);
+        assertContains(messageRemovedFuture, messageRemoved);
         assertHasNoError(observer);
         System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(messageWritten, messageRemoved);
@@ -174,6 +190,11 @@ final class AdminServiceTest extends WithApp implements Logging {
         var message1 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
         var message2 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
+        var message1WrittenFuture =
+                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 1);
+        var message2WrittenFuture =
+                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 2);
+
         System.out.printf("+ + Writing messages: `%s`, `%s`\n", Json.toCompactJson(message1),
                           Json.toCompactJson(message2));
         syncInboxService().writeMany(writeMessages(index, message1, message2));
@@ -183,7 +204,8 @@ final class AdminServiceTest extends WithApp implements Logging {
         ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
 
-//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertContains(message1WrittenFuture, message1Written);
+        assertContains(message2WrittenFuture, message2Written);
         assertHasNoError(observer);
         System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(message1Written, message2Written);
@@ -198,23 +220,37 @@ final class AdminServiceTest extends WithApp implements Logging {
         var message1 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
         var message2 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
+        var message1WrittenFuture =
+                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 1);
+        var message2WrittenFuture =
+                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 2);
+
         System.out.printf("+ + Writing messages: `%s`, `%s`\n", Json.toCompactJson(message1),
                           Json.toCompactJson(message2));
         syncInboxService().writeMany(writeMessages(index, message1, message2));
         System.out.printf("+ + Messages written: `%s`, `%s`\n", Json.toCompactJson(message1),
                           Json.toCompactJson(message2));
+        ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
+        ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
+        assertContains(message1WrittenFuture, message1Written);
+        assertContains(message2WrittenFuture, message2Written);
+
+        var message1RemovedFuture =
+                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 1);
+        var message2RemovedFuture =
+                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 0);
+
         System.out.printf("+ + Removing messages: `%s`, `%s`\n", Json.toCompactJson(message1),
                           Json.toCompactJson(message2));
         syncInboxService().removeMany(removeMessages(index, message1, message2));
         System.out.printf("+ + Messages removed: `%s`, `%s`\n", Json.toCompactJson(message1),
                           Json.toCompactJson(message2));
 
-        ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
-        ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
         ShardInfoUpdate message1Removed = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Removed = messagesCountChangedTo(index, 0);
 
-//        sleepUninterruptibly(ofSeconds(SLEEP_SECONDS));
+        assertContains(message1RemovedFuture, message1Removed);
+        assertContains(message2RemovedFuture, message2Removed);
         assertHasNoError(observer);
         System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(
@@ -241,6 +277,20 @@ final class AdminServiceTest extends WithApp implements Logging {
         return assertThat(observer.responses()).comparingExpectedFieldsOnly();
     }
 
+    @CanIgnoreReturnValue
+    private static <T extends Message> T assertContains(Future<T> future, T expected) {
+        T message;
+        try {
+            message = future.get(WAIT_SECONDS, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+        assertThat(message)
+                .comparingExpectedFieldsOnly()
+                .isEqualTo(expected);
+        return message;
+    }
+
     /**
      * Subscribes to the shard updates on the {@code AdminService} and returns an observer that
      * collects all updates for further assertions.
@@ -248,8 +298,8 @@ final class AdminServiceTest extends WithApp implements Logging {
      * <p>Also waits for {@link #SLEEP_SECONDS} to ensure that the subscription is created
      * on the server.
      */
-    private MemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
-        var observer = new MemoizingObserver<ShardInfoUpdate>() {
+    private FutureMemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
+        var observer = new FutureMemoizingObserver<ShardInfoUpdate>() {
             @Override
             public void onNext(ShardInfoUpdate value) {
                 System.out.printf("+= += onNext(), `%s`\n", Json.toCompactJson(value));

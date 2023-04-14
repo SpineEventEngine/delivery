@@ -128,7 +128,6 @@ public abstract class WithApp {
         ManagedChannel channel = InProcessChannelBuilder
                 .forName(SERVER_TEST_NAME)
                 .usePlaintext()
-                .directExecutor()
                 .build();
         return channel;
     }
