@@ -1,0 +1,40 @@
+/*
+ * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+
+package io.spine.message.delivery.admin;
+
+import io.grpc.stub.ServerCallStreamObserver;
+import io.spine.message.delivery.admin.grpc.SubscriptionResponse;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+
+/**
+ * Filters out updates that is sent before the response was acknowledged.
+ *
+ * <p>This observer guaranties that the {@code SubscriptionResponse} acknowledging the subscription
+ * will arrive first. All the updates that may be posted before acknowledging response
+ * will be omitted by this observer.
+ */
+public final class FilteringObserver extends DelegatingStreamObserver<SubscriptionResponse> {
+
+    private final AtomicBoolean isAcknowledged = new AtomicBoolean(false);
+
+    public FilteringObserver(ServerCallStreamObserver<SubscriptionResponse> delegate) {
+        super(delegate);
+    }
+
+    @Override
+    public void onNext(SubscriptionResponse value) {
+        if (isAcknowledged.get()) {
+            super.onNext(value);
+        } else {
+            if (value.hasCreated()) {
+                isAcknowledged.set(true);
+                super.onNext(value);
+            }
+        }
+    }
+}
