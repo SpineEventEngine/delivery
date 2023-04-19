@@ -326,18 +326,20 @@ final class AdminServiceTest extends WithApp implements Logging {
         System.out.printf("+ + Subscribing to updates...\n");
         WithAckObserver ackObserver = new WithAckObserver(observer);
         adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), ackObserver);
+        System.out.printf("+ + received a response but waiting for an ack from the server...\n");
         ackObserver.waitForAcknowledgment();
         System.out.printf("+ + Subscribed.\n");
         return observer;
     }
 
+    /**
+     * An observer that allows waiting for the subscription to be acknowledged.
+     */
     private class WithAckObserver implements StreamObserver<SubscriptionResponse> {
 
         private final SettableFuture<Boolean> ack = SettableFuture.create();
 
         private final StreamObserver<ShardInfoUpdate> observer;
-
-        private final List<ShardInfoUpdate> beforeAck = new ArrayList<>();
 
         private WithAckObserver(StreamObserver<ShardInfoUpdate> observer) {
             this.observer = observer;
@@ -347,12 +349,9 @@ final class AdminServiceTest extends WithApp implements Logging {
         public void onNext(SubscriptionResponse value) {
             if (value.hasCreated()) {
                 ack.set(true);
-                beforeAck.forEach(observer::onNext);
             } else {
                 if (ack.isDone()) {
                     observer.onNext(value.getUpdate());
-                } else {
-                    beforeAck.add(value.getUpdate());
                 }
             }
         }
