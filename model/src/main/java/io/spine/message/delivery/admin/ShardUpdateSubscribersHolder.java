@@ -7,7 +7,6 @@
 package io.spine.message.delivery.admin;
 
 import io.grpc.stub.ServerCallStreamObserver;
-import io.grpc.stub.StreamObserver;
 import io.spine.json.Json;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;

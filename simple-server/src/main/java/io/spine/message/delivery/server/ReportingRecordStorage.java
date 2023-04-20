@@ -8,7 +8,6 @@ package io.spine.message.delivery.server;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
-import io.spine.json.Json;
 import io.spine.logging.Logging;
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordStorage;
@@ -57,17 +56,8 @@ public final class ReportingRecordStorage<I, R extends Message> extends RecordSt
      */
     public StorageSubscription subscribe(StorageSubscriber<I, R> subscriber) {
         String id = randomUUID().toString();
-//        System.out.printf("= = Adding a new subscription [%s] to the storage...\n", id);
         this.subscriptions.put(id, subscriber);
-//        System.out.printf("= = Subscription [%s] added.\n", id);
-        return () -> {
-//            System.out.printf("= = Removing subscription [%s] as cancelled.\n", id);
-            if (subscriptions.remove(id) != null) {
-//                System.out.printf("= = Subscription [%s] removed.\n", id);
-            } else {
-//                System.out.printf("= = Subscription [%s] not found.\n", id);
-            }
-        };
+        return () -> subscriptions.remove(id);
     }
 
     @Override
