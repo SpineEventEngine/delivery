@@ -17,6 +17,7 @@ dependencies {
     implementation(Grpc.core)
     implementation(Spine.server)
     testImplementation(project(":testutil-server"))
+    testImplementation(project(path = ":model", configuration = "testArtifacts"))
     testRuntimeOnly(Grpc.nettyShaded)
 
     // Use this one to run the app locally.
