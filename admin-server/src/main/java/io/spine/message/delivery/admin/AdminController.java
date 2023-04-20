@@ -15,7 +15,7 @@ import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.sse.Event;
 import io.micronaut.security.annotation.Secured;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
-import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
+import io.spine.message.delivery.admin.grpc.SubscriptionResponse;
 import jakarta.inject.Inject;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -66,12 +66,16 @@ final class AdminController {
     }
 
     /**
-     * Creates a new {@code Event} converting the given {@code update} to compact JSON
+     * Creates a new {@code Event} converting the given {@code response} to compact JSON
      * and generating a new {@code UUID} for the event.
+     *
+     * <p>Always gets the {@code ShardInfoUpdate} from the response, even if the response doesn't
+     * contain an actual update and serves as an acknowledging response we will get the default
+     * instance of the {@code ShardInfoUpdate} and map it to an empty event.
      */
-    private static Event<String> toEvent(ShardInfoUpdate update) {
+    private static Event<String> toEvent(SubscriptionResponse response) {
         String uuid = randomUUID().toString();
-        return Event.of(toCompactJson(update))
+        return Event.of(toCompactJson(response.getUpdate()))
                     .id(uuid);
     }
 
