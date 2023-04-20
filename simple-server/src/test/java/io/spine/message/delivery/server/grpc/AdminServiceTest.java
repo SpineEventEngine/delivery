@@ -6,21 +6,14 @@
 
 package io.spine.message.delivery.server.grpc;
 
-import com.google.common.truth.Truth8;
-import com.google.common.truth.extensions.proto.IterableOfProtosFluentAssertion;
-import com.google.common.util.concurrent.SettableFuture;
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Empty;
-import com.google.protobuf.Message;
-import io.grpc.stub.StreamObserver;
-import io.spine.grpc.MemoizingObserver;
 import io.spine.json.Json;
 import io.spine.logging.Logging;
+import io.spine.message.delivery.admin.given.FutureMemoizingObserver;
+import io.spine.message.delivery.admin.given.WithAckObserver;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
-import io.spine.message.delivery.admin.grpc.SubscriptionResponse;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.event.ShardPickedUp;
-import io.spine.message.delivery.server.FutureMemoizingObserver;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.test.message.delivery.server.Something;
@@ -29,18 +22,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.messagesCountChangedTo;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.shardUnpicked;
+import static io.spine.message.delivery.admin.given.SubscriptionAssertions.assertContains;
+import static io.spine.message.delivery.admin.given.SubscriptionAssertions.assertHasNoError;
+import static io.spine.message.delivery.admin.given.SubscriptionAssertions.assertUpdatesIn;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 import static io.spine.message.delivery.server.given.TestInboxMessages.toDeliver;
@@ -60,8 +50,6 @@ import static io.spine.server.delivery.DeliveryStrategy.newIndex;
 @Tag("admin")
 @DisplayName("`AdminService` should")
 final class AdminServiceTest extends WithApp implements Logging {
-
-    private static final int WAIT_SECONDS = 2;
 
     @Test
     @DisplayName("get current information about shards")
@@ -267,36 +255,6 @@ final class AdminServiceTest extends WithApp implements Logging {
     }
 
     /**
-     * Asserts that the given observer has no error.
-     */
-    private static <T> void assertHasNoError(MemoizingObserver<T> observer) {
-        Truth8.assertThat(Optional.ofNullable(observer.getError()))
-              .isEmpty();
-    }
-
-    /**
-     * Starts an assertion chain for updates list stored in the given {@code observer}.
-     */
-    private static <T extends Message>
-    IterableOfProtosFluentAssertion<T> assertUpdatesIn(MemoizingObserver<T> observer) {
-        return assertThat(observer.responses()).comparingExpectedFieldsOnly();
-    }
-
-    @CanIgnoreReturnValue
-    private static <T extends Message> T assertContains(Future<T> future, T expected) {
-        T message;
-        try {
-            message = future.get(WAIT_SECONDS, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            throw new RuntimeException(e);
-        }
-        assertThat(message)
-                .comparingExpectedFieldsOnly()
-                .isEqualTo(expected);
-        return message;
-    }
-
-    /**
      * Subscribes to the shard updates on the {@code AdminService} and returns an observer that
      * collects all updates for further assertions.
      *
@@ -330,48 +288,5 @@ final class AdminServiceTest extends WithApp implements Logging {
         ackObserver.waitForAcknowledgment();
         System.out.printf("+ + Subscribed.\n");
         return observer;
-    }
-
-    /**
-     * An observer that allows waiting for the subscription to be acknowledged.
-     */
-    private class WithAckObserver implements StreamObserver<SubscriptionResponse> {
-
-        private final SettableFuture<Boolean> ack = SettableFuture.create();
-
-        private final StreamObserver<ShardInfoUpdate> observer;
-
-        private WithAckObserver(StreamObserver<ShardInfoUpdate> observer) {
-            this.observer = observer;
-        }
-
-        @Override
-        public void onNext(SubscriptionResponse value) {
-            if (value.hasCreated()) {
-                ack.set(true);
-            } else {
-                if (ack.isDone()) {
-                    observer.onNext(value.getUpdate());
-                }
-            }
-        }
-
-        @Override
-        public void onError(Throwable t) {
-            observer.onError(t);
-        }
-
-        @Override
-        public void onCompleted() {
-            observer.onCompleted();
-        }
-
-        public void waitForAcknowledgment() {
-            try {
-                ack.get();
-            } catch (InterruptedException | ExecutionException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 }

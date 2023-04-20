@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.server;
+package io.spine.message.delivery.admin.given;
 
 import com.google.common.util.concurrent.AbstractFuture;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;

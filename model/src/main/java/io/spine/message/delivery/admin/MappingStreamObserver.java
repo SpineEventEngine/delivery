@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.message.delivery.server.grpc;
+package io.spine.message.delivery.admin;
 
 import io.grpc.stub.ServerCallStreamObserver;
 
@@ -12,13 +12,23 @@ import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * An observer that transforms received values and passes to the delegate.
+ *
+ * @param <I>
+ *         Type of observer values
+ * @param <O>
+ *         Type of output values
+ */
 public class MappingStreamObserver<I, O> extends ServerCallStreamObserver<I> {
 
     private final ServerCallStreamObserver<O> delegate;
     private final Function<I, O> mapper;
 
     public MappingStreamObserver(ServerCallStreamObserver<O> delegate, Function<I, O> mapper) {
+        super();
         checkNotNull(delegate);
+        checkNotNull(mapper);
         this.delegate = delegate;
         this.mapper = mapper;
     }

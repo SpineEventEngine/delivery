@@ -12,6 +12,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An observer that delegates all calls to the delegate.
+ *
+ * @param <I>
+ *         type of the observed values
  */
 public abstract class DelegatingStreamObserver<I> extends ServerCallStreamObserver<I> {
 
@@ -21,6 +24,7 @@ public abstract class DelegatingStreamObserver<I> extends ServerCallStreamObserv
      * Creates a new {@code DelegatingStreamObserver} with the given {@code delegate}.
      */
     public DelegatingStreamObserver(ServerCallStreamObserver<I> delegate) {
+        super();
         checkNotNull(delegate);
         this.delegate = delegate;
     }
