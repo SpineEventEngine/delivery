@@ -105,13 +105,6 @@ public final class SimpleApp implements Logging {
         app.initAndStart();
     }
 
-    /**
-     * Initialises and starts the {@code Server} build with the given {@code serverBuilder}.
-     *
-     * <p>This method adds all necessary services to run the server and sets
-     * the {@linkplain ServerBuilder#maxInboundMessageSize(int) maxInboundMessageSize()}
-     * to the predefined {@linkplain #MESSAGE_SIZE size}.
-     */
     @VisibleForTesting
     @SuppressWarnings("OverlyBroadCatchBlock" /* We do want to catch all exceptions. */)
     void initAndStart() {
