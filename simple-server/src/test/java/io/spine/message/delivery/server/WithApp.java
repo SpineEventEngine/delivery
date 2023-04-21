@@ -26,8 +26,6 @@ import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterrup
  */
 public abstract class WithApp {
 
-    private static final String SERVER_TEST_NAME = "SimpleServerInTests";
-
     private final SimpleApp app = new SimpleApp();
 
     private AdminServiceBlockingStub adminServiceBlocking;
