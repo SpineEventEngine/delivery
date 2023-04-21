@@ -9,8 +9,16 @@ package io.spine.message.delivery.admin;
 import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+/**
+ * Utility that provides some usefully operations with {@linkplain StreamObserver}s.
+ */
 public final class StreamObservers {
 
+    /**
+     * Prevents instantiation.
+     */
     private StreamObservers() {
     }
 
@@ -22,6 +30,7 @@ public final class StreamObservers {
      * of the service.
      */
     public static <T> ServerCallStreamObserver<T> toServerCall(StreamObserver<T> observer) {
+        checkNotNull(observer);
         return (ServerCallStreamObserver<T>) observer;
     }
 }
