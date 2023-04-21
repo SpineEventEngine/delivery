@@ -14,8 +14,6 @@ import io.spine.server.ContextSpec;
 import io.spine.server.storage.MessageRecordSpec;
 import io.spine.server.storage.RecordSpec;
 
-import java.util.UUID;
-
 import static io.spine.server.ContextSpec.singleTenant;
 
 /**

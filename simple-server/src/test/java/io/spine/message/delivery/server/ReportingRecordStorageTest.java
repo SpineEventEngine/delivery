@@ -8,10 +8,10 @@ package io.spine.message.delivery.server;
 
 import io.spine.message.delivery.server.event.TestEvent;
 import io.spine.message.delivery.server.event.TestEventId;
+import io.spine.message.delivery.server.given.ChainingCallStorage;
+import io.spine.message.delivery.server.given.DirectCallStorage;
 import io.spine.message.delivery.server.given.MemoizingStorageSubscriber;
 import io.spine.message.delivery.server.given.MemoizingStorageSubscriber.SingleWrite;
-import io.spine.message.delivery.server.given.DirectCallStorage;
-import io.spine.message.delivery.server.given.ChainingCallStorage;
 import io.spine.server.storage.RecordWithColumns;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

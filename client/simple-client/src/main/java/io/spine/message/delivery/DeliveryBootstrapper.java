@@ -8,10 +8,10 @@ package io.spine.message.delivery;
 
 import io.grpc.ManagedChannel;
 import io.spine.message.delivery.client.InboxClient;
-import io.spine.message.delivery.client.strategy.Propagate;
 import io.spine.message.delivery.client.RequestExecutionStrategy;
 import io.spine.message.delivery.client.SessionRegistryClient;
 import io.spine.message.delivery.client.SimpleDeliveryClient;
+import io.spine.message.delivery.client.strategy.Propagate;
 import io.spine.server.delivery.Delivery;
 
 import java.util.function.Supplier;

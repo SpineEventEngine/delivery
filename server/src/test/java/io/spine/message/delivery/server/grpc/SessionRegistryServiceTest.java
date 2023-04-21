@@ -6,7 +6,6 @@
 
 package io.spine.message.delivery.server.grpc;
 
-import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.protobuf.util.Durations;
 import io.grpc.StatusRuntimeException;
 import io.spine.message.delivery.command.PickUpShard;
