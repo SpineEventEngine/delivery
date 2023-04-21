@@ -7,7 +7,6 @@
 package io.spine.message.delivery.server.grpc;
 
 import com.google.protobuf.Empty;
-import io.spine.json.Json;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.admin.given.FutureMemoizingObserver;
 import io.spine.message.delivery.admin.given.WithAckObserver;
@@ -88,9 +87,7 @@ final class AdminServiceTest extends WithApp implements Logging {
         var observer = subscribeToUpdates();
 
         Future<ShardInfoUpdate> future = observer.nextOnNext();
-        System.out.printf("+ + Picking shard... `%s` \n", Json.toCompactJson(index));
         syncShardService().pickShard(pickUpShard(index));
-        System.out.printf("+ + Shard picked! `%s` \n", Json.toCompactJson(index));
 
         ShardInfoUpdate expected = shardPickedWithoutTime(index);
 
@@ -133,15 +130,12 @@ final class AdminServiceTest extends WithApp implements Logging {
 
         var message = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
-        System.out.printf("+ + Writing message: `%s`\n", Json.toCompactJson(message));
         syncInboxService().writeOne(writeMessage(message));
-        System.out.printf("+ + Message written: `%s`\n", Json.toCompactJson(message));
 
         ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
 
         assertContains(messageWrittenFuture, messageWritten);
         assertHasNoError(observer);
-        System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(messageWritten);
     }
 
@@ -157,12 +151,8 @@ final class AdminServiceTest extends WithApp implements Logging {
 
         var message = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
-        System.out.printf("+ + Writing message: `%s`\n", Json.toCompactJson(message));
         syncInboxService().writeOne(writeMessage(message));
-        System.out.printf("+ + Message written: `%s`\n", Json.toCompactJson(message));
-        System.out.printf("+ + Removing message: `%s`\n", Json.toCompactJson(message));
         syncInboxService().removeOne(removeMessage(message));
-        System.out.printf("+ + Message removed: `%s`\n", Json.toCompactJson(message));
 
         ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
         ShardInfoUpdate messageRemoved = messagesCountChangedTo(index, 0);
@@ -170,7 +160,6 @@ final class AdminServiceTest extends WithApp implements Logging {
         assertContains(messageWrittenFuture, messageWritten);
         assertContains(messageRemovedFuture, messageRemoved);
         assertHasNoError(observer);
-        System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(messageWritten, messageRemoved);
     }
 
@@ -188,11 +177,7 @@ final class AdminServiceTest extends WithApp implements Logging {
         var message2WrittenFuture =
                 observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 2);
 
-        System.out.printf("+ + Writing messages: `%s`, `%s`\n", Json.toCompactJson(message1),
-                          Json.toCompactJson(message2));
         syncInboxService().writeMany(writeMessages(index, message1, message2));
-        System.out.printf("+ + Messages written: `%s`, `%s`\n", Json.toCompactJson(message1),
-                          Json.toCompactJson(message2));
 
         ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
@@ -200,7 +185,6 @@ final class AdminServiceTest extends WithApp implements Logging {
         assertContains(message1WrittenFuture, message1Written);
         assertContains(message2WrittenFuture, message2Written);
         assertHasNoError(observer);
-        System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(message1Written, message2Written);
     }
 
@@ -218,11 +202,8 @@ final class AdminServiceTest extends WithApp implements Logging {
         var message2WrittenFuture =
                 observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 2);
 
-        System.out.printf("+ + Writing messages: `%s`, `%s`\n", Json.toCompactJson(message1),
-                          Json.toCompactJson(message2));
         syncInboxService().writeMany(writeMessages(index, message1, message2));
-        System.out.printf("+ + Messages written: `%s`, `%s`\n", Json.toCompactJson(message1),
-                          Json.toCompactJson(message2));
+
         ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
         assertContains(message1WrittenFuture, message1Written);
@@ -233,11 +214,7 @@ final class AdminServiceTest extends WithApp implements Logging {
         var message2RemovedFuture =
                 observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 0);
 
-        System.out.printf("+ + Removing messages: `%s`, `%s`\n", Json.toCompactJson(message1),
-                          Json.toCompactJson(message2));
         syncInboxService().removeMany(removeMessages(index, message1, message2));
-        System.out.printf("+ + Messages removed: `%s`, `%s`\n", Json.toCompactJson(message1),
-                          Json.toCompactJson(message2));
 
         ShardInfoUpdate message1Removed = messagesCountChangedTo(index, 1);
         ShardInfoUpdate message2Removed = messagesCountChangedTo(index, 0);
@@ -245,7 +222,6 @@ final class AdminServiceTest extends WithApp implements Logging {
         assertContains(message1RemovedFuture, message1Removed);
         assertContains(message2RemovedFuture, message2Removed);
         assertHasNoError(observer);
-        System.out.printf("+ + Asserting notifications.\n");
         assertUpdatesIn(observer).containsExactly(
                 message1Written,
                 message2Written,
@@ -262,31 +238,10 @@ final class AdminServiceTest extends WithApp implements Logging {
      * on the server.
      */
     private FutureMemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
-        var observer = new FutureMemoizingObserver<ShardInfoUpdate>() {
-            @Override
-            public void onNext(ShardInfoUpdate value) {
-                System.out.printf("+= += onNext(), `%s`\n", Json.toCompactJson(value));
-                super.onNext(value);
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                System.out.printf("+= += onError(), `%s`\n", t);
-                super.onError(t);
-            }
-
-            @Override
-            public void onCompleted() {
-                System.out.printf("+= += Observer completed.\n");
-                super.onCompleted();
-            }
-        };
-        System.out.printf("+ + Subscribing to updates...\n");
+        var observer = new FutureMemoizingObserver<ShardInfoUpdate>();
         WithAckObserver ackObserver = new WithAckObserver(observer);
         adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), ackObserver);
-        System.out.printf("+ + received a response but waiting for an ack from the server...\n");
         ackObserver.waitForAcknowledgment();
-        System.out.printf("+ + Subscribed.\n");
         return observer;
     }
 }

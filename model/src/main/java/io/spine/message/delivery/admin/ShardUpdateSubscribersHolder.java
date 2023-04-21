@@ -61,16 +61,12 @@ public final class ShardUpdateSubscribersHolder implements Logging {
      */
     public void notifySubs(ShardInfoUpdate update) {
         _debug().log("Notifying %d subscribers about update.", subscribers.size());
-        System.out.printf("= = Notifying %d subscribers about update: `%s`.\n", subscribers.size(), Json.toCompactJson(update));
         var invalidSubIds = new ArrayList<String>();
         for (var entry : subscribers.entrySet()) {
             try {
-                System.out.printf("= = Notifying [%s] sub about update: `%s`\n", entry.getKey(), Json.toCompactJson(update));
                 entry.getValue()
                      .onNext(update);
-                System.out.printf("= = SUCCESSFULLY notified [%s] sub about update: `%s`\n", entry.getKey(), Json.toCompactJson(update));
             } catch (RuntimeException e) {
-                System.out.printf("= = !ERROR notifying [%s] sub about update: `%s`.\n", entry.getKey(), Json.toCompactJson(update));
                 _debug().withCause(e)
                         .log("Error notifying the subscriber [%s]; it will be removed.",
                              entry.getKey());

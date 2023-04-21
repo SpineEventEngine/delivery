@@ -121,23 +121,13 @@ public final class ReportingRecordStorage<I, R extends Message> extends RecordSt
      * {@code record} with the given {@code id}.
      */
     private void notifyWrite(I id, R record) {
-        subscriptions.forEach((key, value) -> {
-//            System.out.printf("= = Notifying [%s] about a new write of [%s]\n", key,
-//                         Json.toCompactJson(record));
-            value.onWrite(id, record);
-//            System.out.printf("= = Sub [%s] notified about a new write of [%s]\n", key,
-//                         Json.toCompactJson(record));
-        });
+        subscriptions.forEach((key, value) -> value.onWrite(id, record));
     }
 
     /**
      * Notifies all the subscribers about a new delete operation performed on the given {@code id}.
      */
     private void notifyDeleted(I id) {
-        subscriptions.forEach((key, value) -> {
-//            System.out.printf("= = Notifying [%s] about a deletion of [%s]\n", key, id);
-            value.onDelete(id);
-//            System.out.printf("= = Sub [%s] notified about deletion of [%s]\n", key, id);
-        });
+        subscriptions.forEach((key, value) -> value.onDelete(id));
     }
 }
