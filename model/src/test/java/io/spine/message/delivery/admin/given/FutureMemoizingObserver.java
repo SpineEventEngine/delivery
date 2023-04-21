@@ -17,6 +17,12 @@ import java.util.function.Predicate;
 
 import static java.util.Collections.synchronizedList;
 
+/**
+ * An observer that allows to wait for a particular messages being sent to it.
+ *
+ * @param <T>
+ *         type of the observer values
+ */
 public class FutureMemoizingObserver<T> extends MemoizingObserver<T> {
 
     private final List<FutureWithPredicate<T>> onNextFutures =
@@ -36,23 +42,21 @@ public class FutureMemoizingObserver<T> extends MemoizingObserver<T> {
         onErrorFutures.removeIf(future -> future.set(t));
     }
 
+    /**
+     * Returns a {@code Future} that will be resolved as soon as the next value will be delivered
+     * to the observer.
+     */
     public Future<T> nextOnNext() {
         return nextOnNextMatching(o -> true);
     }
 
+    /**
+     * Returns a {@code Future} that will be resolved as soon as the next value matching the given
+     * {@code predicate} will be delivered to the observer.
+     */
     public Future<T> nextOnNextMatching(Predicate<T> predicate) {
         FutureWithPredicate<T> future = new FutureWithPredicate<>(predicate);
         onNextFutures.add(future);
-        return future;
-    }
-
-    public Future<Throwable> nextOnError() {
-        return nextOnErrorMatching(e -> true);
-    }
-
-    public Future<Throwable> nextOnErrorMatching(Predicate<Throwable> predicate) {
-        FutureWithPredicate<Throwable> future = new FutureWithPredicate<>(predicate);
-        onErrorFutures.add(future);
         return future;
     }
 

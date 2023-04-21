@@ -24,6 +24,9 @@ public final class SubscriptionAssertions {
 
     private static final int WAIT_SECONDS = 2;
 
+    private SubscriptionAssertions() {
+    }
+
     /**
      * Asserts that the given observer has no error.
      */

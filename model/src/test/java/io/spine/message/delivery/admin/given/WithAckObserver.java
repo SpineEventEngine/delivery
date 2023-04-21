@@ -24,6 +24,9 @@ public class WithAckObserver implements StreamObserver<SubscriptionResponse> {
 
     private final StreamObserver<ShardInfoUpdate> observer;
 
+    /**
+     * Creates a new {@code WithAckObserver} with the given {@code observer} as its update source.
+     */
     public WithAckObserver(StreamObserver<ShardInfoUpdate> observer) {
         this.observer = observer;
     }
@@ -49,6 +52,10 @@ public class WithAckObserver implements StreamObserver<SubscriptionResponse> {
         observer.onCompleted();
     }
 
+    /**
+     * Block the current thread until the {@code SubscriptionResponse} containing an acknowledgement
+     * will be received.
+     */
     public void waitForAcknowledgment() {
         try {
             ack.get();
