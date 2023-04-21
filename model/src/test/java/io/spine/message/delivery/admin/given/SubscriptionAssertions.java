@@ -20,6 +20,9 @@ import java.util.concurrent.TimeoutException;
 
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 
+/**
+ * A utility for starting an assertion chains with {@code MemoizingObserver}s and {@code Future}s.
+ */
 public final class SubscriptionAssertions {
 
     private static final int WAIT_SECONDS = 2;
@@ -43,6 +46,12 @@ public final class SubscriptionAssertions {
         return assertThat(observer.responses()).comparingExpectedFieldsOnly();
     }
 
+    /**
+     * Asserts that the given {@code future} will be resolved in a {@linkplain #WAIT_SECONDS}
+     * timeout with the message equals to the {@code expected} one.
+     *
+     * @return the message returned by the given {@code future}.
+     */
     @CanIgnoreReturnValue
     public static <T extends Message> T assertContains(Future<T> future, T expected) {
         T message;
