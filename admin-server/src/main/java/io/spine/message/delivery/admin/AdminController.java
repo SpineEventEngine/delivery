@@ -15,13 +15,16 @@ import io.micronaut.http.annotation.Produces;
 import io.micronaut.http.sse.Event;
 import io.micronaut.security.annotation.Secured;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
+import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.admin.grpc.SubscriptionResponse;
 import jakarta.inject.Inject;
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
+import java.util.Iterator;
 import java.util.function.Function;
 
+import static com.google.common.collect.Iterators.filter;
 import static com.google.common.collect.Iterators.transform;
 import static io.micronaut.security.rules.SecurityRule.IS_AUTHENTICATED;
 import static io.spine.json.Json.toCompactJson;
@@ -59,23 +62,31 @@ final class AdminController {
     @Produces(MediaType.TEXT_EVENT_STREAM)
     public Publisher<Event<String>> subscribeOnShardUpdates() throws Exception {
         return withGrpcContext((context) -> {
-            var updates = adminService.subscribeToShardUpdates(REQUEST);
+            var responses = adminService.subscribeToShardUpdates(REQUEST);
+            var updates = updatesOnly(responses);
             return Flux.fromIterable(() -> transform(updates, AdminController::toEvent))
                        .doFinally(signal -> context.close());
         });
     }
 
     /**
-     * Creates a new {@code Event} converting the given {@code response} to compact JSON
-     * and generating a new {@code UUID} for the event.
-     *
-     * <p>Always gets the {@code ShardInfoUpdate} from the response, even if the response doesn't
-     * contain an actual update and serves as an acknowledging response we will get the default
-     * instance of the {@code ShardInfoUpdate} and map it to an empty event.
+     * Returns an {@code Iterator} containing only {@code ShardInfoUpdate}s, omitting
+     * the acknowledgement responses.
      */
-    private static Event<String> toEvent(SubscriptionResponse response) {
+    private static Iterator<ShardInfoUpdate> updatesOnly(Iterator<SubscriptionResponse> responses) {
+        return transform(
+                filter(responses, SubscriptionResponse::hasUpdate),
+                SubscriptionResponse::getUpdate
+        );
+    }
+
+    /**
+     * Creates a new {@code Event} converting the given {@code update} to compact JSON
+     * and generating a new {@code UUID} for the event.
+     */
+    private static Event<String> toEvent(ShardInfoUpdate update) {
         String uuid = randomUUID().toString();
-        return Event.of(toCompactJson(response.getUpdate()))
+        return Event.of(toCompactJson(update))
                     .id(uuid);
     }
 
