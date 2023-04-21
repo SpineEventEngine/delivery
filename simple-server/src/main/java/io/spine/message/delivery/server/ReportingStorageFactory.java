@@ -237,11 +237,6 @@ public final class ReportingStorageFactory implements StorageFactory, Logging {
         }
 
         @Override
-        public String toString() {
-            return '[' + idType.getSimpleName() + " | " +recordType.getSimpleName() + ']';
-        }
-
-        @Override
         public boolean equals(Object o) {
             if (this == o) {
                 return true;
