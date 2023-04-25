@@ -86,6 +86,7 @@ public final class SessionRegistryService
                               var error = ShardAlreadyPickedUp.newBuilder()
                                       .setShard(e.getShard())
                                       .setWorker(e.getWorker())
+                                      .setWhenPicked(e.getWhenPicked())
                                       .build();
                               responseObserver.onError(
                                       FAILED_PRECONDITION

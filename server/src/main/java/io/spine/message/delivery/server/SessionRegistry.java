@@ -60,6 +60,7 @@ final class SessionRegistry
             throw ShardAlreadyPickedUp.newBuilder()
                     .setShard(shard)
                     .setWorker(worker)
+                    .setWhenPicked(state.getWhenPicked())
                     .build();
         }
     }
