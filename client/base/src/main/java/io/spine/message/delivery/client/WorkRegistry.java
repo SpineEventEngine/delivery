@@ -11,16 +11,13 @@ import com.google.protobuf.Duration;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.event.ExpiredSession;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
-import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.server.NodeId;
+import io.spine.server.delivery.PickUpOutcome;
 import io.spine.server.delivery.ShardIndex;
-import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.delivery.ShardedWorkRegistry;
 import io.spine.server.delivery.WorkerId;
 
-import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -47,29 +44,25 @@ public final class WorkRegistry implements ShardedWorkRegistry, Logging {
      * provided node ID and current thread ID.
      */
     @Override
-    public Optional<ShardProcessingSession> pickUp(ShardIndex index, NodeId nodeId) {
+    public PickUpOutcome pickUp(ShardIndex index, NodeId nodeId) {
         checkNotDefaultArg(index);
         checkNotDefaultArg(nodeId);
         return client
                 .get()
-                .pickUpShard(index, workerId(nodeId))
-                .map(WorkRegistry::session)
-                .map(sessionRecord -> new Session(sessionRecord, this::releaseShard));
+                .pickUpShard(index, workerId(nodeId));
+    }
+
+    @Override
+    public void release(ShardSessionRecord session) {
+        releaseShard(session);
     }
 
     private static WorkerId workerId(NodeId nodeId) {
-        String threadId = String.valueOf(Thread.currentThread().getId());
+        String threadId = String.valueOf(Thread.currentThread()
+                                               .getId());
         return WorkerId.newBuilder()
                 .setNodeId(nodeId)
                 .setValue(threadId)
-                .vBuild();
-    }
-
-    private static ShardSessionRecord session(ShardPickedUp event) {
-        return ShardSessionRecord.newBuilder()
-                .setIndex(event.getShard())
-                .setWorker(event.getWorker())
-                .setWhenLastPicked(event.getWhenPicked())
                 .vBuild();
     }
 
@@ -91,22 +84,5 @@ public final class WorkRegistry implements ShardedWorkRegistry, Logging {
                 .stream()
                 .map(ExpiredSession::getShard)
                 .collect(ImmutableList.toImmutableList());
-    }
-
-    private static final class Session extends ShardProcessingSession {
-
-        private final Consumer<ShardSessionRecord> onComplete;
-        private final ShardSessionRecord record;
-
-        private Session(ShardSessionRecord record, Consumer<ShardSessionRecord> onComplete) {
-            super(record);
-            this.onComplete = onComplete;
-            this.record = record;
-        }
-
-        @Override
-        protected void complete() {
-            onComplete.accept(record);
-        }
     }
 }

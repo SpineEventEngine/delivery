@@ -8,11 +8,9 @@ package io.spine.message.delivery.client;
 
 import com.google.protobuf.Duration;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
-import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.server.delivery.PickUpOutcome;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
-
-import java.util.Optional;
 
 /**
  * A client for working with the delivery session registry.
@@ -28,7 +26,7 @@ public interface SessionRegistryClient {
      *         the ID of the worker which would like to work with the shard
      * @return the shard picked up acknowledgement event if the shard was picked up, empty otherwise
      */
-    Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker);
+    PickUpOutcome pickUpShard(ShardIndex shard, WorkerId worker);
 
     /**
      * Attempts to release the {@code shard}.
