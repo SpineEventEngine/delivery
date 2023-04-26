@@ -6,11 +6,14 @@
 
 package io.spine.message.delivery.server.grpc;
 
+import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
+import io.spine.base.Time;
+import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
+import io.spine.message.delivery.rejection.Rejections;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv;
+import io.spine.time.testing.FrozenMadHatterParty;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,12 +25,11 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.asPickedUp;
+import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.asReleased;
 import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.pickUpShard;
 import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.release;
 import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.releaseExpiredSessions;
-import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.asReleased;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`ShardService` should")
 final class ShardServiceTest {
@@ -49,7 +51,9 @@ final class ShardServiceTest {
             var request = pickUpShard();
             var pickedUp = syncShardService().pickShard(request);
             var expected = asPickedUp(request);
-            assertThat(pickedUp)
+            assertThat(pickedUp.hasPickedUp())
+                    .isTrue();
+            assertThat(pickedUp.getPickedUp())
                     .comparingExpectedFieldsOnly()
                     .isEqualTo(expected);
         }
@@ -64,29 +68,44 @@ final class ShardServiceTest {
             sleepUninterruptibly(precessingTimeout.getSeconds() + 1, TimeUnit.SECONDS);
             var secondlyPickedUp = shardService.pickShard(request);
             var expected = asPickedUp(request);
-            assertThat(secondlyPickedUp)
+            assertThat(secondlyPickedUp.hasPickedUp())
+                    .isTrue();
+            assertThat(secondlyPickedUp.getPickedUp())
                     .comparingExpectedFieldsOnly()
                     .isEqualTo(expected);
-            assertThat(firstlyPickedUp.getWhenPicked())
-                    .isNotEqualTo(secondlyPickedUp.getWhenPicked());
+            assertThat(firstlyPickedUp.hasPickedUp())
+                    .isTrue();
+            assertThat(firstlyPickedUp.getPickedUp()
+                                      .getWhenPicked())
+                    .isNotEqualTo(secondlyPickedUp.getPickedUp()
+                                                  .getWhenPicked());
         }
 
         @Test
         @DisplayName("not picking up already picked up shard")
         void notPickSame() {
+            Timestamp frozen = Time.currentTime();
+            Time.setProvider(new FrozenMadHatterParty(frozen));
             var shardService = syncShardService();
             var request = pickUpShard();
-            assertDoesNotThrow(() -> {
-                shardService.pickShard(request);
-            });
-            var exception = assertThrows(
-                    StatusRuntimeException.class, () -> shardService.pickShard(request)
-            );
-            var status = exception.getStatus();
-            assertThat(status.getCode())
-                    .isEqualTo(Status.FAILED_PRECONDITION.getCode());
-            assertThat(status.getDescription())
-                    .isEqualTo("The shard has been already picked up.");
+            LiquorPickUpOutcome firstAttempt = shardService.pickShard(request);
+            assertThat(firstAttempt.hasPickedUp())
+                    .isTrue();
+            LiquorPickUpOutcome secondAttempt = shardService.pickShard(request);
+            assertThat(secondAttempt.hasAlreadyPickedUp())
+                    .isTrue();
+
+            Rejections.ShardAlreadyPickedUp expected = Rejections.ShardAlreadyPickedUp
+                    .newBuilder()
+                    .setShard(request.getShard())
+                    .setWorker(request.getWorker())
+                    .setWhenPicked(frozen)
+                    .vBuild();
+
+            assertThat(secondAttempt.getAlreadyPickedUp())
+                    .comparingExpectedFieldsOnly()
+                    .isEqualTo(expected);
+            Time.resetProvider();
         }
     }
 
@@ -139,7 +158,7 @@ final class ShardServiceTest {
             sleepUninterruptibly(inactivityPeriod.getSeconds() + 1, TimeUnit.SECONDS);
             var request = releaseExpiredSessions(inactivityPeriod);
             var response = shardService.releaseSessions(request);
-            var expected = asReleased(pickedUp);
+            var expected = asReleased(pickedUp.getPickedUp());
             assertThat(response)
                     .comparingExpectedFieldsOnly()
                     .isEqualTo(expected);

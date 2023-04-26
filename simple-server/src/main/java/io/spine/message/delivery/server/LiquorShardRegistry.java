@@ -13,6 +13,7 @@ import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
 import io.spine.logging.Logging;
+import io.spine.message.delivery.rejection.ShardAlreadyPickedUp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.delivery.ShardSessionRecord;
@@ -77,46 +78,52 @@ public final class LiquorShardRegistry implements Logging {
      *
      * <p>In case the shard at a given index is already picked up by a worker and
      * has not reached {@linkplain #processingTimeout processing timeout},
-     * an {@link Optional#empty() Optional.empty()} is returned.
+     * an {@link ShardAlreadyPickedUp} is thrown.
      *
      * @param index
      *         the index of the shard to pick up for processing
      * @param worker
      *         the identifier of the worker for which to pick the shard
-     * @return the session of shard processing,
-     *         or {@code Optional.empty()} if the shard is not available
+     * @return the session of shard processing
+     * @throws ShardAlreadyPickedUp
+     *         if the shard is already picked up by another worker
      */
-    public synchronized Optional<ShardProcessingSession> pickUp(ShardIndex index,
-                                                                WorkerId worker) {
+    public synchronized ShardProcessingSession pickUp(ShardIndex index, WorkerId worker)
+            throws ShardAlreadyPickedUp {
         var optionalRecord = find(index);
         if (optionalRecord.isEmpty()) {
             var newRecord = createRecord(index, worker);
-            return Optional.of(asSession(newRecord));
+            return asSession(newRecord);
         }
-
         var record = optionalRecord.get();
         if (hasWorker(record)) {
             if (isStale(record)) {
                 logStale(record);
             } else {
-                return Optional.empty();
+                throw ShardAlreadyPickedUp
+                        .newBuilder()
+                        .setShard(index)
+                        .setWorker(record.getWorker())
+                        .setWhenPicked(record.getWhenLastPicked())
+                        .build();
             }
         }
-
         var updatedSession = updateWorker(record, worker);
-        return Optional.of(asSession(updatedSession));
+        return asSession(updatedSession);
     }
 
     private void logStale(ShardSessionRecord session) {
         String mainMsg = format("Shard %d reached the processing timeout and was" +
-                                        " released automatically.", session.getIndex().getIndex());
+                                        " released automatically.", session.getIndex()
+                                                                           .getIndex());
         Duration processingTime = between(session.getWhenLastPicked(), currentTime());
         ImmutableList<String> logStatements = ImmutableList.<String>builder()
                 .add(mainMsg)
                 .add(format("Processing time: %d seconds.", processingTime.getSeconds()))
                 .add(format("Configured threshold: %d seconds.", processingTimeout.getSeconds()))
                 .build();
-        String logMessage = Joiner.on(lineSeparator()).join(logStatements);
+        String logMessage = Joiner.on(lineSeparator())
+                                  .join(logStatements);
         _warn().log(logMessage);
     }
 
