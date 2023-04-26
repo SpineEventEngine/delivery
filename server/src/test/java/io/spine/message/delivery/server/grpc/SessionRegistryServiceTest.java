@@ -6,19 +6,21 @@
 
 package io.spine.message.delivery.server.grpc;
 
-import com.google.common.util.concurrent.Uninterruptibles;
+import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
-import io.grpc.StatusRuntimeException;
+import io.spine.base.Time;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.event.ExpiredSession;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.rejection.Rejections;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
+import io.spine.time.testing.FrozenMadHatterParty;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +29,6 @@ import java.util.concurrent.TimeUnit;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`SessionRegistryService` should")
 final class SessionRegistryServiceTest extends WithApp {
@@ -40,6 +41,7 @@ final class SessionRegistryServiceTest extends WithApp {
             .setNodeId(node)
             .setValue(SessionRegistryServiceTest.class.getName())
             .vBuild();
+
     @Test
     @DisplayName("pick up a shard")
     void pickUpShard() {
@@ -52,7 +54,9 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setWorker(worker)
                 .buildPartial();
         var response = sessionRegistry().pickShard(request);
-        assertThat(response)
+        assertThat(response.hasPickedUp())
+                .isTrue();
+        assertThat(response.getPickedUp())
                 .comparingExpectedFieldsOnly()
                 .isEqualTo(expected);
     }
@@ -60,14 +64,29 @@ final class SessionRegistryServiceTest extends WithApp {
     @Test
     @DisplayName("do not pick up a shard for delivery if one is already picked up")
     void notPickUpShard() {
+        Timestamp frozen = Time.currentTime();
+        Time.setProvider(new FrozenMadHatterParty(frozen));
         var request = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
         var firstAttempt = sessionRegistry().pickShard(request);
-        assertThat(firstAttempt)
-                .isNotEqualToDefaultInstance();
-        assertThrows(StatusRuntimeException.class, () -> sessionRegistry().pickShard(request));
+        assertThat(firstAttempt.hasPickedUp())
+                .isTrue();
+
+        var secondAttempt = sessionRegistry().pickShard(request);
+        assertThat(secondAttempt.hasAlreadyPickedUp())
+                .isTrue();
+
+        Rejections.ShardAlreadyPickedUp expected = Rejections.ShardAlreadyPickedUp
+                .newBuilder()
+                .setShard(shard)
+                .setWorker(worker)
+                .setWhenPicked(frozen)
+                .vBuild();
+        assertThat(secondAttempt.getAlreadyPickedUp())
+                .isEqualTo(expected);
+        Time.resetProvider();
     }
 
     @Test
