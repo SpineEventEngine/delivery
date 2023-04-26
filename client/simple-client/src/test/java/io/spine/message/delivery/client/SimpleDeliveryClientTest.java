@@ -8,11 +8,12 @@ package io.spine.message.delivery.client;
 
 import com.google.protobuf.util.Timestamps;
 import io.spine.message.delivery.client.given.ExecutionCountingStrategy;
-import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.rejection.Rejections;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.Page;
+import io.spine.server.delivery.PickUpOutcome;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 import io.spine.test.message.delivery.client.Something;
@@ -35,6 +36,7 @@ import java.util.stream.IntStream;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth8.assertThat;
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.message.delivery.client.given.TestInboxMessages.toDeliver;
@@ -80,34 +82,44 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("pick up a shard for delivery")
         void pickUpShard() {
-            Optional<ShardPickedUp> result = client.pickUpShard(shard, worker);
-            assertThat(result)
-                    .isPresent();
+            PickUpOutcome outcome = client.pickUpShard(shard, worker);
+            assertThat(outcome.hasSession())
+                    .isTrue();
         }
 
         @Test
         @DisplayName("release a previously picked up shard")
         void releaseShard() {
-            Optional<ShardPickedUp> result = client.pickUpShard(shard, worker);
-            assertThat(result)
-                    .isPresent();
+            PickUpOutcome outcome = client.pickUpShard(shard, worker);
+            assertThat(outcome.hasSession())
+                    .isTrue();
             assertDoesNotThrow(() -> client.releaseShard(shard, worker));
         }
 
         @Test
         @DisplayName("do not pick up a shard for delivery if one is already picked up")
         void notPickUpShard() {
-            Optional<ShardPickedUp> firstAttempt = client.pickUpShard(shard, worker);
-            assertThat(firstAttempt)
-                    .isPresent();
-            Optional<ShardPickedUp> secondAttempt = client.pickUpShard(shard, worker);
-            assertThat(secondAttempt)
-                    .isEmpty();
+            PickUpOutcome firstAttempt = client.pickUpShard(shard, worker);
+            assertThat(firstAttempt.hasSession())
+                    .isTrue();
+            PickUpOutcome secondAttempt = client.pickUpShard(shard, worker);
+            assertThat(secondAttempt.hasAlreadyPicked())
+                    .isTrue();
+
+            Rejections.ShardAlreadyPickedUp expected = Rejections.ShardAlreadyPickedUp
+                    .newBuilder()
+                    .setShard(shard)
+                    .setWorker(worker)
+                    .build();
+
+            assertThat(secondAttempt.getAlreadyPicked())
+                    .comparingExpectedFieldsOnly()
+                    .isEqualTo(expected);
         }
 
         @Test
         @DisplayName("use provided `ExecutionCountingStrategy` picking up a shard.")
-        void useStrategyPickingUpShard(){
+        void useStrategyPickingUpShard() {
             client.pickUpShard(shard, worker);
 
             assertThat(strategy.voidExecutions())
@@ -118,7 +130,7 @@ final class SimpleDeliveryClientTest {
 
         @Test
         @DisplayName("use provided `ExecutionCountingStrategy` releasing a shard.")
-        void useStrategyReleasingShard(){
+        void useStrategyReleasingShard() {
             client.pickUpShard(shard, worker);
             client.releaseShard(shard, worker);
 
@@ -188,7 +200,7 @@ final class SimpleDeliveryClientTest {
 
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` writing a message")
-        void useStrategyWritingMessage(){
+        void useStrategyWritingMessage() {
             InboxMessage message = newMessage();
             client.writeMessage(message);
 
@@ -200,7 +212,7 @@ final class SimpleDeliveryClientTest {
 
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` removing a message")
-        void useStrategyRemovingMessage(){
+        void useStrategyRemovingMessage() {
             InboxMessage message = newMessage();
             client.writeMessage(message);
             client.removeMessage(message);
@@ -213,7 +225,7 @@ final class SimpleDeliveryClientTest {
 
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` writing multiple messages")
-        void useStrategyWritingMessages(){
+        void useStrategyWritingMessages() {
             InboxMessage firstMessage = newMessage();
             InboxMessage secondMessage = newMessage();
             ShardIndex shard = firstMessage.shardIndex();
@@ -229,7 +241,7 @@ final class SimpleDeliveryClientTest {
 
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` removing multiple messages")
-        void useStrategyRemovingMessages(){
+        void useStrategyRemovingMessages() {
             InboxMessage firstMessage = newMessage();
             InboxMessage secondMessage = newMessage();
             ShardIndex shard = firstMessage.shardIndex();
@@ -319,7 +331,7 @@ final class SimpleDeliveryClientTest {
 
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` finding a message")
-        void useStrategyFinding(){
+        void useStrategyFinding() {
             InboxMessage message = newMessage();
             client.find(message.getId());
 
@@ -331,7 +343,7 @@ final class SimpleDeliveryClientTest {
 
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` finding multiple messages")
-        void useStrategyFindingMany(){
+        void useStrategyFindingMany() {
             List<InboxMessage> messages = generate(30);
             ShardIndex shard = messages.get(0)
                                        .shardIndex();
@@ -348,7 +360,7 @@ final class SimpleDeliveryClientTest {
 
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` finding newest messages")
-        void useStrategyReadingNewest(){
+        void useStrategyReadingNewest() {
             InboxMessage olderMessage = toDeliver(
                     Timestamps.fromSeconds(100000L),
                     TypeUrl.from(Something.getDescriptor())
