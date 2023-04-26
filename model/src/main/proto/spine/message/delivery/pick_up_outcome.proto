@@ -1,0 +1,27 @@
+/*
+ * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+syntax = "proto3";
+
+package spine.message.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.message.delivery.grpc";
+option java_outer_classname = "LiquorPickUpOutcomeProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "spine/message/delivery/events.proto";
+import "spine/message/delivery/rejections.proto";
+
+message LiquorPickUpOutcome {
+
+    oneof value {
+        ShardPickedUp pickedUp = 1;
+        ShardAlreadyPickedUp alreadyPickedUp = 2;
+    }
+}

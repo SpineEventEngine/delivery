@@ -14,6 +14,7 @@ import io.spine.grpc.MemoizingObserver;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.test.message.delivery.server.Something;
@@ -62,9 +63,9 @@ final class AdminServiceTest extends WithApp {
         syncInboxService().writeOne(testMessage(shard2));
 
         syncShardService().pickShard(pickUpShard(shard2));
-        ShardPickedUp picked = syncShardService().pickShard(pickUpShard(shard3));
+        LiquorPickUpOutcome outcome = syncShardService().pickShard(pickUpShard(shard3));
         syncShardService().pickShard(pickUpShard(shard4));
-        syncShardService().releaseSession(releaseShard(picked));
+        syncShardService().releaseSession(releaseShard(outcome.getPickedUp()));
 
         var actual = syncAdminService()
                 .getShardInfo(request())
@@ -102,8 +103,8 @@ final class AdminServiceTest extends WithApp {
         var observer = subscribeToUpdates();
 
         PickUpShard pickUpShard = pickUpShard(index);
-        ShardPickedUp pickedUp = syncShardService().pickShard(pickUpShard);
-        syncShardService().releaseSession(releaseShard(pickedUp));
+        LiquorPickUpOutcome outcome = syncShardService().pickShard(pickUpShard);
+        syncShardService().releaseSession(releaseShard(outcome.getPickedUp()));
 
         ShardInfoUpdate pickedUpdate = shardPickedWithoutTime(index);
         ShardInfoUpdate unpickedUpdate = shardUnpicked(index);
