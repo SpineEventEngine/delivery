@@ -8,12 +8,12 @@ package io.spine.message.delivery.client;
 
 import com.google.protobuf.util.Timestamps;
 import io.spine.message.delivery.client.given.ExecutionCountingStrategy;
-import io.spine.message.delivery.rejection.Rejections;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.Page;
 import io.spine.server.delivery.PickUpOutcome;
+import io.spine.server.delivery.ShardAlreadyPickedUp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 import io.spine.test.message.delivery.client.Something;
@@ -106,11 +106,10 @@ final class SimpleDeliveryClientTest {
             assertThat(secondAttempt.hasAlreadyPicked())
                     .isTrue();
 
-            Rejections.ShardAlreadyPickedUp expected = Rejections.ShardAlreadyPickedUp
+            ShardAlreadyPickedUp expected = ShardAlreadyPickedUp
                     .newBuilder()
-                    .setShard(shard)
                     .setWorker(worker)
-                    .build();
+                    .buildPartial();
 
             assertThat(secondAttempt.getAlreadyPicked())
                     .comparingExpectedFieldsOnly()
