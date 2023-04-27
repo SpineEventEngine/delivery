@@ -6,14 +6,13 @@
 
 package io.spine.message.delivery;
 
-import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 
-@DisplayName("`LiquorPickUpOutcome` utility class should")
-class LiquorPickUpOutcomesTest extends UtilityClassTest<LiquorPickUpOutcome> {
+@DisplayName("`LiquorPickUpOutcomes` utility class should")
+class LiquorPickUpOutcomesTest extends UtilityClassTest<LiquorPickUpOutcomes> {
 
     LiquorPickUpOutcomesTest() {
-        super(LiquorPickUpOutcome.class);
+        super(LiquorPickUpOutcomes.class);
     }
 }
