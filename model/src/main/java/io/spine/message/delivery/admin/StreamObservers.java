@@ -12,7 +12,7 @@ import io.grpc.stub.StreamObserver;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Utility that provides some usefully operations with {@linkplain StreamObserver}s.
+ * Utility that provides some useful operations with {@linkplain StreamObserver}s.
  */
 public final class StreamObservers {
 
