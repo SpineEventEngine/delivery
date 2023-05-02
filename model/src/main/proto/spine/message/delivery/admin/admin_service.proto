@@ -28,16 +28,17 @@ service AdminService {
 
     // Subscribes to the updates of shard info.
     //
-    // The first `SubscriptionResponse` will be an acknowledgement of a successfully created
-    // subscription and will contain only the `created` filed set. All other responses will contain
-    // `ShardInfoUpdate`. There is guaranteed that the acknowledgement will be sent only once
-    // as a first response and never will be repeated again. Also there is impossible that any
-    // update will come before the acknowledgement. Users should consider the subscription
-    // as created only after receiving the acknowledgement in the `SubscriptionResponse`.
-    // All changes in the system occurred before the subscription acknowledgement
-    // will not be tracked by this call.
+    // The first received `SubscriptionResponse` is an acknowledgement of a successfully created
+    // subscription and contains only the `created` filed set. All other responses contain
+    // `ShardInfoUpdate`. It is guaranteed that the acknowledgement is sent only once as a first
+    // response and never repeated again. Also, it is impossible that any update comes
+    // before the acknowledgement.
     //
-    // Each update will be sent as a single `ShardInfoUpdate`.
+    // Users should consider the subscription as created only after receiving the acknowledgement
+    // in the `SubscriptionResponse`. All changes in the system occurred before the subscription
+    // acknowledgement is not tracked by this call.
+    //
+    // Each update is sent as a single `ShardInfoUpdate`.
     //
     rpc SubscribeToShardUpdates(google.protobuf.Empty) returns (stream SubscriptionResponse);
 }
