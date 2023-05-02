@@ -55,7 +55,6 @@ public final class ExecutionFailedException extends RuntimeException {
                                        .append("- Stacktrace: ")
                                        .append(getStackTraceAsString(cause))
                                        .append("- - - - - - - - - -")
-
         );
         return builder.toString();
     }
