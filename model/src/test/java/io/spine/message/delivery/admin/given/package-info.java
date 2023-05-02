@@ -7,4 +7,10 @@
 /**
  * Contains types for testing admin functionality.
  */
+@CheckReturnValue
+@ParametersAreNonnullByDefault
 package io.spine.message.delivery.admin.given;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import javax.annotation.ParametersAreNonnullByDefault;
