@@ -85,7 +85,6 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     @Override
     public void
     subscribeToShardUpdates(Empty request, StreamObserver<SubscriptionResponse> observer) {
-        _debug().log("= = Received new subscription request.");
         var serverCallObserver = new FilteringObserver(toServerCall(observer));
         var mappingToResponse = new TransformingStreamObserver<>(serverCallObserver, SubscriptionResponses::toResponse);
         subscribers.addSubscriber(mappingToResponse);
