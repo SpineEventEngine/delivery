@@ -12,7 +12,7 @@ import io.spine.message.delivery.admin.grpc.SubscriptionResponse;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Filters out updates that is sent before the response was acknowledged.
+ * Filters out updates that were sent before the response had been acknowledged.
  *
  * <p>This observer guaranties that the {@code SubscriptionResponse} acknowledging the subscription
  * will arrive first. All the updates that may be posted before acknowledging response
