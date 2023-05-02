@@ -43,7 +43,7 @@ public final class FutureMemoizingObserver<T> extends MemoizingObserver<T> {
     }
 
     /**
-     * Returns a {@code Future} that will be resolved as soon as the next value will be delivered
+     * Returns a {@code Future} that will be resolved as soon as the next value is delivered
      * to the observer.
      */
     public Future<T> nextOnNext() {
@@ -52,7 +52,7 @@ public final class FutureMemoizingObserver<T> extends MemoizingObserver<T> {
 
     /**
      * Returns a {@code Future} that will be resolved as soon as the next value matching the given
-     * {@code predicate} will be delivered to the observer.
+     * {@code predicate} is delivered to the observer.
      */
     public Future<T> nextOnNextMatching(Predicate<T> predicate) {
         FutureWithPredicate<T> future = new FutureWithPredicate<>(predicate);
@@ -64,7 +64,7 @@ public final class FutureMemoizingObserver<T> extends MemoizingObserver<T> {
      * Future that can be resolved only with a value matching a predicate.
      *
      * @param <T>
-     *         a type of the value the {@code Future} provides.
+     *         a type of the value the {@code Future} provides
      */
     private static final class FutureWithPredicate<T> extends AbstractFuture<T> {
 
@@ -80,10 +80,10 @@ public final class FutureMemoizingObserver<T> extends MemoizingObserver<T> {
          * @param value
          *         the value to be used as the result
          * @return true if the given {@code value} matches the predicate and can be set
-         *         to the {@code Future}.
+         *         to the {@code Future}
          * @throws IllegalStateException
          *         if the given {@code value} matches the predicate, but it cannot be set because
-         *         it's already bin set.
+         *         it's already bin set
          */
         @CanIgnoreReturnValue
         @Override
