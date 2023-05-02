@@ -83,7 +83,7 @@ public final class FutureMemoizingObserver<T> extends MemoizingObserver<T> {
          *         to the {@code Future}
          * @throws IllegalStateException
          *         if the given {@code value} matches the predicate, but it cannot be set because
-         *         it's already bin set
+         *         it's already been set
          */
         @CanIgnoreReturnValue
         @Override
