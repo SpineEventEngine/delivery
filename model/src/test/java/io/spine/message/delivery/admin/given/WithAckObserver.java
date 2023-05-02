@@ -53,8 +53,8 @@ public class WithAckObserver implements StreamObserver<SubscriptionResponse> {
     }
 
     /**
-     * Block the current thread until the {@code SubscriptionResponse} containing an acknowledgement
-     * will be received.
+     * Blocks the current thread until the {@code SubscriptionResponse} containing
+     * an acknowledgement is received.
      */
     public void waitForAcknowledgment() {
         try {
