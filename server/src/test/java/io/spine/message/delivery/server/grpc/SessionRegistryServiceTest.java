@@ -6,9 +6,9 @@
 
 package io.spine.message.delivery.server.grpc;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.util.Durations;
 import io.grpc.StatusRuntimeException;
-import io.spine.message.delivery.admin.given.FutureMemoizingObserver;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.admin.grpc.ShardStatus;
 import io.spine.message.delivery.command.PickUpShard;
@@ -25,6 +25,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
@@ -32,7 +33,7 @@ import java.util.function.Predicate;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
-import static io.spine.message.delivery.admin.grpc.ShardStatus.*;
+import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`SessionRegistryService` should")
@@ -86,8 +87,9 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
+        var future = observer.nextOnNextMatching(is(shard).and(hasStatus(PICKED)));
         sessionRegistry().pickShard(pickShard);
-        waitForPickUp(observer, shard);
+        waitFor(future);
         sleepUninterruptibly(2, TimeUnit.SECONDS); // Wait for the session to expire.
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
@@ -111,8 +113,9 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
+        var future = observer.nextOnNextMatching(is(shard).and(hasStatus(PICKED)));
         sessionRegistry().pickShard(pickShard);
-        waitForPickUp(observer, shard);
+        waitFor(future);
         sleepUninterruptibly(2, TimeUnit.SECONDS); // Wait for the session to expire.
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
@@ -148,15 +151,16 @@ final class SessionRegistryServiceTest extends WithApp {
     }
 
     /**
-     * Waits for an update of the given {@code shard} that acknowledges the shard pick up.
+     * Waits {@code 2} seconds for the given {@code future} to be resolved and returns
+     * the {@code ShardInfoUpdate} received from the {@code Future}.
      *
-     * <p>Throws {@code TimeoutException} if the update is not received within {@code 2} seconds.
+     * <p>Throws {@code TimeoutException} if the {@code future} is not resolved within {@code 2}
+     * seconds.
      */
-    private static void
-    waitForPickUp(FutureMemoizingObserver<ShardInfoUpdate> observer, ShardIndex shard) {
+    @CanIgnoreReturnValue
+    private static ShardInfoUpdate waitFor(Future<ShardInfoUpdate> update){
         try {
-            observer.nextOnNextMatching(is(shard).and(hasStatus(PICKED)))
-                    .get(2, TimeUnit.SECONDS);
+            return update.get(2, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw new RuntimeException(e);
         }
