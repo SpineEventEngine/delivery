@@ -11,7 +11,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.client.Client;
 import io.spine.environment.Environment;
-import io.spine.message.delivery.admin.given.FutureMemoizingObserver;
+import io.spine.message.delivery.admin.given.BlockingMemoizingObserver;
 import io.spine.message.delivery.admin.given.WithAckObserver;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
@@ -126,8 +126,8 @@ public abstract class WithApp {
      * <p>Blocks the current thread and waits for the subscription to be acknowledged before
      * returning the observer.
      */
-    protected FutureMemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
-        var observer = new FutureMemoizingObserver<ShardInfoUpdate>();
+    protected BlockingMemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
+        var observer = new BlockingMemoizingObserver<ShardInfoUpdate>();
         var ackObserver = new WithAckObserver(observer);
         adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), ackObserver);
         ackObserver.waitForAcknowledgment();

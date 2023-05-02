@@ -8,7 +8,7 @@ package io.spine.message.delivery.server.grpc;
 
 import com.google.protobuf.Empty;
 import io.spine.logging.Logging;
-import io.spine.message.delivery.admin.given.FutureMemoizingObserver;
+import io.spine.message.delivery.admin.given.BlockingMemoizingObserver;
 import io.spine.message.delivery.admin.given.WithAckObserver;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.command.PickUpShard;
@@ -237,8 +237,8 @@ final class AdminServiceTest extends WithApp implements Logging {
      * <p>Also waits for {@link #SLEEP_SECONDS} to ensure that the subscription is created
      * on the server.
      */
-    private FutureMemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
-        var observer = new FutureMemoizingObserver<ShardInfoUpdate>();
+    private BlockingMemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
+        var observer = new BlockingMemoizingObserver<ShardInfoUpdate>();
         WithAckObserver ackObserver = new WithAckObserver(observer);
         adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), ackObserver);
         ackObserver.waitForAcknowledgment();

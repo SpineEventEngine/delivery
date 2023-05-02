@@ -23,7 +23,7 @@ import static java.util.Collections.synchronizedList;
  * @param <T>
  *         type of the observer values
  */
-public final class FutureMemoizingObserver<T> extends MemoizingObserver<T> {
+public final class BlockingMemoizingObserver<T> extends MemoizingObserver<T> {
 
     private final List<FutureWithPredicate<T>> onNextFutures =
             synchronizedList(new ArrayList<>());
