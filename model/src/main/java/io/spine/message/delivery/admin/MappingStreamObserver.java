@@ -16,9 +16,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * An observer that transforms received values and passes them to the delegate.
  *
  * @param <I>
- *         Type of observer values
+ *         type of observer values
  * @param <O>
- *         Type of output values
+ *         type of output values
  */
 public class MappingStreamObserver<I, O> extends ServerCallStreamObserver<I> {
 
