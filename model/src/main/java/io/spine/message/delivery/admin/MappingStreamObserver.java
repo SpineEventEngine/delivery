@@ -13,7 +13,7 @@ import java.util.function.Function;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * An observer that transforms received values and passes to the delegate.
+ * An observer that transforms received values and passes them to the delegate.
  *
  * @param <I>
  *         Type of observer values
