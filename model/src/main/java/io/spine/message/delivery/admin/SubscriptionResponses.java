@@ -14,7 +14,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Utility that helps to create {@code SubscriptionResponse}s.
  */
-public class SubscriptionResponses {
+public final class SubscriptionResponses {
 
     private SubscriptionResponses() {
     }
