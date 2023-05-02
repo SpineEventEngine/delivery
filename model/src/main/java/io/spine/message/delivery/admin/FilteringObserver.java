@@ -14,9 +14,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Filters out updates that were sent before the response had been acknowledged.
  *
- * <p>This observer guaranties that the {@code SubscriptionResponse} acknowledging the subscription
- * will arrive first. All the updates that may be posted before acknowledging response
- * will be omitted by this observer.
+ * <p>This observer guarantees that the {@code SubscriptionResponse} acknowledging the subscription
+ * arrives first. All the updates that may be posted before acknowledging response
+ * are omitted by this observer.
  */
 public final class FilteringObserver extends DelegatingServerCallStreamObserver<SubscriptionResponse> {
 
