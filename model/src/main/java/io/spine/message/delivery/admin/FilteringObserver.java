@@ -30,6 +30,7 @@ public final class FilteringObserver extends ServerCallStreamObserver<Subscripti
      * Creates a new {@code FilteringObserver} with the given {@code delegate}.
      */
     public FilteringObserver(ServerCallStreamObserver<SubscriptionResponse> delegate) {
+        super();
         checkNotNull(delegate);
         this.delegate = delegate;
     }
