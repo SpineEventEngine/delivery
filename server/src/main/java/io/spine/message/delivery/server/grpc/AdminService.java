@@ -17,7 +17,7 @@ import io.spine.logging.Logging;
 import io.spine.message.delivery.CurrentShardState;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.admin.FilteringObserver;
-import io.spine.message.delivery.admin.MappingStreamObserver;
+import io.spine.message.delivery.admin.TransformingStreamObserver;
 import io.spine.message.delivery.admin.ShardMessagesCountHolder;
 import io.spine.message.delivery.admin.ShardUpdateSubscribersHolder;
 import io.spine.message.delivery.admin.SubscriptionResponses;
@@ -79,7 +79,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase im
     public void
     subscribeToShardUpdates(Empty request, StreamObserver<SubscriptionResponse> observer) {
         var serverCallObserver = new FilteringObserver(toServerCall(observer));
-        var mappingToResponse = new MappingStreamObserver<>(serverCallObserver, SubscriptionResponses::toResponse);
+        var mappingToResponse = new TransformingStreamObserver<>(serverCallObserver, SubscriptionResponses::toResponse);
         subscribers.addSubscriber(mappingToResponse);
         serverCallObserver.onNext(ack());
     }

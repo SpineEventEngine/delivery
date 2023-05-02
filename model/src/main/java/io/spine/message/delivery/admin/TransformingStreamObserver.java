@@ -20,12 +20,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <O>
  *         type of output values
  */
-public class MappingStreamObserver<I, O> extends ServerCallStreamObserver<I> {
+public class TransformingStreamObserver<I, O> extends ServerCallStreamObserver<I> {
 
     private final ServerCallStreamObserver<O> delegate;
     private final Function<I, O> mapper;
 
-    public MappingStreamObserver(ServerCallStreamObserver<O> delegate, Function<I, O> mapper) {
+    public TransformingStreamObserver(ServerCallStreamObserver<O> delegate, Function<I, O> mapper) {
         super();
         checkNotNull(delegate);
         checkNotNull(mapper);

@@ -10,7 +10,7 @@ import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.admin.FilteringObserver;
-import io.spine.message.delivery.admin.MappingStreamObserver;
+import io.spine.message.delivery.admin.TransformingStreamObserver;
 import io.spine.message.delivery.admin.ShardMessagesCountHolder;
 import io.spine.message.delivery.admin.ShardUpdateSubscribersHolder;
 import io.spine.message.delivery.admin.SubscriptionResponses;
@@ -87,7 +87,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     subscribeToShardUpdates(Empty request, StreamObserver<SubscriptionResponse> observer) {
         _debug().log("= = Received new subscription request.");
         var serverCallObserver = new FilteringObserver(toServerCall(observer));
-        var mappingToResponse = new MappingStreamObserver<>(serverCallObserver, SubscriptionResponses::toResponse);
+        var mappingToResponse = new TransformingStreamObserver<>(serverCallObserver, SubscriptionResponses::toResponse);
         subscribers.addSubscriber(mappingToResponse);
         serverCallObserver.onNext(ack());
     }
