@@ -6,12 +6,9 @@
 
 package io.spine.message.delivery.server.grpc;
 
-import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import io.spine.base.CommandMessage;
 import io.spine.base.Time;
-import io.spine.message.delivery.admin.given.FutureMemoizingObserver;
-import io.spine.message.delivery.admin.given.WithAckObserver;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.server.WithApp;
@@ -240,18 +237,6 @@ final class AdminServiceTest extends WithApp {
                 message1Removed,
                 message2Removed
         );
-    }
-
-    /**
-     * Subscribes to the shard updates on the {@code AdminService} and returns an observer that
-     * collects all updates for further assertions.
-     */
-    private FutureMemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
-        var observer = new FutureMemoizingObserver<ShardInfoUpdate>();
-        var ackObserver = new WithAckObserver(observer);
-        adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), ackObserver);
-        ackObserver.waitForAcknowledgment();
-        return observer;
     }
 
     /**
