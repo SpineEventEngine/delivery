@@ -90,7 +90,8 @@ public final class FutureMemoizingObserver<T> extends MemoizingObserver<T> {
         protected boolean set(T value) throws IllegalStateException {
             if (predicate.test(value)) {
                 if (!super.set(value)) {
-                    throw new IllegalStateException("Cannot resolve the Future.");
+                    throw new IllegalStateException(
+                            "Cannot resolve the `Future` as it's already has been resolved.");
                 }
                 return true;
             }
