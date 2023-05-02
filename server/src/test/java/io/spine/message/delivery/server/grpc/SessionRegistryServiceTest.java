@@ -87,7 +87,7 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        var future = observer.nextOnNextMatching(is(shard).and(hasStatus(PICKED)));
+        var future = observer.waitForMatching(is(shard).and(hasStatus(PICKED)));
         sessionRegistry().pickShard(pickShard);
         waitFor(future);
         sleepUninterruptibly(2, TimeUnit.SECONDS); // Wait for the session to expire.
@@ -113,7 +113,7 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
-        var future = observer.nextOnNextMatching(is(shard).and(hasStatus(PICKED)));
+        var future = observer.waitForMatching(is(shard).and(hasStatus(PICKED)));
         sessionRegistry().pickShard(pickShard);
         waitFor(future);
         sleepUninterruptibly(2, TimeUnit.SECONDS); // Wait for the session to expire.

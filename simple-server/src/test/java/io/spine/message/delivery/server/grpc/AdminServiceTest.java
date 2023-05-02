@@ -86,7 +86,7 @@ final class AdminServiceTest extends WithApp implements Logging {
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
 
-        Future<ShardInfoUpdate> future = observer.nextOnNext();
+        Future<ShardInfoUpdate> future = observer.waitForAny();
         syncShardService().pickShard(pickUpShard(index));
 
         ShardInfoUpdate expected = shardPickedWithoutTime(index);
@@ -104,9 +104,9 @@ final class AdminServiceTest extends WithApp implements Logging {
         var observer = subscribeToUpdates();
 
         var pickedFuture =
-                observer.nextOnNextMatching(update -> update.getNewStatus() == PICKED);
+                observer.waitForMatching(update -> update.getNewStatus() == PICKED);
         var notPickedFuture =
-                observer.nextOnNextMatching(update -> update.getNewStatus() == NOT_PICKED);
+                observer.waitForMatching(update -> update.getNewStatus() == NOT_PICKED);
 
         PickUpShard pickUpShard = pickUpShard(index);
         ShardPickedUp pickedUp = syncShardService().pickShard(pickUpShard);
@@ -126,7 +126,7 @@ final class AdminServiceTest extends WithApp implements Logging {
     void notifyMessageWritten() {
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
-        var messageWrittenFuture = observer.nextOnNext();
+        var messageWrittenFuture = observer.waitForAny();
 
         var message = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
@@ -145,9 +145,9 @@ final class AdminServiceTest extends WithApp implements Logging {
         ShardIndex index = newIndex(1, 5);
         var observer = subscribeToUpdates();
         var messageWrittenFuture =
-                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 1);
+                observer.waitForMatching(update -> update.getNewMessagesCount() == 1);
         var messageRemovedFuture =
-                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 0);
+                observer.waitForMatching(update -> update.getNewMessagesCount() == 0);
 
         var message = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
@@ -173,9 +173,9 @@ final class AdminServiceTest extends WithApp implements Logging {
         var message2 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
         var message1WrittenFuture =
-                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 1);
+                observer.waitForMatching(update -> update.getNewMessagesCount() == 1);
         var message2WrittenFuture =
-                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 2);
+                observer.waitForMatching(update -> update.getNewMessagesCount() == 2);
 
         syncInboxService().writeMany(writeMessages(index, message1, message2));
 
@@ -198,9 +198,9 @@ final class AdminServiceTest extends WithApp implements Logging {
         var message2 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
 
         var message1WrittenFuture =
-                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 1);
+                observer.waitForMatching(update -> update.getNewMessagesCount() == 1);
         var message2WrittenFuture =
-                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 2);
+                observer.waitForMatching(update -> update.getNewMessagesCount() == 2);
 
         syncInboxService().writeMany(writeMessages(index, message1, message2));
 
@@ -210,9 +210,9 @@ final class AdminServiceTest extends WithApp implements Logging {
         assertContains(message2WrittenFuture, message2Written);
 
         var message1RemovedFuture =
-                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 1);
+                observer.waitForMatching(update -> update.getNewMessagesCount() == 1);
         var message2RemovedFuture =
-                observer.nextOnNextMatching(update -> update.getNewMessagesCount() == 0);
+                observer.waitForMatching(update -> update.getNewMessagesCount() == 0);
 
         syncInboxService().removeMany(removeMessages(index, message1, message2));
 

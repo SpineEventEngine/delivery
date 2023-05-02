@@ -46,15 +46,15 @@ public final class BlockingMemoizingObserver<T> extends MemoizingObserver<T> {
      * Returns a {@code Future} that will be resolved as soon as the next value is delivered
      * to the observer.
      */
-    public Future<T> nextOnNext() {
-        return nextOnNextMatching(o -> true);
+    public Future<T> waitForAny() {
+        return waitForMatching(o -> true);
     }
 
     /**
      * Returns a {@code Future} that will be resolved as soon as the next value matching the given
      * {@code predicate} is delivered to the observer.
      */
-    public Future<T> nextOnNextMatching(Predicate<T> predicate) {
+    public Future<T> waitForMatching(Predicate<T> predicate) {
         FutureWithPredicate<T> future = new FutureWithPredicate<>(predicate);
         onNextFutures.add(future);
         return future;
