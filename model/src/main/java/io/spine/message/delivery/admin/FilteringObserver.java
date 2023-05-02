@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * will arrive first. All the updates that may be posted before acknowledging response
  * will be omitted by this observer.
  */
-public final class FilteringObserver extends DelegatingStreamObserver<SubscriptionResponse> {
+public final class FilteringObserver extends DelegatingServerCallStreamObserver<SubscriptionResponse> {
 
     private final AtomicBoolean isAcknowledged = new AtomicBoolean(false);
 

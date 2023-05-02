@@ -16,14 +16,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <I>
  *         type of the observed values
  */
-public abstract class DelegatingStreamObserver<I> extends ServerCallStreamObserver<I> {
+public abstract class DelegatingServerCallStreamObserver<I> extends ServerCallStreamObserver<I> {
 
     private final ServerCallStreamObserver<I> delegate;
 
     /**
      * Creates a new {@code DelegatingStreamObserver} with the given {@code delegate}.
      */
-    public DelegatingStreamObserver(ServerCallStreamObserver<I> delegate) {
+    DelegatingServerCallStreamObserver(ServerCallStreamObserver<I> delegate) {
         super();
         checkNotNull(delegate);
         this.delegate = delegate;
