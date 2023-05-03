@@ -46,7 +46,6 @@ import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.wr
 import static io.spine.message.delivery.server.grpc.given.AdminServiceTestEnv.writeMessages;
 import static io.spine.server.delivery.DeliveryStrategy.newIndex;
 
-@Tag("admin")
 @DisplayName("`AdminService` should")
 final class AdminServiceTest extends WithApp implements Logging {
 
