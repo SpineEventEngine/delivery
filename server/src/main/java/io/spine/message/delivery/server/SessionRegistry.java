@@ -7,8 +7,6 @@
 package io.spine.message.delivery.server;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.protobuf.Timestamp;
-import com.google.protobuf.util.Timestamps;
 import io.spine.base.Time;
 import io.spine.core.CommandContext;
 import io.spine.logging.Logging;
@@ -46,14 +44,10 @@ final class SessionRegistry
         _debug().log("Worker `%s` is picking up shard `%s`.", worker, shard);
         checkNotPickedUp();
         _info().log("Shard `%s` is picked up by worker `%s`.", shard, worker);
-        Timestamp currentTime = Time.currentTime();
-        System.out.printf("= = Shard `%d/%d` is picked at `%s`\n", shard.getIndex(),
-                          shard.getOfTotal(),
-                          Timestamps.toString(currentTime));
         return ShardPickedUp.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .setWhenPicked(currentTime)
+                .setWhenPicked(Time.currentTime())
                 .vBuild();
     }
 

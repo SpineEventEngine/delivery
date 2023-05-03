@@ -129,7 +129,6 @@ public final class SessionRegistryService
                 "Posting internal `ReleaseExpiredSessions` command " +
                         "and waiting for `ExpiredSessionsReleased` event."
         );
-        System.out.println("= = Release expired sessions request...");
         checkNotDefaultArg(releaseSessions);
         CountDownLatch latch = new CountDownLatch(1);
         Context ctx = Context.current()
@@ -139,7 +138,6 @@ public final class SessionRegistryService
                     client.asGuest()
                           .command(releaseSessions)
                           .observe(ExpiredSessionsReleased.class, e -> {
-                              System.out.printf("= = Received `ExpiredSessionsReleased` with count: `%d`.\n", e.getShardCount());
                               _trace().log(
                                       "Received `ExpiredSessionsReleased` event with `%d` shards.",
                                       e.getShardCount()
@@ -149,7 +147,6 @@ public final class SessionRegistryService
                               latch.countDown();
                           })
                           .onServerError((msg, error) -> {
-                              System.out.printf("= = Received server error: `%s`\n", msg);
                               logServerError(msg, error);
                               responseObserver.onError(
                                       INTERNAL.withDescription(error.getMessage())
@@ -158,7 +155,6 @@ public final class SessionRegistryService
                               latch.countDown();
                           })
                           .onStreamingError((error) -> {
-                              System.out.printf("= = Streaming error: `%s`\n", error.getMessage());
                               if (!ignoreCancelledStream(error)) {
                                   _trace().withCause(error)
                                           .log("gRPC streaming error occurred " +

@@ -47,11 +47,7 @@ final class SessionsCleanerProcess
     ExpiredSessionsReleased handle(ReleaseExpiredSessions c, CommandContext context) {
         var result = ExpiredSessionsReleased.newBuilder();
         var inactivityPeriod = c.getInactivityPeriod();
-        System.out.printf("= = Handling `ReleaseExpiredSessions` for `%s` period...\n", inactivityPeriod);
-        Timestamp currentTime = Time.currentTime();
-        var whenPickedPeriod = Timestamps.subtract(currentTime, inactivityPeriod);
-        System.out.printf("= = Current time: `%s`\n", Timestamps.toString(currentTime));
-        System.out.printf("= = Shard should be picked earlier then: `%s`\n", Timestamps.toString(whenPickedPeriod));
+        var whenPickedPeriod = Timestamps.subtract(Time.currentTime(), inactivityPeriod);
         _info().log(
                 "Querying shard session registries picked earlier than `%s`.", whenPickedPeriod
         );
@@ -68,7 +64,6 @@ final class SessionsCleanerProcess
         _info().log(
                 "Releasing `%d` shard sessions.", expiredSessions.size()
         );
-        System.out.printf("= = Released `%d` expired sessions.\n", expiredSessions.size());
         for (ShardSessionRegistry expiredSession : expiredSessions) {
             releaseShard(expiredSession);
             result.addShard(fromRegistry(expiredSession));

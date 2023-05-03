@@ -8,9 +8,7 @@ package io.spine.message.delivery.server.grpc;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.util.Durations;
-import com.google.protobuf.util.Timestamps;
 import io.grpc.StatusRuntimeException;
-import io.spine.base.Time;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.admin.grpc.ShardStatus;
 import io.spine.message.delivery.command.PickUpShard;
@@ -35,7 +33,6 @@ import java.util.function.Predicate;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
-import static io.spine.base.Time.currentTime;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -91,19 +88,13 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setWorker(worker)
                 .vBuild();
         var future = observer.waitForMatching(is(shard).and(hasStatus(PICKED)));
-        System.out.printf("+ + Picking up a shard at `%s`\n", Timestamps.toString(currentTime()));
         sessionRegistry().pickShard(pickShard);
         waitFor(future);
-        System.out.printf("+ + Shard pick confirmed at `%s`\n", Timestamps.toString(currentTime()));
-        System.out.printf("+ + Sleeping for 2 seconds starts now at `%s`\n", Timestamps.toString(currentTime()));
         sleepUninterruptibly(2, TimeUnit.SECONDS); // Wait for the session to expire.
-        System.out.printf("+ + Waking up from sleep at `%s`\n", Timestamps.toString(currentTime()));
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
-        System.out.printf("+ + Releasing expired sessions at `%s`\n", Timestamps.toString(currentTime()));
         ExpiredSessionsReleased result = sessionRegistry().releaseSessions(releaseExpired);
-        System.out.printf("+ + Received a result at `%s`\n", Timestamps.toString(currentTime()));
         assertThat(result.getShardCount())
                 .isEqualTo(1);
         ExpiredSession expiredSession = result.getShard(0);
@@ -123,19 +114,13 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setWorker(worker)
                 .vBuild();
         var future = observer.waitForMatching(is(shard).and(hasStatus(PICKED)));
-        System.out.printf("+ + Picking up a shard at `%s`\n", Timestamps.toString(currentTime()));
         sessionRegistry().pickShard(pickShard);
         waitFor(future);
-        System.out.printf("+ + Shard pick confirmed at `%s`\n", Timestamps.toString(currentTime()));
-        System.out.printf("+ + Sleeping for 2 seconds starts now at `%s`\n", Timestamps.toString(currentTime()));
         sleepUninterruptibly(2, TimeUnit.SECONDS); // Wait for the session to expire.
-        System.out.printf("+ + Waking up from sleep at `%s`\n", Timestamps.toString(currentTime()));
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
-        System.out.printf("+ + Releasing expired sessions at `%s`\n", Timestamps.toString(currentTime()));
         ExpiredSessionsReleased released = sessionRegistry().releaseSessions(releaseExpired);
-        System.out.printf("+ + Received a result at `%s`\n", Timestamps.toString(currentTime()));
         assertThat(released.getShardCount())
                 .isEqualTo(1);
         ExpiredSession expiredSession = released.getShard(0);
