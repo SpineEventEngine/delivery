@@ -85,6 +85,7 @@ final class SessionRegistryServiceTest extends WithApp {
     @DisplayName("release expired sessions")
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void releaseExpiredSessions() {
+        Time.resetProvider();
         var observer = subscribeToUpdates();
         var pickShard = PickUpShard.newBuilder()
                 .setShard(shard)
@@ -117,6 +118,7 @@ final class SessionRegistryServiceTest extends WithApp {
     @DisplayName("filter out sessions that were already released")
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void filterOutAlreadyReleasedSessions() {
+        Time.resetProvider();
         var observer = subscribeToUpdates();
         var pickShard = PickUpShard.newBuilder()
                 .setShard(shard)
