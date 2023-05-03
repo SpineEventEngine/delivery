@@ -102,6 +102,7 @@ final class AdminServiceTest extends WithApp {
         assertContains(future, expected);
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(expected);
+        Time.resetProvider();
     }
 
     @Test
@@ -129,6 +130,7 @@ final class AdminServiceTest extends WithApp {
         assertContains(notPickedFuture, unpickedUpdate);
         assertHasNoError(observer);
         assertUpdatesIn(observer).containsExactly(pickedUpdate, unpickedUpdate);
+        Time.resetProvider();
     }
 
     @Test

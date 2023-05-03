@@ -51,6 +51,7 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
                 .vBuild();
 
         context().assertState(shard, expected);
+        Time.resetProvider();
     }
 
     @Test
@@ -70,6 +71,7 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
         context().assertEntity(shard, CurrentShardStateProjection.class)
                  .hasStateThat()
                  .isEqualTo(expected);
+        Time.resetProvider();
     }
 
     @AfterEach
