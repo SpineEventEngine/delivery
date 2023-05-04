@@ -22,10 +22,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.asPickedUp;
+import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.asReleased;
 import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.pickUpShard;
 import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.release;
 import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.releaseExpiredSessions;
-import static io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv.asReleased;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 

@@ -6,9 +6,11 @@
 
 package io.spine.message.delivery.server.grpc;
 
-import com.google.common.util.concurrent.Uninterruptibles;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.util.Durations;
 import io.grpc.StatusRuntimeException;
+import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
+import io.spine.message.delivery.admin.grpc.ShardStatus;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.event.ExpiredSession;
@@ -22,11 +24,16 @@ import io.spine.server.delivery.WorkerId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.function.Predicate;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
+import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`SessionRegistryService` should")
@@ -40,6 +47,7 @@ final class SessionRegistryServiceTest extends WithApp {
             .setNodeId(node)
             .setValue(SessionRegistryServiceTest.class.getName())
             .vBuild();
+
     @Test
     @DisplayName("pick up a shard")
     void pickUpShard() {
@@ -74,12 +82,15 @@ final class SessionRegistryServiceTest extends WithApp {
     @DisplayName("release expired sessions")
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void releaseExpiredSessions() {
+        var observer = subscribeToUpdates();
         var pickShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
+        var future = observer.waitForMatching(is(shard).and(hasStatus(PICKED)));
         sessionRegistry().pickShard(pickShard);
-        sleepUninterruptibly(2, TimeUnit.SECONDS);
+        waitFor(future);
+        sleepUninterruptibly(2, TimeUnit.SECONDS); // Wait for the session to expire.
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
@@ -97,12 +108,15 @@ final class SessionRegistryServiceTest extends WithApp {
     @DisplayName("filter out sessions that were already released")
     @SuppressWarnings("ResultOfMethodCallIgnored")
     void filterOutAlreadyReleasedSessions() {
+        var observer = subscribeToUpdates();
         var pickShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
                 .vBuild();
+        var future = observer.waitForMatching(is(shard).and(hasStatus(PICKED)));
         sessionRegistry().pickShard(pickShard);
-        sleepUninterruptibly(2, TimeUnit.SECONDS);
+        waitFor(future);
+        sleepUninterruptibly(2, TimeUnit.SECONDS); // Wait for the session to expire.
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
                 .vBuild();
@@ -134,5 +148,36 @@ final class SessionRegistryServiceTest extends WithApp {
         ExpiredSessionsReleased result = sessionRegistry().releaseSessions(releaseExpired);
         assertThat(result.getShardCount())
                 .isEqualTo(0);
+    }
+
+    /**
+     * Waits two seconds for the given {@code future} to be resolved and returns
+     * the {@code ShardInfoUpdate} received from the {@code Future}.
+     *
+     * <p>Throws {@code TimeoutException} if the {@code future} is not resolved within two seconds.
+     */
+    @CanIgnoreReturnValue
+    private static ShardInfoUpdate waitFor(Future<ShardInfoUpdate> update){
+        try {
+            return update.get(2, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Creates a new {@code Predicate} for the {@code ShardInfoUpdate} that tests if the update
+     * has the given {@code index}.
+     */
+    private static Predicate<ShardInfoUpdate> is(ShardIndex index) {
+        return u -> index.equals(u.getIndex());
+    }
+
+    /**
+     * Creates a new {@code Predicate} for the {@code ShardInfoUpdate} that tests if the update
+     * notifies about a {@linkplain  ShardStatus#PICKED PICKED} shard status.
+     */
+    private static Predicate<ShardInfoUpdate> hasStatus(ShardStatus status) {
+        return u -> u.getNewStatus() == status;
     }
 }

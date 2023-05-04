@@ -8,8 +8,8 @@ package io.spine.message.delivery.client.given;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.message.delivery.client.ExecutionFailedException;
-import io.spine.message.delivery.client.RequestWithResult;
 import io.spine.message.delivery.client.RequestExecutionStrategy;
+import io.spine.message.delivery.client.RequestWithResult;
 import io.spine.message.delivery.client.VoidRequest;
 
 /**

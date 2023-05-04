@@ -14,3 +14,7 @@ dependencies {
     }
     implementation(Spine.server)
 }
+
+apply {
+    from(rootDir.toPath().resolve("test-artifacts.gradle"))
+}

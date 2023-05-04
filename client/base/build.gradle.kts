@@ -19,7 +19,7 @@ dependencies {
 }
 
 apply {
-    from("test-artifacts.gradle")
+    from(rootDir.toPath().resolve("test-artifacts.gradle"))
 }
 
 // We're explicitly copying protos to ensure rejections are generated.

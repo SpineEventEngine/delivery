@@ -7,15 +7,18 @@
 package io.spine.message.delivery.server.grpc;
 
 import com.google.protobuf.Empty;
-import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
 import io.spine.logging.Logging;
+import io.spine.message.delivery.admin.FilteringObserver;
+import io.spine.message.delivery.admin.TransformingStreamObserver;
 import io.spine.message.delivery.admin.ShardMessagesCountHolder;
 import io.spine.message.delivery.admin.ShardUpdateSubscribersHolder;
+import io.spine.message.delivery.admin.SubscriptionResponses;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.ShardInfo;
 import io.spine.message.delivery.admin.grpc.ShardInfoList;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
+import io.spine.message.delivery.admin.grpc.SubscriptionResponse;
 import io.spine.message.delivery.server.ExtendedInboxStorage;
 import io.spine.message.delivery.server.ReportingStorageFactory;
 import io.spine.message.delivery.server.ShardRegistryStorage;
@@ -33,6 +36,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.messagesCountChangedTo;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.shardPicked;
 import static io.spine.message.delivery.admin.ShardInfoUpdates.shardUnpicked;
+import static io.spine.message.delivery.admin.StreamObservers.toServerCall;
+import static io.spine.message.delivery.admin.SubscriptionResponses.ack;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 
@@ -79,8 +84,11 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
 
     @Override
     public void
-    subscribeToShardUpdates(Empty request, StreamObserver<ShardInfoUpdate> observer) {
-        subscribers.addSubscriber(observer);
+    subscribeToShardUpdates(Empty request, StreamObserver<SubscriptionResponse> observer) {
+        var serverCallObserver = new FilteringObserver(toServerCall(observer));
+        var mappingToResponse = new TransformingStreamObserver<>(serverCallObserver, SubscriptionResponses::toResponse);
+        subscribers.addSubscriber(mappingToResponse);
+        serverCallObserver.onNext(ack());
     }
 
     /**
@@ -137,18 +145,6 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
                 .setStatus(NOT_PICKED)
                 .setMessages(messagesCount)
                 .vBuild();
-    }
-
-    /**
-     * Casts the given {@code observer} to the {@code ServerCallStreamObserver}.
-     *
-     * <p>According to the {@link ServerCallStreamObserver} docs it's safe to cast
-     * {@code StreamObserver} to {@code ServerCallStreamObserver} in server side implementation
-     * of the service.
-     */
-    private static ServerCallStreamObserver<ShardInfoUpdate>
-    toServerCall(StreamObserver<ShardInfoUpdate> observer) {
-        return (ServerCallStreamObserver<ShardInfoUpdate>) observer;
     }
 
     @Override

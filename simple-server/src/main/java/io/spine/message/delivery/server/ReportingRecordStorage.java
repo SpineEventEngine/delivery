@@ -8,6 +8,7 @@ package io.spine.message.delivery.server;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
+import io.spine.logging.Logging;
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordStorage;
 import io.spine.server.storage.RecordStorageDelegate;
@@ -26,7 +27,8 @@ import static java.util.UUID.randomUUID;
  * @param <R>
  *         the type of the message records
  */
-public final class ReportingRecordStorage<I, R extends Message> extends RecordStorageDelegate<I, R> {
+public final class ReportingRecordStorage<I, R extends Message> extends RecordStorageDelegate<I, R>
+        implements Logging {
 
     /**
      * Stores subscriptions of this storage.
@@ -119,15 +121,13 @@ public final class ReportingRecordStorage<I, R extends Message> extends RecordSt
      * {@code record} with the given {@code id}.
      */
     private void notifyWrite(I id, R record) {
-        subscriptions.values()
-                     .forEach(sub -> sub.onWrite(id, record));
+        subscriptions.forEach((key, value) -> value.onWrite(id, record));
     }
 
     /**
      * Notifies all the subscribers about a new delete operation performed on the given {@code id}.
      */
     private void notifyDeleted(I id) {
-        subscriptions.values()
-                     .forEach(sub -> sub.onDelete(id));
+        subscriptions.forEach((key, value) -> value.onDelete(id));
     }
 }
