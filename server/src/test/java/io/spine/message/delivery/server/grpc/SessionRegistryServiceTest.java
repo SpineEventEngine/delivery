@@ -151,10 +151,10 @@ final class SessionRegistryServiceTest extends WithApp {
     }
 
     /**
-     * Waits 2 seconds for the given {@code future} to be resolved and returns
+     * Waits two seconds for the given {@code future} to be resolved and returns
      * the {@code ShardInfoUpdate} received from the {@code Future}.
      *
-     * <p>Throws {@code TimeoutException} if the {@code future} is not resolved within 2 seconds.
+     * <p>Throws {@code TimeoutException} if the {@code future} is not resolved within two seconds.
      */
     @CanIgnoreReturnValue
     private static ShardInfoUpdate waitFor(Future<ShardInfoUpdate> update){
