@@ -28,7 +28,7 @@ object Spine {
 
         const val version = "1.9.0-SNAPSHOT.5"
         const val coreVersion = "1.9.0-SNAPSHOT.11"
-        const val timeVersion = "1.8.0"
+        const val timeVersion = "1.9.0-SNAPSHOT.5"
 
         const val base = "io.spine:spine-base:${version}"
         const val client = "io.spine:spine-client:${coreVersion}"
