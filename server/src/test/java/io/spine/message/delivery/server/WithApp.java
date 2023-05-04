@@ -6,13 +6,17 @@
 
 package io.spine.message.delivery.server;
 
+import com.google.protobuf.Empty;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.client.Client;
 import io.spine.environment.Environment;
+import io.spine.message.delivery.admin.given.BlockingMemoizingObserver;
+import io.spine.message.delivery.admin.given.WithAckObserver;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceStub;
+import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
 import io.spine.server.ServerEnvironment;
@@ -113,5 +117,20 @@ public abstract class WithApp {
      */
     public Client client() {
         return client;
+    }
+
+    /**
+     * Subscribes to the shard updates on the {@code AdminService} and returns an observer that
+     * collects all updates for further assertions.
+     *
+     * <p>Blocks the current thread and waits for the subscription to be acknowledged before
+     * returning the observer.
+     */
+    protected BlockingMemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
+        var observer = new BlockingMemoizingObserver<ShardInfoUpdate>();
+        var ackObserver = new WithAckObserver(observer);
+        adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), ackObserver);
+        ackObserver.waitForAcknowledgment();
+        return observer;
     }
 }

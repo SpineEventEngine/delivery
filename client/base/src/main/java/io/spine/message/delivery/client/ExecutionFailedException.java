@@ -8,6 +8,7 @@ package io.spine.message.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 
+import static com.google.common.base.Throwables.getStackTraceAsString;
 import static java.lang.System.lineSeparator;
 
 /**
@@ -49,7 +50,12 @@ public final class ExecutionFailedException extends RuntimeException {
         );
         causes.forEach(cause -> builder.append(lineSeparator())
                                        .append("- Caused by: ")
-                                       .append(cause.getMessage()));
+                                       .append(cause.getMessage())
+                                       .append(lineSeparator())
+                                       .append("- Stacktrace: ")
+                                       .append(getStackTraceAsString(cause))
+                                       .append("- - - - - - - - - -")
+        );
         return builder.toString();
     }
 }

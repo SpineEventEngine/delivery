@@ -18,9 +18,10 @@ import static com.google.common.truth.Truth.assertThat;
 import static io.spine.message.delivery.client.given.RunCountingRequestWithResult.newRunCountingRequestWithResult;
 import static io.spine.message.delivery.client.given.RunCountingVoidRequest.newRunCountingVoidRequest;
 import static io.spine.message.delivery.client.given.RunCountingVoidRequest.throwUntil;
-import static java.lang.System.*;
-import static java.time.Duration.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static java.lang.System.currentTimeMillis;
+import static java.time.Duration.ofSeconds;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 @DisplayName("`WaitAndRetry` error handling strategy should")
 final class WaitAndRetryTest {

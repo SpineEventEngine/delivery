@@ -7,7 +7,6 @@
 package io.spine.message.delivery.admin;
 
 import io.grpc.stub.ServerCallStreamObserver;
-import io.grpc.stub.StreamObserver;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 
@@ -38,16 +37,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @ThreadSafe
 public final class ShardUpdateSubscribersHolder implements Logging {
 
-    private final ConcurrentHashMap<String, StreamObserver<ShardInfoUpdate>> subscribers =
+    private final ConcurrentHashMap<String, ServerCallStreamObserver<ShardInfoUpdate>> subscribers =
             new ConcurrentHashMap<>();
 
-    public void addSubscriber(StreamObserver<ShardInfoUpdate> subscriber) {
+    public void addSubscriber(ServerCallStreamObserver<ShardInfoUpdate> subscriber) {
         String uuid = UUID.randomUUID()
                           .toString();
         subscribers.put(uuid, subscriber);
         _debug().log("Added new subscriber [%s], current number of subscribers = %d",
                      uuid, subscribers.size());
-        toServerCall(subscriber).setOnCancelHandler(() -> {
+        subscriber.setOnCancelHandler(() -> {
             _debug().log("Subscriber [%s] closed. Removing...", uuid);
             removeVerbose(uuid);
         });
@@ -76,18 +75,6 @@ public final class ShardUpdateSubscribersHolder implements Logging {
             }
         }
         invalidSubIds.forEach(this::removeVerbose);
-    }
-
-    /**
-     * Casts the given {@code observer} to the {@code ServerCallStreamObserver}.
-     *
-     * <p>According to the {@link ServerCallStreamObserver} docs it's safe to cast
-     * {@code StreamObserver} to {@code ServerCallStreamObserver} in server side implementation
-     * of the service.
-     */
-    private static ServerCallStreamObserver<ShardInfoUpdate>
-    toServerCall(StreamObserver<ShardInfoUpdate> observer) {
-        return (ServerCallStreamObserver<ShardInfoUpdate>) observer;
     }
 
     /**

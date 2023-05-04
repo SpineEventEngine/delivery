@@ -10,7 +10,6 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.Identifier;
 import io.spine.client.Client;
-import io.spine.environment.Environment;
 import io.spine.message.delivery.InboxMessageHolder;
 import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.WriteMessage;
@@ -20,20 +19,15 @@ import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.WorkerId;
 import io.spine.test.message.delivery.server.Something;
 import io.spine.type.TypeUrl;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Isolated;
 
-import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
-import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.message.delivery.server.given.TestInboxMessages.toDeliver;
 
 @Isolated
