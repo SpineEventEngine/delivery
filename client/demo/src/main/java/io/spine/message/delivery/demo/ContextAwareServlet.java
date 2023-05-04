@@ -11,9 +11,9 @@ import com.google.common.flogger.FluentLogger;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.inprocess.InProcessChannelBuilder;
-import io.spine.base.Production;
 import io.spine.client.Client;
 import io.spine.core.TenantId;
+import io.spine.environment.DefaultMode;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.DeliveryBootstrapper;
 import io.spine.message.delivery.client.SimpleDeliveryClient;
@@ -158,7 +158,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
                 .build();
         delivery.subscribe(new AsyncLocalObserver(observerExecutor));
         ServerEnvironment
-                .when(Production.class)
+                .when(DefaultMode.class)
                 .use(delivery)
                 .use(InMemoryTransportFactory.newInstance())
                 .use(InMemoryStorageFactory.newInstance());
