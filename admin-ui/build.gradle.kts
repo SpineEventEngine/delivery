@@ -1,3 +1,7 @@
+import Build_gradle.Build
+import Build_gradle.Clean
+import Build_gradle.GenerateTsProto
+import Build_gradle.Serve
 import com.github.gradle.node.npm.task.NpmInstallTask
 import com.github.gradle.node.npm.task.NpxTask
 

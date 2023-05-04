@@ -12,14 +12,12 @@ import io.spine.message.delivery.admin.given.BlockingMemoizingObserver;
 import io.spine.message.delivery.admin.given.WithAckObserver;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.command.PickUpShard;
-import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.test.message.delivery.server.Something;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.Future;

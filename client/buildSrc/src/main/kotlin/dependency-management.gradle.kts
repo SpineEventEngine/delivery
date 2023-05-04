@@ -11,10 +11,10 @@ import io.spine.internal.dependency.Flogger
 import io.spine.internal.dependency.Gson
 import io.spine.internal.dependency.Guava
 import io.spine.internal.dependency.JavaX
+import io.spine.internal.dependency.Log4j2
 import io.spine.internal.dependency.Protobuf
 import io.spine.internal.dependency.Spine
 import io.spine.internal.dependency.Truth
-import io.spine.internal.dependency.Log4j2
 
 plugins {
     `java-library`

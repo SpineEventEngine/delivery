@@ -6,11 +6,10 @@
 
 package io.spine.message.delivery.server.grpc;
 
-import com.google.protobuf.Timestamp;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
 import io.spine.base.Time;
-import io.grpc.StatusRuntimeException;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.admin.grpc.ShardStatus;
 import io.spine.message.delivery.command.PickUpShard;
@@ -38,7 +37,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`SessionRegistryService` should")
 final class SessionRegistryServiceTest extends WithApp {
