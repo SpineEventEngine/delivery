@@ -29,7 +29,7 @@ message ShardAlreadyPickedUp {
     spine.server.delivery.WorkerId worker = 2 [(required) = true];
 
     // When the worker picked up the work in the shard.
-    google.protobuf.Timestamp whenPicked = 3 [(required) = true];
+    google.protobuf.Timestamp when_picked = 3 [(required) = true];
 }
 
 // A shard cannot be release by the worker.
