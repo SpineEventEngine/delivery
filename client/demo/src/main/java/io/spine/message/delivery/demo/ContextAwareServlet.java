@@ -158,7 +158,7 @@ abstract class ContextAwareServlet extends HttpServlet implements Logging {
                 .build();
         delivery.subscribe(new AsyncLocalObserver(observerExecutor));
         ServerEnvironment
-                .when(DefaultMode.class)
+                .when(Production.class)
                 .use(delivery)
                 .use(InMemoryTransportFactory.newInstance())
                 .use(InMemoryStorageFactory.newInstance());
