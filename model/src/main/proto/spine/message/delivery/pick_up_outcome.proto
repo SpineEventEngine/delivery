@@ -29,6 +29,8 @@ message LiquorPickUpOutcome {
 
     oneof value {
 
+        option (is_required) = true;
+
         // Signals that he shard is successfully picked up.
         ShardPickedUp pickedUp = 1;
 
