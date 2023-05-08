@@ -8,7 +8,6 @@ package io.spine.message.delivery.client;
 
 import com.google.common.base.Suppliers;
 import com.google.common.testing.NullPointerTester;
-import com.google.common.truth.extensions.proto.ProtoTruth;
 import com.google.protobuf.Duration;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
@@ -26,6 +25,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth8.assertThat;
+import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Time.currentTime;
 import static io.spine.message.delivery.client.ShardSessionRecords.fromEvent;
 import static io.spine.server.delivery.PickUpOutcomeMixin.pickedUp;
@@ -80,8 +80,8 @@ final class WorkRegistryTest {
             assertThat(result.session())
                     .isPresent();
             ShardSessionRecord session = result.getSession();
-            ProtoTruth.assertThat(session.getIndex())
-                      .isEqualTo(shard);
+            assertThat(session.getIndex())
+                    .isEqualTo(shard);
         }
     }
 
