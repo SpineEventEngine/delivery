@@ -13,7 +13,6 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.spine.client.Client;
 import io.spine.core.TenantId;
-import io.spine.environment.DefaultMode;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.DeliveryBootstrapper;
 import io.spine.message.delivery.client.SimpleDeliveryClient;
