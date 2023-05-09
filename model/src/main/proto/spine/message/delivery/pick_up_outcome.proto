@@ -32,9 +32,9 @@ message LiquorPickUpOutcome {
         option (is_required) = true;
 
         // Signals that he shard is successfully picked up.
-        ShardPickedUp pickedUp = 1;
+        ShardPickedUp picked_up = 1;
 
         // Signals that the shard could not be picked up as it's already picked by another worker.
-        ShardAlreadyPickedUp alreadyPickedUp = 2;
+        ShardAlreadyPickedUp already_picked_up = 2;
     }
 }
