@@ -12,7 +12,7 @@ import io.spine.environment.Tests;
 /**
  * Non-testing environment.
  */
-public class Production extends CustomEnvironmentType<Production> {
+public final class Production extends CustomEnvironmentType<Production> {
 
     private static final Production INSTANCE = new Production();
 
