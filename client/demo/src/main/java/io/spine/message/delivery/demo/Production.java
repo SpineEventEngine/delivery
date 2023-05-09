@@ -10,7 +10,10 @@ import io.spine.environment.CustomEnvironmentType;
 import io.spine.environment.Tests;
 
 /**
- * Non-testing environment.
+ * Declares a “production” environment.
+ *
+ * <p>When this environment is used the system is meant to run and work as it should run
+ * in production.
  */
 public final class Production extends CustomEnvironmentType<Production> {
 
