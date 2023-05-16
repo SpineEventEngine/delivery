@@ -95,6 +95,7 @@ final class SessionRegistryTest extends DeliveryTest {
                 var expected = Rejections.ShardAlreadyPickedUp.newBuilder()
                         .setShard(shard)
                         .setWorker(worker)
+                        .setWhenPicked(time)
                         .vBuild();
                 context().assertEvent(expected);
             }

@@ -20,19 +20,20 @@ import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.message.delivery.rejection.Rejections;
-import io.spine.message.delivery.rejection.ShardAlreadyPickedUp;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.nullToEmpty;
-import static io.grpc.Status.FAILED_PRECONDITION;
 import static io.grpc.Status.INTERNAL;
 import static io.grpc.Status.fromCode;
 import static io.grpc.Status.fromThrowable;
+import static io.spine.message.delivery.LiquorPickUpOutcomes.alreadyPickedUp;
+import static io.spine.message.delivery.LiquorPickUpOutcomes.pickedUp;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static java.lang.String.format;
 
@@ -56,7 +57,7 @@ public final class SessionRegistryService
     }
 
     @Override
-    public void pickShard(PickUpShard pickUpShard, StreamObserver<ShardPickedUp> responseObserver) {
+    public void pickShard(PickUpShard pickUpShard, StreamObserver<LiquorPickUpOutcome> responseObserver) {
         _trace().log(
                 "Posting internal `PickUpShard` command and waiting for `ShardPickedUp` event."
         );
@@ -73,7 +74,7 @@ public final class SessionRegistryService
                                       "Received `ShardPickedUp` event for shard `%s`.",
                                       e.getShard()
                               );
-                              responseObserver.onNext(e);
+                              responseObserver.onNext(pickedUp(e));
                               responseObserver.onCompleted();
                               latch.countDown();
                           })
@@ -83,16 +84,8 @@ public final class SessionRegistryService
                                       e.getShard(), e.getWorker()
                               );
                               _trace().log(msg);
-                              var error = ShardAlreadyPickedUp.newBuilder()
-                                      .setShard(e.getShard())
-                                      .setWorker(e.getWorker())
-                                      .build();
-                              responseObserver.onError(
-                                      FAILED_PRECONDITION
-                                              .withCause(error)
-                                              .withDescription(msg)
-                                              .asRuntimeException()
-                              );
+                              responseObserver.onNext(alreadyPickedUp(e));
+                              responseObserver.onCompleted();
                               latch.countDown();
                           })
                           .onServerError((msg, error) -> {

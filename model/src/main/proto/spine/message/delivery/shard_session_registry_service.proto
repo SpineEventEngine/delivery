@@ -17,13 +17,15 @@ option java_generate_equals_and_hash = true;
 
 import "spine/message/delivery/commands.proto";
 import "spine/message/delivery/events.proto";
+import "spine/message/delivery/rejections.proto";
+import "spine/message/delivery/pick_up_outcome.proto";
 
 
 // A service for working with the `ShardSessionRegistry` bypassing Spine's `CommandService`.
 service ShardSessionRegistryService {
 
     // Picks up the shard for processing.
-    rpc PickShard(PickUpShard) returns (ShardPickedUp);
+    rpc PickShard(PickUpShard) returns (LiquorPickUpOutcome);
 
     // Releases sessions which were picked up earlier that the configured inactivity period.
     rpc ReleaseSessions(ReleaseExpiredSessions) returns (ExpiredSessionsReleased);

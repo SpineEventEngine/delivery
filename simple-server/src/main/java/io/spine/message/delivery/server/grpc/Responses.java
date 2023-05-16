@@ -11,14 +11,11 @@ import io.grpc.stub.StreamObserver;
 import io.spine.base.Time;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.OptionalInboxMessage;
-import io.spine.message.delivery.rejection.ShardAlreadyPickedUp;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 
 import java.util.Optional;
-
-import static io.grpc.Status.FAILED_PRECONDITION;
 
 /**
  * Utility for creating gRPC response messages.
@@ -29,31 +26,6 @@ final class Responses {
      * Prevents this utility from instantiation.
      */
     private Responses() {
-    }
-
-    /**
-     * Populates the {@code response} with a {@code ShardAlreadyPickedUp} error.
-     *
-     * @param response
-     *         the response on which the {@code onError} callback with the error is called
-     * @param shard
-     *         the shard that was already picked up
-     * @param worker
-     *         the worker who picked up the shard
-     */
-    @SuppressWarnings("DuplicateStringLiteralInspection") // Duplication with the test.
-    static void
-    alreadyPicked(StreamObserver<ShardPickedUp> response, ShardIndex shard, WorkerId worker) {
-        var error = ShardAlreadyPickedUp.newBuilder()
-                .setShard(shard)
-                .setWorker(worker)
-                .build();
-        response.onError(
-                FAILED_PRECONDITION
-                        .withCause(error)
-                        .withDescription("The shard has been already picked up.")
-                        .asRuntimeException()
-        );
     }
 
     /**

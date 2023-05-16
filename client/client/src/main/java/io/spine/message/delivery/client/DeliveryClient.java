@@ -32,13 +32,15 @@ import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
-import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
+import io.spine.message.delivery.rejection.Rejections;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageComparator;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.Page;
+import io.spine.server.delivery.PickUpOutcome;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -54,7 +56,10 @@ import static com.google.common.collect.Iterables.toArray;
 import static io.spine.client.OrderBy.Direction.DESCENDING;
 import static io.spine.client.QueryFilter.eq;
 import static io.spine.client.QueryFilter.gt;
+import static io.spine.message.delivery.client.ShardSessionRecords.fromEvent;
 import static io.spine.server.delivery.InboxMessageStatus.TO_DELIVER;
+import static io.spine.server.delivery.PickUpOutcomeMixin.alreadyPicked;
+import static io.spine.server.delivery.PickUpOutcomeMixin.pickedUp;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
@@ -212,7 +217,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
      *         could not handle
      */
     @Override
-    public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker)
+    public PickUpOutcome pickUpShard(ShardIndex shard, WorkerId worker)
             throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
@@ -224,16 +229,20 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 "Posting `PickUpShard` command and waiting for a response event `ShardPickedUp`."
         );
         try {
-
-            ShardPickedUp shardPickedUp = requestExecutionStrategy
+            LiquorPickUpOutcome outcome = requestExecutionStrategy
                     .evaluate(() -> sessionRegistry.pickShard(pickUpShard));
-            return Optional.of(shardPickedUp);
+            if (outcome.hasPickedUp()) {
+                return pickedUp(fromEvent(outcome.getPickedUp()));
+            } else {
+                Rejections.ShardAlreadyPickedUp rejection = outcome.getAlreadyPickedUp();
+                return alreadyPicked(rejection.getWorker(), rejection.getWhenPicked());
+            }
         } catch (ExecutionFailedException e) {
             ImmutableList<RuntimeException> occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
             _trace().log("Unable to pick up shard `%s`: %s.", shard, getStackTraceAsString(last));
+            throw e;
         }
-        return Optional.empty();
     }
 
     /**

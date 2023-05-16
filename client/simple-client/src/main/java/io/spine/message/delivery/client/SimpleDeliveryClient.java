@@ -22,18 +22,20 @@ import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
-import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.InboxServiceGrpc;
 import io.spine.message.delivery.grpc.InboxServiceGrpc.InboxServiceBlockingStub;
+import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
 import io.spine.message.delivery.grpc.OptionalInboxMessage;
 import io.spine.message.delivery.grpc.PageOfMessages;
 import io.spine.message.delivery.grpc.ReadMessagesSinceTime;
 import io.spine.message.delivery.grpc.ShardServiceGrpc;
 import io.spine.message.delivery.grpc.ShardServiceGrpc.ShardServiceBlockingStub;
+import io.spine.message.delivery.rejection.Rejections;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageComparator;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.Page;
+import io.spine.server.delivery.PickUpOutcome;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -44,7 +46,10 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getStackTraceAsString;
 import static com.google.common.collect.ImmutableList.toImmutableList;
+import static io.spine.message.delivery.client.ShardSessionRecords.fromEvent;
 import static io.spine.protobuf.Messages.isDefault;
+import static io.spine.server.delivery.PickUpOutcomeMixin.alreadyPicked;
+import static io.spine.server.delivery.PickUpOutcomeMixin.pickedUp;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.util.Preconditions2.checkPositive;
@@ -204,7 +209,7 @@ public final class SimpleDeliveryClient
      *         could not handle
      */
     @Override
-    public Optional<ShardPickedUp> pickUpShard(ShardIndex shard, WorkerId worker)
+    public PickUpOutcome pickUpShard(ShardIndex shard, WorkerId worker)
             throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
@@ -213,16 +218,21 @@ public final class SimpleDeliveryClient
                 .setWorker(worker)
                 .vBuild();
         try {
-            ShardPickedUp shardPickedUp = requestExecutionStrategy
+            LiquorPickUpOutcome outcome = requestExecutionStrategy
                     .evaluate(() -> shardService.pickShard(pickUpShard));
-            return Optional.of(shardPickedUp);
+            if (outcome.hasPickedUp()) {
+                return pickedUp(fromEvent(outcome.getPickedUp()));
+            } else {
+                Rejections.ShardAlreadyPickedUp rejection = outcome.getAlreadyPickedUp();
+                return alreadyPicked(rejection.getWorker(), rejection.getWhenPicked());
+            }
         } catch (ExecutionFailedException e) {
             ImmutableList<RuntimeException> occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
             _trace().log("[SimpleClient] Unable to pick up shard `%s`: %s.",
                          shard, getStackTraceAsString(last));
+            throw e;
         }
-        return Optional.empty();
     }
 
     /**

@@ -12,13 +12,12 @@ import io.spine.message.delivery.admin.given.BlockingMemoizingObserver;
 import io.spine.message.delivery.admin.given.WithAckObserver;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.command.PickUpShard;
-import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.test.message.delivery.server.Something;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.Future;
@@ -61,9 +60,9 @@ final class AdminServiceTest extends WithApp implements Logging {
         syncInboxService().writeOne(testMessage(shard2));
 
         syncShardService().pickShard(pickUpShard(shard2));
-        ShardPickedUp picked = syncShardService().pickShard(pickUpShard(shard3));
+        LiquorPickUpOutcome outcome = syncShardService().pickShard(pickUpShard(shard3));
         syncShardService().pickShard(pickUpShard(shard4));
-        syncShardService().releaseSession(releaseShard(picked));
+        syncShardService().releaseSession(releaseShard(outcome.getPickedUp()));
 
         var actual = syncAdminService()
                 .getShardInfo(request())
@@ -108,8 +107,8 @@ final class AdminServiceTest extends WithApp implements Logging {
                 observer.waitForMatching(update -> update.getNewStatus() == NOT_PICKED);
 
         PickUpShard pickUpShard = pickUpShard(index);
-        ShardPickedUp pickedUp = syncShardService().pickShard(pickUpShard);
-        syncShardService().releaseSession(releaseShard(pickedUp));
+        LiquorPickUpOutcome outcome = syncShardService().pickShard(pickUpShard);
+        syncShardService().releaseSession(releaseShard(outcome.getPickedUp()));
 
         ShardInfoUpdate pickedUpdate = shardPickedWithoutTime(index);
         ShardInfoUpdate unpickedUpdate = shardUnpicked(index);

@@ -8,11 +8,11 @@ package io.spine.message.delivery.client;
 
 import com.google.protobuf.util.Timestamps;
 import io.spine.message.delivery.client.given.ExecutionCountingStrategy;
-import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.Page;
+import io.spine.server.delivery.PickUpOutcome;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 import io.spine.test.message.delivery.client.Something;
@@ -82,29 +82,29 @@ final class DeliveryClientTest {
         @Test
         @DisplayName("pick up a shard for delivery")
         void pickUpShard() {
-            Optional<ShardPickedUp> result = client.pickUpShard(shard, worker);
-            assertThat(result)
-                    .isPresent();
+            PickUpOutcome result = client.pickUpShard(shard, worker);
+            assertThat(result.hasSession())
+                    .isTrue();
         }
 
         @Test
         @DisplayName("release a previously picked up shard")
         void releaseShard() {
-            Optional<ShardPickedUp> result = client.pickUpShard(shard, worker);
-            assertThat(result)
-                    .isPresent();
+            PickUpOutcome result = client.pickUpShard(shard, worker);
+            assertThat(result.hasSession())
+                    .isTrue();
             assertDoesNotThrow(() -> client.releaseShard(shard, worker));
         }
 
         @Test
         @DisplayName("do not pick up a shard for delivery if one is already picked up")
         void notPickUpShard() {
-            Optional<ShardPickedUp> firstAttempt = client.pickUpShard(shard, worker);
-            assertThat(firstAttempt)
-                    .isPresent();
-            Optional<ShardPickedUp> secondAttempt = client.pickUpShard(shard, worker);
-            assertThat(secondAttempt)
-                    .isEmpty();
+            PickUpOutcome firstAttempt = client.pickUpShard(shard, worker);
+            assertThat(firstAttempt.hasSession())
+                    .isTrue();
+            PickUpOutcome secondAttempt = client.pickUpShard(shard, worker);
+            assertThat(secondAttempt.hasAlreadyPicked())
+                    .isTrue();
         }
 
         @Test

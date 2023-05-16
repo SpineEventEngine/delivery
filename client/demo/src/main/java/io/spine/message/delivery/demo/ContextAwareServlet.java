@@ -11,7 +11,6 @@ import com.google.common.flogger.FluentLogger;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.inprocess.InProcessChannelBuilder;
-import io.spine.base.Production;
 import io.spine.client.Client;
 import io.spine.core.TenantId;
 import io.spine.logging.Logging;

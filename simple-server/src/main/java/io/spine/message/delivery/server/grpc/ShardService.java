@@ -16,8 +16,9 @@ import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.message.delivery.command.ReleaseShard;
 import io.spine.message.delivery.event.ExpiredSession;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
-import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
 import io.spine.message.delivery.grpc.ShardServiceGrpc;
+import io.spine.message.delivery.rejection.ShardAlreadyPickedUp;
 import io.spine.message.delivery.server.LiquorShardRegistry;
 import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.storage.StorageFactory;
@@ -25,8 +26,10 @@ import io.spine.server.storage.StorageFactory;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.message.delivery.server.grpc.Responses.alreadyPicked;
+import static io.spine.message.delivery.LiquorPickUpOutcomes.alreadyPickedUp;
+import static io.spine.message.delivery.LiquorPickUpOutcomes.pickedUp;
 import static io.spine.message.delivery.server.grpc.Responses.completeCall;
+import static io.spine.message.delivery.server.grpc.Responses.shardPickedUp;
 
 /**
  * Acts as a gRPC-wired backend for the {@link io.spine.message.delivery.ShardSessionRegistry}.
@@ -53,19 +56,20 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     }
 
     @Override
-    public void pickShard(PickUpShard request, StreamObserver<ShardPickedUp> response) {
+    public void pickShard(PickUpShard request, StreamObserver<LiquorPickUpOutcome> response) {
         var shard = request.getShard();
         int index = shard.getIndex();
         var worker = request.getWorker();
-        var session = registry.pickUp(shard, worker);
-        if (session.isPresent()) {
-            ShardPickedUp pickedUp = Responses.shardPickedUp(shard, worker);
+        try {
+            var session = registry.pickUp(shard, worker);
+            var pickedUp = shardPickedUp(session.shardIndex(), worker);
             log("Shard %d picked up.", index);
-            response.onNext(pickedUp);
+            response.onNext(pickedUp(pickedUp));
             response.onCompleted();
-        } else {
+        } catch (ShardAlreadyPickedUp e) {
             log("Shard %d NOT available.", index);
-            alreadyPicked(response, shard, worker);
+            response.onNext(alreadyPickedUp(e.messageThrown()));
+            response.onCompleted();
         }
     }
 
