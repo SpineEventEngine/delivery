@@ -32,3 +32,15 @@ By default, the maximum message size allowed to be received by the server is `4 
 
 This can be configured by setting a custom value (in bytes) to the `MAX_INBOUND_MESSAGE_SIZE`
 environment variable. Allowed values are in bounds from `1` to `Integer.MAX_VALUE` inclusive.
+
+# Stale shards auto release
+
+`LiquorShardRegistry` accepts `processingTimeout` upon which the registry can decide if a session
+is stale. The check is performed when a session is asked for picking up. If a gap between 
+`session.whenLastPickedUp()` and `now()` is equal to or more than processingTimeout, 
+the session is considered stale and can be picked up again. The fact of a session 
+"auto-release" is logged to `WARNING` level.
+
+Processing timeout is read from `SHARD_PROCESSING_TIMEOUT` env variable.
+Number of seconds is expected there. By default, it is 0, which means that the stale-check
+is not performed at all.
