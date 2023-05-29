@@ -4,6 +4,21 @@ message-delivery
 This repository provides a reusable gRPC-based Inbox delivery service and configuration client and a
 complimentary application for Spine-based apps.
 
+What is this project about?
+--------------
+
+The Message Delivery Server (Liquor) is an application that is deployed on a separate from the main
+application server, and serves as a remote `ShardedWorkRegistry` and `Inbox` storage.
+Liquor communicates with the main application nodes through the gRPC protocol.
+
+This is true for both [`simple-server`](simple-server) and [`server`](server) with the only
+difference in how data is stored and processed underneath.
+
+For more detailed information about each of the server's implementation please refer to the
+[simple-server readme][simple-server-readme] or [server readme][server-readme] files.
+
+[simple-server-readme]: simple-server/README.md
+[server-readme]: server/README.md
 
 Applications
 --------------
@@ -38,3 +53,16 @@ Compatibility
 For the `Spine` versions below `1.8.0` use `message-delivery:0.7.2`.
 
 For `Spine` `1.8.0` and above use `message-delivery:0.8.0` and above.
+
+For `Spine` `1.9.0` and above use `message-delivery:0.9.0` and above.
+
+Distribution
+-------------
+
+Both [`simple-server`](simple-server) and [`server`](server) are distributed as a Docker containers
+that are hosted on the Google Container Registry. There is a Terraform module 
+[google-spine-liquor][google-spine-liquor] that automates the deployment of the containers to the
+GCE instance. All the configuration parameters that are available for the servers also may be set
+through the Terraform module configuration.
+
+[google-spine-liquor]: https://registry.terraform.io/modules/SpineEventEngine/spine-liquor/google/latest
