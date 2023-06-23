@@ -8,4 +8,5 @@ dependencies {
     implementation(Redisson.lib)
     testImplementation(Testcontainers.lib)
     testImplementation(Testcontainers.junitJupiter)
+    testImplementation(project(path = ":storage:base", configuration = "testArtifacts"))
 }
