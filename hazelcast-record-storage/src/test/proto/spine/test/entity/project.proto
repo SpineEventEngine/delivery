@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+syntax = "proto3";
+
+package spine.test.entity;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.test.entity";
+option java_multiple_files = true;
+
+message ProjectId {
+    string id = 1;
+}
+
+message Project {
+    option (.entity) = { kind: AGGREGATE visibility: FULL };
+
+    ProjectId id = 1;
+
+    string name = 2 [(column) = true];
+
+    repeated Task task = 3;
+
+    enum Status {
+        UNDEFINED = 0;
+        CREATED = 1;
+        STARTED = 2;
+        DONE = 3;
+        CANCELLED = 4;
+    }
+
+    Status status = 4 [(column) = true];
+}
+
+message TaskId {
+    int32 id = 1;
+}
+
+message Task {
+    TaskId task_id = 1;
+    string title = 2;
+    string description = 3;
+}
