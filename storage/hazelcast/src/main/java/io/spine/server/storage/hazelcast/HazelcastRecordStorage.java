@@ -33,6 +33,12 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Hazelcast-based record storage.
+ *
+ * @param <I> the type of the record identifiers
+ * @param <R> the type of the stored message records
+ */
 public class HazelcastRecordStorage<I, R extends Message> extends RecordStorage<I, R> {
 
     private final HazelcastInstance hazelcast;
@@ -75,20 +81,6 @@ public class HazelcastRecordStorage<I, R extends Message> extends RecordStorage<
         return queryRecords(query)
                 .map(RecordWithColumns::record)
                 .iterator();
-    }
-
-    private static <I, R extends Message> Stream<RecordWithColumns<I, R>>
-    sortAndLimit(Stream<RecordWithColumns<I, R>> data, RecordQuery<I, R> query) {
-        Stream<RecordWithColumns<I, R>> stream = data;
-        ImmutableList<SortBy<?, R>> sortingSpecs = query.sorting();
-        if (sortingSpecs.size() > 0) {
-            stream = stream.sorted(accordingTo(sortingSpecs));
-        }
-        Integer limit = query.limit();
-        if (limit != null && limit > 0) {
-            stream = stream.limit(limit);
-        }
-        return stream;
     }
 
     @CanIgnoreReturnValue
@@ -136,6 +128,9 @@ public class HazelcastRecordStorage<I, R extends Message> extends RecordStorage<
         return format("[%s]%s:%s", tenantId.getValue(), idType.getName(), storedType.getName());
     }
 
+    /**
+     * Returns a {@code Stream} of records that comply with the given {@code query}.
+     */
     private Stream<RecordWithColumns<I, R>> queryRecords(RecordQuery<I, R> query) {
         RecordQueryMatcher<I, R> matcher = new RecordQueryMatcher<>(query.subject());
         Stream<RecordWithColumns<I, R>> stream = getStorage()
@@ -160,5 +155,23 @@ public class HazelcastRecordStorage<I, R extends Message> extends RecordStorage<
             return RecordWithColumns.create(id, record, (RecordSpec<I, R, R>) recordSpec());
         }
         throw newIllegalStateException("Unsupported record spec: %s", recordSpec());
+    }
+
+    /**
+     * Applies the sorting and limit settings from the given {@code query}
+     * to the given {@code data}.
+     */
+    private static <I, R extends Message> Stream<RecordWithColumns<I, R>>
+    sortAndLimit(Stream<RecordWithColumns<I, R>> data, RecordQuery<I, R> query) {
+        Stream<RecordWithColumns<I, R>> stream = data;
+        ImmutableList<SortBy<?, R>> sortingSpecs = query.sorting();
+        if (sortingSpecs.size() > 0) {
+            stream = stream.sorted(accordingTo(sortingSpecs));
+        }
+        Integer limit = query.limit();
+        if (limit != null && limit > 0) {
+            stream = stream.limit(limit);
+        }
+        return stream;
     }
 }

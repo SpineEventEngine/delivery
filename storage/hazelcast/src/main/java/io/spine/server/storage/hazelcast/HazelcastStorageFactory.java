@@ -15,10 +15,28 @@ import io.spine.server.storage.StorageFactory;
 
 import static com.hazelcast.core.Hazelcast.newHazelcastInstance;
 
+/**
+ * A factory for Hazelcast-based storages.
+ *
+ * <p>To get more info about what is Hazelcast in general please refer to the
+ * <a href="https://hazelcast.com/">Hazelcast</a></p> official website.
+ *
+ * <p>The main feature of the storages produced by this factory is a replication support. When the
+ * factory instance is obtained a new embedded Hazelcast server is started. The server allows to
+ * discover another servers running in the same network. Servers will automatically form a cluster
+ * where each server is storing a copy of all the cluster date. This means that records stored on
+ * one instance will be available for read and modification for all the Liquor instances in the same
+ * network.
+ *
+ * <p>Pay attention that each new factory instance creation will run a new Hazelcast server.
+ */
 public class HazelcastStorageFactory implements StorageFactory, Logging {
 
     private final HazelcastInstance hazelcast = newHazelcastInstance();
 
+    /**
+     * Create a new {@code HazelcastStorageFactory} and starts a new {@linkplain HazelcastInstance}.
+     */
     public static HazelcastStorageFactory newInstance() {
         return new HazelcastStorageFactory();
     }

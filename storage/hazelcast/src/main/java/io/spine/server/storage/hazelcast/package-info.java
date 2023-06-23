@@ -7,6 +7,10 @@
 /**
  * This package provides implementation of Hazelcast-based storages.
  */
+
+/**
+ * Package provides Hazelcast-based implementation of storages.
+ */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
 package io.spine.server.storage.hazelcast;
