@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * A factory for in-memory storages.
+ * A factory for Redis-based storages.
  */
 public final class RedisStorageFactory implements StorageFactory {
 
