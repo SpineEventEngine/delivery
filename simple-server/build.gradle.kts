@@ -11,8 +11,8 @@ import io.spine.internal.dependency.Spine
 dependencies {
     implementation(Log4j2.api)
     implementation(project(":model"))
-    implementation(project(":redis-record-storage"))
-    implementation(project(":hazelcast-record-storage"))
+    implementation(project(":storage:redis"))
+    implementation(project(":storage:hazelcast"))
     implementation(Grpc.core)
     implementation(Spine.server)
     testImplementation(project(":testutil-server"))
