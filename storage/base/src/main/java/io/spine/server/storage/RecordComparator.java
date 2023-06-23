@@ -13,7 +13,6 @@ import io.spine.query.ColumnName;
 import io.spine.query.Direction;
 import io.spine.query.RecordColumn;
 import io.spine.query.SortBy;
-import io.spine.server.storage.RecordWithColumns;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -24,8 +23,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
- * A comparator for sorting the contents of {@link TenantRecords}
- * in a provided {@linkplain SortBy sorting order}.
+ * A comparator for sorting records in a provided {@linkplain SortBy sorting order}.
+ *
+ * <p>This is a copy of the {@linkplain io.spine.server.storage.memory.RecordComparator} that is
+ * made to be able to instantiate this class outside of the package, as this type is very useful
+ * for custom storage implementations.
  *
  * @param <I>
  *         the type of the record identifiers
@@ -50,8 +52,7 @@ public final class RecordComparator<I, R extends Message>
     }
 
     /**
-     * A static factory for {@code EntityRecordComparator} instances, which sort the
-     * {@link TenantRecords} contents in the specified list.
+     * A static factory for {@code EntityRecordComparator} instances.
      *
      * @param sortByList
      *         a specification of columns and the directions for sorting

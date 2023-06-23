@@ -27,6 +27,10 @@ import static io.spine.util.Exceptions.newIllegalArgumentException;
 /**
  * Matches the records to the {@linkplain RecordQuery#subject() subject} of a {@link RecordQuery}.
  *
+ * <p>This class is a copy of {@linkplain io.spine.server.storage.memory.RecordQueryMatcher} that
+ * is made to be able to instantiate the class outside of the package, as this type is very useful
+ * for custom storage implementations.
+ *
  * @param <I>
  *         the type of the identifiers of the records
  * @param <R>
