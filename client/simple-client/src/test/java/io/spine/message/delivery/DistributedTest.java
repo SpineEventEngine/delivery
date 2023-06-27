@@ -142,7 +142,7 @@ public class DistributedTest {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        LOGGER.info("= = = Exec finished with code: `{}`, stdout: {}, stderr: {}",
+        LOGGER.info("= = = Exec finished with\n = code: `{}`\n, = stdout: \n{}\n, = stderr: \n{}\n",
                     execResult.getExitCode(), execResult.getStdout(), execResult.getStderr());
     }
 
@@ -201,7 +201,7 @@ public class DistributedTest {
 
     @ParameterizedTest
     @MethodSource("clients")
-    @DisplayName("do not pick up pon another node if already picked up")
+    @DisplayName("do not pick up on another node if already picked up")
     void doesNotPickUpShard(Supplier<SimpleDeliveryClient> first,
                             Supplier<SimpleDeliveryClient> second) {
         SimpleDeliveryClient client1 = first.get();
