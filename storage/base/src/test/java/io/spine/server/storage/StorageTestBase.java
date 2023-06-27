@@ -38,7 +38,7 @@ public abstract class StorageTestBase {
     /**
      * Obtains an instance of the {@code StorageFactory} that produces storages to test.
      */
-    protected abstract StorageFactory getStorageFactory();
+    protected abstract StorageFactory storageFactory();
 
     /**
      * Returns a {@code Context} for the storage creation.
@@ -55,7 +55,7 @@ public abstract class StorageTestBase {
 
         @BeforeEach
         void startRedis() {
-            factory = getStorageFactory();
+            factory = storageFactory();
             storage = factory.createRecordStorage(context(), recordSpec);
         }
 
@@ -156,7 +156,7 @@ public abstract class StorageTestBase {
 
         @BeforeEach
         void startRedis() {
-            factory = getStorageFactory();
+            factory = storageFactory();
             storage = factory.createRecordStorage(context(), recordSpec);
             storage.write(existingProjectId, existingProject);
         }

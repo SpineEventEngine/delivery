@@ -18,7 +18,7 @@ final class HazelcastRecordStorageTest extends StorageTestBase {
             .singleTenant("HazelcastRecordStorageTest");
 
     @Override
-    protected StorageFactory getStorageFactory() {
+    protected StorageFactory storageFactory() {
         return HazelcastStorageFactory.newInstance();
     }
 

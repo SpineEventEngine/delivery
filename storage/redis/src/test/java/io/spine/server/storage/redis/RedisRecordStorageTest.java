@@ -38,7 +38,7 @@ final class RedisRecordStorageTest extends StorageTestBase {
     }
 
     @Override
-    protected StorageFactory getStorageFactory() {
+    protected StorageFactory storageFactory() {
         return RedisStorageFactory.newInstance();
     }
 
