@@ -5,8 +5,6 @@
  */
 
 rootProject.name = "message-delivery"
-include("redis-record-storage")
-include("hazelcast-record-storage")
 include("model")
 include("server")
 include("simple-server")
