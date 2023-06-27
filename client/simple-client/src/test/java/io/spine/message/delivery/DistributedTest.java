@@ -57,58 +57,45 @@ import static io.spine.base.Identifier.newUuid;
 import static io.spine.message.delivery.client.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@DisplayName("Distributed Liquor servers should")
-public class DistributedTest {
+/**
+ * An abstract base for tests that utilize the distribution feature of the Hazelcast-based
+ * Liquor storage.
+ */
+abstract class DistributedTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DistributedTest.class);
 
-    private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
-    private final NodeId node = NodeId.newBuilder()
-            .setValue(SimpleDeliveryClient.class.getName())
-            .vBuild();
-    private final WorkerId worker = WorkerId.newBuilder()
-            .setNodeId(node)
-            .setValue(SimpleDeliveryClient.class.getName())
-            .vBuild();
-
     private static final Network network = Network.newNetwork();
 
+    /**
+     * Docker image name of the Liquor server.
+     */
     private static final DockerImageName IMAGE_NAME = DockerImageName
             .parse("gcr.io/spine-dev/simple-message-delivery-server:latest");
-    private static final GenericContainer<?> firstServer = new GenericContainer<>(IMAGE_NAME)
-            .withExposedPorts(8484)
-            .withLogConsumer(new Slf4jLogConsumer(LOGGER).withPrefix("=[1]="))
-            .withNetwork(network)
-            .withEnv("USE_HAZELCAST", "true")
-            .withCreateContainerCmdModifier(m -> {
-                HostConfig config = m.getHostConfig()
-                                     .withCapAdd(Capability.NET_ADMIN);
-                m.withHostConfig(config);
-            });
 
-    private static final GenericContainer<?> secondServer = new GenericContainer<>(IMAGE_NAME)
-            .withExposedPorts(8484)
-            .withLogConsumer(new Slf4jLogConsumer(LOGGER).withPrefix("=[2]="))
-            .withNetwork(network)
-            .withEnv("USE_HAZELCAST", "true")
-            .withCreateContainerCmdModifier(m -> {
-                HostConfig config = m.getHostConfig()
-                                     .withCapAdd(Capability.NET_ADMIN);
-                m.withHostConfig(config);
-            });
+    private static final GenericContainer<?> firstServer = newLiquorContainer("=[1]=");
+    private static final GenericContainer<?> secondServer = newLiquorContainer("=[2]=");
+    private static final GenericContainer<?> thirdServer = newLiquorContainer("=[3]=");
 
-    private static final GenericContainer<?> thirdServer = new GenericContainer<>(IMAGE_NAME)
-            .withExposedPorts(8484)
-            .withLogConsumer(new Slf4jLogConsumer(LOGGER).withPrefix("=[3]="))
-            .withNetwork(network)
-            .withEnv("USE_HAZELCAST", "true")
-            .withCreateContainerCmdModifier(m -> {
-                HostConfig config = m.getHostConfig()
-                                     .withCapAdd(Capability.NET_ADMIN);
-                m.withHostConfig(config);
-            });
-
+    @SuppressWarnings("UnsecureRandomNumberGeneration") // This is not a security purpose.
     private static final Random random = new Random();
+
+    /**
+     * Creates and configures a new {@code GenericContainer}.
+     */
+    @SuppressWarnings("resource") // Container is closed in the `@AfterAll` hook.
+    private static GenericContainer<?> newLiquorContainer(String loggOutputPrefix) {
+        return new GenericContainer<>(IMAGE_NAME)
+                .withExposedPorts(8484)
+                .withLogConsumer(new Slf4jLogConsumer(LOGGER).withPrefix(loggOutputPrefix))
+                .withNetwork(network)
+                .withEnv("USE_HAZELCAST", "true")
+                .withCreateContainerCmdModifier(m -> {
+                    HostConfig config = m.getHostConfig()
+                                         .withCapAdd(Capability.NET_ADMIN);
+                    m.withHostConfig(config);
+                });
+    }
 
     @BeforeEach
     void connectClient() {
@@ -127,6 +114,17 @@ public class DistributedTest {
         thirdServer.stop();
     }
 
+    @AfterAll
+    static void releaseResources() {
+        firstServer.close();
+        secondServer.close();
+        thirdServer.close();
+    }
+
+    /**
+     * Uses the {@code tc} command to configure delay and loss on the side of the container
+     * to emulate unstable network.
+     */
     private static void addDelay(GenericContainer<?> liquorContainer) {
         executeInContainer(liquorContainer, "tc qdisc add dev eth0 root netem delay 100ms 100ms");
         executeInContainer(liquorContainer, "tc qdisc add dev lo root netem delay 100ms 100ms");
@@ -135,6 +133,12 @@ public class DistributedTest {
         executeInContainer(liquorContainer, "tc qdisc list");
     }
 
+    /**
+     * Executes the goven {@code command} on the given {@code liquorContainer} and prints
+     * the result.
+     *
+     * <p>Container have to started before calling this method.
+     */
     private static void executeInContainer(GenericContainer<?> liquorContainer, String command) {
         Container.ExecResult execResult;
         try {
@@ -147,9 +151,16 @@ public class DistributedTest {
                     execResult.getExitCode(), execResult.getStdout(), execResult.getStderr());
     }
 
+    /**
+     *  Creates a new {@code SimpleDeliveryClient} connecting to the given
+     *  started {@code container}.
+     */
     private static SimpleDeliveryClient clientFor(GenericContainer<?> container) {
-        return SimpleDeliveryClient.create(container.getHost(), container.getFirstMappedPort(),
-                                           new ExecutionCountingStrategy());
+        return SimpleDeliveryClient.create(
+                container.getHost(),
+                container.getFirstMappedPort(),
+                new ExecutionCountingStrategy()
+        );
     }
 
     private static SimpleDeliveryClient getRandomClient() {
@@ -161,7 +172,7 @@ public class DistributedTest {
         return client[random.nextInt(client.length)];
     }
 
-    private static Stream<Arguments> clients() {
+    protected static Stream<Arguments> clients() {
         return Stream.of(
                 Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
                              (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient),
@@ -184,157 +195,5 @@ public class DistributedTest {
                 Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
                              (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient)
         );
-    }
-
-    @ParameterizedTest
-    @MethodSource("clients")
-    @DisplayName("pick up on one node and release on another")
-    void pickUpAndRelease(Supplier<SimpleDeliveryClient> first,
-                          Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
-
-        PickUpOutcome outcome = client1.pickUpShard(shard, worker);
-        assertThat(outcome.hasSession())
-                .isTrue();
-        assertDoesNotThrow(() -> client2.releaseShard(shard, worker));
-    }
-
-    @ParameterizedTest
-    @MethodSource("clients")
-    @DisplayName("do not pick up on another node if already picked up")
-    void doesNotPickUpShard(Supplier<SimpleDeliveryClient> first,
-                            Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
-
-        PickUpOutcome firstAttempt = client1.pickUpShard(shard, worker);
-        assertThat(firstAttempt.hasSession())
-                .isTrue();
-        PickUpOutcome secondAttempt = client2.pickUpShard(shard, worker);
-        assertThat(secondAttempt.hasAlreadyPicked())
-                .isTrue();
-    }
-
-    @ParameterizedTest
-    @MethodSource("clients")
-    @DisplayName("pick up, release, and allow a new pick up")
-    void allowToPickUpReleasedShard(Supplier<SimpleDeliveryClient> first,
-                                    Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
-
-        PickUpOutcome firstAttempt = client1.pickUpShard(shard, worker);
-        assertThat(firstAttempt.hasSession())
-                .isTrue();
-        PickUpOutcome secondAttempt = client2.pickUpShard(shard, worker);
-        assertThat(secondAttempt.hasAlreadyPicked())
-                .isTrue();
-        assertDoesNotThrow(() -> client2.releaseShard(shard, worker));
-        PickUpOutcome thirdAttempt = client1.pickUpShard(shard, worker);
-        assertThat(thirdAttempt.hasSession())
-                .isTrue();
-    }
-
-    @ParameterizedTest
-    @MethodSource("clients")
-    @DisplayName("write a message to the Inbox")
-    void writeMessage(Supplier<SimpleDeliveryClient> first,
-                      Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
-
-        InboxMessage message = newMessage();
-        client1.writeMessage(message);
-
-        Optional<InboxMessage> readMessage = client2.find(message.getId());
-        Truth8.assertThat(readMessage)
-              .isPresent();
-    }
-
-    @ParameterizedTest
-    @MethodSource("clients")
-    @DisplayName("write messages to the Inbox in bulk")
-    void writeMessages(Supplier<SimpleDeliveryClient> first,
-                       Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
-
-        InboxMessage firstMessage = newMessage();
-        InboxMessage secondMessage = newMessage();
-        ShardIndex shard = firstMessage.shardIndex();
-        client1.writeMessages(
-                shard, ImmutableList.of(firstMessage, secondMessage)
-        );
-        Page<InboxMessage> writtenMessages = client2.readAll(shard, 10);
-        assertThat(writtenMessages.size())
-                .isEqualTo(2);
-    }
-
-    @ParameterizedTest
-    @MethodSource("clients")
-    @DisplayName("read messages in pages")
-    void readPages(Supplier<SimpleDeliveryClient> first,
-                   Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
-
-        List<InboxMessage> messages = generate(30);
-        ShardIndex shard = messages.get(0)
-                                   .shardIndex();
-        client1.writeMessages(shard, messages);
-
-        int pageSize = 10;
-        Page<InboxMessage> writtenMessages = client2.readAll(shard, pageSize);
-        assertThat(writtenMessages.size())
-                .isEqualTo(pageSize);
-        Truth8.assertThat(writtenMessages.next())
-              .isPresent();
-        Truth8.assertThat(writtenMessages.next())
-              .isPresent();
-        Truth8.assertThat(writtenMessages.next())
-              .isEmpty();
-    }
-
-    @ParameterizedTest
-    @MethodSource("clients")
-    @DisplayName("read newest message to deliver")
-    void readNewest(Supplier<SimpleDeliveryClient> first,
-                    Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
-
-        InboxMessage olderMessage = toDeliver(
-                Timestamps.fromSeconds(100000L),
-                TypeUrl.from(Something.getDescriptor())
-        );
-        InboxMessage newerMessage = toDeliver(
-                Timestamps.fromSeconds(100001L),
-                TypeUrl.from(Something.getDescriptor())
-        );
-        InboxMessage newestMessage = toDeliver(
-                Timestamps.fromSeconds(100002L),
-                TypeUrl.from(Something.getDescriptor())
-        );
-        client1.writeMessages(
-                olderMessage.shardIndex(),
-                ImmutableList.of(olderMessage, newestMessage, newerMessage)
-        );
-
-        Optional<InboxMessage> actual =
-                client2.newestMessageToDeliver(olderMessage.shardIndex());
-        Truth8.assertThat(actual)
-              .hasValue(newestMessage);
-    }
-
-    private static InboxMessage newMessage() {
-        return toDeliver(newUuid(), TypeUrl.from(Something.getDescriptor()));
-    }
-
-    private static List<InboxMessage> generate(int number) {
-        return IntStream
-                .range(0, number)
-                .mapToObj(i -> toDeliver(newUuid(), TypeUrl.from(Something.getDescriptor())))
-                .collect(Collectors.toList());
     }
 }
