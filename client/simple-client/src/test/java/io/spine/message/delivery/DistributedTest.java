@@ -163,6 +163,11 @@ abstract class DistributedTest {
         );
     }
 
+    /**
+     * Gets a {@code SimpleDeliveryClient} connected to a one of the created servers.
+     *
+     * <p>The server is chosen randomly.
+     */
     private static SimpleDeliveryClient getRandomClient() {
         SimpleDeliveryClient[] client = {
                 clientFor(firstServer),
@@ -172,6 +177,10 @@ abstract class DistributedTest {
         return client[random.nextInt(client.length)];
     }
 
+    /**
+     * Returns a {@code Stream} of {@code Arguments} that contains 2 randomly
+     * chosen {@code SimpleDeliveryClient}s.
+     */
     protected static Stream<Arguments> clients() {
         return Stream.of(
                 Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
