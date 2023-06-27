@@ -128,10 +128,11 @@ public class DistributedTest {
     }
 
     private static void addDelay(GenericContainer<?> liquorContainer) {
-        executeInContainer(liquorContainer, "tc qdisc add dev eth0 root netem delay 100ms 300ms distribution normal");
+        executeInContainer(liquorContainer, "tc qdisc add dev eth0 root netem delay 100ms 100ms");
+        executeInContainer(liquorContainer, "tc qdisc add dev lo root netem delay 100ms 100ms");
         executeInContainer(liquorContainer, "tc qdisc change dev eth0 root netem loss 20% 50%");
-        executeInContainer(liquorContainer, "tc qdisc change dev eth0 root netem corrupt 20%");
-        executeInContainer(liquorContainer, "tc qdisc change dev eth0 root netem duplicate 20%");
+        executeInContainer(liquorContainer, "tc qdisc change dev lo root netem loss 20% 50%");
+        executeInContainer(liquorContainer, "tc qdisc list");
     }
 
     private static void executeInContainer(GenericContainer<?> liquorContainer, String command) {
