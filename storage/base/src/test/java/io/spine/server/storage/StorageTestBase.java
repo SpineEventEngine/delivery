@@ -8,7 +8,6 @@ package io.spine.server.storage;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
-import com.google.common.truth.Truth;
 import io.spine.base.Identifier;
 import io.spine.query.RecordColumn;
 import io.spine.query.RecordQuery;
@@ -109,8 +108,8 @@ public abstract class StorageTestBase {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
                     .vBuild();
-            Truth.assertThat(storage.deleteRecord(someId))
-                 .isFalse();
+            assertThat(storage.deleteRecord(someId))
+                    .isFalse();
         }
 
         @Test
@@ -234,8 +233,8 @@ public abstract class StorageTestBase {
         @Test
         @DisplayName("delete existing record")
         void deleteRecord() {
-            Truth.assertThat(storage.deleteRecord(existingProjectId))
-                 .isTrue();
+            assertThat(storage.deleteRecord(existingProjectId))
+                    .isTrue();
         }
 
         @Test
