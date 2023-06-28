@@ -6,6 +6,7 @@
 
 rootProject.name = "message-delivery"
 include("model")
+include("grpc-api")
 include("server")
 include("simple-server")
 include("testutil-server")
