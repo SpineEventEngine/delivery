@@ -33,7 +33,7 @@ dependencies {
     implementation(Micronaut.security)
     implementation("io.grpc:grpc-all:${Grpc.version}")
     implementation(Grpc.nettyShaded)
-    implementation(project(":model"))
+    implementation(project(":grpc-api"))
 
     testImplementation(Micronaut.Test.core)
     testImplementation(Micronaut.Test.jUnit5)
