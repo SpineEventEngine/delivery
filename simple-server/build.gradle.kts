@@ -11,6 +11,7 @@ import io.spine.internal.dependency.Spine
 dependencies {
     implementation(Log4j2.api)
     implementation(project(":model"))
+    implementation(project(":grpc-api"))
     implementation(project(":storage:redis"))
     implementation(project(":storage:hazelcast"))
     implementation(Grpc.core)
