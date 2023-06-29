@@ -10,6 +10,7 @@ include("client")
 include("simple-client")
 include("demo")
 include("testutil-client")
+include("integration-test")
 
 deployment("demo-appengine-8")
 deployment("demo-appengine-11")

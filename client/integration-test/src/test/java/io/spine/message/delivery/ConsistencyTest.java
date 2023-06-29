@@ -16,6 +16,7 @@ import io.spine.server.delivery.ShardIndex;
 import io.spine.test.message.delivery.client.Something;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.testcontainers.shaded.com.google.common.collect.ImmutableList;
@@ -32,6 +33,7 @@ import static io.spine.message.delivery.TestEnv.newMessage;
 import static io.spine.message.delivery.client.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+@Tag("integration")
 @DisplayName("Distributed Liquor servers should")
 public class ConsistencyTest extends DistributedTest {
 
