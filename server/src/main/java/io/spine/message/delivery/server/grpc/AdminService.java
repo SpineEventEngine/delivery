@@ -27,7 +27,7 @@ import io.spine.message.delivery.admin.grpc.ShardInfoList;
 import io.spine.message.delivery.admin.grpc.SubscriptionResponse;
 import io.spine.message.delivery.event.MessageRemoved;
 import io.spine.message.delivery.event.MessageWritten;
-import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
 import io.spine.server.delivery.ShardIndex;
 

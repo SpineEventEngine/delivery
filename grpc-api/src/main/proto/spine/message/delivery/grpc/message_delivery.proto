@@ -18,11 +18,11 @@ option java_generate_equals_and_hash = true;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
-import "spine/message/delivery/commands.proto";
-import "spine/message/delivery/events.proto";
+import "spine/message/delivery/grpc/commands.proto";
+import "spine/message/delivery/grpc/events.proto";
+import "spine/message/delivery/grpc/pick_up_outcome.proto";
 import "spine/server/delivery/inbox.proto";
 import "spine/server/delivery/delivery.proto";
-import "spine/message/delivery/pick_up_outcome.proto";
 
 
 // Acts as a back-end implementation for `InboxStorage`.

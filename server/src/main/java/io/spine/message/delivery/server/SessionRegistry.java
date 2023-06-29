@@ -11,19 +11,19 @@ import io.spine.base.Time;
 import io.spine.core.CommandContext;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.ShardSessionRegistry;
-import io.spine.message.delivery.command.PickUpShard;
-import io.spine.message.delivery.command.ReleaseShard;
-import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.command.PickUpShard;
+import io.spine.message.delivery.grpc.command.ReleaseShard;
+import io.spine.message.delivery.grpc.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
-import io.spine.message.delivery.rejection.ShardAlreadyPickedUp;
-import io.spine.message.delivery.rejection.UnableToReleaseShard;
+import io.spine.message.delivery.grpc.rejection.ShardAlreadyPickedUp;
+import io.spine.message.delivery.server.rejection.UnableToReleaseShard;
 import io.spine.server.aggregate.Aggregate;
 import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 
-import static io.spine.message.delivery.rejection.Rejections.UnableToReleaseShard.Reason;
+import static io.spine.message.delivery.server.rejection.Rejections.UnableToReleaseShard.Reason;
 import static io.spine.protobuf.Messages.isDefault;
 import static java.lang.String.format;
 

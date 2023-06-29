@@ -10,14 +10,13 @@ import io.spine.internal.dependency.Spine
 
 dependencies {
     implementation(Log4j2.api)
-    implementation(project(":model"))
     implementation(project(":grpc-api"))
     implementation(project(":storage:redis"))
     implementation(project(":storage:hazelcast"))
     implementation(Grpc.core)
     implementation(Spine.server)
     testImplementation(project(":testutil-server"))
-    testImplementation(project(path = ":model", configuration = "testArtifacts"))
+    testImplementation(project(path = ":grpc-api", configuration = "testArtifacts"))
     testRuntimeOnly(Grpc.nettyShaded)
 
     // Use this one to run the app locally.

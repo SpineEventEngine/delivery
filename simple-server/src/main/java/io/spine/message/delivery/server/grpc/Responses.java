@@ -9,7 +9,7 @@ package io.spine.message.delivery.server.grpc;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import io.spine.base.Time;
-import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.event.ShardPickedUp;
 import io.spine.message.delivery.grpc.OptionalInboxMessage;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;

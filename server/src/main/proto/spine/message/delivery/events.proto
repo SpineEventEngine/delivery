@@ -57,19 +57,6 @@ message MessagesRemoved {
     repeated spine.server.delivery.InboxMessage message = 2 [(required) = true];
 }
 
-// A shard has been picked up by a worker.
-message ShardPickedUp {
-
-    // The shard in which the worker has picked up work from.
-    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
-
-    // An identifier of the worker, which picked up the shard.
-    spine.server.delivery.WorkerId worker = 2 [(required) = true];
-
-    // The time when the `worker` has picked up the shard.
-    google.protobuf.Timestamp when_picked = 3 [(required) = true];
-}
-
 // A shard has been released by a worker.
 message ShardReleased {
 
@@ -81,27 +68,4 @@ message ShardReleased {
 
     // The time when the `worker` has released the shard.
     google.protobuf.Timestamp when_released = 3 [(required) = true];
-}
-
-// Sharded work sessions that were picked up before the specified inactivity period were released.
-message ExpiredSessionsReleased {
-
-    // The shards that were released if any.
-    repeated ExpiredSession shard = 1;
-}
-
-// The expired sharded work session.
-message ExpiredSession {
-
-    // The shard that was released.
-    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
-
-    // An identifier of the worker that released the shard.
-    spine.server.delivery.WorkerId worker = 2 [(required) = true];
-
-    // The time when the `worker` has picked up the shard.
-    google.protobuf.Timestamp when_picked = 3 [(required) = true];
-
-    // The time when the `worker` has released the shard.
-    google.protobuf.Timestamp when_released = 4 [(required) = true];
 }

@@ -10,7 +10,7 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.CommandMessage;
 import io.spine.base.Time;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
-import io.spine.message.delivery.command.PickUpShard;
+import io.spine.message.delivery.grpc.command.PickUpShard;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;

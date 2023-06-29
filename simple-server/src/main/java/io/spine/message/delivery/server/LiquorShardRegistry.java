@@ -13,7 +13,7 @@ import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
 import io.spine.logging.Logging;
-import io.spine.message.delivery.rejection.ShardAlreadyPickedUp;
+import io.spine.message.delivery.grpc.rejection.ShardAlreadyPickedUp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.delivery.ShardSessionRecord;

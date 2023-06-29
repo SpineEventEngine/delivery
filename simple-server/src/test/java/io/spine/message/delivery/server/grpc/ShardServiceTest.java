@@ -10,7 +10,7 @@ import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
 import io.spine.base.Time;
 import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
-import io.spine.message.delivery.rejection.Rejections;
+import io.spine.message.delivery.grpc.rejection.Rejections;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv;
 import io.spine.time.testing.FrozenMadHatterParty;

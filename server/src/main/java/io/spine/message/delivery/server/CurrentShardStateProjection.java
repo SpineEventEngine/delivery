@@ -8,7 +8,7 @@ package io.spine.message.delivery.server;
 
 import io.spine.core.Subscribe;
 import io.spine.message.delivery.CurrentShardState;
-import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.projection.Projection;

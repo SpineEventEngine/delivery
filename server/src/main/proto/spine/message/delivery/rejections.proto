@@ -11,26 +11,10 @@ package spine.message.delivery;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.message.delivery.rejection";
+option java_package = "io.spine.message.delivery.server.rejection";
 option java_generate_equals_and_hash = true;
 
-import "google/protobuf/timestamp.proto";
 import "spine/server/delivery/delivery.proto";
-import "spine/server/server_environment.proto";
-
-
-// A shard cannot be picked up because some worker has already picked it up.
-message ShardAlreadyPickedUp {
-
-    // The shard in which some worker has picked up work in.
-    spine.server.delivery.ShardIndex shard = 1 [(required) = true];
-
-    // The worker that picked up the work in the shard.
-    spine.server.delivery.WorkerId worker = 2 [(required) = true];
-
-    // When the worker picked up the work in the shard.
-    google.protobuf.Timestamp when_picked = 3 [(required) = true];
-}
 
 // A shard cannot be release by the worker.
 message UnableToReleaseShard {

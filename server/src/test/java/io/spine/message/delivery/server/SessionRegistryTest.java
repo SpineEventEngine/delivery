@@ -10,11 +10,11 @@ import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
 import io.spine.base.Time;
 import io.spine.message.delivery.ShardSessionRegistry;
-import io.spine.message.delivery.command.PickUpShard;
-import io.spine.message.delivery.command.ReleaseShard;
-import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.grpc.command.PickUpShard;
+import io.spine.message.delivery.grpc.command.ReleaseShard;
+import io.spine.message.delivery.grpc.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
-import io.spine.message.delivery.rejection.Rejections;
+import io.spine.message.delivery.grpc.rejection.Rejections;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
@@ -156,7 +156,7 @@ final class SessionRegistryTest extends DeliveryTest {
             @DisplayName("shard was not previously picked up")
             void notPickedUp() {
                 context().receivesCommand(releaseShard);
-                var expected = Rejections.UnableToReleaseShard.newBuilder()
+                var expected = io.spine.message.delivery.server.rejection.Rejections.UnableToReleaseShard.newBuilder()
                         .setShard(shard)
                         .setWorker(worker)
                         .setReason(SessionRegistry.shardNotPickedUp())
@@ -177,7 +177,7 @@ final class SessionRegistryTest extends DeliveryTest {
                         .vBuild();
                 context().receivesCommand(pickUpShard)
                          .receivesCommand(releaseShard);
-                var expected = Rejections.UnableToReleaseShard.newBuilder()
+                var expected = io.spine.message.delivery.server.rejection.Rejections.UnableToReleaseShard.newBuilder()
                         .setShard(shard)
                         .setWorker(worker)
                         .setReason(SessionRegistry.shardPickedUpByOtherWorker(anotherWorker))
