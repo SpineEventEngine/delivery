@@ -27,15 +27,17 @@ import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.spine.message.delivery.client.given.TestInboxMessages.toDeliver;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 /**
  * An abstract base for tests that utilize the distribution feature of the Hazelcast-based
  * Liquor storage.
  */
 abstract class DistributedTest {
+
+    /**
+     * Determines a number of iterations that each test will be executed with randomly
+     * chosen clients.
+     */
+    private static final int EACH_TEST_ITERATIONS_COUNT = 10;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DistributedTest.class);
 
@@ -126,8 +128,8 @@ abstract class DistributedTest {
     }
 
     /**
-     *  Creates a new {@code SimpleDeliveryClient} connecting to the given
-     *  started {@code container}.
+     * Creates a new {@code SimpleDeliveryClient} connecting to the given
+     * started {@code container}.
      */
     private static SimpleDeliveryClient clientFor(GenericContainer<?> container) {
         return SimpleDeliveryClient.create(
@@ -157,27 +159,15 @@ abstract class DistributedTest {
      * chosen {@code SimpleDeliveryClient}s.
      */
     protected static Stream<Arguments> clients() {
-        return Stream.of(
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient)
-        );
+        return Stream.generate(() -> Arguments.of(randomClientSupplier(), randomClientSupplier()))
+                     .limit(EACH_TEST_ITERATIONS_COUNT);
+    }
+
+    /**
+     * Returns a {@code Supplier} that will be returning a new randomly chosen
+     * {@code SimpleDeliveryClient} on each call.
+     */
+    private static Supplier<SimpleDeliveryClient> randomClientSupplier() {
+        return DistributedTest::randomClient;
     }
 }
