@@ -4,6 +4,8 @@
  * Use is subject to license terms.
  */
 
+import io.spine.internal.dependency.Flogger
+import io.spine.internal.dependency.Log4j2
 import io.spine.internal.dependency.Grpc
 import io.spine.internal.dependency.Testcontainers
 
@@ -14,6 +16,9 @@ dependencies {
     testImplementation(project(":testutil-client"))
     testImplementation(project(path = ":base", configuration = "testArtifacts"))
     testRuntimeOnly(Grpc.nettyShaded)
+    testRuntimeOnly(Log4j2.slf4jBridge)
+    testRuntimeOnly(Log4j2.core)
+    testRuntimeOnly(Flogger.Runtime.log4J2)
 }
 
 tasks.test {
