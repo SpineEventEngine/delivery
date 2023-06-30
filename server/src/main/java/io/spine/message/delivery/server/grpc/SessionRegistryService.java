@@ -17,12 +17,12 @@ import io.spine.client.Client;
 import io.spine.client.Subscription;
 import io.spine.logging.Logging;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
-import io.spine.message.delivery.grpc.command.PickUpShard;
-import io.spine.message.delivery.grpc.command.ReleaseExpiredSessions;
-import io.spine.message.delivery.grpc.event.ExpiredSessionsReleased;
-import io.spine.message.delivery.grpc.event.ShardPickedUp;
-import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
-import io.spine.message.delivery.grpc.rejection.Rejections;
+import io.spine.message.delivery.command.PickUpShard;
+import io.spine.message.delivery.command.ReleaseExpiredSessions;
+import io.spine.message.delivery.event.ExpiredSessionsReleased;
+import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.LiquorPickUpOutcome;
+import io.spine.message.delivery.rejection.Rejections;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;

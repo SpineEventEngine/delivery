@@ -24,7 +24,7 @@ import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.grpc.InboxServiceGrpc;
 import io.spine.message.delivery.grpc.InboxServiceGrpc.InboxServiceBlockingStub;
-import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
+import io.spine.message.delivery.LiquorPickUpOutcome;
 import io.spine.message.delivery.grpc.OptionalInboxMessage;
 import io.spine.message.delivery.grpc.PageOfMessages;
 import io.spine.message.delivery.grpc.ReadMessagesSinceTime;

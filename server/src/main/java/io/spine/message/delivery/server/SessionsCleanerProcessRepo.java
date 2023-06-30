@@ -9,7 +9,7 @@ package io.spine.message.delivery.server;
 import io.spine.client.Client;
 import io.spine.message.delivery.SessionsCleaner;
 import io.spine.message.delivery.SessionsCleanerId;
-import io.spine.message.delivery.grpc.command.ReleaseExpiredSessions;
+import io.spine.message.delivery.command.ReleaseExpiredSessions;
 import io.spine.server.procman.ProcessManagerRepository;
 import io.spine.server.route.CommandRouting;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;

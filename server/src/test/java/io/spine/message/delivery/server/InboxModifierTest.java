@@ -7,10 +7,10 @@
 package io.spine.message.delivery.server;
 
 import io.spine.base.Identifier;
-import io.spine.message.delivery.grpc.command.RemoveMessage;
-import io.spine.message.delivery.grpc.command.RemoveMessages;
-import io.spine.message.delivery.grpc.command.WriteMessage;
-import io.spine.message.delivery.grpc.command.WriteMessages;
+import io.spine.message.delivery.command.RemoveMessage;
+import io.spine.message.delivery.command.RemoveMessages;
+import io.spine.message.delivery.command.WriteMessage;
+import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.MessageRemoved;
 import io.spine.message.delivery.event.MessageWritten;
 import io.spine.message.delivery.event.MessagesRemoved;
