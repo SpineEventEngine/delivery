@@ -134,10 +134,10 @@ abstract class DistributedTest {
     }
 
     /**
-     * Executes the goven {@code command} on the given {@code liquorContainer} and prints
+     * Executes the given {@code command} on the given {@code liquorContainer} and prints
      * the result.
      *
-     * <p>Container have to started before calling this method.
+     * <p>Container have to be started before calling this method.
      */
     private static void executeInContainer(GenericContainer<?> liquorContainer, String command) {
         Container.ExecResult execResult;
