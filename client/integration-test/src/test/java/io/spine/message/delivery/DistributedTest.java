@@ -8,52 +8,26 @@ package io.spine.message.delivery;
 
 import com.github.dockerjava.api.model.Capability;
 import com.github.dockerjava.api.model.HostConfig;
-import com.google.common.truth.Truth8;
-import com.google.protobuf.util.Timestamps;
-import io.spine.logging.Logging;
 import io.spine.message.delivery.client.SimpleDeliveryClient;
 import io.spine.message.delivery.client.given.ExecutionCountingStrategy;
-import io.spine.server.NodeId;
-import io.spine.server.delivery.DeliveryStrategy;
-import io.spine.server.delivery.InboxMessage;
-import io.spine.server.delivery.Page;
-import io.spine.server.delivery.PickUpOutcome;
-import io.spine.server.delivery.ShardIndex;
-import io.spine.server.delivery.WorkerId;
-import io.spine.test.message.delivery.client.Something;
-import io.spine.type.TypeUrl;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.shaded.com.google.common.collect.ImmutableList;
 import org.testcontainers.utility.DockerImageName;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.base.Identifier.newUuid;
 import static io.spine.message.delivery.client.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -164,11 +138,12 @@ abstract class DistributedTest {
     }
 
     /**
-     * Gets a {@code SimpleDeliveryClient} connected to a one of the created servers.
+     * Obtains a {@code SimpleDeliveryClient} connected to a one of the created servers.
      *
-     * <p>The server is chosen randomly.
+     * <p>This method doesn't create a new connection, it uses one of already created clients,
+     * and randomly chooses the client to use.
      */
-    private static SimpleDeliveryClient getRandomClient() {
+    private static SimpleDeliveryClient randomClient() {
         SimpleDeliveryClient[] client = {
                 clientFor(firstServer),
                 clientFor(secondServer),
@@ -183,26 +158,26 @@ abstract class DistributedTest {
      */
     protected static Stream<Arguments> clients() {
         return Stream.of(
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient),
-                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient,
-                             (Supplier<SimpleDeliveryClient>) DistributedTest::getRandomClient)
+                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
+                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
+                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
+                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
+                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
+                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
+                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
+                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
+                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
+                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
+                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
+                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
+                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
+                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
+                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
+                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
+                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
+                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient),
+                Arguments.of((Supplier<SimpleDeliveryClient>) DistributedTest::randomClient,
+                             (Supplier<SimpleDeliveryClient>) DistributedTest::randomClient)
         );
     }
 }
