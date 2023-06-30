@@ -13,6 +13,7 @@ dependencies {
         api(protobuf)
     }
     implementation(Spine.server)
+    implementation(project(":model"))
 }
 
 apply {

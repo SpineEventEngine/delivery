@@ -11,7 +11,7 @@ package spine.message.delivery;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.message.delivery.grpc.command";
+option java_package = "io.spine.message.delivery.command";
 option java_outer_classname = "CommandsProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;

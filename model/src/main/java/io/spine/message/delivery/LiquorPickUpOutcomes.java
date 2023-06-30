@@ -6,9 +6,8 @@
 
 package io.spine.message.delivery;
 
-import io.spine.message.delivery.grpc.event.ShardPickedUp;
-import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
-import io.spine.message.delivery.grpc.rejection.Rejections;
+import io.spine.message.delivery.event.ShardPickedUp;
+import io.spine.message.delivery.rejection.Rejections;
 
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 

@@ -10,13 +10,13 @@ package spine.message.delivery;
 import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
-option java_package = "io.spine.message.delivery.grpc";
+option java_package = "io.spine.message.delivery";
 option java_outer_classname = "LiquorPickUpOutcomeProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "spine/message/delivery/grpc/events.proto";
-import "spine/message/delivery/grpc/rejections.proto";
+import "spine/message/delivery/events.proto";
+import "spine/message/delivery/rejections.proto";
 
 // An outcome of the shard pick up attempt.
 //

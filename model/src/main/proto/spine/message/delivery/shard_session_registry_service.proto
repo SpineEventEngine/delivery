@@ -15,14 +15,10 @@ option java_outer_classname = "ShardSessionRegistryServiceProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
-import "spine/message/delivery/grpc/commands.proto";
-import "spine/message/delivery/grpc/events.proto";
-import "spine/message/delivery/grpc/rejections.proto";
-import "spine/message/delivery/grpc/pick_up_outcome.proto";
-
+import "spine/message/delivery/commands.proto";
 import "spine/message/delivery/events.proto";
 import "spine/message/delivery/rejections.proto";
-
+import "spine/message/delivery/pick_up_outcome.proto";
 
 // A service for working with the `ShardSessionRegistry` bypassing Spine's `CommandService`.
 service ShardSessionRegistryService {
