@@ -40,7 +40,8 @@ final class TestEnv {
      * Predefined {@code NodeId} with the {@code SimpleDeliveryClient} full class name used
      * as its value.
      */
-    public static final NodeId NODE = NodeId.newBuilder()
+    public static final NodeId NODE = NodeId
+            .newBuilder()
             .setValue(SimpleDeliveryClient.class.getName())
             .vBuild();
 
@@ -48,7 +49,8 @@ final class TestEnv {
      * Predefined {@code WorkerId} that uses predefined {@code NODE} and
      * {@code SimpleDeliveryClient} full class name as its values.
      */
-    public static final WorkerId WORKER = WorkerId.newBuilder()
+    public static final WorkerId WORKER = WorkerId
+            .newBuilder()
             .setNodeId(NODE)
             .setValue(SimpleDeliveryClient.class.getName())
             .vBuild();
@@ -71,5 +73,4 @@ final class TestEnv {
                 .mapToObj(i -> toDeliver(newUuid(), TypeUrl.from(Something.getDescriptor())))
                 .collect(toList());
     }
-
 }
