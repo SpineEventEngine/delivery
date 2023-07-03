@@ -11,6 +11,7 @@ plugins {
 
 dependencies {
   implementation(project(":model"))
+  implementation(project(":grpc-api"))
 }
 
 node {
