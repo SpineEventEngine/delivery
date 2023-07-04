@@ -36,10 +36,12 @@ import static java.util.Objects.requireNonNull;
 /**
  * Hazelcast-based record storage.
  *
- * @param <I> the type of the record identifiers
- * @param <R> the type of the stored message records
+ * @param <I>
+ *         the type of the record identifiers
+ * @param <R>
+ *         the type of the stored message records
  */
-public class HazelcastRecordStorage<I, R extends Message> extends RecordStorage<I, R> {
+public final class HazelcastRecordStorage<I, R extends Message> extends RecordStorage<I, R> {
 
     private final HazelcastInstance hazelcast;
 
@@ -51,9 +53,9 @@ public class HazelcastRecordStorage<I, R extends Message> extends RecordStorage<
      * @param recordSpec
      *         definitions of the columns to store along with each record
      */
-    protected HazelcastRecordStorage(ContextSpec context,
-                                     RecordSpec<I, R, ?> recordSpec,
-                                     HazelcastInstance hazelcast) {
+    HazelcastRecordStorage(ContextSpec context,
+                           RecordSpec<I, R, ?> recordSpec,
+                           HazelcastInstance hazelcast) {
         super(context, recordSpec);
         this.hazelcast = hazelcast;
     }

@@ -30,7 +30,7 @@ import static com.hazelcast.core.Hazelcast.newHazelcastInstance;
  *
  * <p>Pay attention that each new factory instance creation will run a new Hazelcast server.
  */
-public class HazelcastStorageFactory implements StorageFactory, Logging {
+public final class HazelcastStorageFactory implements StorageFactory, Logging {
 
     private final HazelcastInstance hazelcast = newHazelcastInstance();
 
