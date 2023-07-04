@@ -27,7 +27,7 @@ import static io.spine.test.entity.Project.Column.name;
 /**
  * Abstract base for different storage tests.
  */
-public abstract class StorageTestBase {
+public abstract class AbstractStorageTest {
 
     private static final RecordSpec<ProjectId, Project, ?> recordSpec = new MessageRecordSpec<>(
             ProjectId.class, Project.class, Project::getId,

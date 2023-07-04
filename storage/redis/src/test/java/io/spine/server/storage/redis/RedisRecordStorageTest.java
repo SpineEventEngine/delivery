@@ -8,7 +8,7 @@ package io.spine.server.storage.redis;
 
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.StorageFactory;
-import io.spine.server.storage.StorageTestBase;
+import io.spine.server.storage.AbstractStorageTest;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
 @DisplayName("`RedisRecordStorage` should")
-final class RedisRecordStorageTest extends StorageTestBase {
+final class RedisRecordStorageTest extends AbstractStorageTest {
 
     private static final ContextSpec context = ContextSpec
             .singleTenant("RedisRecordStorageTest");

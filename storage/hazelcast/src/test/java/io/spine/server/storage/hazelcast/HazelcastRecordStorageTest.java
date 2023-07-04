@@ -8,11 +8,11 @@ package io.spine.server.storage.hazelcast;
 
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.StorageFactory;
-import io.spine.server.storage.StorageTestBase;
+import io.spine.server.storage.AbstractStorageTest;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("`HazelcastRecordStorage` should")
-final class HazelcastRecordStorageTest extends StorageTestBase {
+final class HazelcastRecordStorageTest extends AbstractStorageTest {
 
     private static final ContextSpec context = ContextSpec
             .singleTenant("HazelcastRecordStorageTest");
