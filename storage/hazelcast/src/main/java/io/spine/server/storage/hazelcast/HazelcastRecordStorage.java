@@ -36,6 +36,13 @@ import static java.util.Objects.requireNonNull;
 /**
  * Hazelcast-based record storage.
  *
+ * This storage created for an experimental usage and doesn't provide strong consistency guaranty
+ * in a cluster. To take further steps to provide consistency guaranty we have to perform some
+ * testing in an environment closer to real.
+ *
+ * For more info about Hazelcast please refer to the documentation:
+ * {@linkplain <a href="https://docs.hazelcast.com/home/">Hazelcast</a>}
+ *
  * @param <I>
  *         the type of the record identifiers
  * @param <R>
