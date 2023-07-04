@@ -53,7 +53,7 @@ abstract class DistributedTest {
     private static final GenericContainer<?> secondServer = newLiquorContainer("=[2]=");
     private static final GenericContainer<?> thirdServer = newLiquorContainer("=[3]=");
 
-    @SuppressWarnings("UnsecureRandomNumberGeneration") // This is not a security purpose.
+    @SuppressWarnings("UnsecureRandomNumberGeneration") // Used for a non security purpose.
     private static final Random random = new Random();
 
     /**
