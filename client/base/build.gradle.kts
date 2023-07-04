@@ -25,7 +25,7 @@ apply {
 // We're explicitly copying protos to ensure rejections are generated.
 // See https://github.com/SpineEventEngine/base/issues/650 for details.
 val copyExternalProtos = tasks.create<Copy>("copyExternalProtos") {
-    from("../../model/src/main/proto")
+    from("../../model/src/main/proto", "../../grpc-api/src/main/proto")
     into("./src/main/proto")
 }
 
