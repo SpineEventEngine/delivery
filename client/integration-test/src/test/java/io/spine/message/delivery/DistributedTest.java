@@ -8,6 +8,7 @@ package io.spine.message.delivery;
 
 import com.github.dockerjava.api.model.Capability;
 import com.github.dockerjava.api.model.HostConfig;
+import com.google.common.collect.ImmutableList;
 import io.spine.message.delivery.client.SimpleDeliveryClient;
 import io.spine.message.delivery.client.given.ExecutionCountingStrategy;
 import org.junit.jupiter.api.AfterAll;
@@ -49,9 +50,11 @@ abstract class DistributedTest {
     private static final DockerImageName IMAGE_NAME = DockerImageName
             .parse("gcr.io/spine-dev/simple-message-delivery-server:latest");
 
-    private static final GenericContainer<?> firstServer = newLiquorContainer("=[1]=");
-    private static final GenericContainer<?> secondServer = newLiquorContainer("=[2]=");
-    private static final GenericContainer<?> thirdServer = newLiquorContainer("=[3]=");
+    private static final ImmutableList<GenericContainer<?>> servers = ImmutableList.of(
+            newLiquorContainer("=[1]="),
+            newLiquorContainer("=[2]="),
+            newLiquorContainer("=[3]=")
+    );
 
     @SuppressWarnings("UnsecureRandomNumberGeneration") // Used for a non security purpose.
     private static final Random random = new Random();
@@ -75,26 +78,20 @@ abstract class DistributedTest {
 
     @BeforeEach
     void connectClient() {
-        firstServer.start();
-        addDelay(firstServer);
-        secondServer.start();
-        addDelay(secondServer);
-        thirdServer.start();
-        addDelay(thirdServer);
+        servers.forEach(server -> {
+            server.start();
+            addDelay(server);
+        });
     }
 
     @AfterEach
     void stopServer() {
-        firstServer.stop();
-        secondServer.stop();
-        thirdServer.stop();
+        servers.forEach(GenericContainer::stop);
     }
 
     @AfterAll
     static void releaseResources() {
-        firstServer.close();
-        secondServer.close();
-        thirdServer.close();
+        servers.forEach(GenericContainer::close);
     }
 
     /**
@@ -146,12 +143,7 @@ abstract class DistributedTest {
      * and randomly chooses the client to use.
      */
     private static SimpleDeliveryClient randomClient() {
-        SimpleDeliveryClient[] client = {
-                clientFor(firstServer),
-                clientFor(secondServer),
-                clientFor(thirdServer)
-        };
-        return client[random.nextInt(client.length)];
+        return clientFor(servers.get(random.nextInt(servers.size())));
     }
 
     /**
