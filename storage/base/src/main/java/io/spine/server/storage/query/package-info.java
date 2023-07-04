@@ -5,11 +5,11 @@
  */
 
 /**
- * This package contains storage-related types.
+ * This package contains a storage query-related types.
  */
 @CheckReturnValue
 @ParametersAreNonnullByDefault
-package io.spine.server.storage;
+package io.spine.server.storage.query;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 

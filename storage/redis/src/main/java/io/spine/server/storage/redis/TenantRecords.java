@@ -19,7 +19,7 @@ import io.spine.server.entity.EntityRecord;
 import io.spine.server.entity.storage.EntityRecordSpec;
 import io.spine.server.entity.storage.EntityRecordWithColumns;
 import io.spine.server.storage.MessageRecordSpec;
-import io.spine.server.storage.RecordQueryMatcher;
+import io.spine.server.storage.query.RecordQueryMatcher;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.RecordWithColumns;
 import io.spine.string.Stringifiers;
@@ -39,7 +39,7 @@ import static com.google.common.collect.Iterators.transform;
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.server.entity.FieldMasks.applyMask;
-import static io.spine.server.storage.InMemoryRecordComparator.accordingTo;
+import static io.spine.server.storage.query.InMemoryRecordComparator.accordingTo;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.toList;
 

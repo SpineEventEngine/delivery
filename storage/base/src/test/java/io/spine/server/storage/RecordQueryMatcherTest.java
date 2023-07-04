@@ -17,6 +17,7 @@ import io.spine.query.Subject;
 import io.spine.server.entity.EntityRecord;
 import io.spine.server.entity.storage.EntityRecordWithColumns;
 import io.spine.server.storage.given.Sample;
+import io.spine.server.storage.query.RecordQueryMatcher;
 import io.spine.test.entity.ProjectId;
 import io.spine.test.entity.TaskId;
 import org.junit.jupiter.api.DisplayName;

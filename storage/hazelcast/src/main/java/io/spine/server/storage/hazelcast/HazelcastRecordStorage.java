@@ -22,13 +22,13 @@ import io.spine.server.storage.MessageRecordSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.RecordStorage;
 import io.spine.server.storage.RecordWithColumns;
-import io.spine.server.storage.RecordQueryMatcher;
+import io.spine.server.storage.query.RecordQueryMatcher;
 import io.spine.server.tenant.TenantFunction;
 
 import java.util.Iterator;
 import java.util.stream.Stream;
 
-import static io.spine.server.storage.InMemoryRecordComparator.accordingTo;
+import static io.spine.server.storage.query.InMemoryRecordComparator.accordingTo;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;

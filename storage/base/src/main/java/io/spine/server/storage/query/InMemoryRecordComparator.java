@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.server.storage;
+package io.spine.server.storage.query;
 
 import com.google.protobuf.Message;
 import com.google.protobuf.Timestamp;
@@ -13,6 +13,7 @@ import io.spine.query.ColumnName;
 import io.spine.query.Direction;
 import io.spine.query.RecordColumn;
 import io.spine.query.SortBy;
+import io.spine.server.storage.RecordWithColumns;
 
 import java.io.Serializable;
 import java.util.Comparator;

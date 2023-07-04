@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.server.storage;
+package io.spine.server.storage.query;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
@@ -16,6 +16,7 @@ import io.spine.query.QueryPredicate;
 import io.spine.query.RecordQuery;
 import io.spine.query.Subject;
 import io.spine.query.SubjectParameter;
+import io.spine.server.storage.RecordWithColumns;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.function.Predicate;
