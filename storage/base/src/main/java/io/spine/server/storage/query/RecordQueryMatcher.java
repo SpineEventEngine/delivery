@@ -6,7 +6,6 @@
 
 package io.spine.server.storage.query;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Message;
@@ -53,8 +52,10 @@ public final class RecordQueryMatcher<I, R extends Message>
         this.predicate = subject.predicate();
     }
 
-    @VisibleForTesting
-    RecordQueryMatcher(RecordQuery<I, R> query) {
+    /**
+     * Creates a new matcher with the {@code Subject} of the given {@code query}.
+     */
+    public RecordQueryMatcher(RecordQuery<I, R> query) {
         this(checkNotNull(query).subject());
     }
 
