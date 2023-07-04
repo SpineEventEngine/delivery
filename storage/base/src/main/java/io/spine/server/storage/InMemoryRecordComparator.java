@@ -40,14 +40,14 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  *         that. Trying to {@linkplain SortBy sort by} column of non-comparable type will lead to
  *         an exception being thrown.
  */
-public final class RecordComparator<I, R extends Message>
+public final class InMemoryRecordComparator<I, R extends Message>
         implements Comparator<RecordWithColumns<I, R>>, Serializable {
 
     private static final long serialVersionUID = 0L;
 
     private final RecordColumn<R, ?> column;
 
-    private RecordComparator(RecordColumn<R, ?> column) {
+    private InMemoryRecordComparator(RecordColumn<R, ?> column) {
         this.column = column;
     }
 
@@ -83,13 +83,13 @@ public final class RecordComparator<I, R extends Message>
 
     private static <I, R extends Message>
     Comparator<RecordWithColumns<I, R>> ascending(RecordColumn<R, ?> column) {
-        return new RecordComparator<>(column);
+        return new InMemoryRecordComparator<>(column);
     }
 
     private static <I, R extends Message>
     Comparator<RecordWithColumns<I, R>> descending(RecordColumn<R, ?> column) {
-        return RecordComparator.<I, R>ascending(column)
-                               .reversed();
+        return InMemoryRecordComparator.<I, R>ascending(column)
+                                       .reversed();
     }
 
     @Override

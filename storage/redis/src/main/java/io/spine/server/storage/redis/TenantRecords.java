@@ -39,7 +39,7 @@ import static com.google.common.collect.Iterators.transform;
 import static io.spine.protobuf.AnyPacker.pack;
 import static io.spine.protobuf.AnyPacker.unpack;
 import static io.spine.server.entity.FieldMasks.applyMask;
-import static io.spine.server.storage.RecordComparator.accordingTo;
+import static io.spine.server.storage.InMemoryRecordComparator.accordingTo;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.util.stream.Collectors.toList;
 

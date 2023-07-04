@@ -28,7 +28,7 @@ import io.spine.server.tenant.TenantFunction;
 import java.util.Iterator;
 import java.util.stream.Stream;
 
-import static io.spine.server.storage.RecordComparator.accordingTo;
+import static io.spine.server.storage.InMemoryRecordComparator.accordingTo;
 import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
