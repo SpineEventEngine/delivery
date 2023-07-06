@@ -155,7 +155,6 @@ public final class HazelcastRecordStorage<I, R extends Message> extends RecordSt
             "ChainOfInstanceofChecks" /* There is no better way to abstract this part yet. */
     })
     private RecordWithColumns<I, R> recordWithColumns(I id, R record) {
-
         if (recordSpec() instanceof EntityRecordSpec) {
             return (RecordWithColumns<I, R>)
                     EntityRecordWithColumns.create(id, (EntityRecord) record);
