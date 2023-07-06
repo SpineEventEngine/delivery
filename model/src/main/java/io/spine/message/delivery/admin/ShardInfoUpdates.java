@@ -52,7 +52,8 @@ public final class ShardInfoUpdates {
      * <p>We intentionally do not force the argument to be positive because in some cases it may
      * be negative for a short period of time. For more info see the
      * {@linkplain io.spine.message.delivery.admin.ShardMessagesCountHolder#updateCount(ShardIndex,
-     * int)} method documentation, where the counter is updated.
+     * int) ShardMessagesCountHolder.updateCount(ShardIndex, int)} method documentation,
+     * where the counter is updated.
      */
     public static ShardInfoUpdate messagesCountChangedTo(ShardIndex index, int count) {
         checkNotDefaultArg(index);
