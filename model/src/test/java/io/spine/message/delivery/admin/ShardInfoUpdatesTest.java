@@ -23,11 +23,7 @@ import static io.spine.server.delivery.DeliveryStrategy.newIndex;
 @DisplayName("`ShardInfoUpdates` utility should")
 final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
 
-    private static final ShardIndex SHARD = ShardIndex
-            .newBuilder()
-            .setIndex(1)
-            .setOfTotal(10)
-            .vBuild();
+    private static final ShardIndex SHARD = newIndex(1,10);
 
     ShardInfoUpdatesTest() {
         super(ShardInfoUpdates.class);
