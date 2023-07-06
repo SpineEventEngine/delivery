@@ -10,7 +10,6 @@ import com.google.protobuf.Timestamp;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.server.delivery.ShardIndex;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
