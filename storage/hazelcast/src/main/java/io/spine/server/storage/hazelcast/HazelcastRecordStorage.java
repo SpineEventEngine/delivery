@@ -152,18 +152,10 @@ public final class HazelcastRecordStorage<I, R extends Message> extends RecordSt
 
     @SuppressWarnings({
             "unchecked", /* Ensured by generics and serialization approach. */
-            "ChainOfInstanceofChecks" /* There is no better way to abstract this part yet. */
     })
     private RecordWithColumns<I, R> recordWithColumns(I id, R record) {
         RecordSpec<I, R, ?> spec = recordSpec();
-        if (spec instanceof EntityRecordSpec) {
-            return (RecordWithColumns<I, R>)
-                    EntityRecordWithColumns.create(id, (EntityRecord) record);
-        }
-        if (spec instanceof MessageRecordSpec) {
-            return RecordWithColumns.create(id, record, (RecordSpec<I, R, R>) spec);
-        }
-        throw newIllegalStateException("Unsupported record spec: %s", spec);
+        return RecordWithColumns.create(id, record, (RecordSpec<I, R, R>) spec);
     }
 
     /**
