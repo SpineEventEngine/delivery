@@ -10,7 +10,6 @@ import com.google.protobuf.Timestamp;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.server.delivery.ShardIndex;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.message.delivery.admin.grpc.ShardStatus.PICKED;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
@@ -49,10 +48,15 @@ public final class ShardInfoUpdates {
     /**
      * Creates a new {@code ShardInfoUpdate} with the given shard {@code index} and
      * the new {@code count} of messages in the shard.
+     *
+     * <p>We intentionally do not force the argument to be positive because in some cases it may
+     * be negative for a short period of time. For more info see the
+     * {@linkplain io.spine.message.delivery.admin.ShardMessagesCountHolder#updateCount(ShardIndex,
+     * int) ShardMessagesCountHolder.updateCount(ShardIndex, int)} method documentation,
+     * where the counter is updated.
      */
     public static ShardInfoUpdate messagesCountChangedTo(ShardIndex index, int count) {
         checkNotDefaultArg(index);
-        checkArgument(count >= 0, "Messages count cannot be negative.");
         return changesFor(index)
                 .setNewMessagesCount(count)
                 .vBuild();
