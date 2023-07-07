@@ -15,10 +15,6 @@ import io.spine.core.TenantId;
 import io.spine.query.RecordQuery;
 import io.spine.query.SortBy;
 import io.spine.server.ContextSpec;
-import io.spine.server.entity.EntityRecord;
-import io.spine.server.entity.storage.EntityRecordSpec;
-import io.spine.server.entity.storage.EntityRecordWithColumns;
-import io.spine.server.storage.MessageRecordSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.RecordStorage;
 import io.spine.server.storage.RecordWithColumns;
@@ -29,7 +25,6 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 import static io.spine.server.storage.query.InMemoryRecordComparator.accordingTo;
-import static io.spine.util.Exceptions.newIllegalStateException;
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
