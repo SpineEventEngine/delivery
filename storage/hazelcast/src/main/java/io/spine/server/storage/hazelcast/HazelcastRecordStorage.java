@@ -36,7 +36,7 @@ import static java.util.Objects.requireNonNull;
  * testing in an environment closer to real.
  *
  * <p>For more info about Hazelcast,
- * please refer to the documentation:<a href="https://docs.hazelcast.com/home/">Hazelcast</a>
+ * please refer to the documentation:<a href="https://docs.hazelcast.com/home/">documentation</a>.
  *
  * @param <I>
  *         the type of the record identifiers
