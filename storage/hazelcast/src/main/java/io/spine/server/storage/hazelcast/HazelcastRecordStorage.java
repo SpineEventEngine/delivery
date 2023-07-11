@@ -54,6 +54,8 @@ public final class HazelcastRecordStorage<I, R extends Message> extends RecordSt
      *         specification of the Bounded Context in scope of which the storage will be used
      * @param recordSpec
      *         definitions of the columns to store along with each record
+     * @param hazelcast
+     *         hazelcast instance that this storage will use as its backend storage
      */
     HazelcastRecordStorage(ContextSpec context,
                            RecordSpec<I, R, ?> recordSpec,
@@ -123,7 +125,7 @@ public final class HazelcastRecordStorage<I, R extends Message> extends RecordSt
      * <p>The returned name is in the given format: {@code [tenantId]idTypeName:recordTypeName}.
      *
      * @param tenantId
-     *         identifier of the current tenant.
+     *         identifier of the current tenant
      * @return name of the data storage on the Hazelcast side
      */
     private String getStorageName(TenantId tenantId) {
