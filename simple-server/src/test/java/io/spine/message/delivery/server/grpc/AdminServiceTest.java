@@ -12,7 +12,7 @@ import io.spine.message.delivery.admin.given.BlockingMemoizingObserver;
 import io.spine.message.delivery.admin.given.WithAckObserver;
 import io.spine.message.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.message.delivery.command.PickUpShard;
-import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
+import io.spine.message.delivery.LiquorPickUpOutcome;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.test.message.delivery.server.Something;

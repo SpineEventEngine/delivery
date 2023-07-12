@@ -22,14 +22,14 @@ import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
-import io.spine.message.delivery.grpc.InboxServiceGrpc;
-import io.spine.message.delivery.grpc.InboxServiceGrpc.InboxServiceBlockingStub;
-import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
-import io.spine.message.delivery.grpc.OptionalInboxMessage;
-import io.spine.message.delivery.grpc.PageOfMessages;
-import io.spine.message.delivery.grpc.ReadMessagesSinceTime;
-import io.spine.message.delivery.grpc.ShardServiceGrpc;
-import io.spine.message.delivery.grpc.ShardServiceGrpc.ShardServiceBlockingStub;
+import io.spine.message.delivery.InboxServiceGrpc;
+import io.spine.message.delivery.InboxServiceGrpc.InboxServiceBlockingStub;
+import io.spine.message.delivery.LiquorPickUpOutcome;
+import io.spine.message.delivery.OptionalInboxMessage;
+import io.spine.message.delivery.PageOfMessages;
+import io.spine.message.delivery.ReadMessagesSinceTime;
+import io.spine.message.delivery.ShardServiceGrpc;
+import io.spine.message.delivery.ShardServiceGrpc.ShardServiceBlockingStub;
 import io.spine.message.delivery.rejection.Rejections;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageComparator;
@@ -82,7 +82,7 @@ public final class SimpleDeliveryClient
      * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
      * and {@code port} and uses the {@link Propagate} {@code RequestExecutionStrategy}.
      */
-    static SimpleDeliveryClient create(String host, int port) {
+    public static SimpleDeliveryClient create(String host, int port) {
         return create(host, port, new Propagate());
     }
 
@@ -90,8 +90,7 @@ public final class SimpleDeliveryClient
      * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
      * and {@code port}, and with the given {@code RequestExecutionStrategy}.
      */
-    @SuppressWarnings("CheckReturnValue" /* We're fine to just `check` args. */)
-    static SimpleDeliveryClient create(String host, int port, RequestExecutionStrategy strategy) {
+    public static SimpleDeliveryClient create(String host, int port, RequestExecutionStrategy strategy) {
         checkNotEmptyOrBlank(host);
         checkPositive(port);
         ManagedChannel channel = ManagedChannelBuilder

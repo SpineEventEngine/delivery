@@ -18,7 +18,7 @@ import io.spine.message.delivery.command.ReleaseShard;
 import io.spine.message.delivery.event.ExpiredSession;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
 import io.spine.message.delivery.event.ShardPickedUp;
-import io.spine.message.delivery.grpc.ShardServiceGrpc;
+import io.spine.message.delivery.ShardServiceGrpc;
 import io.spine.message.delivery.server.grpc.ShardService;
 import io.spine.server.NodeId;
 import io.spine.server.ServerEnvironment;

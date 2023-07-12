@@ -12,8 +12,8 @@ import io.spine.base.Time;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
 import io.spine.message.delivery.admin.grpc.AdminServiceGrpc.AdminServiceStub;
-import io.spine.message.delivery.grpc.InboxServiceGrpc;
-import io.spine.message.delivery.grpc.ShardServiceGrpc;
+import io.spine.message.delivery.InboxServiceGrpc;
+import io.spine.message.delivery.ShardServiceGrpc;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 

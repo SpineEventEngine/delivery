@@ -5,13 +5,16 @@
  */
 
 rootProject.name = "message-delivery"
-include("redis-record-storage")
 include("model")
+include("grpc-api")
 include("server")
 include("simple-server")
 include("testutil-server")
 include("admin-server")
 include("admin-ui")
+include("storage:hazelcast")
+include("storage:redis")
+include("storage:base")
 includeBuild("client")
 
 deployment("server-cloud-run")

@@ -14,7 +14,6 @@ import io.spine.message.delivery.command.PickUpShard;
 import io.spine.message.delivery.command.ReleaseShard;
 import io.spine.message.delivery.event.ShardPickedUp;
 import io.spine.message.delivery.event.ShardReleased;
-import io.spine.message.delivery.rejection.Rejections;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
@@ -24,6 +23,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+
+import static io.spine.message.delivery.rejection.Rejections.ShardAlreadyPickedUp;
+import static io.spine.message.delivery.rejection.Rejections.UnableToReleaseShard;
 
 @DisplayName("`SessionRegistry` should")
 final class SessionRegistryTest extends DeliveryTest {
@@ -92,7 +94,7 @@ final class SessionRegistryTest extends DeliveryTest {
             void rejection() {
                 context().receivesCommand(command);
 
-                var expected = Rejections.ShardAlreadyPickedUp.newBuilder()
+                var expected = ShardAlreadyPickedUp.newBuilder()
                         .setShard(shard)
                         .setWorker(worker)
                         .setWhenPicked(time)
@@ -156,7 +158,7 @@ final class SessionRegistryTest extends DeliveryTest {
             @DisplayName("shard was not previously picked up")
             void notPickedUp() {
                 context().receivesCommand(releaseShard);
-                var expected = Rejections.UnableToReleaseShard.newBuilder()
+                var expected = UnableToReleaseShard.newBuilder()
                         .setShard(shard)
                         .setWorker(worker)
                         .setReason(SessionRegistry.shardNotPickedUp())
@@ -177,7 +179,7 @@ final class SessionRegistryTest extends DeliveryTest {
                         .vBuild();
                 context().receivesCommand(pickUpShard)
                          .receivesCommand(releaseShard);
-                var expected = Rejections.UnableToReleaseShard.newBuilder()
+                var expected = UnableToReleaseShard.newBuilder()
                         .setShard(shard)
                         .setWorker(worker)
                         .setReason(SessionRegistry.shardPickedUpByOtherWorker(anotherWorker))

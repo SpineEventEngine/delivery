@@ -18,6 +18,7 @@ import io.spine.message.delivery.server.grpc.InboxService;
 import io.spine.message.delivery.server.grpc.ShardService;
 import io.spine.message.delivery.server.grpc.UnableToCloseFactoryException;
 import io.spine.server.storage.StorageFactory;
+import io.spine.server.storage.hazelcast.HazelcastStorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.server.storage.redis.RedisStorageFactory;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -213,6 +214,10 @@ public final class SimpleApp implements Logging {
             _config().log("Using Redis storage.");
             return new ReportingStorageFactory(RedisStorageFactory.newInstance());
         }
+        if (useHazelcast()) {
+            _config().log("Using Hazelcast storage.");
+            return new ReportingStorageFactory(HazelcastStorageFactory.newInstance());
+        }
         _config().log("Using in-memory storage.");
         var factory = new SingletonStorageFactory(InMemoryStorageFactory.newInstance());
         return new ReportingStorageFactory(factory);
@@ -222,6 +227,12 @@ public final class SimpleApp implements Logging {
     private static boolean useRedis() {
         Map<String, String> envs = System.getenv();
         return envs.containsKey("USE_REDIS") && envs.containsKey("REDIS_HOST");
+    }
+
+    @SuppressWarnings("DuplicateStringLiteralInspection")
+    private static boolean useHazelcast() {
+        Map<String, String> envs = System.getenv();
+        return envs.containsKey("USE_HAZELCAST");
     }
 
     /**

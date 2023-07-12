@@ -9,7 +9,7 @@ package io.spine.message.delivery.server.grpc;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
 import io.spine.base.Time;
-import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
+import io.spine.message.delivery.LiquorPickUpOutcome;
 import io.spine.message.delivery.rejection.Rejections;
 import io.spine.message.delivery.server.WithApp;
 import io.spine.message.delivery.server.grpc.given.ShardServiceTestEnv;

@@ -20,7 +20,6 @@ import "spine/message/delivery/events.proto";
 import "spine/message/delivery/rejections.proto";
 import "spine/message/delivery/pick_up_outcome.proto";
 
-
 // A service for working with the `ShardSessionRegistry` bypassing Spine's `CommandService`.
 service ShardSessionRegistryService {
 

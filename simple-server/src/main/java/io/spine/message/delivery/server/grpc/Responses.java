@@ -10,7 +10,7 @@ import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import io.spine.base.Time;
 import io.spine.message.delivery.event.ShardPickedUp;
-import io.spine.message.delivery.grpc.OptionalInboxMessage;
+import io.spine.message.delivery.OptionalInboxMessage;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;

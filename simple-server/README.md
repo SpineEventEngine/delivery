@@ -13,7 +13,7 @@ The port may be additionally configured by setting the `PORT` environment variab
 
 # Storage mode
 
-The server support two storage modes: in-memory and Redis-based.
+The server support 3 storage modes: in-memory, Redis-based, and Hazelcast-based
 
 The in-memory storage provides best-possible performance and is used by default.
 
@@ -25,6 +25,17 @@ be accessible by the application. It is also possible to configure `REDIS_PORT`
 environment variable which denotes the port on which Redis is accessible. The port defaults 
 to `6379`. If the `USE_REDIS` variable is set, but the `REDIS_HOST` is not configured the server 
 will stay in in-memory mode.
+
+The Hazelcast-based storage adds an ability to start several Liquor instances in 
+a replicated cluster where all the Liquor instances form a single memory space and automatically
+accessing data of each other. This means that changes made on one Liquor instance will be available
+for all other instances in the cluster. **Pay attention that this mode is experimental,
+and there is no strong consistency guaranty in the cluster for now.** In order to use Hazelcast
+storage one must set `USE_HAZELCAST` environment variable to any value (we check only presence 
+of the variable and ignore its value).
+
+Hazelcast starts an embedded server and automatically discovers other Liquor instances 
+in Hazelcast mode in the same network, so no additional effort required.
 
 # Inbound message size
 

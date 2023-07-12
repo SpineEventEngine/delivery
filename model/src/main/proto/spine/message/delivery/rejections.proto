@@ -16,8 +16,6 @@ option java_generate_equals_and_hash = true;
 
 import "google/protobuf/timestamp.proto";
 import "spine/server/delivery/delivery.proto";
-import "spine/server/server_environment.proto";
-
 
 // A shard cannot be picked up because some worker has already picked it up.
 message ShardAlreadyPickedUp {

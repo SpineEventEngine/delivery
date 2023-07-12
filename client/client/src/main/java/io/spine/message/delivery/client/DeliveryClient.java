@@ -32,7 +32,7 @@ import io.spine.message.delivery.command.RemoveMessages;
 import io.spine.message.delivery.command.WriteMessage;
 import io.spine.message.delivery.command.WriteMessages;
 import io.spine.message.delivery.event.ExpiredSessionsReleased;
-import io.spine.message.delivery.grpc.LiquorPickUpOutcome;
+import io.spine.message.delivery.LiquorPickUpOutcome;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.message.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
 import io.spine.message.delivery.rejection.Rejections;
