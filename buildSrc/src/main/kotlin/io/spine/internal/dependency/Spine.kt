@@ -8,8 +8,9 @@ package io.spine.internal.dependency
 
 // https://github.com/SpineEventEngine
 object Spine {
-    private const val baseVersion = "2.0.0-SNAPSHOT.421"
-    private const val coreVersion = "2.0.0-SNAPSHOT.381"
+    // Latest published Spine v2.x snapshots.
+    private const val baseVersion = "2.0.0-SNAPSHOT.423"
+    private const val coreVersion = "2.0.0-SNAPSHOT.383"
     private const val testLibVersion = "2.0.0-SNAPSHOT.213"
 
     const val base = "io.spine:spine-base:${baseVersion}"
