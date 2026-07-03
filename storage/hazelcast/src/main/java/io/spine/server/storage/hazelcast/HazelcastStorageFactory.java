@@ -8,7 +8,7 @@ package io.spine.server.storage.hazelcast;
 
 import com.google.protobuf.Message;
 import com.hazelcast.core.HazelcastInstance;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.StorageFactory;
@@ -30,7 +30,7 @@ import static com.hazelcast.core.Hazelcast.newHazelcastInstance;
  *
  * <p>Pay attention that each new factory instance creation will run a new Hazelcast server.
  */
-public final class HazelcastStorageFactory implements StorageFactory, Logging {
+public final class HazelcastStorageFactory implements StorageFactory, WithLogging {
 
     private final HazelcastInstance hazelcast = newHazelcastInstance();
 
@@ -43,8 +43,14 @@ public final class HazelcastStorageFactory implements StorageFactory, Logging {
 
     @Override
     public <I, R extends Message> HazelcastRecordStorage<I, R>
-    createRecordStorage(ContextSpec context, RecordSpec<I, R, ?> recordSpec) {
+    createRecordStorage(ContextSpec context, RecordSpec<I, R> recordSpec) {
         return new HazelcastRecordStorage<>(context, recordSpec, hazelcast);
+    }
+
+    @Override
+    public boolean isOpen() {
+        return hazelcast.getLifecycleService()
+                        .isRunning();
     }
 
     @Override

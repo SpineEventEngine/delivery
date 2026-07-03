@@ -92,15 +92,15 @@ public final class SingletonStorageFactory implements StorageFactory {
             }
             Key toCompare = (Key) o;
             Class<?> idType = spec.idType();
-            Class<?> storedType = spec.storedType();
+            Class<?> storedType = spec.recordType();
             return context.equals(toCompare.context)
                     && idType.equals(toCompare.spec.idType())
-                    && storedType.equals(toCompare.spec.storedType());
+                    && storedType.equals(toCompare.spec.recordType());
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(context, spec.idType(), spec.storedType());
+            return Objects.hash(context, spec.idType(), spec.recordType());
         }
     }
 }

@@ -98,7 +98,7 @@ final class TenantRecords<I, R extends Message>
 
     @SuppressWarnings("unchecked" /* Ensured by generics and serialization approach. */)
     private RecordWithColumns<I, R> deserialize(I id, byte[] recordBytes) {
-        Class<R> recordType = spec.storedType();
+        Class<R> recordType = spec.recordType();
         try {
             @SuppressWarnings("unchecked" /* Checked by generic. */)
             R record = (R) Messages

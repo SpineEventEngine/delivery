@@ -225,7 +225,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
          * Creates new {@code TypeSpec} of the given {@code RecordSpec}.
          */
         public static <I, R extends Message> TypeSpec<I, R> of(RecordSpec<I, R, ?> spec) {
-            return new TypeSpec<>(spec.idType(), spec.storedType());
+            return new TypeSpec<>(spec.idType(), spec.recordType());
         }
 
         /**
