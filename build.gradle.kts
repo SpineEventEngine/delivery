@@ -8,8 +8,8 @@ import io.spine.internal.gradle.spinePublishing
 
 allprojects {
     apply(from = "$rootDir/version.gradle.kts")
-    group = "io.spine.message-delivery"
-    version = extra["messageDeliveryVersion"]!!
+    group = "io.spine.delivery"
+    version = extra["versionToPublish"]!!
 
     apply<IdeaPlugin>()
 }
@@ -27,7 +27,7 @@ spinePublishing {
         "server", "simple-server", "model"
     )
     targetRepositories.addAll(
-        PublishingRepos.gitHub("message-delivery")
+        PublishingRepos.gitHub("delivery-server")
     )
     spinePrefix.set(false)
 }

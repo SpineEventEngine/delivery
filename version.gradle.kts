@@ -8,4 +8,4 @@
  * The version of the application.
  */
 
-val messageDeliveryVersion: String by extra("0.9.2")
+val versionToPublish: String by extra("0.9.3")

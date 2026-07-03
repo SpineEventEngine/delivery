@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-rootProject.name = "message-delivery-client"
+rootProject.name = "delivery-server-client"
 include("base")
 include("client")
 include("simple-client")

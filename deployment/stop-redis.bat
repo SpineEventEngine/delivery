@@ -2,4 +2,4 @@
 @rem # Stops Redis docker container.                                                          #
 @rem ##########################################################################################
 
-docker container stop "message-delivery-server-redis"
+docker container stop "delivery-server-redis"
