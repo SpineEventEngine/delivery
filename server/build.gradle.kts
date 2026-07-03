@@ -14,6 +14,7 @@ dependencies {
     implementation(project(":grpc-api"))
     implementation(project(":storage:redis"))
     implementation(Grpc.core)
+    implementation(Grpc.inProcess)
     implementation(Spine.server)
     testImplementation(project(":testutil-server"))
     testImplementation(project(path = ":grpc-api", configuration = "testArtifacts"))

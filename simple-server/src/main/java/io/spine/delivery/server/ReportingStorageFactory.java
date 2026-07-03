@@ -49,7 +49,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
 
     @Override
     public <I, R extends Message> ReportingRecordStorage<I, R>
-    createRecordStorage(ContextSpec context, RecordSpec<I, R, ?> spec) {
+    createRecordStorage(ContextSpec context, RecordSpec<I, R> spec) {
         TypeSpec<I, R> typeSpec = TypeSpec.of(spec);
         var storage = delegate.createRecordStorage(context, spec);
         var reportingStorage = new ReportingRecordStorage<>(context, storage);
@@ -224,7 +224,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
         /**
          * Creates new {@code TypeSpec} of the given {@code RecordSpec}.
          */
-        public static <I, R extends Message> TypeSpec<I, R> of(RecordSpec<I, R, ?> spec) {
+        public static <I, R extends Message> TypeSpec<I, R> of(RecordSpec<I, R> spec) {
             return new TypeSpec<>(spec.idType(), spec.recordType());
         }
 

@@ -49,6 +49,7 @@ final class SessionsCleanerProcessRepo
 
     @Override
     protected void configure(SessionsCleanerProcess processManager) {
+        super.configure(processManager);
         processManager.setClient(client());
     }
 

@@ -51,14 +51,14 @@ public final class StoragesTestEnv {
     /**
      * Creates a new spec with {@code TestEventId} ID and {@code TestEvent} record.
      */
-    public static RecordSpec<TestEventId, TestEvent, ?> specForTestEvent() {
+    public static RecordSpec<TestEventId, TestEvent> specForTestEvent() {
         return new MessageRecordSpec<>(TestEventId.class, TestEvent.class, TestEvent::getId);
     }
 
     /**
      * Creates a new spec with {@code TestEventId} ID and {@code TestEvent} record.
      */
-    public static RecordSpec<AnotherTestEventId, AnotherTestEvent, ?> specForAnotherTestEvent() {
+    public static RecordSpec<AnotherTestEventId, AnotherTestEvent> specForAnotherTestEvent() {
         return new MessageRecordSpec<>(
                 AnotherTestEventId.class, AnotherTestEvent.class, AnotherTestEvent::getId
         );

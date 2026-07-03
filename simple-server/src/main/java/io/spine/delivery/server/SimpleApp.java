@@ -212,14 +212,14 @@ public final class SimpleApp implements WithLogging {
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different module. */)
     private ReportingStorageFactory storageFactory() {
         if (useRedis()) {
-            _config().log(() -> format("Using Redis storage."));
+            logger().atConfig().log(() -> format("Using Redis storage."));
             return new ReportingStorageFactory(RedisStorageFactory.newInstance());
         }
         if (useHazelcast()) {
-            _config().log(() -> format("Using Hazelcast storage."));
+            logger().atConfig().log(() -> format("Using Hazelcast storage."));
             return new ReportingStorageFactory(HazelcastStorageFactory.newInstance());
         }
-        _config().log(() -> format("Using in-memory storage."));
+        logger().atConfig().log(() -> format("Using in-memory storage."));
         var factory = new SingletonStorageFactory(InMemoryStorageFactory.newInstance());
         return new ReportingStorageFactory(factory);
     }

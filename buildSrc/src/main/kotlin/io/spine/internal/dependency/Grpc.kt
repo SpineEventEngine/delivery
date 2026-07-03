@@ -17,6 +17,7 @@ object Grpc {
     const val protobuf = "io.grpc:grpc-protobuf:${version}"
     const val netty = "io.grpc:grpc-netty:${version}"
     const val nettyShaded = "io.grpc:grpc-netty-shaded:${version}"
+    const val inProcess = "io.grpc:grpc-inprocess:${version}"
     const val context = "io.grpc:grpc-context:${version}"
     const val protobufPlugin = "io.grpc:protoc-gen-grpc-java:${version}"
 }

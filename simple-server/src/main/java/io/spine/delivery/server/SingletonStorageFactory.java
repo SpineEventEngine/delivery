@@ -48,7 +48,7 @@ public final class SingletonStorageFactory implements StorageFactory {
     @SuppressWarnings("unchecked")
     @Override
     public <I, R extends Message> RecordStorage<I, R>
-    createRecordStorage(ContextSpec context, RecordSpec<I, R, ?> spec) {
+    createRecordStorage(ContextSpec context, RecordSpec<I, R> spec) {
         Key key = Key.of(context, spec);
         return (RecordStorage<I, R>)
                 map.computeIfAbsent(key, (k) -> delegate.createRecordStorage(context, spec));
@@ -66,9 +66,9 @@ public final class SingletonStorageFactory implements StorageFactory {
     private static class Key {
 
         private final ContextSpec context;
-        private final RecordSpec<?, ?, ?> spec;
+        private final RecordSpec<?, ?> spec;
 
-        private Key(ContextSpec context, RecordSpec<?, ?, ?> spec) {
+        private Key(ContextSpec context, RecordSpec<?, ?> spec) {
             this.context = context;
             this.spec = spec;
         }
@@ -76,7 +76,7 @@ public final class SingletonStorageFactory implements StorageFactory {
         /**
          * Creates a new {@code Key} with provided {@code context} and {@code spec}.
          */
-        public static Key of(ContextSpec context, RecordSpec<?, ?, ?> spec) {
+        public static Key of(ContextSpec context, RecordSpec<?, ?> spec) {
             checkNotNull(context);
             checkNotNull(spec);
             return new Key(context, spec);

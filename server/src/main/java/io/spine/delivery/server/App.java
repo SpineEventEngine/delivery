@@ -9,7 +9,7 @@ package io.spine.delivery.server;
 import com.google.common.annotations.VisibleForTesting;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.spine.client.Client;
-import io.spine.environment.Production;
+import io.spine.environment.DefaultMode;
 import io.spine.logging.WithLogging;
 import static java.lang.String.format;
 import io.spine.delivery.server.grpc.AdminService;
@@ -175,13 +175,13 @@ public final class App implements WithLogging {
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in different module. */)
     private void initEnv() {
         ServerEnvironment
-                .when(Production.class)
+                .when(DefaultMode.class)
                 .useStorageFactory(env -> {
                     if (useRedis()) {
-                        _config().log(() -> format("Using Redis storage."));
+                        logger().atConfig().log(() -> format("Using Redis storage."));
                         return RedisStorageFactory.newInstance();
                     }
-                    _config().log(() -> format("Using in-memory storage."));
+                    logger().atConfig().log(() -> format("Using in-memory storage."));
                     return InMemoryStorageFactory.newInstance();
                 })
                 .use(InMemoryTransportFactory.newInstance())
