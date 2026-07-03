@@ -16,7 +16,7 @@ import java.util.concurrent.ThreadFactory;
 import static java.lang.Boolean.parseBoolean;
 
 /**
- * An entrypoint for launching Liquor server.
+ * An entrypoint for launching Delivery server.
  */
 public final class Launcher implements Logging {
 
@@ -30,7 +30,7 @@ public final class Launcher implements Logging {
      *
      * @param args
      *         arguments passed to the program through the command line. Those arguments
-     *         will be passed to Liquor and Admin services as is. There is no need to pass any
+     *         will be passed to Delivery and Admin services as is. There is no need to pass any
      *         arguments unless one wants to modify the server startup.
      */
     public static void main(String[] args) throws InterruptedException {
@@ -38,39 +38,39 @@ public final class Launcher implements Logging {
     }
 
     /**
-     * Launches the Liquor server, also launches the Admin Server if configured.
+     * Launches the Delivery server, also launches the Admin Server if configured.
      *
-     * <p>Blocks execution until the Liquor server stops.
+     * <p>Blocks execution until the Delivery server stops.
      *
      * @param args
      *         command line arguments that were passed with the startup command. This parameter will
-     *         be passed to both Liquor and Admin server as is.
+     *         be passed to both Delivery and Admin server as is.
      */
     private void launch(String[] args) throws InterruptedException {
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
-        Thread liquor = liquor(threadFactory, args);
-        liquor.start();
+        Thread delivery = delivery(threadFactory, args);
+        delivery.start();
         if (useAdminServer()) {
             _info().log("Starting Admin Server.");
             admin(threadFactory, args).start();
         } else {
             _info().log("Admin Server start skipped.");
         }
-        liquor.join();
+        delivery.join();
     }
 
     /**
-     * Creates a new {@code Thread} that starts and executes the Liquor server code.
+     * Creates a new {@code Thread} that starts and executes the Delivery server code.
      *
      * @param threads
      *         factory to create a new thread
      * @param args
      *         startup arguments
      */
-    private static Thread liquor(ThreadFactory threads, String[] args) {
-        Thread liquor = threads.newThread(() -> App.main(args));
-        liquor.setName("liquor");
-        return liquor;
+    private static Thread delivery(ThreadFactory threads, String[] args) {
+        Thread delivery = threads.newThread(() -> App.main(args));
+        delivery.setName("delivery");
+        return delivery;
     }
 
     /**

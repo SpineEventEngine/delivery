@@ -80,7 +80,7 @@ public final class SimpleApp implements WithLogging {
      * networking troubles, internal/application errors or an instance shutdown.
      *
      * <p>If a shard session is not released by the worker explicitly within
-     * the specified timeout, it will be released automatically by Liquor.
+     * the specified timeout, it will be released automatically by the Delivery server.
      *
      * <p>By default, the stale-check is {@linkplain #NO_SHARD_PROCESSING_TIMEOUT turned off}.
      */

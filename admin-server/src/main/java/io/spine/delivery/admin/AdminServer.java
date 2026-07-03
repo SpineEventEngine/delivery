@@ -9,7 +9,7 @@ package io.spine.delivery.admin;
 import io.micronaut.runtime.Micronaut;
 
 /**
- * Spine Liquor admin server application.
+ * Spine Delivery admin server application.
  */
 public final class AdminServer {
 

@@ -31,7 +31,7 @@ newer Spine runtime.
 ### Main build
 
 - `model` — the Protobuf domain model shared by the servers: commands, events,
-  rejections, the shard-session registry types, and the `LiquorPickUpOutcome`
+  rejections, the shard-session registry types, and the `DeliveryPickUpOutcome`
   bridge type that connects core `2.0.x` servers with core `1.9.x` clients.
 - `grpc-api` — the gRPC service contract (`message_delivery.proto`,
   `admin/admin_service.proto`, plus a vendored `grpc.health.v1` service) and the

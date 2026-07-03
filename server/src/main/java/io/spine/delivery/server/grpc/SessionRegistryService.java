@@ -21,7 +21,7 @@ import io.spine.delivery.command.PickUpShard;
 import io.spine.delivery.command.ReleaseExpiredSessions;
 import io.spine.delivery.event.ExpiredSessionsReleased;
 import io.spine.delivery.event.ShardPickedUp;
-import io.spine.delivery.LiquorPickUpOutcome;
+import io.spine.delivery.DeliveryPickUpOutcome;
 import io.spine.delivery.rejection.Rejections;
 
 import java.util.concurrent.CountDownLatch;
@@ -32,8 +32,8 @@ import static com.google.common.base.Strings.nullToEmpty;
 import static io.grpc.Status.INTERNAL;
 import static io.grpc.Status.fromCode;
 import static io.grpc.Status.fromThrowable;
-import static io.spine.delivery.LiquorPickUpOutcomes.alreadyPickedUp;
-import static io.spine.delivery.LiquorPickUpOutcomes.pickedUp;
+import static io.spine.delivery.DeliveryPickUpOutcomes.alreadyPickedUp;
+import static io.spine.delivery.DeliveryPickUpOutcomes.pickedUp;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static java.lang.String.format;
 
@@ -57,7 +57,7 @@ public final class SessionRegistryService
     }
 
     @Override
-    public void pickShard(PickUpShard pickUpShard, StreamObserver<LiquorPickUpOutcome> responseObserver) {
+    public void pickShard(PickUpShard pickUpShard, StreamObserver<DeliveryPickUpOutcome> responseObserver) {
         logger().atTrace().log(() -> format(
                 "Posting internal `PickUpShard` command and waiting for `ShardPickedUp` event."
         ));

@@ -15,13 +15,13 @@ import jakarta.inject.Singleton;
 import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
- * Factory for creating {@link ManagedChannel}s connected to the Liquor server running on the
+ * Factory for creating {@link ManagedChannel}s connected to the Delivery server running on the
  * same instance.
  *
- * <p>The factory assumes that the Liquor server is running on the same instance, so it
- * tries to get the port of the Liquor server from the {@code PORT} environment variable that
- * is used to configure Liquor server's port. If the {@code PORT} is not set it
- * defaults to {@code 8484} which is default port for the Liquor server.
+ * <p>The factory assumes that the Delivery server is running on the same instance, so it
+ * tries to get the port of the Delivery server from the {@code PORT} environment variable that
+ * is used to configure Delivery server's port. If the {@code PORT} is not set it
+ * defaults to {@code 8484} which is default port for the Delivery server.
  */
 @Factory
 final class AdminServiceFactory {
@@ -36,7 +36,7 @@ final class AdminServiceFactory {
             .build();
 
     /**
-     * Creates a new {@code AdminServiceBlockingStub} connected to the Liquor server running on
+     * Creates a new {@code AdminServiceBlockingStub} connected to the Delivery server running on
      * the same instance.
      */
     @Singleton

@@ -54,7 +54,7 @@ service InboxService {
 service ShardService {
 
     // Picks up the shard for processing.
-    rpc PickShard(PickUpShard) returns (LiquorPickUpOutcome);
+    rpc PickShard(PickUpShard) returns (DeliveryPickUpOutcome);
 
     // Releases the shard after its processing is done.
     rpc ReleaseSession(ReleaseShard) returns (google.protobuf.Empty);

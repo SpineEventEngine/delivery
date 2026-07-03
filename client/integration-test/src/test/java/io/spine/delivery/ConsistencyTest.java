@@ -34,7 +34,7 @@ import static io.spine.delivery.client.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Tag("integration")
-@DisplayName("Distributed Liquor servers should")
+@DisplayName("Distributed Delivery servers should")
 public class ConsistencyTest extends DistributedTest {
 
     @ParameterizedTest

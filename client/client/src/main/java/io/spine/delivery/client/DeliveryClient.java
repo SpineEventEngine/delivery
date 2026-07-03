@@ -32,7 +32,7 @@ import io.spine.delivery.command.RemoveMessages;
 import io.spine.delivery.command.WriteMessage;
 import io.spine.delivery.command.WriteMessages;
 import io.spine.delivery.event.ExpiredSessionsReleased;
-import io.spine.delivery.LiquorPickUpOutcome;
+import io.spine.delivery.DeliveryPickUpOutcome;
 import io.spine.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.delivery.grpc.ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceBlockingStub;
 import io.spine.delivery.rejection.Rejections;
@@ -229,7 +229,7 @@ public final class DeliveryClient implements SessionRegistryClient, InboxClient,
                 "Posting `PickUpShard` command and waiting for a response event `ShardPickedUp`."
         );
         try {
-            LiquorPickUpOutcome outcome = requestExecutionStrategy
+            DeliveryPickUpOutcome outcome = requestExecutionStrategy
                     .evaluate(() -> sessionRegistry.pickShard(pickUpShard));
             if (outcome.hasPickedUp()) {
                 return pickedUp(fromEvent(outcome.getPickedUp()));

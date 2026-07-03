@@ -46,7 +46,7 @@ environment variable. Allowed values are in bounds from `1` to `Integer.MAX_VALU
 
 # Stale shards auto release
 
-`LiquorShardRegistry` accepts `processingTimeout` upon which the registry can decide if a session
+`DeliveryShardRegistry` accepts `processingTimeout` upon which the registry can decide if a session
 is stale. The check is performed when a session is asked for picking up. If a gap between 
 `session.whenLastPickedUp()` and `now()` is equal to or more than processingTimeout, 
 the session is considered stale and can be picked up again. The fact of a session 

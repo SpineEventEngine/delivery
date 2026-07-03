@@ -25,7 +25,7 @@ import static com.hazelcast.core.Hazelcast.newHazelcastInstance;
  * factory instance is obtained, a new embedded Hazelcast server is started. The server allows to
  * discover another servers running in the same network. Servers will automatically form a cluster
  * where each server is storing a copy of all the cluster date. This means that records stored on
- * one instance will be available for read and modification for all the Liquor instances in the same
+ * one instance will be available for read and modification for all the Delivery instances in the same
  * network.
  *
  * <p>Pay attention that each new factory instance creation will run a new Hazelcast server.

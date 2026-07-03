@@ -23,7 +23,7 @@ import "spine/server/delivery/delivery.proto";
 // Acts as a backend implementation for `AdminService`
 service AdminService {
 
-    // Gets an information about shards on Liquor server.
+    // Gets an information about shards on Delivery server.
     rpc GetShardInfo(google.protobuf.Empty) returns (ShardInfoList);
 
     // Subscribes to the updates of shard info.
@@ -77,7 +77,7 @@ message ShardInfoList {
     repeated ShardInfo shards = 1;
 }
 
-// Information about shard status on the Liquor server.
+// Information about shard status on the Delivery server.
 message ShardInfo {
 
     // Index of the shard.

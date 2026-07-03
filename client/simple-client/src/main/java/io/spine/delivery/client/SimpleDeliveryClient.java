@@ -24,7 +24,7 @@ import io.spine.delivery.command.WriteMessages;
 import io.spine.delivery.event.ExpiredSessionsReleased;
 import io.spine.delivery.InboxServiceGrpc;
 import io.spine.delivery.InboxServiceGrpc.InboxServiceBlockingStub;
-import io.spine.delivery.LiquorPickUpOutcome;
+import io.spine.delivery.DeliveryPickUpOutcome;
 import io.spine.delivery.OptionalInboxMessage;
 import io.spine.delivery.PageOfMessages;
 import io.spine.delivery.ReadMessagesSinceTime;
@@ -217,7 +217,7 @@ public final class SimpleDeliveryClient
                 .setWorker(worker)
                 .vBuild();
         try {
-            LiquorPickUpOutcome outcome = requestExecutionStrategy
+            DeliveryPickUpOutcome outcome = requestExecutionStrategy
                     .evaluate(() -> shardService.pickShard(pickUpShard));
             if (outcome.hasPickedUp()) {
                 return pickedUp(fromEvent(outcome.getPickedUp()));

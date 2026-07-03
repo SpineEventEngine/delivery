@@ -17,18 +17,18 @@ import io.spine.delivery.command.ReleaseExpiredSessions;
 import io.spine.delivery.command.ReleaseShard;
 import io.spine.delivery.event.ExpiredSession;
 import io.spine.delivery.event.ExpiredSessionsReleased;
-import io.spine.delivery.LiquorPickUpOutcome;
+import io.spine.delivery.DeliveryPickUpOutcome;
 import io.spine.delivery.ShardServiceGrpc;
 import io.spine.delivery.rejection.ShardAlreadyPickedUp;
-import io.spine.delivery.server.LiquorShardRegistry;
+import io.spine.delivery.server.DeliveryShardRegistry;
 import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.storage.StorageFactory;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.spine.delivery.LiquorPickUpOutcomes.alreadyPickedUp;
-import static io.spine.delivery.LiquorPickUpOutcomes.pickedUp;
+import static io.spine.delivery.DeliveryPickUpOutcomes.alreadyPickedUp;
+import static io.spine.delivery.DeliveryPickUpOutcomes.pickedUp;
 import static io.spine.delivery.server.grpc.Responses.completeCall;
 import static io.spine.delivery.server.grpc.Responses.shardPickedUp;
 
@@ -38,11 +38,11 @@ import static io.spine.delivery.server.grpc.Responses.shardPickedUp;
 public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         implements WithLogging, NamedHealthAwareService {
 
-    private final LiquorShardRegistry registry;
+    private final DeliveryShardRegistry registry;
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
-     * Creates a new {@code ShardService} backed by {@link LiquorShardRegistry}.
+     * Creates a new {@code ShardService} backed by {@link DeliveryShardRegistry}.
      *
      * @param factory
      *         storage to be used to store registry's records
@@ -53,11 +53,11 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         super();
         checkNotNull(factory);
         checkNotNull(processingTimeout);
-        registry = new LiquorShardRegistry(factory, processingTimeout);
+        registry = new DeliveryShardRegistry(factory, processingTimeout);
     }
 
     @Override
-    public void pickShard(PickUpShard request, StreamObserver<LiquorPickUpOutcome> response) {
+    public void pickShard(PickUpShard request, StreamObserver<DeliveryPickUpOutcome> response) {
         var shard = request.getShard();
         int index = shard.getIndex();
         var worker = request.getWorker();

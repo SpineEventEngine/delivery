@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 /**
  * An abstract base for tests that utilize the distribution feature of the Hazelcast-based
- * Liquor storage.
+ * Delivery storage.
  */
 abstract class DistributedTest {
 
@@ -45,15 +45,15 @@ abstract class DistributedTest {
     private static final Network network = Network.newNetwork();
 
     /**
-     * Docker image name of the Liquor server.
+     * Docker image name of the Delivery server.
      */
     private static final DockerImageName IMAGE_NAME = DockerImageName
             .parse("gcr.io/spine-dev/simple-message-delivery-server:latest");
 
     private static final ImmutableList<GenericContainer<?>> servers = ImmutableList.of(
-            newLiquorContainer("=[1]="),
-            newLiquorContainer("=[2]="),
-            newLiquorContainer("=[3]=")
+            newDeliveryContainer("=[1]="),
+            newDeliveryContainer("=[2]="),
+            newDeliveryContainer("=[3]=")
     );
 
     @SuppressWarnings("UnsecureRandomNumberGeneration") // Used for a non security purpose.
@@ -63,7 +63,7 @@ abstract class DistributedTest {
      * Creates and configures a new {@code GenericContainer}.
      */
     @SuppressWarnings("resource") // Container is closed in the `@AfterAll` hook.
-    private static GenericContainer<?> newLiquorContainer(String loggOutputPrefix) {
+    private static GenericContainer<?> newDeliveryContainer(String loggOutputPrefix) {
         return new GenericContainer<>(IMAGE_NAME)
                 .withExposedPorts(8484)
                 .withLogConsumer(new Slf4jLogConsumer(LOGGER).withPrefix(loggOutputPrefix))
@@ -98,24 +98,24 @@ abstract class DistributedTest {
      * Uses the {@code tc} command to configure delay and loss on the side of the container
      * to emulate unstable network.
      */
-    private static void addDelay(GenericContainer<?> liquorContainer) {
-        executeInContainer(liquorContainer, "tc qdisc add dev eth0 root netem delay 100ms 100ms");
-        executeInContainer(liquorContainer, "tc qdisc add dev lo root netem delay 100ms 100ms");
-        executeInContainer(liquorContainer, "tc qdisc change dev eth0 root netem loss 20% 50%");
-        executeInContainer(liquorContainer, "tc qdisc change dev lo root netem loss 20% 50%");
-        executeInContainer(liquorContainer, "tc qdisc list");
+    private static void addDelay(GenericContainer<?> deliveryContainer) {
+        executeInContainer(deliveryContainer, "tc qdisc add dev eth0 root netem delay 100ms 100ms");
+        executeInContainer(deliveryContainer, "tc qdisc add dev lo root netem delay 100ms 100ms");
+        executeInContainer(deliveryContainer, "tc qdisc change dev eth0 root netem loss 20% 50%");
+        executeInContainer(deliveryContainer, "tc qdisc change dev lo root netem loss 20% 50%");
+        executeInContainer(deliveryContainer, "tc qdisc list");
     }
 
     /**
-     * Executes the given {@code command} on the given {@code liquorContainer} and prints
+     * Executes the given {@code command} on the given {@code deliveryContainer} and prints
      * the result.
      *
      * <p>Container have to be started before calling this method.
      */
-    private static void executeInContainer(GenericContainer<?> liquorContainer, String command) {
+    private static void executeInContainer(GenericContainer<?> deliveryContainer, String command) {
         Container.ExecResult execResult;
         try {
-            execResult = liquorContainer
+            execResult = deliveryContainer
                     .execInContainer("/bin/bash", "-c", command);
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
