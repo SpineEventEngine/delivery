@@ -21,8 +21,10 @@ plugins {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    // The Spine SDK line consumed here (base 2.0.0-SNAPSHOT.421 / core .381) publishes
+    // artifacts that require Java 17 or newer.
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 dependencies {
@@ -39,6 +41,9 @@ dependencies {
     JUnit.api.forEach { testImplementation(it) }
     Truth.libs.forEach { testImplementation(it) }
     testRuntimeOnly(JUnit.engine)
+    // Gradle 9 no longer bundles the JUnit Platform launcher on the test runtime
+    // classpath; it must be declared explicitly. Version is managed by `JUnit.bom`.
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.test {

@@ -154,6 +154,16 @@ class Publish : Plugin<Project> {
             dependencies = setOf("javadoc")
         )
 
+        // Gradle 9 fails the build when a task consumes generated sources without an
+        // explicit dependency on the generator. The CoreJvm Compiler emits into
+        // `generated/main` and `generated/test` via its `launch...SpineCompiler` tasks;
+        // wire those so `sourceJar` (which packages `allSource`) runs after them.
+        val codegenTasks = tasks.matching {
+            it.name.startsWith("launch") && it.name.endsWith("SpineCompiler")
+        }
+        sourceJar.dependsOn(codegenTasks)
+        testOutputJar.dependsOn(codegenTasks)
+
         artifacts {
             add(ARCHIVES, sourceJar)
             add(ARCHIVES, testOutputJar)

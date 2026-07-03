@@ -10,6 +10,7 @@ package io.spine.internal.dependency
 object Spine {
     private const val baseVersion = "2.0.0-SNAPSHOT.421"
     private const val coreVersion = "2.0.0-SNAPSHOT.381"
+    private const val testLibVersion = "2.0.0-SNAPSHOT.213"
 
     const val base = "io.spine:spine-base:${baseVersion}"
     const val client = "io.spine:spine-client:${coreVersion}"
@@ -18,10 +19,10 @@ object Spine {
     const val core = "io.spine:spine-core:${coreVersion}"
 
     object Test {
-        const val base = "io.spine.tools:spine-testlib:${baseVersion}"
-        const val client = "io.spine.tools:spine-testutil-client:${coreVersion}"
-        const val server = "io.spine.tools:spine-testutil-server:${coreVersion}"
-        const val core = "io.spine.tools:spine-testutil-core:${coreVersion}"
+        const val base = "io.spine.tools:base-testlib:${testLibVersion}"
+        const val client = "io.spine.tools:client-testlib:${coreVersion}"
+        const val server = "io.spine.tools:server-testlib:${coreVersion}"
+        const val core = "io.spine.tools:core-testlib:${coreVersion}"
     }
 
     object Stable {

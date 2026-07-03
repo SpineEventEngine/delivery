@@ -28,7 +28,7 @@ public final class LiquorPickUpOutcomes {
         return LiquorPickUpOutcome
                 .newBuilder()
                 .setPickedUp(event)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -40,6 +40,6 @@ public final class LiquorPickUpOutcomes {
         return LiquorPickUpOutcome
                 .newBuilder()
                 .setAlreadyPickedUp(rejection)
-                .vBuild();
+                .build();
     }
 }
