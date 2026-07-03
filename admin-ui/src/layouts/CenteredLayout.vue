@@ -11,7 +11,7 @@
         <q-avatar>
           <img src="spine-sign-white.svg" alt="spine-logo">
         </q-avatar>
-        <q-toolbar-title >Liquor Admin</q-toolbar-title>
+        <q-toolbar-title >Delivery Server Admin</q-toolbar-title>
       </q-toolbar>
     </q-header>
     <q-page-container>

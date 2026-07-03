@@ -1,7 +1,7 @@
-Message Delivery Server
+Delivery Server
 ---------------
 
-This module holds the Server of the Message Delivery which is written as full-fledged 
+This module holds the server component of Delivery Server which is written as full-fledged 
 Spine application.
 
 The server is a runnable application which exposes gRPC APIs for working with the delivery.
