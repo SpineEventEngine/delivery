@@ -33,7 +33,7 @@ application {
     )
 }
 
-val appClassName = "io.spine.message.delivery.launcher.Launcher"
+val appClassName = "io.spine.delivery.launcher.Launcher"
 project.setProperty("mainClassName", appClassName)
 
 tasks.withType<ShadowJar> {

@@ -15,7 +15,7 @@ import {
   ShardInfoList,
   ShardInfoUpdate,
   ShardStatus,
-} from 'src/gen/spine/message/delivery/admin/admin_service_pb';
+} from 'src/gen/spine/delivery/admin/admin_service_pb';
 import { ShardIndex } from 'src/gen/spine/server/delivery/delivery_pb';
 
 /**

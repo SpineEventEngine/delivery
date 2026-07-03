@@ -21,7 +21,7 @@ dependencies {
 }
 val uberJarName = "app"
 val uberJarFolder = "${buildDir}/uberJar"
-val appClassName = "io.spine.message.delivery.demo.JettyStarter"
+val appClassName = "io.spine.delivery.demo.JettyStarter"
 project.setProperty("mainClassName", appClassName)
 
 tasks.withType<ShadowJar> {

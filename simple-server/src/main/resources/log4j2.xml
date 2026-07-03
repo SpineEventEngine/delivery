@@ -11,7 +11,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="io.spine.message.delivery.server" level="TRACE" additivity="false">
+        <Logger name="io.spine.delivery.server" level="TRACE" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="INFO">

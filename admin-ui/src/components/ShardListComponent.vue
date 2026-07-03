@@ -42,7 +42,7 @@
 <script lang="ts" setup>
 import { useShards } from 'src/services/shards';
 import { ShardIndex } from 'src/gen/spine/server/delivery/delivery_pb';
-import { ShardStatus } from 'src/gen/spine/message/delivery/admin/admin_service_pb';
+import { ShardStatus } from 'src/gen/spine/delivery/admin/admin_service_pb';
 
 const { shards } = useShards();
 
