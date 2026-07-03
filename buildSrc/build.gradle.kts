@@ -32,12 +32,36 @@ repositories {
     }
 }
 
-val spineBaseVersion = "2.0.0-SNAPSHOT.65"
+// The version of the CoreJvm Compiler (formerly `mc-java`), which brings in the
+// `io.spine.core-jvm` Gradle plugin and, transitively, the Spine Compiler (`io.spine.compiler`).
+val coreJvmCompilerVersion = "2.0.0-SNAPSHOT.080"
+
+// The Kotlin Gradle plugin must be on the `buildSrc` classpath because the CoreJvm
+// Compiler plugin applies Kotlin compiler-plugin support during code generation.
+// Keep in sync with the Kotlin version bundled by the Gradle `kotlin-dsl`.
+val kotlinVersion = "2.3.21"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+configurations.all {
+    resolutionStrategy {
+        // Avoid clashing with the Kotlin bundled by Gradle's `kotlin-dsl`.
+        force(
+            "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion",
+            "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion",
+            "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+        )
+    }
+}
 
 dependencies {
-    implementation("net.ltgt.gradle:gradle-errorprone-plugin:2.0.2")
-    implementation("com.google.protobuf:protobuf-gradle-plugin:0.8.17")
-    implementation("io.spine.tools:spine-mc-java:${spineBaseVersion}")
-    implementation("gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0")
-    implementation("gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:3.1.2")
+    implementation("net.ltgt.gradle:gradle-errorprone-plugin:5.1.0")
+    implementation("com.google.protobuf:protobuf-gradle-plugin:0.10.0")
+    implementation("io.spine.tools:core-jvm-plugins:${coreJvmCompilerVersion}")
+    implementation("com.gradleup.shadow:shadow-gradle-plugin:9.4.1")
+    implementation("com.google.cloud.tools:jib-gradle-plugin:3.4.4")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
 }

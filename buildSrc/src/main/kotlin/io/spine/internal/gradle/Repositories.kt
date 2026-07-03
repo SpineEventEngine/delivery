@@ -105,32 +105,11 @@ object PublishingRepos {
         )
     }
 
-    private fun readGitHubToken(project: Project): String {
-        val githubToken: String? = System.getenv("GITHUB_TOKEN")
-        return if (githubToken.isNullOrEmpty()) {
-            // Use the personal access token for the `developers@spine.io` account.
-            // Only has the permission to read public GitHub packages.
-            val targetDir = "${project.buildDir}/token"
-            project.file(targetDir).mkdirs()
-            project.exec {
-                // Unzip with password "123", allow overriding, quietly,
-                // into the target dir, the given archive.
-                commandLine(
-                    "unzip",
-                    "-P",
-                    "123",
-                    "-oq",
-                    "-d",
-                    targetDir,
-                    "${project.rootDir}/buildSrc/aus.weis"
-                )
-            }
-            val file = project.file("$targetDir/token.txt")
-            file.readText()
-        } else {
-            githubToken
-        }
-    }
+    @Suppress("UNUSED_PARAMETER") // `project` kept for call-site compatibility.
+    private fun readGitHubToken(project: Project): String =
+        // Resolution from GitHub Packages requires a token with the `read:packages` scope,
+        // supplied via the `GITHUB_TOKEN` environment variable.
+        System.getenv("GITHUB_TOKEN") ?: ""
 }
 
 /**

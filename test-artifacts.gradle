@@ -5,10 +5,10 @@
  */
 
 configurations {
-    testArtifacts.extendsFrom testRuntime
+    testArtifacts.extendsFrom testRuntimeClasspath
 }
 task testJar(type: Jar) {
-    classifier "test"
+    archiveClassifier = "test"
     from sourceSets.test.output
 }
 artifacts {
