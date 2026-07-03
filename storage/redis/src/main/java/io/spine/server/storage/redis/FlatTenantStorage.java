@@ -31,7 +31,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 final class FlatTenantStorage<I, R extends Message> extends MultitenantStorage<TenantRecords<I, R>> {
 
-    private final RecordSpec<I, R, ?> recordSpec;
+    private final RecordSpec<I, R> recordSpec;
     private final RedissonClient client;
 
     /**
@@ -44,7 +44,7 @@ final class FlatTenantStorage<I, R extends Message> extends MultitenantStorage<T
      * @param client
      *         the Redis access client
      */
-    FlatTenantStorage(boolean multitenant, RecordSpec<I, R, ?> recordSpec, RedissonClient client) {
+    FlatTenantStorage(boolean multitenant, RecordSpec<I, R> recordSpec, RedissonClient client) {
         super(multitenant);
         this.client = checkNotNull(client);
         this.recordSpec = checkNotNull(recordSpec);

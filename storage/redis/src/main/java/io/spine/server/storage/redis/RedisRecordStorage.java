@@ -38,7 +38,7 @@ public final class RedisRecordStorage<I, R extends Message> extends RecordStorag
      * @param client
      *         the access client to the Redis instance
      */
-    RedisRecordStorage(ContextSpec context, RecordSpec<I, R, ?> recordSpec, RedissonClient client) {
+    RedisRecordStorage(ContextSpec context, RecordSpec<I, R> recordSpec, RedissonClient client) {
         super(context, recordSpec);
         this.multitenantStorage =
                 new FlatTenantStorage<>(context.isMultitenant(), recordSpec, client);

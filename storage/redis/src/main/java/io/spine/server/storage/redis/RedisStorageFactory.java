@@ -96,8 +96,13 @@ public final class RedisStorageFactory implements StorageFactory {
 
     @Override
     public <I, M extends Message> RedisRecordStorage<I, M>
-    createRecordStorage(ContextSpec context, RecordSpec<I, M, ?> spec) {
+    createRecordStorage(ContextSpec context, RecordSpec<I, M> spec) {
         return new RedisRecordStorage<>(context, spec, client);
+    }
+
+    @Override
+    public boolean isOpen() {
+        return !client.isShutdown();
     }
 
     @Override

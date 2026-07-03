@@ -29,7 +29,7 @@ import static io.spine.test.entity.Project.Column.name;
  */
 public abstract class AbstractStorageTest {
 
-    private static final RecordSpec<ProjectId, Project, ?> recordSpec = new MessageRecordSpec<>(
+    private static final RecordSpec<ProjectId, Project> recordSpec = new MessageRecordSpec<>(
             ProjectId.class, Project.class, Project::getId,
             ImmutableList.of(RecordColumn.create("name", name().type(), Project::getName))
     );

@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("`MultitenantStorage` should")
 class MultitenantStorageTest {
 
-    private static final RecordSpec<ProjectId, Project, ?> recordSpec = new MessageRecordSpec<>(
+    private static final RecordSpec<ProjectId, Project> recordSpec = new MessageRecordSpec<>(
             ProjectId.class, Project.class, Project::getId
     );
 
