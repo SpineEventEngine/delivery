@@ -26,7 +26,7 @@ public final class SubscriptionResponses {
         return SubscriptionResponse
                 .newBuilder()
                 .setCreated(true)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -37,6 +37,6 @@ public final class SubscriptionResponses {
         return SubscriptionResponse
                 .newBuilder()
                 .setUpdate(update)
-                .vBuild();
+                .build();
     }
 }

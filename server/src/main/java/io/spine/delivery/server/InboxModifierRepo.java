@@ -30,7 +30,7 @@ final class InboxModifierRepo
      */
     static final InboxModifierId writer = InboxModifierId.newBuilder()
             .setValue("Homer")
-            .vBuild();
+            .build();
 
     @Override
     protected void setupCommandRouting(CommandRouting<InboxModifierId> routing) {

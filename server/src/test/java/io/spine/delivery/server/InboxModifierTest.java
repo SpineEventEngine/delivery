@@ -39,7 +39,7 @@ final class InboxModifierTest extends DeliveryTest {
         void writeMessage() {
             var writeMessage = WriteMessage.newBuilder()
                     .setMessage(message)
-                    .vBuild();
+                    .build();
             context().receivesCommand(writeMessage);
         }
 
@@ -48,7 +48,7 @@ final class InboxModifierTest extends DeliveryTest {
         void event() {
             var messageWritten = MessageWritten.newBuilder()
                     .setMessage(message)
-                    .vBuild();
+                    .build();
             context().assertEvent(messageWritten);
         }
     }
@@ -68,7 +68,7 @@ final class InboxModifierTest extends DeliveryTest {
                     .addMessage(firstMessage)
                     .addMessage(secondMessage)
                     .setShard(firstMessage.shardIndex())
-                    .vBuild();
+                    .build();
             context().receivesCommand(writeMessages);
         }
 
@@ -79,7 +79,7 @@ final class InboxModifierTest extends DeliveryTest {
                     .addMessage(firstMessage)
                     .addMessage(secondMessage)
                     .setShard(firstMessage.shardIndex())
-                    .vBuild();
+                    .build();
             context().assertEvent(messagesWritten);
         }
 
@@ -88,10 +88,10 @@ final class InboxModifierTest extends DeliveryTest {
         void removeEachMessage() {
             var firstWritten = MessageWritten.newBuilder()
                     .setMessage(firstMessage)
-                    .vBuild();
+                    .build();
             var secondWritten = MessageWritten.newBuilder()
                     .setMessage(secondMessage)
-                    .vBuild();
+                    .build();
             EventSubject writtenMessages = context()
                     .assertEvents()
                     .withType(MessageWritten.class);
@@ -114,7 +114,7 @@ final class InboxModifierTest extends DeliveryTest {
         void removeMessage() {
             var removeMessage = RemoveMessage.newBuilder()
                     .setMessage(message)
-                    .vBuild();
+                    .build();
             context().receivesCommand(removeMessage);
         }
 
@@ -123,7 +123,7 @@ final class InboxModifierTest extends DeliveryTest {
         void event() {
             var messageRemoved = MessageRemoved.newBuilder()
                     .setMessage(message)
-                    .vBuild();
+                    .build();
             context().assertEvent(messageRemoved);
         }
     }
@@ -143,7 +143,7 @@ final class InboxModifierTest extends DeliveryTest {
                     .addMessage(firstMessage)
                     .addMessage(secondMessage)
                     .setShard(firstMessage.shardIndex())
-                    .vBuild();
+                    .build();
             context().receivesCommand(removeMessages);
         }
 
@@ -154,7 +154,7 @@ final class InboxModifierTest extends DeliveryTest {
                     .addMessage(firstMessage)
                     .addMessage(secondMessage)
                     .setShard(firstMessage.shardIndex())
-                    .vBuild();
+                    .build();
             context().assertEvent(messagesRemoved);
         }
 
@@ -163,10 +163,10 @@ final class InboxModifierTest extends DeliveryTest {
         void removeEachMessage() {
             var firstRemoved = MessageRemoved.newBuilder()
                     .setMessage(firstMessage)
-                    .vBuild();
+                    .build();
             var secondRemoved = MessageRemoved.newBuilder()
                     .setMessage(secondMessage)
-                    .vBuild();
+                    .build();
             EventSubject removedMessages = context()
                     .assertEvents()
                     .withType(MessageRemoved.class);

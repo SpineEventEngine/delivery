@@ -39,7 +39,7 @@ final class Responses {
                 .setShard(shard)
                 .setWorker(worker)
                 .setWhenPicked(Time.currentTime())
-                .vBuild();
+                .build();
         return pickedUp;
     }
 
@@ -61,7 +61,7 @@ final class Responses {
                                      Optional<InboxMessage> message) {
         OptionalInboxMessage.Builder responseBuilder = OptionalInboxMessage.newBuilder();
         message.ifPresent(responseBuilder::setMessage);
-        OptionalInboxMessage response = responseBuilder.vBuild();
+        OptionalInboxMessage response = responseBuilder.build();
         observer.onNext(response);
         observer.onCompleted();
     }

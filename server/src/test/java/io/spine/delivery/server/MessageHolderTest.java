@@ -28,7 +28,7 @@ final class MessageHolderTest extends DeliveryTest {
     void messageWritten() {
         var messageWritten = MessageWritten.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
         context().receivesEvent(messageWritten);
     }
 
@@ -47,7 +47,7 @@ final class MessageHolderTest extends DeliveryTest {
                 .setStatus(message.getStatus())
                 .setReceivedAt(message.getWhenReceived())
                 .setVersion(message.getVersion())
-                .vBuild();
+                .build();
         context().assertState(message.getId(), expected);
     }
 
@@ -56,7 +56,7 @@ final class MessageHolderTest extends DeliveryTest {
     void handleRemovals() {
         var messageRemoved = MessageRemoved.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
         context().receivesEvent(messageRemoved);
         context().assertEntity(message.getId(), MessageHolder.class)
                  .deletedFlag()

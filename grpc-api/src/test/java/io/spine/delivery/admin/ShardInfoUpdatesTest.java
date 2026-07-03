@@ -44,7 +44,7 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
                 .newBuilder()
                 .setIndex(SHARD)
                 .setNewMessagesCount(2)
-                .vBuild();
+                .build();
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -58,7 +58,7 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
                 .newBuilder()
                 .setIndex(SHARD)
                 .setNewMessagesCount(-1)
-                .vBuild();
+                .build();
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -74,7 +74,7 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
                 .setIndex(SHARD)
                 .setNewStatus(PICKED)
                 .setWhenLastPicked(whenPicked)
-                .vBuild();
+                .build();
 
         assertThat(actual).isEqualTo(expected);
     }
@@ -88,7 +88,7 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
                 .newBuilder()
                 .setIndex(SHARD)
                 .setNewStatus(NOT_PICKED)
-                .vBuild();
+                .build();
 
         assertThat(actual).isEqualTo(expected);
     }

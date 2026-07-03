@@ -27,14 +27,14 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
     private static final ShardIndex shard = ShardIndex.newBuilder()
             .setIndex(0)
             .setOfTotal(2)
-            .vBuild();
+            .build();
     private static final NodeId node = NodeId.newBuilder()
             .setValue(Identifier.newUuid())
-            .vBuild();
+            .build();
     private static final WorkerId worker = WorkerId.newBuilder()
             .setNodeId(node)
             .setValue(Identifier.newUuid())
-            .vBuild();
+            .build();
 
     @Test
     @DisplayName("subscribe to `ShardPickedUp` event")
@@ -48,7 +48,7 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
                 .setId(shard)
                 .setWorker(worker)
                 .setWhenLastPicked(time)
-                .vBuild();
+                .build();
 
         context().assertState(shard, expected);
     }
@@ -65,7 +65,7 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
                 .newBuilder()
                 .setId(shard)
                 .setWhenLastPicked(time)
-                .vBuild();
+                .build();
 
         context().assertEntity(shard, CurrentShardStateProjection.class)
                  .hasStateThat()
@@ -84,7 +84,7 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
         return PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -95,6 +95,6 @@ class CurrentShardStateProjectionTest extends DeliveryTest {
                 .newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
     }
 }

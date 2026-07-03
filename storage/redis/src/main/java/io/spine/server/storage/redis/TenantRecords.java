@@ -252,7 +252,7 @@ final class TenantRecords<I, R extends Message>
             EntityRecord result = EntityRecord
                     .newBuilder(input)
                     .setState(maskedState)
-                    .vBuild();
+                    .build();
             return result;
         }
 

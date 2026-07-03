@@ -43,7 +43,7 @@ final class InboxModifierProcess
         );
         return MessageWritten.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
     }
 
     @Assign
@@ -57,7 +57,7 @@ final class InboxModifierProcess
         return MessagesWritten.newBuilder()
                 .addAllMessage(messages)
                 .setShard(shard)
-                .vBuild();
+                .build();
     }
 
     @React
@@ -71,7 +71,7 @@ final class InboxModifierProcess
     private static MessageWritten writtenMessage(InboxMessage message) {
         return MessageWritten.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
     }
 
     @Assign
@@ -83,7 +83,7 @@ final class InboxModifierProcess
         );
         return MessageRemoved.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
     }
 
     @Assign
@@ -97,7 +97,7 @@ final class InboxModifierProcess
         return MessagesRemoved.newBuilder()
                 .addAllMessage(messages)
                 .setShard(shard)
-                .vBuild();
+                .build();
     }
 
     @React
@@ -111,6 +111,6 @@ final class InboxModifierProcess
     private static MessageRemoved removedMessage(InboxMessage message) {
         return MessageRemoved.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
     }
 }

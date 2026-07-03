@@ -31,7 +31,7 @@ public final class ShardInfoUpdates {
         return changesFor(index)
                 .setNewStatus(PICKED)
                 .setWhenLastPicked(lastPicked)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -42,7 +42,7 @@ public final class ShardInfoUpdates {
         checkNotDefaultArg(index);
         return changesFor(index)
                 .setNewStatus(NOT_PICKED)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -59,7 +59,7 @@ public final class ShardInfoUpdates {
         checkNotDefaultArg(index);
         return changesFor(index)
                 .setNewMessagesCount(count)
-                .vBuild();
+                .build();
     }
 
     /**

@@ -44,16 +44,16 @@ public final class AdminServiceTestEnv {
         NodeId nodeId = NodeId
                 .newBuilder()
                 .setValue(uuid)
-                .vBuild();
+                .build();
         WorkerId worker = WorkerId
                 .newBuilder()
                 .setNodeId(nodeId)
                 .setValue(uuid)
-                .vBuild();
+                .build();
         return PickUpShard.newBuilder()
                 .setShard(index)
                 .setWorker(worker)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -62,7 +62,7 @@ public final class AdminServiceTestEnv {
     public static WriteMessage writeMessage(InboxMessage message) {
         return WriteMessage.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -71,7 +71,7 @@ public final class AdminServiceTestEnv {
     public static RemoveMessage removeMessage(InboxMessage message) {
         return RemoveMessage.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -85,7 +85,7 @@ public final class AdminServiceTestEnv {
                 .addMessage(first)
                 .addMessage(second)
                 .addAllMessage(List.of(rest))
-                .vBuild();
+                .build();
     }
 
     /**
@@ -102,7 +102,7 @@ public final class AdminServiceTestEnv {
                 .addMessage(first)
                 .addMessage(second)
                 .addAllMessage(List.of(rest))
-                .vBuild();
+                .build();
     }
 
     /**
@@ -111,7 +111,7 @@ public final class AdminServiceTestEnv {
     public static InboxMessage copyWithNewShard(InboxMessage message, ShardIndex index) {
         return message.toBuilder()
                 .setId(generateIdWith(index))
-                .vBuild();
+                .build();
     }
 
     /**
@@ -123,7 +123,7 @@ public final class AdminServiceTestEnv {
                 .newBuilder()
                 .setShard(pickUpCommand.getShard())
                 .setWorker(pickUpCommand.getWorker())
-                .vBuild();
+                .build();
     }
 
     /**
@@ -148,6 +148,6 @@ public final class AdminServiceTestEnv {
                 .setIndex(index)
                 .setMessages(messages)
                 .setStatus(status)
-                .vBuild();
+                .build();
     }
 }

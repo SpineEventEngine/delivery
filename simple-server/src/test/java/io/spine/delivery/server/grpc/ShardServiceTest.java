@@ -100,7 +100,7 @@ final class ShardServiceTest {
                     .setShard(request.getShard())
                     .setWorker(request.getWorker())
                     .setWhenPicked(frozen)
-                    .vBuild();
+                    .build();
 
             assertThat(secondAttempt.getAlreadyPickedUp())
                     .comparingExpectedFieldsOnly()

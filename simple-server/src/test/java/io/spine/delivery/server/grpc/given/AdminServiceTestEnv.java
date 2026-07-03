@@ -66,7 +66,7 @@ public final class AdminServiceTestEnv {
                 .setIndex(index)
                 .setMessages(messages)
                 .setStatus(status)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -83,7 +83,7 @@ public final class AdminServiceTestEnv {
                 .newBuilder()
                 .setEntityId(entityId(testEventId))
                 .setTypeUrl("type.spine.io/spine.delivery.TestEvent")
-                .vBuild();
+                .build();
         InboxMessage inboxMessage = InboxMessage
                 .newBuilder()
                 .setId(inboxMessageId(shardIndex))
@@ -93,11 +93,11 @@ public final class AdminServiceTestEnv {
                 .setLabel(InboxLabel.REACT_UPON_EVENT)
                 .setStatus(InboxMessageStatus.TO_DELIVER)
                 .setWhenReceived(Time.currentTime())
-                .vBuild();
+                .build();
         return WriteMessage
                 .newBuilder()
                 .setMessage(inboxMessage)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -108,7 +108,7 @@ public final class AdminServiceTestEnv {
                 .newBuilder()
                 .setShard(pickedUp.getShard())
                 .setWorker(pickedUp.getWorker())
-                .vBuild();
+                .build();
     }
 
     /**
@@ -120,7 +120,7 @@ public final class AdminServiceTestEnv {
                 .newBuilder()
                 .setShard(pickUpCommand.getShard())
                 .setWorker(pickUpCommand.getWorker())
-                .vBuild();
+                .build();
     }
 
     /**
@@ -133,17 +133,17 @@ public final class AdminServiceTestEnv {
         NodeId nodeId = NodeId
                 .newBuilder()
                 .setValue(uuid)
-                .vBuild();
+                .build();
         WorkerId workerId = WorkerId
                 .newBuilder()
                 .setValue(uuid)
                 .setNodeId(nodeId)
-                .vBuild();
+                .build();
         return PickUpShard
                 .newBuilder()
                 .setShard(index)
                 .setWorker(workerId)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -152,7 +152,7 @@ public final class AdminServiceTestEnv {
     public static InboxMessage copyWithNewShard(InboxMessage message, ShardIndex index) {
         return message.toBuilder()
                 .setId(generateIdWith(index))
-                .vBuild();
+                .build();
     }
 
     /**
@@ -161,7 +161,7 @@ public final class AdminServiceTestEnv {
     public static WriteMessage writeMessage(InboxMessage message) {
         return WriteMessage.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -170,7 +170,7 @@ public final class AdminServiceTestEnv {
     public static RemoveMessage removeMessage(InboxMessage message) {
         return RemoveMessage.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -184,7 +184,7 @@ public final class AdminServiceTestEnv {
                 .addMessage(first)
                 .addMessage(second)
                 .addAllMessage(List.of(rest))
-                .vBuild();
+                .build();
     }
 
     /**
@@ -201,7 +201,7 @@ public final class AdminServiceTestEnv {
                 .addMessage(first)
                 .addMessage(second)
                 .addAllMessage(List.of(rest))
-                .vBuild();
+                .build();
     }
 
     /**
@@ -236,28 +236,28 @@ public final class AdminServiceTestEnv {
         TestEvent eventMessage = TestEvent
                 .newBuilder()
                 .setId(id)
-                .vBuild();
+                .build();
         EventId eventId = EventId
                 .newBuilder()
                 .setValue(id.getUuid())
-                .vBuild();
+                .build();
         Version version = Version
                 .newBuilder()
                 .setNumber(1)
                 .setTimestamp(Time.currentTime())
-                .vBuild();
+                .build();
         EventContext eventContext = EventContext
                 .newBuilder()
                 .setTimestamp(version.getTimestamp())
                 .setVersion(version)
                 .setProducerId(AnyPacker.pack(id))
-                .vBuild();
+                .build();
         return Event
                 .newBuilder()
                 .setId(eventId)
                 .setMessage(AnyPacker.pack(eventMessage))
                 .setContext(eventContext)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -267,7 +267,7 @@ public final class AdminServiceTestEnv {
         return InboxSignalId
                 .newBuilder()
                 .setValue(value)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -281,7 +281,7 @@ public final class AdminServiceTestEnv {
                 .newBuilder()
                 .setUuid(uuid)
                 .setIndex(index)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -291,7 +291,7 @@ public final class AdminServiceTestEnv {
         return EntityId
                 .newBuilder()
                 .setId(Any.pack(eventId))
-                .vBuild();
+                .build();
     }
 
     /**
@@ -301,6 +301,6 @@ public final class AdminServiceTestEnv {
         return TestEventId
                 .newBuilder()
                 .setUuid(value)
-                .vBuild();
+                .build();
     }
 }

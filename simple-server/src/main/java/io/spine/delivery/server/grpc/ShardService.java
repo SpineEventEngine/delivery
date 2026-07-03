@@ -95,7 +95,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         sessions.stream()
                 .map(ShardService::toExpiredSession)
                 .forEach(result::addShard);
-        responseObserver.onNext(result.vBuild());
+        responseObserver.onNext(result.build());
         responseObserver.onCompleted();
     }
 
@@ -105,7 +105,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
                 .setWorker(session.getWorker())
                 .setWhenPicked(session.getWhenLastPicked())
                 .setWhenReleased(Time.currentTime())
-                .vBuild();
+                .build();
     }
 
     @Override

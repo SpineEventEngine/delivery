@@ -92,7 +92,10 @@ message ShardInfo {
     google.protobuf.Timestamp last_picked = 3;
 
     // Number of messages present in the shard.
-    int32 messages = 4 [(required) = true];
+    //
+    // The `(required)` option is not applicable to scalar `int32` fields in the current
+    // Spine validation rules, so it is not set here; `0` is a valid value.
+    int32 messages = 4;
 }
 
 // Current status of the shard.

@@ -48,7 +48,7 @@ final class SessionRegistry
                 .setShard(shard)
                 .setWorker(worker)
                 .setWhenPicked(Time.currentTime())
-                .vBuild();
+                .build();
     }
 
     private void checkNotPickedUp() throws ShardAlreadyPickedUp {
@@ -82,7 +82,7 @@ final class SessionRegistry
                 .setShard(shard)
                 .setWorker(worker)
                 .setWhenReleased(Time.currentTime())
-                .vBuild();
+                .build();
     }
 
     private void checkCanRelease(ReleaseShard c) throws UnableToReleaseShard {
@@ -124,7 +124,7 @@ final class SessionRegistry
     private static Reason newReason(String reason) {
         return Reason.newBuilder()
                 .setValue(reason)
-                .vBuild();
+                .build();
     }
 
     @Apply

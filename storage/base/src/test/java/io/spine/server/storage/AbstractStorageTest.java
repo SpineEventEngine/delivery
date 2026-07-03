@@ -75,7 +75,7 @@ public abstract class AbstractStorageTest {
         void indexQuery() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             RecordQuery<ProjectId, Project> query =
                     Project.query()
                            .id()
@@ -91,7 +91,7 @@ public abstract class AbstractStorageTest {
         void readAllRecords() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             RecordQuery<ProjectId, Project> query =
                     Project.query()
                            .id()
@@ -107,7 +107,7 @@ public abstract class AbstractStorageTest {
         void deleteRecord() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             assertThat(storage.deleteRecord(someId))
                     .isFalse();
         }
@@ -117,7 +117,7 @@ public abstract class AbstractStorageTest {
         void write() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             Project someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
@@ -129,7 +129,7 @@ public abstract class AbstractStorageTest {
         void writeAll() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             Project someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
@@ -143,7 +143,7 @@ public abstract class AbstractStorageTest {
 
         private final ProjectId existingProjectId = ProjectId.newBuilder()
                 .setId(Identifier.newUuid())
-                .vBuild();
+                .build();
         private final Project existingProject = Project.newBuilder()
                 .setId(existingProjectId)
                 .setName(PreFilledStorage.class.getName())
@@ -177,7 +177,7 @@ public abstract class AbstractStorageTest {
         void indexQuery() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             RecordQuery<ProjectId, Project> query =
                     Project.query()
                            .id()
@@ -219,7 +219,7 @@ public abstract class AbstractStorageTest {
         void readAllRecords() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             RecordQuery<ProjectId, Project> query =
                     Project.query()
                            .id()
@@ -242,7 +242,7 @@ public abstract class AbstractStorageTest {
         void write() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             Project someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
@@ -258,7 +258,7 @@ public abstract class AbstractStorageTest {
         void writeAll() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             Project someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();

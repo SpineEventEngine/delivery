@@ -33,14 +33,14 @@ final class SessionRegistryTest extends DeliveryTest {
     private final ShardIndex shard = ShardIndex.newBuilder()
             .setIndex(0)
             .setOfTotal(2)
-            .vBuild();
+            .build();
     private final NodeId node = NodeId.newBuilder()
             .setValue(Identifier.newUuid())
-            .vBuild();
+            .build();
     private final WorkerId worker = WorkerId.newBuilder()
             .setNodeId(node)
             .setValue(Identifier.newUuid())
-            .vBuild();
+            .build();
 
     @Nested
     @DisplayName("handle `PickUpShard` command")
@@ -50,7 +50,7 @@ final class SessionRegistryTest extends DeliveryTest {
         private final PickUpShard command = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
 
         @BeforeEach
         void pickUpShard() {
@@ -70,7 +70,7 @@ final class SessionRegistryTest extends DeliveryTest {
                     .setWorker(worker)
                     .setId(shard)
                     .setWhenPicked(time)
-                    .vBuild();
+                    .build();
             context().assertState(shard, expected);
         }
 
@@ -81,7 +81,7 @@ final class SessionRegistryTest extends DeliveryTest {
                     .setShard(shard)
                     .setWhenPicked(time)
                     .setWorker(worker)
-                    .vBuild();
+                    .build();
             context().assertEvent(expected);
         }
 
@@ -98,7 +98,7 @@ final class SessionRegistryTest extends DeliveryTest {
                         .setShard(shard)
                         .setWorker(worker)
                         .setWhenPicked(time)
-                        .vBuild();
+                        .build();
                 context().assertEvent(expected);
             }
         }
@@ -112,7 +112,7 @@ final class SessionRegistryTest extends DeliveryTest {
         private final ReleaseShard releaseShard = ReleaseShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
 
         @BeforeEach
         void releaseShard() {
@@ -120,7 +120,7 @@ final class SessionRegistryTest extends DeliveryTest {
             var pickUpShard = PickUpShard.newBuilder()
                     .setShard(shard)
                     .setWorker(worker)
-                    .vBuild();
+                    .build();
             context().receivesCommand(pickUpShard)
                      .receivesCommand(releaseShard);
         }
@@ -135,7 +135,7 @@ final class SessionRegistryTest extends DeliveryTest {
         void state() {
             var expected = ShardSessionRegistry.newBuilder()
                     .setId(shard)
-                    .vBuild();
+                    .build();
             context().assertState(shard, expected);
         }
 
@@ -146,7 +146,7 @@ final class SessionRegistryTest extends DeliveryTest {
                     .setShard(shard)
                     .setWhenReleased(time)
                     .setWorker(worker)
-                    .vBuild();
+                    .build();
             context().assertEvent(expected);
         }
 
@@ -162,7 +162,7 @@ final class SessionRegistryTest extends DeliveryTest {
                         .setShard(shard)
                         .setWorker(worker)
                         .setReason(SessionRegistry.shardNotPickedUp())
-                        .vBuild();
+                        .build();
                 context().assertEvent(expected);
             }
 
@@ -172,18 +172,18 @@ final class SessionRegistryTest extends DeliveryTest {
                 var anotherWorker = WorkerId.newBuilder()
                         .setNodeId(node)
                         .setValue(Identifier.newUuid())
-                        .vBuild();
+                        .build();
                 var pickUpShard = PickUpShard.newBuilder()
                         .setShard(shard)
                         .setWorker(anotherWorker)
-                        .vBuild();
+                        .build();
                 context().receivesCommand(pickUpShard)
                          .receivesCommand(releaseShard);
                 var expected = UnableToReleaseShard.newBuilder()
                         .setShard(shard)
                         .setWorker(worker)
                         .setReason(SessionRegistry.shardPickedUpByOtherWorker(anotherWorker))
-                        .vBuild();
+                        .build();
                 context().assertEvent(expected);
             }
         }

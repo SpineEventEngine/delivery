@@ -152,7 +152,7 @@ public final class LiquorShardRegistry implements Logging {
                 .setIndex(index)
                 .setWorker(worker)
                 .setWhenLastPicked(currentTime())
-                .vBuild();
+                .build();
         storage.write(index, newRecord);
         return newRecord;
     }

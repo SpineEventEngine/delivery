@@ -68,7 +68,7 @@ final class SessionsCleanerProcess
             releaseShard(expiredSession);
             result.addShard(fromRegistry(expiredSession));
         }
-        return result.vBuild();
+        return result.build();
     }
 
     private static ExpiredSession fromRegistry(ShardSessionRegistry expiredShardRegistry) {
@@ -77,14 +77,14 @@ final class SessionsCleanerProcess
                 .setWorker(expiredShardRegistry.getWorker())
                 .setWhenPicked(expiredShardRegistry.getWhenPicked())
                 .setWhenReleased(Time.currentTime())
-                .vBuild();
+                .build();
     }
 
     private void releaseShard(ShardSessionRegistry expiredShardRegistry) {
         ReleaseShard releaseShard = ReleaseShard.newBuilder()
                 .setShard(expiredShardRegistry.getId())
                 .setWorker(expiredShardRegistry.getWorker())
-                .vBuild();
+                .build();
         client.asGuest()
               .command(releaseShard)
               .postAndForget();

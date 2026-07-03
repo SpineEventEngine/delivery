@@ -113,7 +113,7 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
                 PageOfMessages.newBuilder()
                         .addAllMessage(messages);
         log(shard, messages);
-        PageOfMessages result = responseBuilder.vBuild();
+        PageOfMessages result = responseBuilder.build();
         observer.onNext(result);
         observer.onCompleted();
     }

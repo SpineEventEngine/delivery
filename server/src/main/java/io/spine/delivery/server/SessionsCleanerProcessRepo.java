@@ -29,7 +29,7 @@ final class SessionsCleanerProcessRepo
      */
     private static final SessionsCleanerId cleaner = SessionsCleanerId.newBuilder()
             .setValue("Mr. Proper")
-            .vBuild();
+            .build();
 
     private final Supplier<Client> clientSupplier;
     private @MonotonicNonNull Client client;

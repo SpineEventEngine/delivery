@@ -104,7 +104,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
             messagesCount.remove(shard.getIndex());
         });
         messagesCount.forEach((key, value) -> shardListBuilder.addShards(shardInfo(key, value)));
-        return shardListBuilder.vBuild();
+        return shardListBuilder.build();
     }
 
     /**
@@ -131,7 +131,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
                 .setLastPicked(shardRecord.getWhenLastPicked())
                 .setStatus(shardRecord.hasWorker() ? PICKED : NOT_PICKED)
                 .setMessages(messagesCount)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -144,7 +144,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
                 .setIndex(index)
                 .setStatus(NOT_PICKED)
                 .setMessages(messagesCount)
-                .vBuild();
+                .build();
     }
 
     @Override

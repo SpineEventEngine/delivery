@@ -31,7 +31,7 @@ public final class StoragesTestEnv {
         return TestEvent
                 .newBuilder()
                 .setId(id)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -41,7 +41,7 @@ public final class StoragesTestEnv {
         return AnotherTestEvent
                 .newBuilder()
                 .setId(id)
-                .vBuild();
+                .build();
     }
 
     public static ContextSpec newTestContext() {

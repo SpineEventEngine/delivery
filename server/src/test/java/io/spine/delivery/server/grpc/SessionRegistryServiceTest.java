@@ -44,11 +44,11 @@ final class SessionRegistryServiceTest extends WithApp {
     private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
     private final NodeId node = NodeId.newBuilder()
             .setValue(SessionRegistryServiceTest.class.getName())
-            .vBuild();
+            .build();
     private final WorkerId worker = WorkerId.newBuilder()
             .setNodeId(node)
             .setValue(SessionRegistryServiceTest.class.getName())
-            .vBuild();
+            .build();
 
     @Test
     @DisplayName("pick up a shard")
@@ -56,7 +56,7 @@ final class SessionRegistryServiceTest extends WithApp {
         var request = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
         var expected = ShardPickedUp.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
@@ -77,7 +77,7 @@ final class SessionRegistryServiceTest extends WithApp {
         var request = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
         var firstAttempt = sessionRegistry().pickShard(request);
         assertThat(firstAttempt.hasPickedUp())
                 .isTrue();
@@ -91,7 +91,7 @@ final class SessionRegistryServiceTest extends WithApp {
                 .setShard(shard)
                 .setWorker(worker)
                 .setWhenPicked(frozen)
-                .vBuild();
+                .build();
         assertThat(secondAttempt.getAlreadyPickedUp())
                 .isEqualTo(expected);
         Time.resetProvider();
@@ -105,14 +105,14 @@ final class SessionRegistryServiceTest extends WithApp {
         var pickShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
         var future = observer.waitForMatching(is(shard).and(hasStatus(PICKED)));
         sessionRegistry().pickShard(pickShard);
         waitFor(future);
         sleepUninterruptibly(2, TimeUnit.SECONDS); // Wait for the session to expire.
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
-                .vBuild();
+                .build();
         ExpiredSessionsReleased result = sessionRegistry().releaseSessions(releaseExpired);
         assertThat(result.getShardCount())
                 .isEqualTo(1);
@@ -131,14 +131,14 @@ final class SessionRegistryServiceTest extends WithApp {
         var pickShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
         var future = observer.waitForMatching(is(shard).and(hasStatus(PICKED)));
         sessionRegistry().pickShard(pickShard);
         waitFor(future);
         sleepUninterruptibly(2, TimeUnit.SECONDS); // Wait for the session to expire.
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(1))
-                .vBuild();
+                .build();
         ExpiredSessionsReleased released = sessionRegistry().releaseSessions(releaseExpired);
         assertThat(released.getShardCount())
                 .isEqualTo(1);
@@ -159,11 +159,11 @@ final class SessionRegistryServiceTest extends WithApp {
         var pickShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
         sessionRegistry().pickShard(pickShard);
         var releaseExpired = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(Durations.fromSeconds(30))
-                .vBuild();
+                .build();
         ExpiredSessionsReleased result = sessionRegistry().releaseSessions(releaseExpired);
         assertThat(result.getShardCount())
                 .isEqualTo(0);

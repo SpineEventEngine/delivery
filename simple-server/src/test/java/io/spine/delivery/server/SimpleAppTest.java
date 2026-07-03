@@ -44,12 +44,12 @@ final class SimpleAppTest extends WithApp {
             var worker = WorkerId.newBuilder()
                     .setNodeId(node)
                     .setValue(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             var shard = DeliveryStrategy.newIndex(0, 1);
             var pickUpShard = PickUpShard.newBuilder()
                     .setShard(shard)
                     .setWorker(worker)
-                    .vBuild();
+                    .build();
             var shardService = ShardServiceGrpc.newBlockingStub(serverChannel());
             assertDoesNotThrow(() -> {
                 shardService.pickShard(pickUpShard);
@@ -63,7 +63,7 @@ final class SimpleAppTest extends WithApp {
                     .toDeliver(Identifier.newUuid(), TypeUrl.of(Something.class));
             var writeMessage = WriteMessage.newBuilder()
                     .setMessage(message)
-                    .vBuild();
+                    .build();
             var inboxService = InboxServiceGrpc.newFutureStub(serverChannel());
             assertDoesNotThrow(() -> {
                 inboxService.writeOne(writeMessage);

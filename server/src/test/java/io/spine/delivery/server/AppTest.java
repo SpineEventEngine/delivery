@@ -50,12 +50,12 @@ final class AppTest extends WithApp {
         var worker = WorkerId.newBuilder()
                 .setNodeId(node)
                 .setValue(Identifier.newUuid())
-                .vBuild();
+                .build();
         var shard = DeliveryStrategy.newIndex(0, 1);
         var pickUpShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
         var expectedEvent = ShardPickedUp.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
@@ -81,7 +81,7 @@ final class AppTest extends WithApp {
         var message = toDeliver(Identifier.newUuid(), TypeUrl.from(Something.getDescriptor()));
         var writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
         var client = newClient();
         CountDownLatch messageWritten = new CountDownLatch(1);
         client.asGuest()
@@ -100,7 +100,7 @@ final class AppTest extends WithApp {
                 .setStatus(message.getStatus())
                 .setReceivedAt(message.getWhenReceived())
                 .setVersion(message.getVersion())
-                .vBuild();
+                .build();
         client.asGuest()
               .subscribeTo(InboxMessageHolder.class)
               .byId(message.getId())

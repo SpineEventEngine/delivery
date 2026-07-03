@@ -46,7 +46,7 @@ public final class ShardServiceTestEnv implements Closeable {
     private static final WorkerId worker = WorkerId.newBuilder()
             .setNodeId(node)
             .setValue(newUuid())
-            .vBuild();
+            .build();
 
     private final Collection<Server> runningServers = new ArrayList<>();
 
@@ -89,7 +89,7 @@ public final class ShardServiceTestEnv implements Closeable {
         return PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -100,7 +100,7 @@ public final class ShardServiceTestEnv implements Closeable {
         return ReleaseShard.newBuilder()
                 .setShard(request.getShard())
                 .setWorker(request.getWorker())
-                .vBuild();
+                .build();
     }
 
     /**
@@ -110,7 +110,7 @@ public final class ShardServiceTestEnv implements Closeable {
     public static ReleaseExpiredSessions releaseExpiredSessions(Duration inactivityPeriod) {
         return ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(inactivityPeriod)
-                .vBuild();
+                .build();
     }
 
     /**
