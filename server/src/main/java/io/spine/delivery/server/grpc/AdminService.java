@@ -13,7 +13,7 @@ import io.grpc.stub.StreamObserver;
 import io.spine.base.EventMessage;
 import io.spine.client.Client;
 import io.spine.client.Subscription;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.delivery.CurrentShardState;
 import io.spine.delivery.InboxMessageHolder;
 import io.spine.delivery.admin.FilteringObserver;
@@ -47,7 +47,7 @@ import static io.spine.delivery.admin.grpc.ShardStatus.PICKED;
 /**
  * Allows getting information about the current state of the shards on the message delivery server.
  */
-public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase implements Logging {
+public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase implements WithLogging {
 
     private final Client client;
 

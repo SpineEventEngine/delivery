@@ -11,7 +11,8 @@ import com.google.protobuf.Duration;
 import com.google.protobuf.util.Durations;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
+import static java.lang.String.format;
 import io.spine.delivery.server.grpc.AdminService;
 import io.spine.delivery.server.grpc.HealthService;
 import io.spine.delivery.server.grpc.InboxService;
@@ -33,7 +34,7 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 /**
  * Application exposing only an {@link InboxService} and {@link ShardService} instances via gRPC.
  */
-public final class SimpleApp implements Logging {
+public final class SimpleApp implements WithLogging {
 
     static {
         useLog4j2FloggerBackend();
@@ -126,19 +127,19 @@ public final class SimpleApp implements Logging {
                 .addService(healthService)
                 .maxInboundMessageSize(MESSAGE_SIZE)
                 .build();
-        _info().log("Starting gRPC server...");
-        _info().log("Configured inbound message size: `%d` bytes.", MESSAGE_SIZE);
+        logger().atInfo().log(() -> format("Starting gRPC server..."));
+        logger().atInfo().log(() -> format("Configured inbound message size: `%d` bytes.", MESSAGE_SIZE));
         Runtime runtime = Runtime.getRuntime();
-        _info().log("Available memory %dMb.", runtime.maxMemory() / BYTES_IN_MB);
-        _info().log("Configured shard processing timeout: `%d` seconds.",
-                    SHARD_PROCESSING_TIMEOUT.getSeconds());
+        logger().atInfo().log(() -> format("Available memory %dMb.", runtime.maxMemory() / BYTES_IN_MB));
+        logger().atInfo().log(() -> format("Configured shard processing timeout: `%d` seconds.",
+                    SHARD_PROCESSING_TIMEOUT.getSeconds()));
         try {
             server.start();
-            _info().log("gRPC server started at host '%s' and port '%d'.", HOST, PORT);
+            logger().atInfo().log(() -> format("gRPC server started at host '%s' and port '%d'.", HOST, PORT));
             server.awaitTermination();
         } catch (Exception e) {
-            _error().withCause(e)
-                    .log("Error running the gRPC server.");
+            logger().atError().withCause(e)
+                    .log(() -> format("Error running the gRPC server."));
         } finally {
             close(factory);
         }
@@ -211,14 +212,14 @@ public final class SimpleApp implements Logging {
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different module. */)
     private ReportingStorageFactory storageFactory() {
         if (useRedis()) {
-            _config().log("Using Redis storage.");
+            _config().log(() -> format("Using Redis storage."));
             return new ReportingStorageFactory(RedisStorageFactory.newInstance());
         }
         if (useHazelcast()) {
-            _config().log("Using Hazelcast storage.");
+            _config().log(() -> format("Using Hazelcast storage."));
             return new ReportingStorageFactory(HazelcastStorageFactory.newInstance());
         }
-        _config().log("Using in-memory storage.");
+        _config().log(() -> format("Using in-memory storage."));
         var factory = new SingletonStorageFactory(InMemoryStorageFactory.newInstance());
         return new ReportingStorageFactory(factory);
     }

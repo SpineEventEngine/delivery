@@ -8,7 +8,7 @@ package io.spine.internal.dependency
 
 // https://github.com/google/truth
 object Truth {
-    private const val version = "1.1.3"
+    private const val version = "1.4.5"
     val libs = listOf(
         "com.google.truth:truth:${version}",
         "com.google.truth.extensions:truth-java8-extension:${version}",

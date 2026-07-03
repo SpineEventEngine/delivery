@@ -8,7 +8,8 @@ package io.spine.delivery.server;
 
 import io.spine.base.Identifier;
 import io.spine.core.CommandContext;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
+import static java.lang.String.format;
 import io.spine.delivery.InboxModifier;
 import io.spine.delivery.InboxModifierId;
 import io.spine.delivery.command.RemoveMessage;
@@ -32,15 +33,15 @@ import java.util.stream.Collectors;
  */
 final class InboxModifierProcess
         extends ProcessManager<InboxModifierId, InboxModifier, InboxModifier.Builder>
-        implements Logging {
+        implements WithLogging {
 
     @Assign
     MessageWritten handle(WriteMessage c, CommandContext context) {
         var message = c.getMessage();
-        _debug().log(
+        logger().atDebug().log(() -> format(
                 "Writing a new message for Inbox `%s` in Shard `%s` on `%s` request.",
                 Identifier.toString(message.getInboxId()), message.shardIndex(), context.actor()
-        );
+        ));
         return MessageWritten.newBuilder()
                 .setMessage(message)
                 .build();
@@ -50,10 +51,10 @@ final class InboxModifierProcess
     MessagesWritten handle(WriteMessages c, CommandContext context) {
         ShardIndex shard = c.getShard();
         var messages = c.getMessageList();
-        _debug().log(
+        logger().atDebug().log(() -> format(
                 "Writing %d new messages in Shard `%s` on `%s` request.",
                 messages.size(), shard, context.actor()
-        );
+        ));
         return MessagesWritten.newBuilder()
                 .addAllMessage(messages)
                 .setShard(shard)
@@ -77,10 +78,10 @@ final class InboxModifierProcess
     @Assign
     MessageRemoved handle(RemoveMessage c, CommandContext context) {
         var message = c.getMessage();
-        _debug().log(
+        logger().atDebug().log(() -> format(
                 "Removing a message from Inbox `%s` in Shard `%s` on `%s` request.",
                 Identifier.toString(message.getInboxId()), message.shardIndex(), context.actor()
-        );
+        ));
         return MessageRemoved.newBuilder()
                 .setMessage(message)
                 .build();
@@ -90,10 +91,10 @@ final class InboxModifierProcess
     MessagesRemoved handle(RemoveMessages c, CommandContext context) {
         ShardIndex shard = c.getShard();
         var messages = c.getMessageList();
-        _debug().log(
+        logger().atDebug().log(() -> format(
                 "Removing %d messages in Shard `%s` on `%s` request.",
                 messages.size(), shard, context.actor()
-        );
+        ));
         return MessagesRemoved.newBuilder()
                 .addAllMessage(messages)
                 .setShard(shard)

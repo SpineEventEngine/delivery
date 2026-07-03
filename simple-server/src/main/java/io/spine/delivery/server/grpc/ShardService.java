@@ -10,7 +10,8 @@ import com.google.protobuf.Duration;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import io.spine.base.Time;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
+import static java.lang.String.format;
 import io.spine.delivery.command.PickUpShard;
 import io.spine.delivery.command.ReleaseExpiredSessions;
 import io.spine.delivery.command.ReleaseShard;
@@ -35,7 +36,7 @@ import static io.spine.delivery.server.grpc.Responses.shardPickedUp;
  * Acts as a gRPC-wired backend for the {@link io.spine.delivery.ShardSessionRegistry}.
  */
 public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
-        implements Logging, NamedHealthAwareService {
+        implements WithLogging, NamedHealthAwareService {
 
     private final LiquorShardRegistry registry;
     private final AtomicBoolean healthy = new AtomicBoolean(true);
@@ -82,7 +83,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     }
 
     private void log(String s, int index) {
-        _info().log(s, index);
+        logger().atInfo().log(() -> format(s, index));
     }
 
     @Override
@@ -90,7 +91,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
                                 StreamObserver<ExpiredSessionsReleased> responseObserver) {
         var period = request.getInactivityPeriod();
         var sessions = registry.releaseInactiveSessions(period);
-        _debug().log("Expired sessions were released: %s.", sessions);
+        logger().atDebug().log(() -> format("Expired sessions were released: %s.", sessions));
         var result = ExpiredSessionsReleased.newBuilder();
         sessions.stream()
                 .map(ShardService::toExpiredSession)

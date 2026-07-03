@@ -7,7 +7,7 @@
 package io.spine.delivery.server.grpc;
 
 import com.google.protobuf.Empty;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.delivery.admin.given.BlockingMemoizingObserver;
 import io.spine.delivery.admin.given.WithAckObserver;
 import io.spine.delivery.admin.grpc.ShardInfoUpdate;
@@ -46,7 +46,7 @@ import static io.spine.delivery.server.grpc.given.AdminServiceTestEnv.writeMessa
 import static io.spine.server.delivery.DeliveryStrategy.newIndex;
 
 @DisplayName("`AdminService` should")
-final class AdminServiceTest extends WithApp implements Logging {
+final class AdminServiceTest extends WithApp implements WithLogging {
 
     @Test
     @DisplayName("get current information about shards")

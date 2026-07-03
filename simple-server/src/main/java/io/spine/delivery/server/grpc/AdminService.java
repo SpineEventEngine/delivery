@@ -8,7 +8,7 @@ package io.spine.delivery.server.grpc;
 
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.delivery.admin.FilteringObserver;
 import io.spine.delivery.admin.ShardMessagesCountHolder;
 import io.spine.delivery.admin.ShardUpdateSubscribersHolder;
@@ -45,7 +45,7 @@ import static io.spine.delivery.admin.grpc.ShardStatus.PICKED;
  * Allows getting information about the current state of the shards on the message delivery server.
  */
 public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
-        implements Logging, NamedHealthAwareService {
+        implements WithLogging, NamedHealthAwareService {
 
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 

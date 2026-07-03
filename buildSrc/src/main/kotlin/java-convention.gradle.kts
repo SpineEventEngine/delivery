@@ -29,7 +29,9 @@ java {
 
 dependencies {
     errorprone(ErrorProne.core)
-    errorprone(ErrorProne.Plugin.nullaway)
+    // NullAway is intentionally not applied: it is dropped in the current Spine SDK build
+    // convention, and the last version compatible with this stack (0.9.2) crashes on the
+    // `() -> format(...)` logging lambdas under JDK 17+.
     compileOnlyApi(CheckerFramework.annotations)
     compileOnlyApi(FindBugs.annotations)
     compileOnlyApi(JavaX.annotations)
@@ -86,7 +88,6 @@ tasks.compileJava {
     )
 
     options.errorprone {
-        option("NullAway:AnnotatedPackages", "io.spine.delivery")
         disableWarningsInGeneratedCode.set(true)
     }
 }

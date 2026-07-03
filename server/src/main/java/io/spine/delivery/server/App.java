@@ -10,7 +10,8 @@ import com.google.common.annotations.VisibleForTesting;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.spine.client.Client;
 import io.spine.environment.Production;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
+import static java.lang.String.format;
 import io.spine.delivery.server.grpc.AdminService;
 import io.spine.delivery.server.grpc.SessionRegistryService;
 import io.spine.server.GrpcContainer;
@@ -35,7 +36,7 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * Starts the {@code Delivery} gRPC server.
  */
-public final class App implements Logging {
+public final class App implements WithLogging {
 
     static {
         useLog4j2FloggerBackend();
@@ -122,7 +123,7 @@ public final class App implements Logging {
         remoteGrpc.addShutdownHook();
         try {
             remoteGrpc.start();
-            _info().log("Remote gRPC server started at port `%d`.", PORT);
+            logger().atInfo().log(() -> format("Remote gRPC server started at port `%d`.", PORT));
         } catch (IOException e) {
             throw newIllegalStateException(
                     e, "Unable to start remote gRPC server at port `%d`.", PORT
@@ -137,7 +138,7 @@ public final class App implements Logging {
         internalGrpc.addShutdownHook();
         try {
             internalGrpc.start();
-            _info().log("Internal gRPC started as in-process server with name `%s`.", NAME);
+            logger().atInfo().log(() -> format("Internal gRPC started as in-process server with name `%s`.", NAME));
         } catch (IOException e) {
             throw newIllegalStateException(
                     e, "Unable to start internal gRPC server with name `%s`.", NAME
@@ -177,10 +178,10 @@ public final class App implements Logging {
                 .when(Production.class)
                 .useStorageFactory(env -> {
                     if (useRedis()) {
-                        _config().log("Using Redis storage.");
+                        _config().log(() -> format("Using Redis storage."));
                         return RedisStorageFactory.newInstance();
                     }
-                    _config().log("Using in-memory storage.");
+                    _config().log(() -> format("Using in-memory storage."));
                     return InMemoryStorageFactory.newInstance();
                 })
                 .use(InMemoryTransportFactory.newInstance())

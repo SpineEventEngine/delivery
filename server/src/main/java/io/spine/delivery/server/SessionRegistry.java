@@ -9,7 +9,7 @@ package io.spine.delivery.server;
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.base.Time;
 import io.spine.core.CommandContext;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.delivery.ShardSessionRegistry;
 import io.spine.delivery.command.PickUpShard;
 import io.spine.delivery.command.ReleaseShard;
@@ -35,15 +35,15 @@ import static java.lang.String.format;
  */
 final class SessionRegistry
         extends Aggregate<ShardIndex, ShardSessionRegistry, ShardSessionRegistry.Builder>
-        implements Logging {
+        implements WithLogging {
 
     @Assign
     ShardPickedUp handle(PickUpShard c, CommandContext context) throws ShardAlreadyPickedUp {
         var shard = c.getShard();
         var worker = c.getWorker();
-        _debug().log("Worker `%s` is picking up shard `%s`.", worker, shard);
+        logger().atDebug().log(() -> format("Worker `%s` is picking up shard `%s`.", worker, shard));
         checkNotPickedUp();
-        _info().log("Shard `%s` is picked up by worker `%s`.", shard, worker);
+        logger().atInfo().log(() -> format("Shard `%s` is picked up by worker `%s`.", shard, worker));
         return ShardPickedUp.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
@@ -56,7 +56,7 @@ final class SessionRegistry
         if (state.hasWorker()) {
             var shard = id();
             var worker = state.getWorker();
-            _debug().log("Shard `%s` is already picked up by `%s`.", shard, worker);
+            logger().atDebug().log(() -> format("Shard `%s` is already picked up by `%s`.", shard, worker));
             throw ShardAlreadyPickedUp.newBuilder()
                     .setShard(shard)
                     .setWorker(worker)
@@ -75,9 +75,9 @@ final class SessionRegistry
     ShardReleased handle(ReleaseShard c, CommandContext context) throws UnableToReleaseShard {
         var shard = c.getShard();
         var worker = c.getWorker();
-        _debug().log("Worker `%s` is releasing shard `%s`.", worker, shard);
+        logger().atDebug().log(() -> format("Worker `%s` is releasing shard `%s`.", worker, shard));
         checkCanRelease(c);
-        _info().log("Shard `%s` is released by worker `%s`.", shard, worker);
+        logger().atInfo().log(() -> format("Shard `%s` is released by worker `%s`.", shard, worker));
         return ShardReleased.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
@@ -89,13 +89,13 @@ final class SessionRegistry
         var state = state();
         var currentWorker = state.getWorker();
         if (isDefault(currentWorker)) {
-            _debug().log("Shard `%s` is not picked up. Nothing to release.", id());
+            logger().atDebug().log(() -> format("Shard `%s` is not picked up. Nothing to release.", id()));
             throw unableToRelease(c, shardNotPickedUp());
         }
         var workerToPickUpShard = c.getWorker();
         if (!currentWorker.equals(workerToPickUpShard)) {
-            _debug().log("Worker `%s` cannot release a shard `%s` picked up by `%s`.",
-                         workerToPickUpShard, id(), currentWorker);
+            logger().atDebug().log(() -> format("Worker `%s` cannot release a shard `%s` picked up by `%s`.",
+                         workerToPickUpShard, id(), currentWorker));
             throw unableToRelease(c, shardPickedUpByOtherWorker(currentWorker));
         }
     }

@@ -7,7 +7,8 @@
 package io.spine.delivery.admin;
 
 import io.grpc.stub.ServerCallStreamObserver;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
+import static java.lang.String.format;
 import io.spine.delivery.admin.grpc.ShardInfoUpdate;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -35,7 +36,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * removed element.
  */
 @ThreadSafe
-public final class ShardUpdateSubscribersHolder implements Logging {
+public final class ShardUpdateSubscribersHolder implements WithLogging {
 
     private final ConcurrentHashMap<String, ServerCallStreamObserver<ShardInfoUpdate>> subscribers =
             new ConcurrentHashMap<>();
@@ -44,10 +45,10 @@ public final class ShardUpdateSubscribersHolder implements Logging {
         String uuid = UUID.randomUUID()
                           .toString();
         subscribers.put(uuid, subscriber);
-        _debug().log("Added new subscriber [%s], current number of subscribers = %d",
-                     uuid, subscribers.size());
+        logger().atDebug().log(() -> format("Added new subscriber [%s], current number of subscribers = %d",
+                     uuid, subscribers.size()));
         subscriber.setOnCancelHandler(() -> {
-            _debug().log("Subscriber [%s] closed. Removing...", uuid);
+            logger().atDebug().log(() -> format("Subscriber [%s] closed. Removing...", uuid));
             removeVerbose(uuid);
         });
     }
@@ -59,16 +60,16 @@ public final class ShardUpdateSubscribersHolder implements Logging {
      * from the subscribers list.
      */
     public void notifySubs(ShardInfoUpdate update) {
-        _debug().log("Notifying %d subscribers about update.", subscribers.size());
+        logger().atDebug().log(() -> format("Notifying %d subscribers about update.", subscribers.size()));
         var invalidSubIds = new ArrayList<String>();
         for (var entry : subscribers.entrySet()) {
             try {
                 entry.getValue()
                      .onNext(update);
             } catch (RuntimeException e) {
-                _debug().withCause(e)
-                        .log("Error notifying the subscriber [%s]; it will be removed.",
-                             entry.getKey());
+                logger().atDebug().withCause(e)
+                        .log(() -> format("Error notifying the subscriber [%s]; it will be removed.",
+                             entry.getKey()));
                 invalidSubIds.add(entry.getKey());
                 entry.getValue()
                      .onError(e);
@@ -83,8 +84,8 @@ public final class ShardUpdateSubscribersHolder implements Logging {
     private void removeVerbose(String uuid) {
         Optional.ofNullable(subscribers.remove(uuid))
                 .ifPresentOrElse(
-                        (r) -> _debug().log("Subscriber [%s] removed.", uuid),
-                        () -> _debug().log("Subscriber [%s] not found.", uuid)
+                        (r) -> logger().atDebug().log(() -> format("Subscriber [%s] removed.", uuid)),
+                        () -> logger().atDebug().log(() -> format("Subscriber [%s] not found.", uuid))
                 );
     }
 }

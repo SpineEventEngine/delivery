@@ -15,7 +15,7 @@ import io.grpc.stub.StreamObserver;
 import io.spine.base.Error;
 import io.spine.client.Client;
 import io.spine.client.Subscription;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.delivery.grpc.ShardSessionRegistryServiceGrpc;
 import io.spine.delivery.command.PickUpShard;
 import io.spine.delivery.command.ReleaseExpiredSessions;
@@ -43,7 +43,7 @@ import static java.lang.String.format;
  */
 public final class SessionRegistryService
         extends ShardSessionRegistryServiceGrpc.ShardSessionRegistryServiceImplBase
-        implements Logging {
+        implements WithLogging {
 
     private final Client client;
 
@@ -58,9 +58,9 @@ public final class SessionRegistryService
 
     @Override
     public void pickShard(PickUpShard pickUpShard, StreamObserver<LiquorPickUpOutcome> responseObserver) {
-        _trace().log(
+        logger().atTrace().log(() -> format(
                 "Posting internal `PickUpShard` command and waiting for `ShardPickedUp` event."
-        );
+        ));
         checkNotDefaultArg(pickUpShard);
         CountDownLatch latch = new CountDownLatch(1);
         Context ctx = Context.current()
@@ -70,10 +70,10 @@ public final class SessionRegistryService
                     client.asGuest()
                           .command(pickUpShard)
                           .observe(ShardPickedUp.class, e -> {
-                              _trace().log(
+                              logger().atTrace().log(() -> format(
                                       "Received `ShardPickedUp` event for shard `%s`.",
                                       e.getShard()
-                              );
+                              ));
                               responseObserver.onNext(pickedUp(e));
                               responseObserver.onCompleted();
                               latch.countDown();
@@ -83,7 +83,7 @@ public final class SessionRegistryService
                                       "Shard `%s` is already picked up by the worker `%s`.",
                                       e.getShard(), e.getWorker()
                               );
-                              _trace().log(msg);
+                              logger().atTrace().log(() -> format(msg));
                               responseObserver.onNext(alreadyPickedUp(e));
                               responseObserver.onCompleted();
                               latch.countDown();
@@ -96,11 +96,11 @@ public final class SessionRegistryService
                           })
                           .onStreamingError((error) -> {
                               if (!ignoreCancelledStream(error)) {
-                                  _trace().withCause(error)
-                                          .log("gRPC streaming error occurred while " +
+                                  logger().atTrace().withCause(error)
+                                          .log(() -> format("gRPC streaming error occurred while " +
                                                        "picking up shard `%s`.",
                                                pickUpShard.getShard()
-                                          );
+                                          ));
                                   responseObserver.onError(fromThrowable(error).asException());
                               }
                               latch.countDown();
@@ -118,10 +118,10 @@ public final class SessionRegistryService
     @Override
     public void releaseSessions(ReleaseExpiredSessions releaseSessions,
                                 StreamObserver<ExpiredSessionsReleased> responseObserver) {
-        _trace().log(
+        logger().atTrace().log(() -> format(
                 "Posting internal `ReleaseExpiredSessions` command " +
                         "and waiting for `ExpiredSessionsReleased` event."
-        );
+        ));
         checkNotDefaultArg(releaseSessions);
         CountDownLatch latch = new CountDownLatch(1);
         Context ctx = Context.current()
@@ -131,10 +131,10 @@ public final class SessionRegistryService
                     client.asGuest()
                           .command(releaseSessions)
                           .observe(ExpiredSessionsReleased.class, e -> {
-                              _trace().log(
+                              logger().atTrace().log(() -> format(
                                       "Received `ExpiredSessionsReleased` event with `%d` shards.",
                                       e.getShardCount()
-                              );
+                              ));
                               responseObserver.onNext(e);
                               responseObserver.onCompleted();
                               latch.countDown();
@@ -149,9 +149,9 @@ public final class SessionRegistryService
                           })
                           .onStreamingError((error) -> {
                               if (!ignoreCancelledStream(error)) {
-                                  _trace().withCause(error)
-                                          .log("gRPC streaming error occurred " +
-                                                       "while releasing expired sessions.");
+                                  logger().atTrace().withCause(error)
+                                          .log(() -> format("gRPC streaming error occurred " +
+                                                       "while releasing expired sessions."));
                                   responseObserver.onError(fromThrowable(error).asException());
                               }
                               latch.countDown();
@@ -167,7 +167,7 @@ public final class SessionRegistryService
     }
 
     private void cancelSubscription(Iterable<Subscription> subscriptions) {
-        _trace().log("Cancelling subscriptions.");
+        logger().atTrace().log(() -> format("Cancelling subscriptions."));
         subscriptions.forEach(client.subscriptions()::cancel);
     }
 
@@ -181,7 +181,7 @@ public final class SessionRegistryService
             return false;
         }
         if (nullToEmpty(error.getMessage()).contains("without error")) {
-            _trace().log("Stream is cancelled without errors.");
+            logger().atTrace().log(() -> format("Stream is cancelled without errors."));
             return true;
         }
         return false;
@@ -189,9 +189,9 @@ public final class SessionRegistryService
 
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in non-related module. */)
     private <C extends Message> void logServerError(C message, Error error) {
-        _trace().log(
+        logger().atTrace().log(() -> format(
                 "Server was not able to handle command `%s`: %s",
                 message.getClass(), error
-        );
+        ));
     }
 }

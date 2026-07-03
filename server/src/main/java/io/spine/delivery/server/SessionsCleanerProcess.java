@@ -24,6 +24,7 @@ import io.spine.server.procman.ProcessManager;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.String.format;
 
 /**
  * Releases sessions picked up prior to the configured inactivity period.
@@ -48,9 +49,9 @@ final class SessionsCleanerProcess
         var result = ExpiredSessionsReleased.newBuilder();
         var inactivityPeriod = c.getInactivityPeriod();
         var whenPickedPeriod = Timestamps.subtract(Time.currentTime(), inactivityPeriod);
-        _info().log(
+        logger().atInfo().log(() -> format(
                 "Querying shard session registries picked earlier than `%s`.", whenPickedPeriod
-        );
+        ));
         ImmutableList<ShardSessionRegistry> expiredSessions =
                 client.asGuest()
                       .run(ShardSessionRegistry
@@ -61,9 +62,9 @@ final class SessionsCleanerProcess
                                    .isGreaterThan(YEAR_2021)
                                    .build()
                       );
-        _info().log(
+        logger().atInfo().log(() -> format(
                 "Releasing `%d` shard sessions.", expiredSessions.size()
-        );
+        ));
         for (ShardSessionRegistry expiredSession : expiredSessions) {
             releaseShard(expiredSession);
             result.addShard(fromRegistry(expiredSession));

@@ -12,7 +12,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.delivery.rejection.ShardAlreadyPickedUp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
@@ -36,7 +36,7 @@ import static java.lang.System.lineSeparator;
  *
  * <p>All picked shards are stored in the {@link ShardRegistryStorage}.
  */
-public final class LiquorShardRegistry implements Logging {
+public final class LiquorShardRegistry implements WithLogging {
 
     private final ShardRegistryStorage storage;
     private final Duration processingTimeout;
@@ -124,7 +124,7 @@ public final class LiquorShardRegistry implements Logging {
                 .build();
         String logMessage = Joiner.on(lineSeparator())
                                   .join(logStatements);
-        _warn().log(logMessage);
+        logger().atWarning().log(() -> format(logMessage));
     }
 
     private boolean isStale(ShardSessionRecord session) {

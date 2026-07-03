@@ -10,7 +10,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import io.grpc.stub.StreamObserver;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
+import static java.lang.String.format;
 import io.spine.delivery.command.RemoveMessage;
 import io.spine.delivery.command.RemoveMessages;
 import io.spine.delivery.command.WriteMessage;
@@ -39,7 +40,7 @@ import static io.spine.delivery.server.grpc.Responses.writeOptionalMessage;
  * Acts as a gRPC-wired backend for the {@link io.spine.server.delivery.InboxStorage}.
  */
 public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
-        implements Logging, NamedHealthAwareService {
+        implements WithLogging, NamedHealthAwareService {
 
     private final ExtendedInboxStorage inboxStorage;
     private final AtomicBoolean healthy = new AtomicBoolean(true);
@@ -126,11 +127,11 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     }
 
     private void log(String s) {
-        _info().log(s);
+        logger().atInfo().log(() -> format(s));
     }
 
     private void log(ShardIndex shard, ImmutableList<InboxMessage> messages) {
-        _info().log("`findManyInShard(%d)` -> %d.", shard.getIndex(), messages.size());
+        logger().atInfo().log(() -> format("`findManyInShard(%d)` -> %d.", shard.getIndex(), messages.size()));
     }
 
     @Override

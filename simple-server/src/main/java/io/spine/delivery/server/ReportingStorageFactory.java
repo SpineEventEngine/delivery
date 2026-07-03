@@ -7,7 +7,7 @@
 package io.spine.delivery.server;
 
 import com.google.protobuf.Message;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.StorageFactory;
@@ -25,7 +25,7 @@ import static java.util.UUID.randomUUID;
 /**
  * Storage factory that allows subscribing to update operations of its storages.
  */
-public final class ReportingStorageFactory implements StorageFactory, Logging {
+public final class ReportingStorageFactory implements StorageFactory, WithLogging {
 
     private final StorageFactory delegate;
 

@@ -6,7 +6,7 @@
 
 package io.spine.delivery.admin;
 
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.server.delivery.ShardIndex;
 
 import javax.annotation.concurrent.ThreadSafe;
@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * do not block read operations.
  */
 @ThreadSafe
-public final class ShardMessagesCountHolder implements Logging {
+public final class ShardMessagesCountHolder implements WithLogging {
 
     private final ConcurrentHashMap<ShardIndex, Integer> messagesInShards;
 
