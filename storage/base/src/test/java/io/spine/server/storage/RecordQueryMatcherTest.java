@@ -6,31 +6,26 @@
 
 package io.spine.server.storage;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Any;
 import io.spine.base.Identifier;
-import io.spine.query.ColumnName;
 import io.spine.query.RecordColumn;
 import io.spine.query.RecordQuery;
 import io.spine.query.RecordQueryBuilder;
 import io.spine.query.Subject;
 import io.spine.server.entity.EntityRecord;
-import io.spine.server.entity.storage.EntityRecordWithColumns;
+import io.spine.server.entity.LifecycleFlags;
 import io.spine.server.storage.given.Sample;
 import io.spine.server.storage.query.RecordQueryMatcher;
 import io.spine.test.entity.ProjectId;
-import io.spine.test.entity.TaskId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
 
 import static io.spine.server.storage.given.RecordQueryMatcherTestEnv.anyColumn;
 import static io.spine.server.storage.given.RecordQueryMatcherTestEnv.anyValue;
 import static io.spine.server.storage.given.RecordQueryMatcherTestEnv.booleanColumn;
 import static io.spine.server.storage.given.RecordQueryMatcherTestEnv.recordSubject;
 import static io.spine.testing.TestValues.nullRef;
-import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -41,10 +36,10 @@ class RecordQueryMatcherTest {
     @DisplayName("match everything except `null` to empty query")
     void matchEverythingToEmpty() {
         Subject<Object, EntityRecord> sampleSubject = recordSubject();
-        RecordQueryMatcher<?, EntityRecord> matcher = new RecordQueryMatcher<>(sampleSubject);
+        RecordQueryMatcher<Object, EntityRecord> matcher = new RecordQueryMatcher<>(sampleSubject);
 
         assertFalse(matcher.test(nullRef()));
-        assertTrue(matcher.test(EntityRecordWithColumns.of(sampleEntityRecord())));
+        assertTrue(matcher.test(recordWith(Object.class, sampleEntityRecord())));
     }
 
     @Test
@@ -56,38 +51,26 @@ class RecordQueryMatcherTest {
         RecordQueryMatcher<ProjectId, EntityRecord> matcher = new RecordQueryMatcher<>(subject);
         EntityRecord matching = sampleEntityRecord(genericId);
         EntityRecord nonMatching = sampleEntityRecord(Sample.messageOfType(ProjectId.class));
-        EntityRecordWithColumns<ProjectId> matchingRecord = EntityRecordWithColumns.of(matching);
-        EntityRecordWithColumns<ProjectId> nonMatchingRecord =
-                EntityRecordWithColumns.of(nonMatching);
-        assertTrue(matcher.test(matchingRecord));
-        assertFalse(matcher.test(nonMatchingRecord));
+        assertTrue(matcher.test(recordWith(ProjectId.class, matching)));
+        assertFalse(matcher.test(recordWith(ProjectId.class, nonMatching)));
     }
 
     @Test
     @DisplayName("match columns")
     void matchColumns() {
         RecordColumn<EntityRecord, Boolean> column = booleanColumn();
-        boolean actualValue = false;
-        ColumnName columnName = column.name();
+        boolean actualValue = true;
         RecordQuery<Object, EntityRecord> query =
-                newBuilder()
-                        .where(column)
-                        .is(actualValue)
-                        .build();
-
+                newBuilder().where(column)
+                            .is(actualValue)
+                            .build();
         RecordQueryMatcher<Object, EntityRecord> matcher =
                 new RecordQueryMatcher<>(query.subject());
 
-        EntityRecord matching = sampleEntityRecord(Sample.messageOfType(TaskId.class));
-        Map<ColumnName, Object> matchingColumns = ImmutableMap.of(columnName, actualValue);
-        EntityRecordWithColumns<Object> matchingRecord =
-                EntityRecordWithColumns.of(matching, matchingColumns);
-
-        EntityRecord nonMatching = sampleEntityRecord(Sample.messageOfType(TaskId.class));
-        EntityRecordWithColumns<Object> nonMatchingRecord = EntityRecordWithColumns.of(nonMatching);
-
-        assertTrue(matcher.test(matchingRecord));
-        assertFalse(matcher.test(nonMatchingRecord));
+        EntityRecord matching = archivedEntityRecord(actualValue);
+        EntityRecord nonMatching = archivedEntityRecord(!actualValue);
+        assertTrue(matcher.test(recordWith(Object.class, matching)));
+        assertFalse(matcher.test(recordWith(Object.class, nonMatching)));
     }
 
     @Test
@@ -95,17 +78,14 @@ class RecordQueryMatcherTest {
     void matchAnyInstances() {
         RecordColumn<EntityRecord, Any> column = anyColumn();
         Any actualValue = anyValue();
-
-        ColumnName columnName = column.name();
-
-        EntityRecord record = sampleEntityRecord();
-        Map<ColumnName, Object> columns = singletonMap(columnName, actualValue);
-        EntityRecordWithColumns<Object> recordAndCols = EntityRecordWithColumns.of(record, columns);
-        RecordQuery<Object, EntityRecord> query = newBuilder().where(column)
-                                                              .is(actualValue)
-                                                              .build();
+        RecordQuery<Object, EntityRecord> query =
+                newBuilder().where(column)
+                            .is(actualValue)
+                            .build();
         RecordQueryMatcher<Object, EntityRecord> matcher = new RecordQueryMatcher<>(query);
-        assertTrue(matcher.test(recordAndCols));
+
+        EntityRecord matching = statefulEntityRecord(actualValue);
+        assertTrue(matcher.test(recordWith(Object.class, matching)));
     }
 
     @Test
@@ -113,15 +93,30 @@ class RecordQueryMatcherTest {
     void notMatchByWrongField() {
         RecordColumn<EntityRecord, Boolean> target = booleanColumn("some_random_name");
         RecordQuery<Object, EntityRecord> query =
-                newBuilder()
-                        .where(target)
-                        .is(true)
-                        .build();
+                newBuilder().where(target)
+                            .is(true)
+                            .build();
         RecordQueryMatcher<Object, EntityRecord> matcher = new RecordQueryMatcher<>(query);
 
-        EntityRecord record = sampleEntityRecord();
-        EntityRecordWithColumns<Object> recordWithColumns = EntityRecordWithColumns.of(record);
-        assertFalse(matcher.test(recordWithColumns));
+        assertFalse(matcher.test(recordWith(Object.class, sampleEntityRecord())));
+    }
+
+    /**
+     * Wraps the given {@code record} into a {@link RecordWithColumns}, deriving the column values
+     * via a {@link RecordSpec} that reads the record's fields.
+     */
+    private static <I> RecordWithColumns<I, EntityRecord>
+    recordWith(Class<I> idType, EntityRecord record) {
+        return RecordWithColumns.create(record, spec(idType));
+    }
+
+    private static <I> RecordSpec<I, EntityRecord> spec(Class<I> idType) {
+        return new RecordSpec<>(
+                idType,
+                EntityRecord.class,
+                r -> idType.cast(Identifier.unpack(r.getEntityId())),
+                ImmutableList.of(anyColumn(), booleanColumn())
+        );
     }
 
     private static RecordQueryBuilder<Object, EntityRecord> newBuilder() {
@@ -135,6 +130,21 @@ class RecordQueryMatcherTest {
     private static EntityRecord sampleEntityRecord(Object id) {
         return EntityRecord.newBuilder()
                 .setEntityId(Identifier.pack(id))
+                .build();
+    }
+
+    private static EntityRecord archivedEntityRecord(boolean archived) {
+        return EntityRecord.newBuilder()
+                .setEntityId(Identifier.pack(Identifier.newUuid()))
+                .setLifecycleFlags(LifecycleFlags.newBuilder()
+                                           .setArchived(archived))
+                .build();
+    }
+
+    private static EntityRecord statefulEntityRecord(Any state) {
+        return EntityRecord.newBuilder()
+                .setEntityId(Identifier.pack(Identifier.newUuid()))
+                .setState(state)
                 .build();
     }
 }

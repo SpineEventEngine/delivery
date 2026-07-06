@@ -12,7 +12,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
-import com.google.protobuf.GeneratedMessageV3;
+import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.Message;
 import io.spine.core.Command;
 import io.spine.core.Event;
@@ -115,7 +115,7 @@ public class Sample {
     private static void checkClass(Class<? extends Message> clazz) {
         checkNotNull(clazz);
         // Support only generated protobuf messages
-        checkArgument(GeneratedMessageV3.class.isAssignableFrom(clazz),
+        checkArgument(GeneratedMessage.class.isAssignableFrom(clazz),
                       "Only generated protobuf messages are allowed.");
     }
 

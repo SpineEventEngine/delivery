@@ -7,7 +7,6 @@
 package io.spine.server.storage.redis;
 
 import io.spine.core.TenantId;
-import io.spine.server.storage.MessageRecordSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.test.entity.Project;
 import io.spine.test.entity.ProjectId;
@@ -39,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("`MultitenantStorage` should")
 class MultitenantStorageTest {
 
-    private static final RecordSpec<ProjectId, Project> recordSpec = new MessageRecordSpec<>(
+    private static final RecordSpec<ProjectId, Project> recordSpec = new RecordSpec<>(
             ProjectId.class, Project.class, Project::getId
     );
 
