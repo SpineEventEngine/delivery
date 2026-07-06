@@ -11,7 +11,6 @@ import io.spine.delivery.server.event.AnotherTestEventId;
 import io.spine.delivery.server.event.TestEvent;
 import io.spine.delivery.server.event.TestEventId;
 import io.spine.server.ContextSpec;
-import io.spine.server.storage.MessageRecordSpec;
 import io.spine.server.storage.RecordSpec;
 
 import static io.spine.server.ContextSpec.singleTenant;
@@ -52,14 +51,14 @@ public final class StoragesTestEnv {
      * Creates a new spec with {@code TestEventId} ID and {@code TestEvent} record.
      */
     public static RecordSpec<TestEventId, TestEvent> specForTestEvent() {
-        return new MessageRecordSpec<>(TestEventId.class, TestEvent.class, TestEvent::getId);
+        return new RecordSpec<>(TestEventId.class, TestEvent.class, TestEvent::getId);
     }
 
     /**
      * Creates a new spec with {@code TestEventId} ID and {@code TestEvent} record.
      */
     public static RecordSpec<AnotherTestEventId, AnotherTestEvent> specForAnotherTestEvent() {
-        return new MessageRecordSpec<>(
+        return new RecordSpec<>(
                 AnotherTestEventId.class, AnotherTestEvent.class, AnotherTestEvent::getId
         );
     }
