@@ -7,6 +7,7 @@
 import io.spine.internal.dependency.Grpc
 import io.spine.internal.dependency.Log4j2
 import io.spine.internal.dependency.Spine
+import io.spine.internal.dependency.Time
 
 dependencies {
     implementation(Log4j2.api)
@@ -18,6 +19,7 @@ dependencies {
     implementation(Spine.server)
     testImplementation(project(":testutil-server"))
     testImplementation(project(path = ":grpc-api", configuration = "testArtifacts"))
+    testImplementation(Time.testLib)
     testRuntimeOnly(Grpc.nettyShaded)
 
     // Use this one to run the app locally.

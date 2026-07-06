@@ -15,7 +15,7 @@ import io.spine.delivery.server.WithApp;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.test.delivery.server.Something;
-import io.spine.time.testing.FrozenMadHatterParty;
+import io.spine.testing.time.FrozenMadHatterParty;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -13,7 +13,7 @@ import io.spine.delivery.LiquorPickUpOutcome;
 import io.spine.delivery.rejection.Rejections;
 import io.spine.delivery.server.WithApp;
 import io.spine.delivery.server.grpc.given.ShardServiceTestEnv;
-import io.spine.time.testing.FrozenMadHatterParty;
+import io.spine.testing.time.FrozenMadHatterParty;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
