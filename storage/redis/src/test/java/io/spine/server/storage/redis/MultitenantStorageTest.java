@@ -19,7 +19,6 @@ import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.Collection;
@@ -36,6 +35,7 @@ import static com.google.common.collect.Sets.newHashSetWithExpectedSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("`MultitenantStorage` should")
+@RequiresDocker
 class MultitenantStorageTest {
 
     private static final RecordSpec<ProjectId, Project> recordSpec = new RecordSpec<>(
@@ -43,7 +43,6 @@ class MultitenantStorageTest {
     );
 
     private static final boolean IS_MULTITENANT = false;
-    @Container
     private final GenericContainer<?> redis = new GenericContainer<>(
             DockerImageName.parse("redis:6-alpine")
     ).withExposedPorts(6379);
@@ -55,7 +54,7 @@ class MultitenantStorageTest {
         redis.start();
         Config redisConfig = new Config();
         String redisAddress = String.format(
-                "redis://%s:%d", redis.getContainerIpAddress(), redis.getFirstMappedPort()
+                "redis://%s:%d", redis.getHost(), redis.getFirstMappedPort()
         );
         redisConfig.useSingleServer()
                    .setAddress(redisAddress);

@@ -28,8 +28,28 @@ full `./gradlew build` green.
 
 ## Deferred decisions surfaced during the migration
 
-- `storage:redis`'s `MultitenantStorageTest` is a Testcontainers (Docker) test — verify it
-  in a Docker-enabled environment.
+- **Testcontainers / Docker for `storage:redis` — RESOLVED (implemented on branch `renaming`,
+  pending a Docker-enabled build run).** The local `Could not find a valid Docker environment`
+  failure came from Testcontainers `1.16.0` (too old to resolve the Docker CLI *context*) plus a
+  stale `~/.testcontainers.properties` pin, both hard-wired to `/var/run/docker.sock`, which
+  Docker Desktop for Mac no longer creates (its socket is `~/.docker/run/docker.sock`). Aligned
+  with `gcloud-jvm` (`/Users/sanders/Projects/Spine/gcloud-jvm`) instead of hacking the socket:
+  - Bumped `buildSrc/.../Testcontainers.kt` → **2.0.5** (+ TC-2.x artifact rename
+    `junit-jupiter` → `testcontainers-junit-jupiter`). TC 2.x auto-detects the Docker context, so
+    no `/var/run/docker.sock` is needed. Flows to `storage:hazelcast` too (harmless — it declares
+    the deps but uses no container APIs); the decoupled `client/` build has its own `buildSrc`
+    and is untouched.
+  - `storage/redis/.../{RedisRecordStorageTest,MultitenantStorageTest}`: `getContainerIpAddress()`
+    → `getHost()`; removed the inert `@Container` (no `@Testcontainers` was present) and the now-
+    unused `testcontainers-junit-jupiter` test dep.
+  - Ported gcloud-jvm's gate into `storage/redis/build.gradle.kts`: a `CheckDockerAvailable` task
+    (`docker info` probe; fails loud when Docker is absent; exempts `WINDOWS_CI_NO_DOCKER`) wired
+    as `dependsOn` of the test task, plus a `@RequiresDocker` meta-annotation +
+    `RequiresDockerCondition` (skips only when `WINDOWS_CI_NO_DOCKER` is set) on both test classes.
+  - **Remaining:** (1) run `./gradlew :storage:redis:test` with Docker to confirm (needs the
+    `read:packages` token; this env can't compile); (2) one-time local `rm ~/.testcontainers.properties`
+    so the stale strategy pin stops forcing `/var/run/docker.sock` even under TC 2.x; (3) optional:
+    when a Windows CI job is added, set `WINDOWS_CI_NO_DOCKER: "true"` on it.
 - Error Prone was kept at `2.9.0` with **NullAway dropped** (its last compatible version
   0.9.2 crashes on the logging lambdas under JDK 17+, and the reference repos dropped
   NullAway). Optional: bump Error Prone → `2.36.0` (needs Guava 33.x on the EP classpath).
@@ -46,8 +66,14 @@ full `./gradlew build` green.
 
 - [ ] After admin-server / admin-ui / deployment are migrated, re-enable all in
       `settings.gradle.kts` (remove the parked comments + restore `includeBuild`/`deployment`).
-- [ ] Update `.github/workflows/pr.yml` + `master.yml` for Gradle 9.5.1 / the new
-      toolchain / `read:packages` credentials.
+- [ ] Update `.github/workflows/pr.yml` + `master.yml`: they still target JDK 16/11
+      (need 17), old `actions/*@v1/v2` (need `submodules: recursive` for `config` /
+      `.agents/shared`), and jobs for parked modules (`:*-cloud-run:jibDockerBuild`,
+      `:admin-ui:qbuild`). Add `GITHUB_ACTOR` + a `read:packages` token for Spine SNAPSHOT
+      resolution. Docker/Testcontainers needs NO special CI handling: GitHub-hosted
+      `ubuntu-latest` ships a running daemon at `/var/run/docker.sock`, so the
+      `storage:redis` tests pass there — just keep Docker-gated tests on Linux runners
+      (macOS/Windows GitHub runners lack a usable Linux-container Docker daemon).
 - [ ] Decide + implement the `client` build relationship (standalone vs re-pointed).
 - [ ] Full `./gradlew build` green (with Docker available for the Redis Testcontainers test).
 - [ ] Delete the per-module task docs as they complete; delete this one on merge to master.
@@ -56,3 +82,7 @@ full `./gradlew build` green.
 
 - 2026-07-06 — recorded; core migration complete (PR #53), finalization pending the
   parked modules.
+- 2026-07-06 — Testcontainers/Docker item resolved for `storage:redis`: bumped TC → 2.0.5,
+  adapted the two redis tests (`getHost()`, dropped inert `@Container`), and ported
+  gcloud-jvm's `CheckDockerAvailable` gate + `@RequiresDocker`/`RequiresDockerCondition`.
+  Not yet build-verified (needs Docker + `read:packages`).

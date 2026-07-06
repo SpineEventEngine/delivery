@@ -8,8 +8,9 @@ package io.spine.internal.dependency
 
 // https://www.testcontainers.org/
 object Testcontainers {
-    const val version = "1.16.0"
+    const val version = "2.0.5"
 
     const val lib = "org.testcontainers:testcontainers:${version}"
-    const val junitJupiter = "org.testcontainers:junit-jupiter:${version}"
+    // Testcontainers 2.x renamed its JUnit 5 module `junit-jupiter` -> `testcontainers-junit-jupiter`.
+    const val junitJupiter = "org.testcontainers:testcontainers-junit-jupiter:${version}"
 }

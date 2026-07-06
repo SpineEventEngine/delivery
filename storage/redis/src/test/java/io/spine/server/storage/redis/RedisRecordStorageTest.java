@@ -13,16 +13,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.utility.DockerImageName;
 
 @DisplayName("`RedisRecordStorage` should")
+@RequiresDocker
 final class RedisRecordStorageTest extends AbstractStorageTest {
 
     private static final ContextSpec context = ContextSpec
             .singleTenant("RedisRecordStorageTest");
 
-    @Container
     private final GenericContainer<?> redis =
             new GenericContainer<>(DockerImageName.parse("redis:6-alpine"))
                     .withExposedPorts(6379);
@@ -54,7 +53,7 @@ final class RedisRecordStorageTest extends AbstractStorageTest {
 
     @SuppressWarnings("AccessOfSystemProperties" /* OK for tests. */)
     private static void configureRedisProps(GenericContainer<?> redis) {
-        System.setProperty("REDIS_HOST", redis.getContainerIpAddress());
+        System.setProperty("REDIS_HOST", redis.getHost());
         System.setProperty("REDIS_PORT", String.valueOf(redis.getFirstMappedPort()));
     }
 }
