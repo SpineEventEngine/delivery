@@ -55,7 +55,12 @@ public final class SingletonStorageFactory implements StorageFactory {
     }
 
     @Override
-    public void close() throws Exception {
+    public boolean isOpen() {
+        return delegate.isOpen();
+    }
+
+    @Override
+    public void close() {
         map.values().forEach(AbstractStorage::close);
         delegate.close();
     }

@@ -73,7 +73,12 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
     }
 
     @Override
-    public void close() throws Exception {
+    public boolean isOpen() {
+        return delegate.isOpen();
+    }
+
+    @Override
+    public void close() {
         delegate.close();
     }
 
