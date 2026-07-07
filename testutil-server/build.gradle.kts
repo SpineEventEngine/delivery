@@ -1,6 +1,6 @@
-import io.spine.internal.dependency.Spine
+import io.spine.dependency.local.CoreJvm
 
 dependencies {
     api(project(":model"))
-    api(Spine.Test.server)
+    api(CoreJvm.testUtilServer)
 }

@@ -1,14 +1,14 @@
-import io.spine.internal.dependency.Redisson
-import io.spine.internal.dependency.Spine
-import io.spine.internal.dependency.Testcontainers
+import io.spine.dependency.local.CoreJvm
+import io.spine.dependency.test.Testcontainers
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import org.gradle.process.ExecOperations
 
 dependencies {
-    api(Spine.server)
+    api(CoreJvm.server)
     implementation(project(":storage:base"))
-    implementation(Redisson.lib)
+    // `Redisson` is not part of the shared `config` dependency catalog; declared inline.
+    implementation("org.redisson:redisson:3.16.3")
     testImplementation(Testcontainers.lib)
     testImplementation(project(path = ":storage:base", configuration = "testArtifacts"))
 }
