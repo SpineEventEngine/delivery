@@ -65,4 +65,4 @@ that are hosted on the Google Container Registry. There is a Terraform module
 GCE instance. All the configuration parameters that are available for the servers also may be set
 through the Terraform module configuration.
 
-[terraform-module]: https://registry.terraform.io/modules/SpineEventEngine/spine-liquor/google/latest
+[terraform-module]: https://registry.terraform.io/modules/SpineEventEngine/spine-delivery-server/google/latest

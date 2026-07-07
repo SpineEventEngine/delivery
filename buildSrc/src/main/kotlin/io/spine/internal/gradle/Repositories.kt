@@ -107,9 +107,16 @@ object PublishingRepos {
 
     @Suppress("UNUSED_PARAMETER") // `project` kept for call-site compatibility.
     private fun readGitHubToken(project: Project): String =
-        // Resolution from GitHub Packages requires a token with the `read:packages` scope,
-        // supplied via the `GITHUB_TOKEN` environment variable.
-        System.getenv("GITHUB_TOKEN") ?: ""
+        // Resolution from (and publishing to) GitHub Packages requires a token with the
+        // `read:packages` scope, supplied via the `GITHUB_TOKEN` environment variable.
+        // Fail fast with a clear message instead of returning an empty password, which would
+        // otherwise surface much later as a confusing `401 Unauthorized` from the repository.
+        System.getenv("GITHUB_TOKEN")?.takeIf(String::isNotBlank)
+            ?: error(
+                "The `GITHUB_TOKEN` environment variable (with the `read:packages` scope) is " +
+                        "required to resolve or publish Spine artifacts from GitHub Packages. " +
+                        "Export it and re-run the build."
+            )
 }
 
 /**
