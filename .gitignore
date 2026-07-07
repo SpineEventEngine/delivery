@@ -196,7 +196,6 @@ docs/_preview/resources/
 Thumbs.db
 .DS_Store
 .gradle
-**/build/
 /buildSrc/build/
 /google-chat-bot/build/
 target/
