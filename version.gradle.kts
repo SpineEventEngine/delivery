@@ -8,4 +8,4 @@
  * The version of the application.
  */
 
-val versionToPublish: String by extra("0.9.3")
+val versionToPublish: String by extra("0.10.0")
