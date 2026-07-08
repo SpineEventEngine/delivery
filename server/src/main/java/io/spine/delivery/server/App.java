@@ -118,10 +118,24 @@ public final class App implements WithLogging {
     }
 
     /**
-     * Initializes the application server environment and starts the gRPC container.
+     * Initializes the environment, starts the gRPC containers, and blocks until they terminate.
+     *
+     * <p>This is the entry point for {@link #main(String[])}. Tests should instead call
+     * {@link #start()} — which returns as soon as the servers are accepting requests — followed
+     * by {@link #shutdown()}, so that startup completes synchronously and cleanup is never
+     * skipped.
+     */
+    public void initAndStart() {
+        start();
+        awaitTermination();
+    }
+
+    /**
+     * Initializes the application server environment and starts the gRPC containers, returning
+     * once both are accepting requests.
      */
     @VisibleForTesting
-    public void initAndStart() {
+    void start() {
         initEnv();
         this.internalClient = memoize(App::internalClient);
         var deliveryContext = DeliveryContext.newBuilder()
@@ -129,7 +143,12 @@ public final class App implements WithLogging {
                 .build();
         this.internalGrpc = startInternalGrpc(deliveryContext);
         this.remoteGrpc = startRemoteGrpc(deliveryContext, internalClient);
+    }
 
+    /**
+     * Blocks the calling thread until both gRPC containers terminate.
+     */
+    private void awaitTermination() {
         internalGrpc.awaitTermination();
         remoteGrpc.awaitTermination();
     }

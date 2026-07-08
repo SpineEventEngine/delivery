@@ -46,11 +46,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 
 /**
  * Abstract base for test classes that need a running {@link App}.
@@ -75,28 +71,9 @@ public abstract class WithApp {
 
     private Client client;
 
-    /**
-     * Captures any exception thrown by {@link App#initAndStart()} on the background thread.
-     *
-     * <p>Without this, a failed server start is swallowed by the thread's default handler and
-     * the tests proceed against a half-started (or absent) server, surfacing only as a
-     * downstream {@code UNIMPLEMENTED: Method not found} when a client RPC is made. Capturing
-     * the throwable here lets {@link #startApp()} fail with the actual root cause instead.
-     */
-    private final AtomicReference<Throwable> startupFailure = new AtomicReference<>();
-
     @BeforeEach
     void startApp() {
-        var appThread = new Thread(app::initAndStart);
-        appThread.setUncaughtExceptionHandler((thread, throwable) -> startupFailure.set(throwable));
-        appThread.start();
-        sleepUninterruptibly(Duration.ofSeconds(3)); // allow the server to start.
-        var failure = startupFailure.get();
-        if (failure != null) {
-            throw new IllegalStateException(
-                    "`App` failed to start; the gRPC server is not ready. See the cause.",
-                    failure);
-        }
+        app.start();
     }
 
     @BeforeEach
