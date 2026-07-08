@@ -62,6 +62,7 @@ import io.spine.gradle.publish.IncrementGuard
 import io.spine.gradle.publish.PublishingRepos
 import io.spine.gradle.publish.spinePublishing
 import io.spine.gradle.report.coverage.KoverConfig
+import com.github.jk1.license.LicenseReportExtension
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
 import io.spine.gradle.repo.standardToSpineSdk
@@ -225,6 +226,14 @@ fun Project.applyPlugins() {
     apply<BomsPlugin>()
 
     LicenseReporter.generateReportIn(project)
+    // Scope each project's license report to itself. The jk1 plugin otherwise defaults to
+    // `[project] + subprojects`, so the source-less `storage` grouping project would resolve
+    // its subprojects' configurations (e.g. `:storage:base:checkstyle`) from its own task —
+    // which Gradle 9 rejects under `org.gradle.parallel=true` ("Resolution of the configuration
+    // ... was attempted without an exclusive lock"). `mergeAllLicenseReports` already aggregates
+    // every subproject individually, so restricting each report to its own project keeps the
+    // merged output identical while removing the cross-project resolution.
+    project.the<LicenseReportExtension>().projects = arrayOf(project)
     JavadocConfig.applyTo(project)
     CheckStyleConfig.applyTo(project)
 }
@@ -493,6 +502,15 @@ fun Project.setupTestTasks() {
  * Defines dependencies of this subproject.
  */
 fun Project.defineDependencies() {
+    // The `storage` grouping project has no sources of its own — it only aggregates its
+    // subprojects (`base`, `redis`, `hazelcast`) and compiles nothing. Declaring test
+    // dependencies on such a source-less project is inert, and it contributes an
+    // unversioned `junit-platform-launcher` (no test graph to resolve the JUnit BOM
+    // against) that surfaces as a `null`-versus-`6.1.0` duplicate in the merged
+    // dependency report. Skip dependency declarations for projects without sources.
+    if (!file("src").exists()) {
+        return
+    }
     dependencies {
         ErrorProne.apply {
             errorprone(core)
