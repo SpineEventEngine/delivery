@@ -8,9 +8,9 @@
  * Contains implementations of {@link io.spine.delivery.client.RequestExecutionStrategy}.
  */
 @CheckReturnValue
-@ParametersAreNonnullByDefault
+@NullMarked
 package io.spine.delivery.client.strategy;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;

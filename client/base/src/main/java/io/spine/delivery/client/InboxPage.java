@@ -12,7 +12,7 @@ import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxStorage;
 import io.spine.server.delivery.Page;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 

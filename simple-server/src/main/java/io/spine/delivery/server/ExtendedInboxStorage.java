@@ -14,7 +14,7 @@ import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.InboxStorage;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.storage.StorageFactory;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Optional;

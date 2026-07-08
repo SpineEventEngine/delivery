@@ -20,7 +20,7 @@ import io.spine.server.storage.query.RecordQueryMatcher;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.RecordWithColumns;
 import io.spine.string.Stringifiers;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.redisson.api.RMap;
 
 import java.util.Iterator;

@@ -8,7 +8,7 @@ package io.spine.server.storage.redis;
 
 import io.spine.core.TenantId;
 import io.spine.server.tenant.TenantFunction;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;

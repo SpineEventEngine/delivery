@@ -38,8 +38,8 @@ import io.spine.server.delivery.Page;
 import io.spine.server.delivery.PickUpOutcome;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
