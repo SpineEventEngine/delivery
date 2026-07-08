@@ -133,9 +133,9 @@ final class AppTest extends WithApp {
         client.shutdown();
     }
 
-    private static Client newClient() {
+    private Client newClient() {
         ManagedChannel channel = ManagedChannelBuilder
-                .forAddress(App.HOST, App.PORT)
+                .forAddress(App.HOST, port())
                 .usePlaintext()
                 .build();
         return Client

@@ -44,6 +44,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -55,7 +57,13 @@ import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterrup
  */
 public abstract class WithApp {
 
-    private final App app = new App();
+    /**
+     * A free port picked per test instance, so that concurrently running servers — such as the
+     * {@code simple-server} app during a parallel build — never clash on a shared fixed port.
+     */
+    private final int port = freePort();
+
+    private final App app = new App(port);
 
     private ShardSessionRegistryServiceBlockingStub sessionRegistry;
 
@@ -121,11 +129,30 @@ public abstract class WithApp {
     /**
      * Creates new {@code ManagedChannel} connected to the server running locally.
      */
-    protected static ManagedChannel localChannel() {
+    protected ManagedChannel localChannel() {
         return ManagedChannelBuilder
-                .forAddress(App.HOST, App.PORT)
+                .forAddress(App.HOST, port)
                 .usePlaintext()
                 .build();
+    }
+
+    /**
+     * Returns the port at which the {@link App} under test is exposed.
+     */
+    protected final int port() {
+        return port;
+    }
+
+    /**
+     * Reserves a free ephemeral port from the operating system.
+     */
+    private static int freePort() {
+        try (var socket = new ServerSocket(0)) {
+            return socket.getLocalPort();
+        } catch (IOException e) {
+            throw new IllegalStateException(
+                    "Unable to reserve a free port for the test gRPC server.", e);
+        }
     }
 
     /**

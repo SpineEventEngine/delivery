@@ -1,7 +1,27 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
- * TeamDev PROPRIETARY and CONFIDENTIAL.
- * Use is subject to license terms.
+ * Copyright 2026, TeamDev. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Redistribution and use in source and/or binary forms, with or without
+ * modification, must retain the above copyright notice and the following
+ * disclaimer.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 package io.spine.delivery.server;
@@ -92,9 +112,27 @@ public final class SimpleApp implements WithLogging {
     private @MonotonicNonNull HealthService healthService;
 
     /**
-     * Creates a new instance of the application.
+     * The port at which the gRPC server is exposed.
+     */
+    private final int port;
+
+    /**
+     * Creates a new instance of the application exposed at the {@linkplain #PORT default port}.
      */
     public SimpleApp() {
+        this(PORT);
+    }
+
+    /**
+     * Creates a new instance of the application exposed at the given {@code port}.
+     *
+     * <p>Intended for tests, which bind an ephemeral port so that concurrently running
+     * servers — such as the {@code server} module's app during a parallel build — do not
+     * clash on a shared fixed port.
+     */
+    @VisibleForTesting
+    SimpleApp(int port) {
+        this.port = port;
     }
 
     /**
@@ -119,7 +157,7 @@ public final class SimpleApp implements WithLogging {
                 .register(shardService)
                 .register(adminService);
         this.server = ServerBuilder
-                .forPort(PORT)
+                .forPort(port)
                 .executor(executor)
                 .addService(inboxService)
                 .addService(shardService)
@@ -135,7 +173,7 @@ public final class SimpleApp implements WithLogging {
                     SHARD_PROCESSING_TIMEOUT.getSeconds()));
         try {
             server.start();
-            logger().atInfo().log(() -> format("gRPC server started at host '%s' and port '%d'.", HOST, PORT));
+            logger().atInfo().log(() -> format("gRPC server started at host '%s' and port '%d'.", HOST, port));
             server.awaitTermination();
         } catch (Exception e) {
             logger().atError().withCause(e)
