@@ -7,5 +7,4 @@
 /**
  * The version of the application.
  */
-
-val versionToPublish: String by extra("0.10.0")
+extra.set("versionToPublish", "0.10.0")
