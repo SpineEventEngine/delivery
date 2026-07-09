@@ -120,7 +120,6 @@ repositories.standardToSpineSdk()
 
 spinePublishing {
     modules = setOf(
-        "server",
         "simple-server",
         "model"
     )
@@ -150,7 +149,7 @@ subprojects {
     // The CoreJvm compiler/ProtoData generates the Java message types and wires the
     // generated sources into the source sets, but not the gRPC service stubs. Configure the
     // `grpc` protoc plugin so the `*Grpc` classes are generated for the modules that declare
-    // gRPC services (`grpc-api`, `server`, `simple-server`).
+    // gRPC services (`grpc-api`, `simple-server`).
     @Suppress("DEPRECATION") // `Grpc.ProtocPlugin.artifact` is the Java stub; `GrpcKotlin` is for Kotlin.
     configure<com.google.protobuf.gradle.ProtobufExtension> {
         plugins {

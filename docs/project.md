@@ -11,16 +11,16 @@ inbox messages, instead of contending on a shared database. This lets a Spine
 application scale its delivery across nodes while keeping shard coordination in
 one place.
 
-The repository ships two interchangeable server implementations plus the client
-libraries and deployment wrappers needed to run them, so it is both a set of
-published artifacts and a set of runnable applications.
+The repository ships a gRPC server implementation plus the client libraries and
+deployment wrappers needed to run it, so it is both a set of published artifacts
+and a set of runnable applications.
 
 ## Architecture
 
 Role: **application + published libraries** — a multi-module Gradle build whose
-`server`, `simple-server`, and `model` modules are published as Maven artifacts
-under the `io.spine.delivery` group (no `spine-` prefix), while the deployment
-modules produce runnable Docker images.
+`simple-server` and `model` modules are published as Maven artifacts under the
+`io.spine.delivery` group (no `spine-` prefix), while the deployment modules
+produce runnable Docker images.
 
 The build is split into two parts. The main build targets the current Spine SDK
 (`2.0.0-SNAPSHOT`); the [`client`](../client) directory is a separate **included
@@ -36,13 +36,11 @@ newer Spine runtime.
 - `grpc-api` — the gRPC service contract (`message_delivery.proto`,
   `admin/admin_service.proto`, plus a vendored `grpc.health.v1` service) and the
   supporting stream-observer/admin helper classes.
-- `server` — the **Spine-based** Delivery Server: a full-fledged Spine
-  application exposing the delivery gRPC API on port `8484` (in-memory or Redis
-  storage).
 - `simple-server` — a **plain gRPC** Delivery Server that does not embed Spine,
-  built for throughput. Adds a Hazelcast-backed storage mode for running several
-  clustered instances sharing a single memory space.
-- `testutil-server` — test fixtures and Protobuf test types for the server modules.
+  built for throughput. Exposes the delivery gRPC API on port `8484` with
+  in-memory, Redis, or Hazelcast storage (the last for running several clustered
+  instances sharing a single memory space).
+- `testutil-server` — test fixtures and Protobuf test types for `simple-server`.
 - `admin-server` — a gRPC client that connects to a running Delivery Server and
   re-exposes shard status over HTTP for maintenance and administration.
 - `admin-ui` — a Quasar/Vue (TypeScript) web client for the Admin Service; talks
@@ -50,9 +48,9 @@ newer Spine runtime.
   packages.
 - `storage:base`, `storage:redis`, `storage:hazelcast` — the storage SPI and its
   Redis and Hazelcast implementations.
-- `deployment/server-cloud-run`, `deployment/simple-server-cloud-run` — Cloud Run
-  launchers that start a server together with the admin server inside one Docker
-  container (built with the Jib and Shadow plugins).
+- `deployment/simple-server-cloud-run` — a Cloud Run launcher that starts
+  `simple-server` inside one Docker container (built with the Jib and Shadow
+  plugins).
 
 ### `client` included build (Spine 1.x)
 
@@ -68,17 +66,14 @@ newer Spine runtime.
 ### Key constraints
 
 - **Public API stability**: consumer applications pin to versions published from
-  here, so removals and signature changes to `model`, `grpc-api`, `server`, and
+  here, so removals and signature changes to `model`, `grpc-api`, and
   `simple-server` are breaking. Renaming a Protobuf `package` also changes the
   wire-level type URL, so proto, Java, and the `admin-ui` generated code must
   move together.
-- **Two servers, one contract**: `server` (Spine) and `simple-server` (plain
-  gRPC) share `model` and `grpc-api`; changes to the contract must keep both
-  implementations and all clients in sync.
 - **Two Spine generations**: the `client` included build stays on Spine 1.x /
   Gradle 6 on purpose — do not fold it into the main build.
-- **Distribution**: both servers ship as Docker containers on the Google
-  Container Registry and are deployed via a Terraform module. All server
+- **Distribution**: `simple-server` ships as a Docker container on the Google
+  Container Registry and is deployed via a Terraform module. All server
   configuration is available through environment variables (`PORT`, `USE_REDIS`,
   `REDIS_HOST`, `USE_HAZELCAST`, `MAX_INBOUND_MESSAGE_SIZE`,
   `SHARD_PROCESSING_TIMEOUT`, …).
