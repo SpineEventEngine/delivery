@@ -55,8 +55,8 @@ newer Spine runtime.
 ### `client` included build (Spine 1.x)
 
 - `base` — interfaces and Protos: the grounding parts of the Delivery Server client.
-- `client` — the client implementation coupled with the Spine-based `server`.
-- `simple-client` — the client implementation coupled with the plain-gRPC `simple-server`.
+- `simple-client` — the Delivery Server client implementation; talks plain gRPC
+  to the `simple-server`.
 - `testutil-client` — test fixtures and Protobuf test types for the client modules.
 - `demo` — a demo "Greeter" Spine application exercising the client.
 - `integration-test` — Testcontainers-based tests running several server instances.
