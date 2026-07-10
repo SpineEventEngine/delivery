@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -13,8 +13,8 @@ import io.spine.internal.gradle.spinePublishing
 
 allprojects {
     apply(from = "$rootDir/../version.gradle.kts")
-    group = "io.spine.message-delivery"
-    version = extra["messageDeliveryVersion"]!!
+    group = "io.spine.delivery"
+    version = extra["versionToPublish"]!!
 
     apply<IdeaPlugin>()
 }
@@ -50,7 +50,7 @@ spinePublishing {
         "client", "simple-client", "base"
     )
     targetRepositories.addAll(
-        PublishingRepos.gitHub("message-delivery")
+        PublishingRepos.gitHub("delivery-server")
     )
     spinePrefix.set(false)
 }

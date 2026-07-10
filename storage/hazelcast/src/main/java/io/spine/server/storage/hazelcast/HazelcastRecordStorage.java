@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -58,7 +58,7 @@ public final class HazelcastRecordStorage<I, R extends Message> extends RecordSt
      *         hazelcast instance that this storage will use as its backend storage
      */
     HazelcastRecordStorage(ContextSpec context,
-                           RecordSpec<I, R, ?> recordSpec,
+                           RecordSpec<I, R> recordSpec,
                            HazelcastInstance hazelcast) {
         super(context, recordSpec);
         this.hazelcast = hazelcast;
@@ -130,7 +130,7 @@ public final class HazelcastRecordStorage<I, R extends Message> extends RecordSt
      */
     private String getStorageName(TenantId tenantId) {
         Class<I> idType = recordSpec().idType();
-        Class<R> storedType = recordSpec().storedType();
+        Class<R> storedType = recordSpec().recordType();
         return format("[%s]%s:%s", tenantId.getValue(), idType.getName(), storedType.getName());
     }
 
@@ -151,8 +151,8 @@ public final class HazelcastRecordStorage<I, R extends Message> extends RecordSt
             "unchecked", /* Ensured by generics and serialization approach. */
     })
     private RecordWithColumns<I, R> recordWithColumns(I id, R record) {
-        RecordSpec<I, R, ?> spec = recordSpec();
-        return RecordWithColumns.create(id, record, (RecordSpec<I, R, R>) spec);
+        RecordSpec<I, R> spec = recordSpec();
+        return RecordWithColumns.create(id, record, spec);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -33,7 +33,7 @@ application {
     )
 }
 
-val appClassName = "io.spine.message.delivery.launcher.Launcher"
+val appClassName = "io.spine.delivery.launcher.Launcher"
 project.setProperty("mainClassName", appClassName)
 
 tasks.withType<ShadowJar> {

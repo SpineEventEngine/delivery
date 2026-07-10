@@ -1,0 +1,84 @@
+name: Build PR
+
+on:
+  pull_request:
+    branches: [ '*' ]
+  workflow_dispatch:
+
+jobs:
+  build-server:
+    name: Build Server
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: 'true'
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+      # Provisions the Gradle distribution and caches `~/.gradle`. Replaces the
+      # manual `actions/cache@v2`, which GitHub now auto-fails as a removed action.
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Build Server
+        run: ./gradlew build --stacktrace
+        env:
+          # `GITHUB_ACTOR` + `GITHUB_TOKEN` authenticate resolution of the Spine
+          # snapshots from GitHub Packages (`maven.pkg.github.com/SpineEventEngine/*`).
+          # If the default token cannot read the organization's packages, replace it
+          # with a PAT secret that carries the `read:packages` scope.
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # The `build-client` and `build-admin-web-client` jobs are disabled while their
+  # modules are parked during the Gradle 9 / CoreJvmCompiler migration:
+  #   * `admin-ui`                                    — see `.agents/tasks/admin-ui-gradle-9.md`
+  #   * `server-cloud-run` / `simple-server-cloud-run` (the deployment modules the
+  #     client job's `jibDockerBuild` step needs)     — see `.agents/tasks/deployment-gradle-9.md`
+  #   * the `client` build is decoupled and built standalone via `client/gradlew`.
+  # Re-enable them (they are already modernized below) once the modules are back in
+  # `settings.gradle.kts`.
+  #
+  # build-client:
+  #   name: Build Client
+  #   runs-on: 'ubuntu-latest'
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #       with:
+  #         submodules: 'true'
+  #     - name: Set up JDK 17
+  #       uses: actions/setup-java@v5
+  #       with:
+  #         distribution: 'zulu'
+  #         java-version: '17'
+  #     - uses: gradle/actions/setup-gradle@v6
+  #     - name: Prepare local server container
+  #       run: ./gradlew :server-cloud-run:jibDockerBuild :simple-server-cloud-run:jibDockerBuild
+  #       env:
+  #         GITHUB_ACTOR: ${{ github.actor }}
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     - name: Build Client
+  #       run: |
+  #         cd client
+  #         ./gradlew build --stacktrace
+  #       env:
+  #         GITHUB_ACTOR: ${{ github.actor }}
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #
+  # build-admin-web-client:
+  #   name: Build Admin Web Client
+  #   runs-on: 'ubuntu-latest'
+  #   steps:
+  #     - uses: actions/checkout@v6
+  #       with:
+  #         submodules: 'true'
+  #     - name: Set up node
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 19.6.0
+  #     - name: Build Quasar SPA
+  #       run: ./gradlew :admin-ui:qbuild --stacktrace
+  #       env:
+  #         GITHUB_ACTOR: ${{ github.actor }}
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

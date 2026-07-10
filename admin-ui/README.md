@@ -1,6 +1,6 @@
-# spine-message-delivery-admin-web-client (web-client)
+# spine-delivery-server-admin-web-client (web-client)
 
-A web client for the Admin Service of the Liquor server.
+A web client for the Admin Service of Delivery Server.
 
 ## Install the dependencies
 ```bash

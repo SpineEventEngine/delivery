@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -82,7 +82,7 @@ tasks.compileJava {
     )
 
     options.errorprone {
-        option("NullAway:AnnotatedPackages", "io.spine.message.delivery")
+        option("NullAway:AnnotatedPackages", "io.spine.delivery")
         disableWarningsInGeneratedCode.set(true)
     }
 }

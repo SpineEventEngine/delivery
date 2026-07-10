@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -21,7 +21,7 @@ dependencies {
 }
 val uberJarName = "app"
 val uberJarFolder = "${buildDir}/uberJar"
-val appClassName = "io.spine.message.delivery.demo.JettyStarter"
+val appClassName = "io.spine.delivery.demo.JettyStarter"
 project.setProperty("mainClassName", appClassName)
 
 tasks.withType<ShadowJar> {

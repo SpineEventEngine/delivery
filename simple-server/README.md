@@ -1,7 +1,7 @@
-Simple Message Delivery Server
+Simple Delivery Server
 ---------------
 
-This module holds the Server of the Message Delivery which is written as plain gRPC application.
+This module holds the server component of Delivery Server which is written as plain gRPC application.
 
 The server is a runnable application which exposes gRPC APIs for working with the delivery.
 
@@ -26,15 +26,15 @@ environment variable which denotes the port on which Redis is accessible. The po
 to `6379`. If the `USE_REDIS` variable is set, but the `REDIS_HOST` is not configured the server 
 will stay in in-memory mode.
 
-The Hazelcast-based storage adds an ability to start several Liquor instances in 
-a replicated cluster where all the Liquor instances form a single memory space and automatically
-accessing data of each other. This means that changes made on one Liquor instance will be available
+The Hazelcast-based storage adds an ability to start several Delivery Server instances in 
+a replicated cluster where all the Delivery Server instances form a single memory space and automatically
+accessing data of each other. This means that changes made on one Delivery Server instance will be available
 for all other instances in the cluster. **Pay attention that this mode is experimental,
 and there is no strong consistency guaranty in the cluster for now.** In order to use Hazelcast
 storage one must set `USE_HAZELCAST` environment variable to any value (we check only presence 
 of the variable and ignore its value).
 
-Hazelcast starts an embedded server and automatically discovers other Liquor instances 
+Hazelcast starts an embedded server and automatically discovers other Delivery Server instances 
 in Hazelcast mode in the same network, so no additional effort required.
 
 # Inbound message size

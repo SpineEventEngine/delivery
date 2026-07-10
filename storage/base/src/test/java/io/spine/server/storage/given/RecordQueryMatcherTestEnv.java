@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -55,14 +55,17 @@ public final class RecordQueryMatcherTestEnv {
     }
 
     /**
-     * A {@code Column} which holds an {@link Any} instance.
+     * A {@code Column} which reads the {@code state} of an {@link EntityRecord} as an {@link Any}.
+     *
+     * <p>Reading a real record field (rather than a constant) lets the current Spine SPI derive
+     * per-record column values via {@link io.spine.server.storage.RecordWithColumns#create}.
      */
     public static RecordColumn<EntityRecord, Any> anyColumn() {
-        return create("wrapped_state", Any.class, (r) -> anyValue());
+        return create("wrapped_state", Any.class, EntityRecord::getState);
     }
 
     /**
-     * The {@link Any} value held by the corresponding {@linkplain #anyColumn() entity column}.
+     * A sample {@link Any} value that can be stored in the {@link #anyColumn() any column}.
      */
     public static Any anyValue() {
         Project someMessage = Sample.messageOfType(Project.class);
@@ -71,24 +74,17 @@ public final class RecordQueryMatcherTestEnv {
     }
 
     /**
-     * A {@code Column} which holds a {@code boolean} value.
+     * A {@code Column} which reads the {@code archived} lifecycle flag of an {@link EntityRecord}.
      */
     public static RecordColumn<EntityRecord, Boolean> booleanColumn() {
-        return create("internal", Boolean.class, (r) -> booleanValue());
+        return booleanColumn("archived");
     }
 
     /**
-     * A {@code Column} which holds a {@code boolean} value.
+     * A {@code boolean} {@code Column} with a custom name, reading the {@code archived} flag.
      */
     public static RecordColumn<EntityRecord, Boolean> booleanColumn(String name) {
-        return create(name, Boolean.class, (r) -> booleanValue());
-    }
-
-    /**
-     * The {@code boolean} value held by the corresponding {@linkplain #booleanColumn() entity
-     * column}.
-     */
-    private static boolean booleanValue() {
-        return true;
+        return create(name, Boolean.class, r -> r.getLifecycleFlags()
+                                                 .getArchived());
     }
 }

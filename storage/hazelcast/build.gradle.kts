@@ -1,8 +1,8 @@
-import io.spine.internal.dependency.Spine
-import io.spine.internal.dependency.Testcontainers
+import io.spine.dependency.local.CoreJvm
+import io.spine.dependency.test.Testcontainers
 
 dependencies {
-    api(Spine.server)
+    api(CoreJvm.server)
     implementation(project(":storage:base"))
     implementation("com.hazelcast:hazelcast:5.3.1")
     testImplementation(Testcontainers.lib)

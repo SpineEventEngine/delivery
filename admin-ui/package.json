@@ -1,8 +1,8 @@
 {
   "name": "web-client",
   "version": "0.0.1",
-  "description": "A web client for the Admin Service of the Liquor server.",
-  "productName": "spine-message-delivery-admin-web-client",
+  "description": "A web client for the Admin Service of Delivery Server.",
+  "productName": "spine-delivery-server-admin-web-client",
   "author": "Nick Dolhii <mykola.dolhii@teamdev.com>",
   "private": true,
   "scripts": {

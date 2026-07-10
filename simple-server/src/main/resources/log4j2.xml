@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2000-2023 TeamDev. All rights reserved.
+  ~ Copyright (c) 2000-2026 TeamDev. All rights reserved.
   ~ TeamDev PROPRIETARY and CONFIDENTIAL.
   ~ Use is subject to license terms.
   -->
@@ -11,7 +11,7 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="io.spine.message.delivery.server" level="TRACE" additivity="false">
+        <Logger name="io.spine.delivery.server" level="TRACE" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="INFO">

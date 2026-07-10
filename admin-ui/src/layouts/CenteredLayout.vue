@@ -1,5 +1,5 @@
 <!--
-  - Copyright (c) 2000-2023 TeamDev. All rights reserved.
+  - Copyright (c) 2000-2026 TeamDev. All rights reserved.
   - TeamDev PROPRIETARY and CONFIDENTIAL.
   - Use is subject to license terms.
   -->
@@ -11,7 +11,7 @@
         <q-avatar>
           <img src="spine-sign-white.svg" alt="spine-logo">
         </q-avatar>
-        <q-toolbar-title >Liquor Admin</q-toolbar-title>
+        <q-toolbar-title >Delivery Server Admin</q-toolbar-title>
       </q-toolbar>
     </q-header>
     <q-page-container>

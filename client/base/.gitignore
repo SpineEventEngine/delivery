@@ -1,2 +1,2 @@
-src/main/proto/spine/message/delivery/
+src/main/proto/spine/delivery/
 src/main/proto/grpc/health/v1/

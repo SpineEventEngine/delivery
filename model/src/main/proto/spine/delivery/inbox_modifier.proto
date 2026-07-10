@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+
+syntax = "proto3";
+
+package spine.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.delivery";
+option java_outer_classname = "InboxWriterProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+// A process of handling inboxes modification commands.
+message InboxModifier {
+    option (entity).kind = PROCESS_MANAGER;
+
+    // The ID of the modifier.
+    InboxModifierId id = 1;
+}
+
+// The modifier identifier.
+//
+// There is only one instance of the modifier across the context.
+//
+message InboxModifierId {
+
+    string value = 1 [(required) = true];
+}

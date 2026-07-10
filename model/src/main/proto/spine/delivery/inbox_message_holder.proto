@@ -1,0 +1,64 @@
+/*
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+
+syntax = "proto3";
+
+package spine.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.delivery";
+option java_outer_classname = "InboxMessageHolderProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+import "google/protobuf/timestamp.proto";
+
+import "spine/server/delivery/inbox.proto";
+import "spine/server/delivery/delivery.proto";
+
+// A holder of an inbox message.
+message InboxMessageHolder {
+    option (entity).kind = PROJECTION;
+
+    spine.server.delivery.InboxMessageId id = 1;
+
+    // The message stored in the holder.
+    spine.server.delivery.InboxMessage message = 2 [(column) = true];
+
+    // A shard in which the identified message resides.
+    spine.server.delivery.ShardIndex shard = 3 [(column) = true];
+
+    // The ID of the inbox the message belongs to.
+    spine.server.delivery.InboxId inbox = 4 [(column) = true];
+
+    // The ID of the signal stored in this message.
+    spine.server.delivery.InboxSignalId signal = 5 [(column) = true];
+
+    // Denotes whether the message holds an event.
+    bool is_event = 6 [(column) = true];
+
+    // Denotes whether the message holds a command.
+    bool is_command = 7 [(column) = true];
+
+    // The label of this inbox message.
+    spine.server.delivery.InboxLabel label = 8 [(column) = true];
+
+    // The status of the delivery for this inbox message.
+    spine.server.delivery.InboxMessageStatus status = 9 [(column) = true];
+
+    // A point in time when the message was received by the `Inbox` instance.
+    google.protobuf.Timestamp received_at = 10 [(column) = true];
+
+    // An `Inbox`-internal version of the message.
+    //
+    // Used to order the messages received at the very same millisecond.
+    //
+    // Not declared as a `(column)`: the entity framework already provides a system
+    // `version` column, and the current Spine SPI rejects a duplicate column name.
+    int32 version = 11;
+}

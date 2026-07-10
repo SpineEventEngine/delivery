@@ -10,7 +10,7 @@ repositories {
 }
 
 application {
-    mainClass.set("io.spine.message.delivery.admin.AdminServer")
+    mainClass.set("io.spine.delivery.admin.AdminServer")
 }
 
 micronaut {
@@ -20,7 +20,7 @@ micronaut {
 
     processing {
         incremental(true)
-        annotations("io.spine.message.delivery.admin.*")
+        annotations("io.spine.delivery.admin.*")
     }
 }
 

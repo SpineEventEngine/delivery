@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2000-2023 TeamDev. All rights reserved.
+  ~ Copyright (c) 2000-2026 TeamDev. All rights reserved.
   ~ TeamDev PROPRIETARY and CONFIDENTIAL.
   ~ Use is subject to license terms.
   -->
@@ -14,10 +14,10 @@
         <Logger name="io.spine" level="INFO" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        <Logger name="io.spine.message.delivery" level="DEBUG" additivity="false">
+        <Logger name="io.spine.delivery" level="DEBUG" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
-        <Logger name="io.spine.message.delivery.demo" level="TRACE" additivity="false">
+        <Logger name="io.spine.delivery.demo" level="TRACE" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="INFO">

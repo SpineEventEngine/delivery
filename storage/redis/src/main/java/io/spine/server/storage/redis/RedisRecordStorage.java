@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -38,7 +38,7 @@ public final class RedisRecordStorage<I, R extends Message> extends RecordStorag
      * @param client
      *         the access client to the Redis instance
      */
-    RedisRecordStorage(ContextSpec context, RecordSpec<I, R, ?> recordSpec, RedissonClient client) {
+    RedisRecordStorage(ContextSpec context, RecordSpec<I, R> recordSpec, RedissonClient client) {
         super(context, recordSpec);
         this.multitenantStorage =
                 new FlatTenantStorage<>(context.isMultitenant(), recordSpec, client);

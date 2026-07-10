@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -23,13 +23,14 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.test.entity.Project.Column.name;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * Abstract base for different storage tests.
  */
 public abstract class AbstractStorageTest {
 
-    private static final RecordSpec<ProjectId, Project, ?> recordSpec = new MessageRecordSpec<>(
+    private static final RecordSpec<ProjectId, Project> recordSpec = new RecordSpec<>(
             ProjectId.class, Project.class, Project::getId,
             ImmutableList.of(RecordColumn.create("name", name().type(), Project::getName))
     );
@@ -75,7 +76,7 @@ public abstract class AbstractStorageTest {
         void indexQuery() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             RecordQuery<ProjectId, Project> query =
                     Project.query()
                            .id()
@@ -91,7 +92,7 @@ public abstract class AbstractStorageTest {
         void readAllRecords() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             RecordQuery<ProjectId, Project> query =
                     Project.query()
                            .id()
@@ -107,7 +108,7 @@ public abstract class AbstractStorageTest {
         void deleteRecord() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             assertThat(storage.deleteRecord(someId))
                     .isFalse();
         }
@@ -117,11 +118,11 @@ public abstract class AbstractStorageTest {
         void write() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             Project someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
-            storage.write(someId, someRecord);
+            assertDoesNotThrow(() -> storage.write(someId, someRecord));
         }
 
         @Test
@@ -129,11 +130,12 @@ public abstract class AbstractStorageTest {
         void writeAll() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             Project someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
-            storage.writeAllRecords(ImmutableList.of(RecordWithColumns.of(someId, someRecord)));
+            assertDoesNotThrow(() ->
+                    storage.writeAllRecords(ImmutableList.of(RecordWithColumns.of(someId, someRecord))));
         }
     }
 
@@ -143,7 +145,7 @@ public abstract class AbstractStorageTest {
 
         private final ProjectId existingProjectId = ProjectId.newBuilder()
                 .setId(Identifier.newUuid())
-                .vBuild();
+                .build();
         private final Project existingProject = Project.newBuilder()
                 .setId(existingProjectId)
                 .setName(PreFilledStorage.class.getName())
@@ -177,7 +179,7 @@ public abstract class AbstractStorageTest {
         void indexQuery() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             RecordQuery<ProjectId, Project> query =
                     Project.query()
                            .id()
@@ -219,7 +221,7 @@ public abstract class AbstractStorageTest {
         void readAllRecords() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             RecordQuery<ProjectId, Project> query =
                     Project.query()
                            .id()
@@ -242,7 +244,7 @@ public abstract class AbstractStorageTest {
         void write() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             Project someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
@@ -258,7 +260,7 @@ public abstract class AbstractStorageTest {
         void writeAll() {
             ProjectId someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
-                    .vBuild();
+                    .build();
             Project someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();

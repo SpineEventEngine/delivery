@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+
+syntax = "proto3";
+
+package spine.delivery;
+
+import "spine/options.proto";
+
+option (type_url_prefix) = "type.spine.io";
+option java_package = "io.spine.delivery.server.event";
+option java_outer_classname = "TestEventsProto";
+option java_multiple_files = true;
+option java_generate_equals_and_hash = true;
+
+// ID of the event message for testing purposes.
+message TestEventId {
+
+    string uuid = 1;
+}
+
+// Meaningless event message for testing purposes.
+message TestEvent {
+
+    TestEventId id = 1;
+}
+
+// ID of another event message for testing purpose.
+message AnotherTestEventId {
+
+    string uuid = 1;
+}
+
+// Another meaningless event message for testing purpose.
+message AnotherTestEvent {
+
+    AnotherTestEventId id = 1;
+}

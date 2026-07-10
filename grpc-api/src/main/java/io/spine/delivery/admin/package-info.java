@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
+ * TeamDev PROPRIETARY and CONFIDENTIAL.
+ * Use is subject to license terms.
+ */
+
+/**
+ * Package for the admin-related functionality.
+ */
+@CheckReturnValue
+@NullMarked
+package io.spine.delivery.admin;
+
+import com.google.errorprone.annotations.CheckReturnValue;
+
+import org.jspecify.annotations.NullMarked;
