@@ -39,7 +39,9 @@ final class HttpBasicAuthProvider<B> implements HttpRequestAuthenticationProvide
                                                AuthenticationRequest<String, String> auth) {
         var identity = auth.getIdentity();
         var secret = auth.getSecret();
-        if (identity.equals(valid.username()) && secret.equals(valid.password())) {
+        // The configured credentials are known to be non-`null`, so a `null`
+        // identity or secret compares as a mismatch instead of throwing.
+        if (valid.username().equals(identity) && valid.password().equals(secret)) {
             return success(identity);
         }
         return failure(AuthenticationFailureReason.CREDENTIALS_DO_NOT_MATCH);

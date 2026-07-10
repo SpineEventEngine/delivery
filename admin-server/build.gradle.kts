@@ -81,7 +81,9 @@ dependencies {
     // This build runs with `failOnVersionConflict()` (see `forceVersions()` applied
     // by the root project). The Micronaut modules come from nested BOMs that request
     // slightly different patch versions of each other, so the platform BOM is
-    // enforced on every configuration to collapse those conflicts.
+    // enforced for the processor, compile, and test configurations declared below.
+    // Configurations that do not extend them (e.g. `compileProtoPath`) are covered
+    // by the `eachDependency` alignment above.
     annotationProcessor(enforcedPlatform(Micronaut.bom))
     annotationProcessor(Micronaut.AnnotationProcessor.httpValidation)
     annotationProcessor(Micronaut.AnnotationProcessor.security)
