@@ -22,7 +22,7 @@ object Micronaut {
      * The Micronaut Gradle plugin, applied via the `micronaut-application`
      * accessor declared in `DsBuildExtensions.kt`.
      *
-     * The plugin versions independently from the framework: 4.6.2 is the newest
+     * The plugin versions independently of the framework: 4.6.2 is the newest
      * version that runs on a Java 17 daemon — the 5.x line (the first to
      * officially support Gradle 9) is compiled for JVM 25. In practice, 4.6.2
      * configures and runs cleanly on Gradle 9.6.1.
@@ -33,9 +33,12 @@ object Micronaut {
         const val version = "4.6.2"
     }
 
+    /** The group of the Micronaut core modules. */
+    const val group = "io.micronaut"
+
     // https://repo1.maven.org/maven2/io/micronaut/platform/micronaut-platform/
     const val version = "4.10.17"
-    const val bom = "io.micronaut.platform:micronaut-platform:$version"
+    const val bom = "$group.platform:micronaut-platform:$version"
 
     /**
      * The versions pinned by the platform [bom], repeated here because this build
@@ -52,7 +55,7 @@ object Micronaut {
     const val sourcegenVersion = "1.8.5"
     const val groovyVersion = "4.0.28"
 
-    const val runtime = "io.micronaut:micronaut-runtime"
+    const val runtime = "$group:micronaut-runtime"
 
     /**
      * The `JsonMapper` implementation.
@@ -60,19 +63,27 @@ object Micronaut {
      * Micronaut 3 shipped Jackson with the runtime; since Micronaut 4
      * an implementation must be chosen explicitly.
      */
-    const val jacksonDatabind = "io.micronaut:micronaut-jackson-databind"
+    const val jacksonDatabind = "$group:micronaut-jackson-databind"
 
-    const val reactor = "io.micronaut.reactor:micronaut-reactor"
-    const val security = "io.micronaut.security:micronaut-security"
-    const val httpClient = "io.micronaut.reactor:micronaut-reactor-http-client"
+    /**
+     * The YAML support for the configuration files.
+     *
+     * Optional since Micronaut 4; required by applications configured
+     * by `application.yml`. The version comes from the platform [bom].
+     */
+    const val snakeYaml = "org.yaml:snakeyaml"
+
+    const val reactor = "$group.reactor:micronaut-reactor"
+    const val security = "$group.security:micronaut-security"
+    const val httpClient = "$group.reactor:micronaut-reactor-http-client"
 
     object AnnotationProcessor {
-        const val httpValidation = "io.micronaut:micronaut-http-validation"
-        const val security = "io.micronaut.security:micronaut-security-annotations"
+        const val httpValidation = "$group:micronaut-http-validation"
+        const val security = "$group.security:micronaut-security-annotations"
     }
 
     object Test {
-        const val core = "io.micronaut.test:micronaut-test-core"
-        const val jUnit5 = "io.micronaut.test:micronaut-test-junit5"
+        const val core = "$group.test:micronaut-test-core"
+        const val jUnit5 = "$group.test:micronaut-test-junit5"
     }
 }

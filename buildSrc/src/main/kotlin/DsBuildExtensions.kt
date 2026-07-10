@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-@file:Suppress("UnusedReceiverParameter", "unused", "TopLevelPropertyNaming", "ObjectPropertyName")
+@file:Suppress("unused", "TopLevelPropertyNaming", "ObjectPropertyName")
 
 import io.spine.dependency.lib.Micronaut
 import org.gradle.plugin.use.PluginDependenciesSpec
@@ -24,8 +24,7 @@ import org.gradle.plugin.use.PluginDependencySpec
 private const val ABOUT = ""
 
 /**
- * Shortcut for applying the [Micronaut application][Micronaut.GradlePlugin]
- * Gradle plugin.
+ * Shortcut for applying the [Micronaut application][Micronaut.GradlePlugin] Gradle plugin.
  */
 val PluginDependenciesSpec.`micronaut-application`: PluginDependencySpec
     get() = id(Micronaut.GradlePlugin.id).version(Micronaut.GradlePlugin.version)

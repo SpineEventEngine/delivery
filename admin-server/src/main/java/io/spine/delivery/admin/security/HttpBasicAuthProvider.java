@@ -8,18 +8,18 @@ package io.spine.delivery.admin.security;
 
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.http.HttpRequest;
+import io.micronaut.security.authentication.AuthenticationFailureReason;
 import io.micronaut.security.authentication.AuthenticationRequest;
 import io.micronaut.security.authentication.AuthenticationResponse;
 import io.micronaut.security.authentication.provider.HttpRequestAuthenticationProvider;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
-import static io.micronaut.security.authentication.AuthenticationFailureReason.CREDENTIALS_DO_NOT_MATCH;
 import static io.micronaut.security.authentication.AuthenticationResponse.failure;
 import static io.micronaut.security.authentication.AuthenticationResponse.success;
 
 /**
- * Authenticates users with {@code HTTP Basic Auth} method.
+ * Authenticates users with the {@code HTTP Basic Auth} method.
  *
  * @param <B>
  *         the type of the HTTP request body
@@ -42,6 +42,6 @@ final class HttpBasicAuthProvider<B> implements HttpRequestAuthenticationProvide
         if (identity.equals(valid.username()) && secret.equals(valid.password())) {
             return success(identity);
         }
-        return failure(CREDENTIALS_DO_NOT_MATCH);
+        return failure(AuthenticationFailureReason.CREDENTIALS_DO_NOT_MATCH);
     }
 }

@@ -27,7 +27,7 @@ application {
 configurations.all {
     resolutionStrategy.eachDependency {
         when (requested.group) {
-            "io.micronaut" -> useVersion(Micronaut.coreVersion)
+            Micronaut.group -> useVersion(Micronaut.coreVersion)
             "io.micronaut.reactor" -> useVersion(Micronaut.reactorVersion)
             "io.micronaut.serde" -> useVersion(Micronaut.serdeVersion)
             "io.micronaut.sourcegen" -> useVersion(Micronaut.sourcegenVersion)
@@ -62,7 +62,7 @@ configurations.all {
 // processing on the Java annotation-processing path only.
 configurations.matching { it.name.startsWith("ksp") }.configureEach {
     withDependencies {
-        removeAll { it.group?.startsWith("io.micronaut") == true }
+        removeAll { it.group?.startsWith(Micronaut.group) == true }
     }
 }
 
@@ -98,8 +98,8 @@ dependencies {
     implementation(project(":grpc-api"))
 
     // Micronaut 4 no longer ships YAML support by default, and this application
-    // is configured by `application.yml`. The version comes from the platform BOM.
-    runtimeOnly("org.yaml:snakeyaml")
+    // is configured by `application.yml`.
+    runtimeOnly(Micronaut.snakeYaml)
 
     testAnnotationProcessor(enforcedPlatform(Micronaut.bom))
     testImplementation(enforcedPlatform(Micronaut.bom))
