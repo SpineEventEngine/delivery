@@ -43,6 +43,12 @@ all modules and does not describe the project structure per-subproject.
   </dependency>
   <dependency>
     <groupId>io.grpc</groupId>
+    <artifactId>grpc-netty-shaded</artifactId>
+    <version>1.81.0</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.grpc</groupId>
     <artifactId>grpc-protobuf</artifactId>
     <version>1.81.0</version>
     <scope>compile</scope>
@@ -51,6 +57,48 @@ all modules and does not describe the project structure per-subproject.
     <groupId>io.grpc</groupId>
     <artifactId>grpc-stub</artifactId>
     <version>1.81.0</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-http-server-netty</artifactId>
+    <version>4.10.26</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-inject</artifactId>
+    <version>4.10.26</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-jackson-databind</artifactId>
+    <version>4.10.26</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-runtime</artifactId>
+    <version>4.10.26</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut.platform</groupId>
+    <artifactId>micronaut-platform</artifactId>
+    <version>4.10.17</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut.reactor</groupId>
+    <artifactId>micronaut-reactor</artifactId>
+    <version>3.9.1</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut.security</groupId>
+    <artifactId>micronaut-security</artifactId>
+    <version>4.15.2</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -114,9 +162,51 @@ all modules and does not describe the project structure per-subproject.
     <scope>provided</scope>
   </dependency>
   <dependency>
-    <groupId>io.grpc</groupId>
-    <artifactId>grpc-netty-shaded</artifactId>
-    <version>1.81.0</version>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-graal</artifactId>
+    <version>4.10.26</version>
+    <scope>provided</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-http-validation</artifactId>
+    <version>4.10.26</version>
+    <scope>provided</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-inject-java</artifactId>
+    <version>4.10.26</version>
+    <scope>provided</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut.security</groupId>
+    <artifactId>micronaut-security-annotations</artifactId>
+    <version>4.15.2</version>
+    <scope>provided</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.yaml</groupId>
+    <artifactId>snakeyaml</artifactId>
+    <version>2.5</version>
+    <scope>runtime</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut.reactor</groupId>
+    <artifactId>micronaut-reactor-http-client</artifactId>
+    <version>3.9.1</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut.test</groupId>
+    <artifactId>micronaut-test-core</artifactId>
+    <version>4.10.3</version>
+    <scope>test</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.micronaut.test</groupId>
+    <artifactId>micronaut-test-junit5</artifactId>
+    <version>4.10.3</version>
     <scope>test</scope>
   </dependency>
   <dependency>
@@ -210,6 +300,11 @@ all modules and does not describe the project structure per-subproject.
     <version>1.81.0</version>
   </dependency>
   <dependency>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-runtime-osx</artifactId>
+    <version>4.10.26</version>
+  </dependency>
+  <dependency>
     <groupId>io.spine.tools</groupId>
     <artifactId>compiler-cli-all</artifactId>
     <version>2.0.0-SNAPSHOT.061</version>
@@ -248,6 +343,11 @@ all modules and does not describe the project structure per-subproject.
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd-java</artifactId>
     <version>7.25.0</version>
+  </dependency>
+  <dependency>
+    <groupId>org.graalvm.buildtools</groupId>
+    <artifactId>junit-platform-native</artifactId>
+    <version>0.11.2</version>
   </dependency>
   <dependency>
     <groupId>org.jacoco</groupId>
@@ -313,6 +413,16 @@ all modules and does not describe the project structure per-subproject.
     <groupId>org.jetbrains.kotlin</groupId>
     <artifactId>kotlin-scripting-compiler-embeddable</artifactId>
     <version>2.3.21</version>
+  </dependency>
+  <dependency>
+    <groupId>org.junit.platform</groupId>
+    <artifactId>junit-platform-console</artifactId>
+    <version>6.1.0</version>
+  </dependency>
+  <dependency>
+    <groupId>org.junit.platform</groupId>
+    <artifactId>junit-platform-reporting</artifactId>
+    <version>6.1.0</version>
   </dependency>
 </dependencies>
 
