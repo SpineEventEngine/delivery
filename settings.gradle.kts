@@ -9,11 +9,10 @@ include("model")
 include("grpc-api")
 include("simple-server")
 include("testutil-server")
-// TEMPORARILY PARKED during the CoreJvm/Gradle-9 migration — each needs its own Gradle-9
+include("admin-server")
+// TEMPORARILY PARKED during the CoreJvm/Gradle-9 migration — needs its own Gradle-9
 // plugin sub-migration before being re-enabled:
-//   * `admin-server` — Micronaut Gradle plugin 3.x -> 4.x (and framework 3 -> 4).
-//   * `admin-ui`     — Quasar/npm Gradle integration on Gradle 9.
-// include("admin-server")
+//   * `admin-ui` — Quasar/npm Gradle integration on Gradle 9.
 // include("admin-ui")
 include("storage:hazelcast")
 include("storage:redis")

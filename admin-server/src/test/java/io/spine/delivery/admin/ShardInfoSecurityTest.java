@@ -40,8 +40,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayName("`App` should secure the `/admin/shardInfo` endpoint and")
 class ShardInfoSecurityTest {
 
+    @Inject
     @Client("/admin/shardInfo")
-    private HttpClient client;
+    HttpClient client;
 
     private Server grpcServer;
 
@@ -110,14 +111,6 @@ class ShardInfoSecurityTest {
                 assertThrows(HttpClientResponseException.class,
                              () -> blockingClient().exchange(request));
         assertEquals(UNAUTHORIZED, thrown.getStatus());
-    }
-
-    /**
-     * Sets the given {@code client}.
-     */
-    @Inject
-    void setClient(HttpClient client) {
-        this.client = client;
     }
 
     /**
