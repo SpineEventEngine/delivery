@@ -75,11 +75,11 @@ Spine v2.x), then include it back in `settings.gradle.kts`.
 
 ## Follow-ups (pre-PR)
 
-- [ ] Bump `version.gradle.kts` (still `0.10.0`, same as master) — the version gate;
+- [x] Bump `version.gradle.kts` (still `0.10.0`, same as master) — the version gate;
       `/pre-pr` or the `version-bumped` skill handles it.
-- [ ] Commit the regenerated `docs/dependencies/*` reports together with the change.
+- [x] Commit the regenerated `docs/dependencies/*` reports together with the change.
 - [ ] When the repo moves to a JDK 25 daemon, revisit the Micronaut Gradle plugin
-      5.x (officially Gradle-9/10 compatible) and Micronaut Platform 5.
+      5.x (officially Gradle-9/10 compatible) and Micronaut Platform 5. (see [#56](https://github.com/SpineEventEngine/delivery-server/issues/56))
 
 ## Log
 

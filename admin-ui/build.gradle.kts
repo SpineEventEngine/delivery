@@ -1,7 +1,3 @@
-import Build_gradle.Build
-import Build_gradle.Clean
-import Build_gradle.GenerateTsProto
-import Build_gradle.Serve
 import com.github.gradle.node.npm.task.NpmInstallTask
 import com.github.gradle.node.npm.task.NpxTask
 
@@ -57,6 +53,13 @@ abstract class Clean : NpxTask() {
 
 /**
  * A task that runs the `npx buf generate build/extracted-include-protos/main` command.
+ *
+ * The `--exclude-path .../src` option drops the redundant copy of the Protobuf
+ * well-known types that `protobuf-kotlin` ships under a non-standard
+ * `src/google/protobuf/` prefix. The canonical copies (from `protobuf-java`) sit
+ * at `google/protobuf/`, so `extractIncludeProto` unions both into the input
+ * directory. `buf generate` compiles every `.proto` it finds, and without the
+ * exclusion the duplicated well-known types collide ("symbol already defined").
  */
 abstract class GenerateTsProto : NpxTask() {
   init {
@@ -66,6 +69,8 @@ abstract class GenerateTsProto : NpxTask() {
       listOf(
         "generate",
         "build/extracted-include-protos/main",
+        "--exclude-path",
+        "build/extracted-include-protos/main/src",
       )
     )
   }
