@@ -10,10 +10,7 @@ include("grpc-api")
 include("simple-server")
 include("testutil-server")
 include("admin-server")
-// TEMPORARILY PARKED during the CoreJvm/Gradle-9 migration — needs its own Gradle-9
-// plugin sub-migration before being re-enabled:
-//   * `admin-ui` — Quasar/npm Gradle integration on Gradle 9.
-// include("admin-ui")
+include("admin-ui")
 include("storage:hazelcast")
 include("storage:redis")
 include("storage:base")
