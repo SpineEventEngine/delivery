@@ -151,6 +151,9 @@ subprojects {
     // generated sources into the source sets, but not the gRPC service stubs. Configure the
     // `grpc` protoc plugin so the `*Grpc` classes are generated for the modules that declare
     // gRPC services (`grpc-api`, `simple-server`).
+    // Captured for use as a cache-key input on the proto-generation tasks below.
+    val protoVersion = version.toString()
+
     @Suppress("DEPRECATION") // `Grpc.ProtocPlugin.artifact` is the Java stub; `GrpcKotlin` is for Kotlin.
     configure<com.google.protobuf.gradle.ProtobufExtension> {
         plugins {
@@ -163,6 +166,20 @@ subprojects {
                 plugins {
                     id("grpc")
                 }
+                // Make the project version part of this task's cache key.
+                //
+                // The generated descriptor set is named with the version (e.g.
+                // `io.spine.delivery_spine-simple-server_<version>_test.desc`), but the
+                // descriptor reference file (`desc.ref`) that points to it lives at a fixed
+                // path and carries the version only in its contents. The version is otherwise
+                // absent from this task's inputs, so with the Gradle build cache a build at a
+                // new version reuses a cached run from an older one: the descriptor set is
+                // restored under the new versioned path, while `desc.ref` keeps the stale name.
+                // The reference then dangles, `KnownTypes` cannot load this project's own
+                // descriptors, and packing a project type fails with `UnknownTypeException`.
+                // Declaring the version as an input invalidates the cache on a version change,
+                // keeping the descriptor set and its reference in sync.
+                inputs.property("projectVersion", protoVersion)
             }
         }
     }
