@@ -63,10 +63,10 @@ abstract class DistributedTest {
      * Creates and configures a new {@code GenericContainer}.
      */
     @SuppressWarnings("resource") // Container is closed in the `@AfterAll` hook.
-    private static GenericContainer<?> newDeliveryContainer(String loggOutputPrefix) {
+    private static GenericContainer<?> newDeliveryContainer(String logOutputPrefix) {
         return new GenericContainer<>(IMAGE_NAME)
                 .withExposedPorts(8484)
-                .withLogConsumer(new Slf4jLogConsumer(LOGGER).withPrefix(loggOutputPrefix))
+                .withLogConsumer(new Slf4jLogConsumer(LOGGER).withPrefix(logOutputPrefix))
                 .withNetwork(network)
                 .withEnv("USE_HAZELCAST", "true")
                 .withCreateContainerCmdModifier(m -> {
