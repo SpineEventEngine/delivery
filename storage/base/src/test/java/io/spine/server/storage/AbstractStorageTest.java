@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -23,13 +23,14 @@ import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
 import static io.spine.test.entity.Project.Column.name;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
  * Abstract base for different storage tests.
  */
 public abstract class AbstractStorageTest {
 
-    private static final RecordSpec<ProjectId, Project, ?> recordSpec = new MessageRecordSpec<>(
+    private static final RecordSpec<ProjectId, Project> recordSpec = new RecordSpec<>(
             ProjectId.class, Project.class, Project::getId,
             ImmutableList.of(RecordColumn.create("name", name().type(), Project::getName))
     );
@@ -121,7 +122,7 @@ public abstract class AbstractStorageTest {
             Project someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
-            storage.write(someId, someRecord);
+            assertDoesNotThrow(() -> storage.write(someId, someRecord));
         }
 
         @Test
@@ -133,7 +134,8 @@ public abstract class AbstractStorageTest {
             Project someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
-            storage.writeAllRecords(ImmutableList.of(RecordWithColumns.of(someId, someRecord)));
+            assertDoesNotThrow(() ->
+                    storage.writeAllRecords(ImmutableList.of(RecordWithColumns.of(someId, someRecord))));
         }
     }
 

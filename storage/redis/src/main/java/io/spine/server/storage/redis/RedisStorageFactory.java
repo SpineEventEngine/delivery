@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -96,8 +96,13 @@ public final class RedisStorageFactory implements StorageFactory {
 
     @Override
     public <I, M extends Message> RedisRecordStorage<I, M>
-    createRecordStorage(ContextSpec context, RecordSpec<I, M, ?> spec) {
+    createRecordStorage(ContextSpec context, RecordSpec<I, M> spec) {
         return new RedisRecordStorage<>(context, spec, client);
+    }
+
+    @Override
+    public boolean isOpen() {
+        return !client.isShutdown();
     }
 
     @Override

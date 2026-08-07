@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -12,9 +12,9 @@
  * Package provides Hazelcast-based implementation of storages.
  */
 @CheckReturnValue
-@ParametersAreNonnullByDefault
+@NullMarked
 package io.spine.server.storage.hazelcast;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;

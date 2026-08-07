@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -9,7 +9,7 @@ package io.spine.delivery.server;
 import io.spine.server.ContextSpec;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardSessionRecord;
-import io.spine.server.storage.MessageRecordSpec;
+import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.RecordStorageDelegate;
 import io.spine.server.storage.StorageFactory;
 
@@ -41,10 +41,10 @@ public final class ShardRegistryStorage extends RecordStorageDelegate<ShardIndex
         return super.readAll();
     }
 
-    private static MessageRecordSpec<ShardIndex, ShardSessionRecord> spec() {
+    private static RecordSpec<ShardIndex, ShardSessionRecord> spec() {
         @SuppressWarnings("ConstantConditions" /* Protobuf getters do not return {@code null}s. */)
-        MessageRecordSpec<ShardIndex, ShardSessionRecord> spec =
-                new MessageRecordSpec<>(ShardIndex.class,
+        RecordSpec<ShardIndex, ShardSessionRecord> spec =
+                new RecordSpec<>(ShardIndex.class,
                                         ShardSessionRecord.class,
                                         ShardSessionRecord::getIndex);
         return spec;

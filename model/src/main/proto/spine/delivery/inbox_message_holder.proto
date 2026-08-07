@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -58,5 +58,7 @@ message InboxMessageHolder {
     //
     // Used to order the messages received at the very same millisecond.
     //
-    int32 version = 11 [(column) = true];
+    // Not declared as a `(column)`: the entity framework already provides a system
+    // `version` column, and the current Spine SPI rejects a duplicate column name.
+    int32 version = 11;
 }

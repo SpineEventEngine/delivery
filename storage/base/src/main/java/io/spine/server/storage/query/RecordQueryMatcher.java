@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -16,7 +16,7 @@ import io.spine.query.RecordQuery;
 import io.spine.query.Subject;
 import io.spine.query.SubjectParameter;
 import io.spine.server.storage.RecordWithColumns;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.function.Predicate;
 

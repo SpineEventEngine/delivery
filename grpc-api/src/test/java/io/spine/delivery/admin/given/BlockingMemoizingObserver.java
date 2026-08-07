@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -71,6 +71,7 @@ public final class BlockingMemoizingObserver<T> extends MemoizingObserver<T> {
         private final Predicate<T> predicate;
 
         private FutureWithPredicate(Predicate<T> predicate) {
+            super();
             this.predicate = predicate;
         }
 

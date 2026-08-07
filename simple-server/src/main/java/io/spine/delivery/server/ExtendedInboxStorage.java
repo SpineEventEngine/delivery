@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -14,7 +14,7 @@ import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.InboxStorage;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.storage.StorageFactory;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Optional;

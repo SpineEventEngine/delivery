@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -27,7 +27,7 @@ import java.util.function.Function;
 import static com.google.common.collect.Iterators.filter;
 import static com.google.common.collect.Iterators.transform;
 import static io.micronaut.security.rules.SecurityRule.IS_AUTHENTICATED;
-import static io.spine.json.Json.toCompactJson;
+import static io.spine.type.Json.toCompactJson;
 import static java.util.UUID.randomUUID;
 
 /**

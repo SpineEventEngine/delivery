@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -13,7 +13,7 @@ import io.spine.delivery.DeliveryPickUpOutcome;
 import io.spine.delivery.rejection.Rejections;
 import io.spine.delivery.server.WithApp;
 import io.spine.delivery.server.grpc.given.ShardServiceTestEnv;
-import io.spine.time.testing.FrozenMadHatterParty;
+import io.spine.testing.time.FrozenMadHatterParty;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

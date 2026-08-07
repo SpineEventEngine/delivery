@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -7,5 +7,4 @@
 /**
  * The version of the application.
  */
-
-val versionToPublish: String by extra("0.9.3")
+extra.set("versionToPublish", "0.12.0")

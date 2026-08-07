@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -11,7 +11,6 @@ import io.spine.delivery.server.event.AnotherTestEventId;
 import io.spine.delivery.server.event.TestEvent;
 import io.spine.delivery.server.event.TestEventId;
 import io.spine.server.ContextSpec;
-import io.spine.server.storage.MessageRecordSpec;
 import io.spine.server.storage.RecordSpec;
 
 import static io.spine.server.ContextSpec.singleTenant;
@@ -51,15 +50,15 @@ public final class StoragesTestEnv {
     /**
      * Creates a new spec with {@code TestEventId} ID and {@code TestEvent} record.
      */
-    public static RecordSpec<TestEventId, TestEvent, ?> specForTestEvent() {
-        return new MessageRecordSpec<>(TestEventId.class, TestEvent.class, TestEvent::getId);
+    public static RecordSpec<TestEventId, TestEvent> specForTestEvent() {
+        return new RecordSpec<>(TestEventId.class, TestEvent.class, TestEvent::getId);
     }
 
     /**
      * Creates a new spec with {@code TestEventId} ID and {@code TestEvent} record.
      */
-    public static RecordSpec<AnotherTestEventId, AnotherTestEvent, ?> specForAnotherTestEvent() {
-        return new MessageRecordSpec<>(
+    public static RecordSpec<AnotherTestEventId, AnotherTestEvent> specForAnotherTestEvent() {
+        return new RecordSpec<>(
                 AnotherTestEventId.class, AnotherTestEvent.class, AnotherTestEvent::getId
         );
     }

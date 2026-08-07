@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -92,9 +92,27 @@ public final class SimpleApp implements WithLogging {
     private @MonotonicNonNull HealthService healthService;
 
     /**
-     * Creates a new instance of the application.
+     * The port at which the gRPC server is exposed.
+     */
+    private final int port;
+
+    /**
+     * Creates a new instance of the application exposed at the {@linkplain #PORT default port}.
      */
     public SimpleApp() {
+        this(PORT);
+    }
+
+    /**
+     * Creates a new instance of the application exposed at the given {@code port}.
+     *
+     * <p>Intended for tests, which bind an ephemeral port so that concurrently running
+     * servers — such as the {@code server} module's app during a parallel build — do not
+     * clash on a shared fixed port.
+     */
+    @VisibleForTesting
+    SimpleApp(int port) {
+        this.port = port;
     }
 
     /**
@@ -119,7 +137,7 @@ public final class SimpleApp implements WithLogging {
                 .register(shardService)
                 .register(adminService);
         this.server = ServerBuilder
-                .forPort(PORT)
+                .forPort(port)
                 .executor(executor)
                 .addService(inboxService)
                 .addService(shardService)
@@ -135,7 +153,7 @@ public final class SimpleApp implements WithLogging {
                     SHARD_PROCESSING_TIMEOUT.getSeconds()));
         try {
             server.start();
-            logger().atInfo().log(() -> format("gRPC server started at host '%s' and port '%d'.", HOST, PORT));
+            logger().atInfo().log(() -> format("gRPC server started at host '%s' and port '%d'.", HOST, port));
             server.awaitTermination();
         } catch (Exception e) {
             logger().atError().withCause(e)
@@ -212,14 +230,14 @@ public final class SimpleApp implements WithLogging {
     @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different module. */)
     private ReportingStorageFactory storageFactory() {
         if (useRedis()) {
-            _config().log(() -> format("Using Redis storage."));
+            logger().atConfig().log(() -> format("Using Redis storage."));
             return new ReportingStorageFactory(RedisStorageFactory.newInstance());
         }
         if (useHazelcast()) {
-            _config().log(() -> format("Using Hazelcast storage."));
+            logger().atConfig().log(() -> format("Using Hazelcast storage."));
             return new ReportingStorageFactory(HazelcastStorageFactory.newInstance());
         }
-        _config().log(() -> format("Using in-memory storage."));
+        logger().atConfig().log(() -> format("Using in-memory storage."));
         var factory = new SingletonStorageFactory(InMemoryStorageFactory.newInstance());
         return new ReportingStorageFactory(factory);
     }

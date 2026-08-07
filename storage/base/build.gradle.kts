@@ -1,7 +1,7 @@
-import io.spine.internal.dependency.Spine
+import io.spine.dependency.local.CoreJvm
 
 dependencies {
-    api(Spine.server)
+    api(CoreJvm.server)
 }
 
 apply {

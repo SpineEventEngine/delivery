@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -16,14 +16,11 @@ import io.spine.query.RecordQuery;
 import io.spine.query.SortBy;
 import io.spine.query.Subject;
 import io.spine.server.entity.EntityRecord;
-import io.spine.server.entity.storage.EntityRecordSpec;
-import io.spine.server.entity.storage.EntityRecordWithColumns;
-import io.spine.server.storage.MessageRecordSpec;
 import io.spine.server.storage.query.RecordQueryMatcher;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.RecordWithColumns;
 import io.spine.string.Stringifiers;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jspecify.annotations.Nullable;
 import org.redisson.api.RMap;
 
 import java.util.Iterator;
@@ -57,12 +54,12 @@ final class TenantRecords<I, R extends Message>
         implements TenantDataStorage<I, RecordWithColumns<I, R>> {
 
     private final RMap<String, byte[]> records;
-    private final RecordSpec<I, R, ?> spec;
+    private final RecordSpec<I, R> spec;
 
     /**
      * Creates a new tenant records facade backed by the supplied {@code records}.
      */
-    TenantRecords(RMap<String, byte[]> records, RecordSpec<I, R, ?> spec) {
+    TenantRecords(RMap<String, byte[]> records, RecordSpec<I, R> spec) {
         this.records = checkNotNull(records);
         this.spec = checkNotNull(spec);
     }
@@ -115,19 +112,10 @@ final class TenantRecords<I, R extends Message>
         }
     }
 
-    @SuppressWarnings({
-            "unchecked", /* Ensured by generics and serialization approach. */
-            "ChainOfInstanceofChecks" /* There is no better way to abstract this part yet. */
-    })
-    private RecordWithColumns<I, R> recordWithColumns(I id, R record, RecordSpec<I, R, ?> spec) {
-        if (spec instanceof EntityRecordSpec) {
-            return (RecordWithColumns<I, R>)
-                    EntityRecordWithColumns.create(id, (EntityRecord) record);
-        }
-        if (spec instanceof MessageRecordSpec) {
-            return RecordWithColumns.create(id, record, (RecordSpec<I, R, R>) spec);
-        }
-        throw newIllegalStateException("Unsupported record spec: %s", spec);
+    private RecordWithColumns<I, R> recordWithColumns(I id, R record, RecordSpec<I, R> spec) {
+        // The current Spine SPI unifies entity- and message-record specs into a single
+        // `RecordSpec<I, R>`; column extraction is driven by the spec itself.
+        return RecordWithColumns.create(id, record, spec);
     }
 
     /**
@@ -215,7 +203,7 @@ final class TenantRecords<I, R extends Message>
     }
 
     private String toStorageKey(I key) {
-        return Stringifiers.toString(key, spec.idType());
+        return Stringifiers.toString(key);
     }
 
     /**
