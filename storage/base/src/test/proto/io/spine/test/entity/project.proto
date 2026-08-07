@@ -1,8 +1,9 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
+
 syntax = "proto3";
 
 package spine.test.entity;
@@ -35,6 +36,19 @@ message Project {
     }
 
     Status status = 4 [(column) = true];
+}
+
+// A projection state that shares the ID type with `Project`.
+//
+// Used by the vendor storage tests verifying that the storages of entity types
+// sharing the ID type are not conflated into one physical storage.
+//
+message ProjectLog {
+    option (.entity) = { kind: PROJECTION visibility: FULL };
+
+    ProjectId id = 1;
+
+    string note = 2 [(column) = true];
 }
 
 message TaskId {

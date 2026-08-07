@@ -12,6 +12,7 @@ import io.spine.delivery.server.event.TestEvent;
 import io.spine.delivery.server.event.TestEventId;
 import io.spine.delivery.server.given.MemoizingStorageSubscriber;
 import io.spine.delivery.server.given.MemoizingStorageSubscriber.SingleWrite;
+import io.spine.server.storage.StorageGroup;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -79,6 +80,23 @@ class ReportingStorageFactoryTest {
 
         AnotherTestEventId id = AnotherTestEventId.generate();
         AnotherTestEvent record = anotherTestEventWith(id);
+
+        storage.write(id, record);
+
+        assertThat(sub.writes()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("not feed subscribers from grouped storages")
+    void skipGroupedStorages() {
+        var sub = new MemoizingStorageSubscriber<TestEventId, TestEvent>();
+
+        factory.subscribe(TestEventId.class, TestEvent.class, sub);
+        var storage = factory.createRecordStorage(
+                newTestContext(), specForTestEvent(), new StorageGroup("example.Journal"));
+
+        TestEventId id = TestEventId.generate();
+        TestEvent record = testEventWith(id);
 
         storage.write(id, record);
 

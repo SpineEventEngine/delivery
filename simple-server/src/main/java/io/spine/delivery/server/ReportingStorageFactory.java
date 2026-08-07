@@ -11,9 +11,12 @@ import io.spine.logging.WithLogging;
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.StorageFactory;
+import io.spine.server.storage.StorageGroup;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -49,9 +52,11 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
 
     @Override
     public <I, R extends Message> ReportingRecordStorage<I, R>
-    createRecordStorage(ContextSpec context, RecordSpec<I, R> spec) {
-        TypeSpec<I, R> typeSpec = TypeSpec.of(spec);
-        var storage = delegate.createRecordStorage(context, spec);
+    createRecordStorage(ContextSpec context,
+                        RecordSpec<I, R> spec,
+                        @Nullable StorageGroup group) {
+        TypeSpec<I, R> typeSpec = TypeSpec.of(spec, group);
+        var storage = delegate.createRecordStorage(context, spec, group);
         var reportingStorage = new ReportingRecordStorage<>(context, storage);
         remember(typeSpec, reportingStorage);
         addExistentSubscribers(typeSpec, reportingStorage);
@@ -89,10 +94,13 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
      * <p>This also includes storages that will be created in the future. The method preserves
      * the given subscription and adds it to storages of the given types that will be created in the
      * future.
+     *
+     * <p>Only the storages outside any {@link StorageGroup} are subscribed to. Grouped
+     * storages — per-entity histories — do not feed subscribers.
      */
     public <I, R extends Message> StorageSubscription
     subscribe(Class<I> idType, Class<R> recordType, StorageSubscriber<I, R> subscriber) {
-        TypeSpec<I, R> typeSpec = new TypeSpec<>(idType, recordType);
+        TypeSpec<I, R> typeSpec = new TypeSpec<>(idType, recordType, null);
         var subscriptions = subscribeOnExistentStorages(typeSpec, subscriber);
         return remember(new CompositeSubscription<>(typeSpec, subscriber, subscriptions));
     }
@@ -210,11 +218,16 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
     }
 
     /**
-     * Specification of the storage based around types of stored IDs and records.
+     * Specification of the storage based around types of stored IDs and records,
+     * and the {@linkplain StorageGroup group} to which the storage belongs.
      *
      * <p>This specification is a simplified version of {@link RecordSpec} but this one indeed
      * implements {@code equals()} and {@code hashCode()} that makes it appropriate to use as a key
      * for maps.
+     *
+     * <p>A {@code TypeSpec} with a {@code null} group describes a storage outside any group.
+     * Such a spec never matches a grouped storage — a per-entity history — even if the ID
+     * and record types coincide.
      *
      * @param <I>
      *         type of stored ID
@@ -225,20 +238,24 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
 
         private final Class<I> idType;
         private final Class<R> recordType;
+        private final @Nullable StorageGroup group;
 
         /**
-         * Creates new {@code TypeSpec} of the given {@code RecordSpec}.
+         * Creates a new {@code TypeSpec} of the given {@code RecordSpec} and {@code group}.
          */
-        public static <I, R extends Message> TypeSpec<I, R> of(RecordSpec<I, R> spec) {
-            return new TypeSpec<>(spec.idType(), spec.recordType());
+        public static <I, R extends Message> TypeSpec<I, R>
+        of(RecordSpec<I, R> spec, @Nullable StorageGroup group) {
+            return new TypeSpec<>(spec.idType(), spec.recordType(), group);
         }
 
         /**
-         * Creates new {@code TypeSpec} with the given {@code idType} and {@code recordType}.
+         * Creates a new {@code TypeSpec} with the given {@code idType}, {@code recordType},
+         * and {@code group}.
          */
-        private TypeSpec(Class<I> idType, Class<R> recordType) {
+        private TypeSpec(Class<I> idType, Class<R> recordType, @Nullable StorageGroup group) {
             this.idType = checkNotNull(idType);
             this.recordType = checkNotNull(recordType);
+            this.group = group;
         }
 
         @Override
@@ -251,14 +268,13 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
             }
             TypeSpec<?, ?> typeSpec = (TypeSpec<?, ?>) o;
             return idType.equals(typeSpec.idType)
-                    && recordType.equals(typeSpec.recordType);
+                    && recordType.equals(typeSpec.recordType)
+                    && Objects.equals(group, typeSpec.group);
         }
 
         @Override
         public int hashCode() {
-            int result = idType.hashCode();
-            result = 31 * result + recordType.hashCode();
-            return result;
+            return Objects.hash(idType, recordType, group);
         }
     }
 }
