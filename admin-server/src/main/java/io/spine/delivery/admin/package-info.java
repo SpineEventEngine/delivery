@@ -5,7 +5,7 @@
  */
 
 /**
- * Root package for Liquor admin functionality.
+ * Root package for Delivery admin functionality.
  */
 @CheckReturnValue
 @NullMarked

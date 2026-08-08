@@ -12,7 +12,7 @@ import io.spine.delivery.admin.given.BlockingMemoizingObserver;
 import io.spine.delivery.admin.given.WithAckObserver;
 import io.spine.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.delivery.command.PickUpShard;
-import io.spine.delivery.LiquorPickUpOutcome;
+import io.spine.delivery.DeliveryPickUpOutcome;
 import io.spine.delivery.server.WithApp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.test.delivery.server.Something;
@@ -60,7 +60,7 @@ final class AdminServiceTest extends WithApp implements WithLogging {
         syncInboxService().writeOne(testMessage(shard2));
 
         syncShardService().pickShard(pickUpShard(shard2));
-        LiquorPickUpOutcome outcome = syncShardService().pickShard(pickUpShard(shard3));
+        DeliveryPickUpOutcome outcome = syncShardService().pickShard(pickUpShard(shard3));
         syncShardService().pickShard(pickUpShard(shard4));
         syncShardService().releaseSession(releaseShard(outcome.getPickedUp()));
 
@@ -107,7 +107,7 @@ final class AdminServiceTest extends WithApp implements WithLogging {
                 observer.waitForMatching(update -> update.getNewStatus() == NOT_PICKED);
 
         PickUpShard pickUpShard = pickUpShard(index);
-        LiquorPickUpOutcome outcome = syncShardService().pickShard(pickUpShard);
+        DeliveryPickUpOutcome outcome = syncShardService().pickShard(pickUpShard);
         syncShardService().releaseSession(releaseShard(outcome.getPickedUp()));
 
         ShardInfoUpdate pickedUpdate = shardPickedWithoutTime(index);

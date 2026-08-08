@@ -3,6 +3,7 @@
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
+
 syntax = "proto3";
 
 package spine.delivery;
@@ -11,7 +12,7 @@ import "spine/options.proto";
 
 option (type_url_prefix) = "type.spine.io";
 option java_package = "io.spine.delivery";
-option java_outer_classname = "LiquorPickUpOutcomeProto";
+option java_outer_classname = "DeliveryPickUpOutcomeProto";
 option java_multiple_files = true;
 option java_generate_equals_and_hash = true;
 
@@ -20,12 +21,12 @@ import "spine/delivery/rejections.proto";
 
 // An outcome of the shard pick up attempt.
 //
-// This is a Liquor-internal type that is created as counterpart of `PickUpOutcome` introduced in
-// `spine-core` in version `1.9.x`. Liquor servers are already using the core library `2.0.x`
-// which doesn't have this type yet. That's why this counterpart helps to connect Liquor servers
-// that using core `2.0.x` and Liquor clients that are on core `1.9.x`.
+// This is a Delivery-internal type that is created as counterpart of `PickUpOutcome` introduced in
+// `spine-core` in version `1.9.x`. Delivery servers are already using the core library `2.0.x`
+// which doesn't have this type yet. That's why this counterpart helps to connect Delivery servers
+// that use core `2.0.x` and Delivery clients that are on core `1.9.x`.
 //
-message LiquorPickUpOutcome {
+message DeliveryPickUpOutcome {
 
     oneof value {
 

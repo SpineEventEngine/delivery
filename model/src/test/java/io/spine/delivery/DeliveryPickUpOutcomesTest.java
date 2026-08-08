@@ -9,10 +9,10 @@ package io.spine.delivery;
 import io.spine.testing.UtilityClassTest;
 import org.junit.jupiter.api.DisplayName;
 
-@DisplayName("`LiquorPickUpOutcomes` utility class should")
-class LiquorPickUpOutcomesTest extends UtilityClassTest<LiquorPickUpOutcomes> {
+@DisplayName("`DeliveryPickUpOutcomes` utility class should")
+class DeliveryPickUpOutcomesTest extends UtilityClassTest<DeliveryPickUpOutcomes> {
 
-    LiquorPickUpOutcomesTest() {
-        super(LiquorPickUpOutcomes.class);
+    DeliveryPickUpOutcomesTest() {
+        super(DeliveryPickUpOutcomes.class);
     }
 }

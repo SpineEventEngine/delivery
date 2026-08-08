@@ -8,6 +8,7 @@ import io.spine.dependency.lib.Grpc
 import io.spine.dependency.lib.Log4j2
 import io.spine.dependency.local.CoreJvm
 import io.spine.dependency.local.Time
+import io.spine.dependency.test.Kotest
 
 dependencies {
     implementation(Log4j2.core)
@@ -20,6 +21,7 @@ dependencies {
     implementation(CoreJvm.server)
     testImplementation(project(":testutil-server"))
     testImplementation(project(path = ":grpc-api", configuration = "testArtifacts"))
+    testImplementation(Kotest.assertions)
     testImplementation(Time.testLib)
     testRuntimeOnly(Grpc.nettyShaded)
 

@@ -12,12 +12,14 @@ import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.RecordStorage;
 import io.spine.server.storage.RecordWithColumns;
+import io.spine.server.storage.StorageGroup;
+import org.jspecify.annotations.Nullable;
 import org.redisson.api.RedissonClient;
 
 import java.util.Iterator;
 
 /**
- * An in-memory implementation of {@link RecordStorage}.
+ * A Redis-based implementation of {@link RecordStorage}.
  *
  * @param <I>
  *         the type of the record identifiers
@@ -35,13 +37,19 @@ public final class RedisRecordStorage<I, R extends Message> extends RecordStorag
      *         the specification of the context for which the storage is created
      * @param recordSpec
      *         the specification of the record stored in the storage
+     * @param group
+     *         the group to which the storage belongs, or {@code null} for a storage
+     *         outside any group
      * @param client
      *         the access client to the Redis instance
      */
-    RedisRecordStorage(ContextSpec context, RecordSpec<I, R> recordSpec, RedissonClient client) {
+    RedisRecordStorage(ContextSpec context,
+                       RecordSpec<I, R> recordSpec,
+                       @Nullable StorageGroup group,
+                       RedissonClient client) {
         super(context, recordSpec);
         this.multitenantStorage =
-                new FlatTenantStorage<>(context.isMultitenant(), recordSpec, client);
+                new FlatTenantStorage<>(context.isMultitenant(), recordSpec, group, client);
     }
 
     private TenantRecords<I, R> records() {

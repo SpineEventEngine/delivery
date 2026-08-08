@@ -5,7 +5,7 @@
  */
 
 /**
- * Contains classes that help running the Liquor on a server.
+ * Contains classes that help running the Delivery server.
  */
 @CheckReturnValue
 @NullMarked

@@ -36,20 +36,20 @@ import static java.lang.System.lineSeparator;
  *
  * <p>All picked shards are stored in the {@link ShardRegistryStorage}.
  */
-public final class LiquorShardRegistry implements WithLogging {
+public final class DeliveryShardRegistry implements WithLogging {
 
     private final ShardRegistryStorage storage;
     private final Duration processingTimeout;
 
     /**
-     * Creates a new {@code LiquorShardRegistry} backed by {@link ShardRegistryStorage}.
+     * Creates a new {@code DeliveryShardRegistry} backed by {@link ShardRegistryStorage}.
      *
      * <p>The given {@code processingTimeout} is used to determine whether a session is stale.
      * Stale sessions are released automatically. Pass {@link Durations#ZERO Durations.ZERO}
      * to disable the stale-check. In this case all picked up sessions will always be considered
      * active until explicitly released by a worker.
      */
-    public LiquorShardRegistry(StorageFactory factory, Duration processingTimeout) {
+    public DeliveryShardRegistry(StorageFactory factory, Duration processingTimeout) {
         super();
         checkNotNull(factory);
         this.storage = new ShardRegistryStorage(factory);
@@ -73,7 +73,7 @@ public final class LiquorShardRegistry implements WithLogging {
      * </ol>
      *
      * <p>A worker that obtained the session should perform the desired actions with
-     * the sharded messages and then {@linkplain LiquorShardSession#complete() complete}
+     * the sharded messages and then {@linkplain DeliveryShardSession#complete() complete}
      * the session.
      *
      * <p>In case the shard at a given index is already picked up by a worker and
@@ -158,7 +158,7 @@ public final class LiquorShardRegistry implements WithLogging {
     }
 
     private ShardProcessingSession asSession(ShardSessionRecord record) {
-        return new LiquorShardSession(record);
+        return new DeliveryShardSession(record);
     }
 
     private void clearWorker(ShardSessionRecord session) {
@@ -216,16 +216,16 @@ public final class LiquorShardRegistry implements WithLogging {
      * Implementation of shard processing session, based on
      * {@link ShardRegistryStorage} storage mechanism.
      */
-    public class LiquorShardSession extends ShardProcessingSession {
+    public class DeliveryShardSession extends ShardProcessingSession {
 
-        private LiquorShardSession(ShardSessionRecord record) {
+        private DeliveryShardSession(ShardSessionRecord record) {
             super(record);
         }
 
         @Override
         protected void complete() {
             Optional<ShardSessionRecord> record = storage.read(shardIndex());
-            record.ifPresent(LiquorShardRegistry.this::clearWorker);
+            record.ifPresent(DeliveryShardRegistry.this::clearWorker);
         }
     }
 }

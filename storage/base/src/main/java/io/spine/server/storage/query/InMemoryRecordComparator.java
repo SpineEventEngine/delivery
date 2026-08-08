@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -94,14 +94,18 @@ public final class InMemoryRecordComparator<I, R extends Message>
     }
 
     @Override
-    @SuppressWarnings("ChainOfInstanceofChecks" /* Different special cases are covered. */)
+    @SuppressWarnings({
+            "ChainOfInstanceofChecks", /* Different special cases are covered. */
+            "PatternMatchingInstanceof" /* No pattern binding is used because `Comparable`
+                                           is accessed as a raw type below. */
+    })
     public int compare(RecordWithColumns<I, R> a, RecordWithColumns<I, R> b) {
         checkNotNull(a);
         checkNotNull(b);
 
-        ColumnName columnName = column.name();
-        Object aValue = a.columnValue(columnName);
-        Object bValue = b.columnValue(columnName);
+        var columnName = column.name();
+        var aValue = a.columnValue(columnName);
+        var bValue = b.columnValue(columnName);
         if (aValue == null) {
             return bValue == null ? 0 : -1;
         }
@@ -110,12 +114,12 @@ public final class InMemoryRecordComparator<I, R extends Message>
         }
         if (aValue instanceof Comparable) {
             @SuppressWarnings({"unchecked", "rawtypes"}) // For convenience.
-            int result = ((Comparable) aValue).compareTo(bValue);
+            var result = ((Comparable) aValue).compareTo(bValue);
             return result;
         }
 
         if (aValue instanceof Timestamp) {
-            int result = Timestamps.compare((Timestamp) aValue, (Timestamp) bValue);
+            var result = Timestamps.compare((Timestamp) aValue, (Timestamp) bValue);
             return result;
         }
         throw newIllegalStateException(

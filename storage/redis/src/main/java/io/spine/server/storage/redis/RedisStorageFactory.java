@@ -12,6 +12,8 @@ import io.spine.io.Resource;
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.StorageFactory;
+import io.spine.server.storage.StorageGroup;
+import org.jspecify.annotations.Nullable;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -62,19 +64,17 @@ public final class RedisStorageFactory implements StorageFactory {
      * @return new instance of the factory
      */
     public static RedisStorageFactory newInstance() {
-        Config config = DEFAULT_CONFIG_LOCATIONS
+        var config = DEFAULT_CONFIG_LOCATIONS
                 .stream()
                 .map(RedisStorageFactory::localResource)
                 .filter(Resource::exists)
                 .map(Resource::locate)
                 .findFirst()
                 .map(RedisStorageFactory::parseConfig)
-                .orElseThrow(() -> {
-                    throw newIllegalStateException(
-                            "Redisson configuration not found in any of the well-known locations: %s",
-                            DEFAULT_CONFIG_LOCATIONS
-                    );
-                });
+                .orElseThrow(() -> newIllegalStateException(
+                        "Redisson configuration not found in any of the well-known locations: %s",
+                        DEFAULT_CONFIG_LOCATIONS
+                ));
         return newInstance(Redisson.create(config));
     }
 
@@ -94,10 +94,21 @@ public final class RedisStorageFactory implements StorageFactory {
         return Resource.file(config, RedisStorageFactory.class.getClassLoader());
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>A storage belonging to a {@linkplain StorageGroup group} — a per-entity
+     * history — is allocated a distinct Redis map, its name composed of the group
+     * name and the simple name of the record type. Storages outside any group are
+     * named after the {@linkplain RecordSpec#sourceType() source type} of the record
+     * specification. See {@link FlatTenantStorage} for the naming details.
+     */
     @Override
     public <I, M extends Message> RedisRecordStorage<I, M>
-    createRecordStorage(ContextSpec context, RecordSpec<I, M> spec) {
-        return new RedisRecordStorage<>(context, spec, client);
+    createRecordStorage(ContextSpec context,
+                        RecordSpec<I, M> spec,
+                        @Nullable StorageGroup group) {
+        return new RedisRecordStorage<>(context, spec, group, client);
     }
 
     @Override

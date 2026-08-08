@@ -9,8 +9,8 @@ package io.spine.delivery.server;
 import io.spine.server.ContextSpec;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardSessionRecord;
+import io.spine.server.storage.DelegatingRecordStorage;
 import io.spine.server.storage.RecordSpec;
-import io.spine.server.storage.RecordStorageDelegate;
 import io.spine.server.storage.StorageFactory;
 
 import java.util.Iterator;
@@ -23,7 +23,8 @@ import static io.spine.server.ContextSpec.singleTenant;
  * <p>Delegates interactions with the storage implementation to a storage created by
  * the configured {@link StorageFactory}.
  */
-public final class ShardRegistryStorage extends RecordStorageDelegate<ShardIndex, ShardSessionRecord> {
+public final class ShardRegistryStorage
+        extends DelegatingRecordStorage<ShardIndex, ShardSessionRecord> {
 
     private ShardRegistryStorage(ContextSpec contextSpec, StorageFactory factory) {
         super(contextSpec, factory.createRecordStorage(contextSpec, spec()));
@@ -43,10 +44,9 @@ public final class ShardRegistryStorage extends RecordStorageDelegate<ShardIndex
 
     private static RecordSpec<ShardIndex, ShardSessionRecord> spec() {
         @SuppressWarnings("ConstantConditions" /* Protobuf getters do not return {@code null}s. */)
-        RecordSpec<ShardIndex, ShardSessionRecord> spec =
-                new RecordSpec<>(ShardIndex.class,
-                                        ShardSessionRecord.class,
-                                        ShardSessionRecord::getIndex);
+        var spec = new RecordSpec<>(ShardIndex.class,
+                                    ShardSessionRecord.class,
+                                    ShardSessionRecord::getIndex);
         return spec;
     }
 }

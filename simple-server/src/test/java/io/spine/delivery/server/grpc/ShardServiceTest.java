@@ -9,7 +9,7 @@ package io.spine.delivery.server.grpc;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
 import io.spine.base.Time;
-import io.spine.delivery.LiquorPickUpOutcome;
+import io.spine.delivery.DeliveryPickUpOutcome;
 import io.spine.delivery.rejection.Rejections;
 import io.spine.delivery.server.WithApp;
 import io.spine.delivery.server.grpc.given.ShardServiceTestEnv;
@@ -88,10 +88,10 @@ final class ShardServiceTest {
             Time.setProvider(new FrozenMadHatterParty(frozen));
             var shardService = syncShardService();
             var request = pickUpShard();
-            LiquorPickUpOutcome firstAttempt = shardService.pickShard(request);
+            DeliveryPickUpOutcome firstAttempt = shardService.pickShard(request);
             assertThat(firstAttempt.hasPickedUp())
                     .isTrue();
-            LiquorPickUpOutcome secondAttempt = shardService.pickShard(request);
+            DeliveryPickUpOutcome secondAttempt = shardService.pickShard(request);
             assertThat(secondAttempt.hasAlreadyPickedUp())
                     .isTrue();
 

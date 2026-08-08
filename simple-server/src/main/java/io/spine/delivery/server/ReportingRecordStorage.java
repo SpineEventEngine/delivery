@@ -10,8 +10,8 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
 import io.spine.logging.WithLogging;
 import io.spine.server.ContextSpec;
+import io.spine.server.storage.DelegatingRecordStorage;
 import io.spine.server.storage.RecordStorage;
-import io.spine.server.storage.RecordStorageDelegate;
 import io.spine.server.storage.RecordWithColumns;
 
 import java.util.Map;
@@ -27,7 +27,8 @@ import static java.util.UUID.randomUUID;
  * @param <R>
  *         the type of the message records
  */
-public final class ReportingRecordStorage<I, R extends Message> extends RecordStorageDelegate<I, R>
+public final class ReportingRecordStorage<I, R extends Message>
+        extends DelegatingRecordStorage<I, R>
         implements WithLogging {
 
     /**

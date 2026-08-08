@@ -26,9 +26,14 @@ import static io.spine.test.entity.Project.Column.name;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
- * Abstract base for different storage tests.
+ * Abstract base for the tests of {@link RecordStorage} implementations produced
+ * by a vendor {@link StorageFactory}.
+ *
+ * <p>Not to be confused with {@code io.spine.server.storage.AbstractStorageTest}
+ * published by the {@code core-jvm} test fixtures; this class carried that name
+ * before the two collided on the test classpath.
  */
-public abstract class AbstractStorageTest {
+public abstract class RecordStorageContractTest {
 
     private static final RecordSpec<ProjectId, Project> recordSpec = new RecordSpec<>(
             ProjectId.class, Project.class, Project::getId,

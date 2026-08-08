@@ -12,32 +12,32 @@ import io.spine.delivery.rejection.Rejections;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 
 /**
- * A utility to construct {@code LiquorPickUpOutcome} with possible inputs.
+ * A utility to construct {@code DeliveryPickUpOutcome} with possible inputs.
  */
-public final class LiquorPickUpOutcomes {
+public final class DeliveryPickUpOutcomes {
 
-    private LiquorPickUpOutcomes() {
+    private DeliveryPickUpOutcomes() {
     }
 
     /**
-     * Creates a new {@code LiquorPickUpOutcome} with the given {@code event} identifying
+     * Creates a new {@code DeliveryPickUpOutcome} with the given {@code event} identifying
      * successfully pick up operation.
      */
-    public static LiquorPickUpOutcome pickedUp(ShardPickedUp event) {
+    public static DeliveryPickUpOutcome pickedUp(ShardPickedUp event) {
         checkNotDefaultArg(event);
-        return LiquorPickUpOutcome
+        return DeliveryPickUpOutcome
                 .newBuilder()
                 .setPickedUp(event)
                 .build();
     }
 
     /**
-     * Creates a new {@code LiquorPickUpOutcome} with the given {@code rejection} identifying that
+     * Creates a new {@code DeliveryPickUpOutcome} with the given {@code rejection} identifying that
      * shard is already picked up by another worker.
      */
-    public static LiquorPickUpOutcome alreadyPickedUp(Rejections.ShardAlreadyPickedUp rejection) {
+    public static DeliveryPickUpOutcome alreadyPickedUp(Rejections.ShardAlreadyPickedUp rejection) {
         checkNotDefaultArg(rejection);
-        return LiquorPickUpOutcome
+        return DeliveryPickUpOutcome
                 .newBuilder()
                 .setAlreadyPickedUp(rejection)
                 .build();

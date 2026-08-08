@@ -1,4 +1,5 @@
 import io.spine.dependency.local.CoreJvm
+import io.spine.dependency.test.Kotest
 import io.spine.dependency.test.Testcontainers
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
@@ -9,14 +10,15 @@ dependencies {
     implementation(project(":storage:base"))
     // `Redisson` is not part of the shared `config` dependency catalog; declared inline.
     implementation("org.redisson:redisson:3.16.3")
+    testImplementation(Kotest.assertions)
     testImplementation(Testcontainers.lib)
     testImplementation(project(path = ":storage:base", configuration = "testArtifacts"))
 }
 
 /**
  * Fails the build unless a Docker environment is available for the Testcontainers-based
- * Redis tests (`RedisRecordStorageTest`, `MultitenantStorageTest`), which start a
- * `redis:6-alpine` container.
+ * Redis tests (`RedisRecordStorageTest`, `MultitenantStorageTest`,
+ * `RedisGroupedStorageSpec`), which start a `redis:6-alpine` container.
  *
  * Without Docker these suites verify nothing, so the build fails here instead of passing
  * silently. The sole exemption is a CI runner that sets `WINDOWS_CI_NO_DOCKER` because it

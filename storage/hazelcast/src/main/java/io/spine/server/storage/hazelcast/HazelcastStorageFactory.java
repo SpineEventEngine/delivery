@@ -12,6 +12,8 @@ import io.spine.logging.WithLogging;
 import io.spine.server.ContextSpec;
 import io.spine.server.storage.RecordSpec;
 import io.spine.server.storage.StorageFactory;
+import io.spine.server.storage.StorageGroup;
+import org.jspecify.annotations.Nullable;
 
 import static com.hazelcast.core.Hazelcast.newHazelcastInstance;
 
@@ -25,8 +27,8 @@ import static com.hazelcast.core.Hazelcast.newHazelcastInstance;
  * factory instance is obtained, a new embedded Hazelcast server is started. The server allows to
  * discover another servers running in the same network. Servers will automatically form a cluster
  * where each server is storing a copy of all the cluster date. This means that records stored on
- * one instance will be available for read and modification for all the Liquor instances in the same
- * network.
+ * one instance will be available for read and modification for all the Delivery instances
+ * in the same network.
  *
  * <p>Pay attention that each new factory instance creation will run a new Hazelcast server.
  */
@@ -41,10 +43,21 @@ public final class HazelcastStorageFactory implements StorageFactory, WithLoggin
         return new HazelcastStorageFactory();
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>A storage belonging to a {@linkplain StorageGroup group} — a per-entity
+     * history — is allocated a distinct Hazelcast map, its name composed of the group
+     * name and the simple name of the record type. Storages outside any group are
+     * named after the {@linkplain RecordSpec#sourceType() source type} of the record
+     * specification. See {@link HazelcastRecordStorage} for the naming details.
+     */
     @Override
     public <I, R extends Message> HazelcastRecordStorage<I, R>
-    createRecordStorage(ContextSpec context, RecordSpec<I, R> recordSpec) {
-        return new HazelcastRecordStorage<>(context, recordSpec, hazelcast);
+    createRecordStorage(ContextSpec context,
+                        RecordSpec<I, R> recordSpec,
+                        @Nullable StorageGroup group) {
+        return new HazelcastRecordStorage<>(context, recordSpec, group, hazelcast);
     }
 
     @Override

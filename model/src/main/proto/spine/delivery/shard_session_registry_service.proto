@@ -24,7 +24,7 @@ import "spine/delivery/pick_up_outcome.proto";
 service ShardSessionRegistryService {
 
     // Picks up the shard for processing.
-    rpc PickShard(PickUpShard) returns (LiquorPickUpOutcome);
+    rpc PickShard(PickUpShard) returns (DeliveryPickUpOutcome);
 
     // Releases sessions which were picked up earlier that the configured inactivity period.
     rpc ReleaseSessions(ReleaseExpiredSessions) returns (ExpiredSessionsReleased);
