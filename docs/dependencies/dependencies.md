@@ -2158,7 +2158,7 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using 
+This report was generated on **Mon Aug 10 00:42:04 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -3074,7 +3074,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using 
+This report was generated on **Mon Aug 10 00:42:04 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -3990,7 +3990,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using 
+This report was generated on **Mon Aug 10 00:42:04 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -4906,7 +4906,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using 
+This report was generated on **Mon Aug 10 00:42:04 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -4926,35 +4926,6 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 1.  **Group** : com.esotericsoftware. **Name** : reflectasm. **Version** : 1.11.9.
      * **Project URL:** [https://github.com/EsotericSoftware/reflectasm](https://github.com/EsotericSoftware/reflectasm)
      * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
-
-1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.22.
-     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-core. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-databind. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
      * **Project URL:** [http://source.android.com/](http://source.android.com/)
@@ -5043,39 +5014,55 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -5083,11 +5070,11 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/perfmark/perfmark](https://github.com/perfmark/perfmark)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.6.2.
+1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.8.5.
      * **Project URL:** [https://github.com/reactor/reactor-core](https://github.com/reactor/reactor-core)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.8.
+1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.12.
      * **Project URL:** [https://github.com/ReactiveX/RxJava](https://github.com/ReactiveX/RxJava)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5099,14 +5086,14 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/jsr107/jsr107spec](https://github.com/jsr107/jsr107spec)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.17.7.
+1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.18.2.
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-api. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-api. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-core. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-core. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5173,7 +5160,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
      * **License:** [MIT-0](https://spdx.org/licenses/MIT-0.html)
 
-1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.52.0.
+1.  **Group** : org.redisson. **Name** : redisson. **Version** : 4.7.0.
      * **Project URL:** [https://redisson.pro](https://redisson.pro)
      * **License:** [Apache v2](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -5181,7 +5168,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT](https://opensource.org/license/mit)
 
-1.  **Group** : org.yaml. **Name** : snakeyaml. **Version** : 2.5.
+1.  **Group** : org.yaml. **Name** : snakeyaml. **Version** : 2.6.
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5237,11 +5224,6 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jdk8. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5544,39 +5526,55 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -5584,11 +5582,11 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/perfmark/perfmark](https://github.com/perfmark/perfmark)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.6.2.
+1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.8.5.
      * **Project URL:** [https://github.com/reactor/reactor-core](https://github.com/reactor/reactor-core)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.8.
+1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.12.
      * **Project URL:** [https://github.com/ReactiveX/RxJava](https://github.com/ReactiveX/RxJava)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5612,7 +5610,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/trustin/os-maven-plugin/](https://github.com/trustin/os-maven-plugin/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.17.7.
+1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.18.2.
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : net.sf.saxon. **Name** : Saxon-HE. **Version** : 12.2.
@@ -5653,11 +5651,11 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 1.  **Group** : org.apache.httpcomponents.core5. **Name** : httpcore5-h2. **Version** : 5.1.3.
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-api. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-api. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-core. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-core. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -6000,7 +5998,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
      * **License:** [MIT-0](https://spdx.org/licenses/MIT-0.html)
 
-1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.52.0.
+1.  **Group** : org.redisson. **Name** : redisson. **Version** : 4.7.0.
      * **Project URL:** [https://redisson.pro](https://redisson.pro)
      * **License:** [Apache v2](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -6037,6 +6035,10 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : org.yaml. **Name** : snakeyaml. **Version** : 2.6.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -6070,7 +6072,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using 
+This report was generated on **Mon Aug 10 00:42:04 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -6118,11 +6120,6 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jdk8. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -6152,18 +6149,6 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 1.  **Group** : com.google.errorprone. **Name** : error_prone_annotations. **Version** : 2.42.0.
      * **Project URL:** [https://errorprone.info/error_prone_annotations](https://errorprone.info/error_prone_annotations)
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.google.flogger. **Name** : flogger. **Version** : 0.9.
-     * **Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
-     * **License:** [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.google.flogger. **Name** : flogger-log4j2-backend. **Version** : 0.9.
-     * **Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
-     * **License:** [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.google.flogger. **Name** : flogger-system-backend. **Version** : 0.9.
-     * **Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
-     * **License:** [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.guava. **Name** : failureaccess. **Version** : 1.0.3.
      * **Project URL:** [https://github.com/google/guava/](https://github.com/google/guava/)
@@ -6775,26 +6760,26 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/jsr107/jsr107spec](https://github.com/jsr107/jsr107spec)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.17.7.
+1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.18.2.
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.apache.groovy. **Name** : groovy-bom. **Version** : 4.0.28.
      * **Project URL:** [https://groovy-lang.org](https://groovy-lang.org)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-api. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-api. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-bom. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-bom. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-core. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-core. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-slf4j2-impl. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-slf4j2-impl. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -6874,7 +6859,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
      * **License:** [MIT-0](https://spdx.org/licenses/MIT-0.html)
 
-1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.52.0.
+1.  **Group** : org.redisson. **Name** : redisson. **Version** : 4.7.0.
      * **Project URL:** [https://redisson.pro](https://redisson.pro)
      * **License:** [Apache v2](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -6894,7 +6879,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://java.testcontainers.org](https://java.testcontainers.org)
      * **License:** [MIT](http://opensource.org/licenses/MIT)
 
-1.  **Group** : org.yaml. **Name** : snakeyaml. **Version** : 2.5.
+1.  **Group** : org.yaml. **Name** : snakeyaml. **Version** : 2.6.
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -7065,10 +7050,6 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **License:** [Apache 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.flogger. **Name** : flogger. **Version** : 0.7.4.
-     * **Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
-     * **License:** [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.google.flogger. **Name** : flogger-log4j2-backend. **Version** : 0.9.
      * **Project URL:** [https://github.com/google/flogger](https://github.com/google/flogger)
      * **License:** [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -7812,7 +7793,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/trustin/os-maven-plugin/](https://github.com/trustin/os-maven-plugin/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.17.7.
+1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.18.2.
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : net.sf.saxon. **Name** : Saxon-HE. **Version** : 12.2.
@@ -7857,19 +7838,19 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 1.  **Group** : org.apache.httpcomponents.core5. **Name** : httpcore5-h2. **Version** : 5.1.3.
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-api. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-api. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-bom. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-bom. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-core. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-core. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.apache.logging.log4j. **Name** : log4j-slf4j2-impl. **Version** : 2.26.0.
+1.  **Group** : org.apache.logging.log4j. **Name** : log4j-slf4j2-impl. **Version** : 2.26.1.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -8205,7 +8186,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
      * **License:** [MIT-0](https://spdx.org/licenses/MIT-0.html)
 
-1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.52.0.
+1.  **Group** : org.redisson. **Name** : redisson. **Version** : 4.7.0.
      * **Project URL:** [https://redisson.pro](https://redisson.pro)
      * **License:** [Apache v2](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -8250,7 +8231,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
      * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : org.yaml. **Name** : snakeyaml. **Version** : 2.5.
+1.  **Group** : org.yaml. **Name** : snakeyaml. **Version** : 2.6.
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -8291,7 +8272,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using 
+This report was generated on **Mon Aug 10 00:42:04 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -8972,7 +8953,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using 
+This report was generated on **Mon Aug 10 00:42:04 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -9992,7 +9973,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using 
+This report was generated on **Mon Aug 10 00:42:04 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -10908,7 +10889,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using 
+This report was generated on **Mon Aug 10 00:42:04 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -11832,7 +11813,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using 
+This report was generated on **Mon Aug 10 00:42:04 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -11852,35 +11833,6 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 1.  **Group** : com.esotericsoftware. **Name** : reflectasm. **Version** : 1.11.9.
      * **Project URL:** [https://github.com/EsotericSoftware/reflectasm](https://github.com/EsotericSoftware/reflectasm)
      * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
-
-1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.22.
-     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-core. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-databind. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
      * **Project URL:** [http://source.android.com/](http://source.android.com/)
@@ -11965,39 +11917,55 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -12005,11 +11973,11 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/perfmark/perfmark](https://github.com/perfmark/perfmark)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.6.2.
+1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.8.5.
      * **Project URL:** [https://github.com/reactor/reactor-core](https://github.com/reactor/reactor-core)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.8.
+1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.12.
      * **Project URL:** [https://github.com/ReactiveX/RxJava](https://github.com/ReactiveX/RxJava)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12021,7 +11989,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/jsr107/jsr107spec](https://github.com/jsr107/jsr107spec)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.17.7.
+1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.18.2.
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.codehaus.mojo. **Name** : animal-sniffer-annotations. **Version** : 1.27.
@@ -12087,7 +12055,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
      * **License:** [MIT-0](https://spdx.org/licenses/MIT-0.html)
 
-1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.52.0.
+1.  **Group** : org.redisson. **Name** : redisson. **Version** : 4.7.0.
      * **Project URL:** [https://redisson.pro](https://redisson.pro)
      * **License:** [Apache v2](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -12095,7 +12063,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT](https://opensource.org/license/mit)
 
-1.  **Group** : org.yaml. **Name** : snakeyaml. **Version** : 2.5.
+1.  **Group** : org.yaml. **Name** : snakeyaml. **Version** : 2.6.
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12147,11 +12115,6 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jdk8. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12458,39 +12421,55 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.1.127.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.16.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -12498,11 +12477,11 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/perfmark/perfmark](https://github.com/perfmark/perfmark)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.6.2.
+1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.8.5.
      * **Project URL:** [https://github.com/reactor/reactor-core](https://github.com/reactor/reactor-core)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.8.
+1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.12.
      * **Project URL:** [https://github.com/ReactiveX/RxJava](https://github.com/ReactiveX/RxJava)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12526,7 +12505,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://github.com/trustin/os-maven-plugin/](https://github.com/trustin/os-maven-plugin/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.17.7.
+1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.18.2.
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : net.java.dev.jna. **Name** : jna. **Version** : 5.18.1.
@@ -12903,7 +12882,7 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
      * **License:** [MIT-0](https://spdx.org/licenses/MIT-0.html)
 
-1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.52.0.
+1.  **Group** : org.redisson. **Name** : redisson. **Version** : 4.7.0.
      * **Project URL:** [https://redisson.pro](https://redisson.pro)
      * **License:** [Apache v2](http://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -12948,6 +12927,10 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : org.yaml. **Name** : snakeyaml. **Version** : 2.6.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -12981,6 +12964,6 @@ This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sun Aug 09 17:58:57 WEST 2026** using 
+This report was generated on **Mon Aug 10 00:42:04 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
