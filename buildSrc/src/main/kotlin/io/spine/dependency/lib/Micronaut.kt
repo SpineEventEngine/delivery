@@ -26,8 +26,9 @@ object Micronaut {
      * version that runs on a Java 17 daemon — the 5.x line (the first to
      * officially support Gradle 9) is compiled for JVM 25. In practice, 4.6.2
      * configures and runs cleanly on Gradle 9.6.1.
+     *
+     * @see https://plugins.gradle.org/plugin/io.micronaut.application
      */
-    // https://plugins.gradle.org/plugin/io.micronaut.application
     object GradlePlugin {
         const val id = "io.micronaut.application"
         const val version = "4.6.2"
@@ -45,15 +46,24 @@ object Micronaut {
      * runs with `failOnVersionConflict()`.
      *
      * The Micronaut module POMs request slightly older patch versions of each other
-     * than the ones the platform pins, which registers as a version conflict. The
-     * `admin-server` build script aligns each group to the platform's pick with
-     * a `resolutionStrategy.eachDependency` rule. Update together with [version].
+     * than the ones the platform pins, which registers as a version conflict.
+     * The `alignMicronautPlatform()` extension (see `MicronautAlignment.kt`) aligns
+     * each group to the platform's pick. Update together with [version].
      */
     const val coreVersion = "4.10.26"
     const val reactorVersion = "3.9.1"
     const val serdeVersion = "2.16.2"
     const val sourcegenVersion = "1.8.5"
     const val groovyVersion = "4.0.28"
+
+    /**
+     * Versions of the third-party libraries pinned by the platform [bom] which win
+     * the cross-stack conflicts on the `simple-server-cloud-run` classpath, where
+     * the Micronaut graph meets the Redisson one. Update together with [version].
+     */
+    const val nettyVersion = "4.2.16.Final"
+    const val reactorCoreVersion = "3.7.12"
+    const val rxJavaVersion = "3.1.12"
 
     const val runtime = "$group:micronaut-runtime"
 

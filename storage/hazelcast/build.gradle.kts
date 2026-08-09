@@ -1,10 +1,11 @@
 import io.spine.dependency.local.CoreJvm
+import io.spine.dependency.storage.Hazelcast
 import io.spine.dependency.test.Kotest
 
 dependencies {
     api(CoreJvm.server)
     implementation(project(":storage:base"))
-    implementation("com.hazelcast:hazelcast:5.7.0")
+    implementation(Hazelcast.lib)
     testImplementation(Kotest.assertions)
     testImplementation(project(path = ":storage:base", configuration = "testArtifacts"))
 }

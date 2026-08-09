@@ -6,9 +6,9 @@
 
 package io.spine.delivery.launcher;
 
-import io.spine.logging.Logging;
 import io.spine.delivery.admin.AdminServer;
 import io.spine.delivery.server.SimpleApp;
+import io.spine.logging.WithLogging;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -18,7 +18,7 @@ import static java.lang.Boolean.parseBoolean;
 /**
  * An entrypoint for launching Delivery server.
  */
-public final class Launcher implements Logging {
+public final class Launcher implements WithLogging {
 
     private static final String ADMIN_SERVER_ENV = "ADMIN_SERVER";
 
@@ -51,10 +51,10 @@ public final class Launcher implements Logging {
         Thread delivery = delivery(threadFactory, args);
         delivery.start();
         if (useAdminServer()) {
-            _info().log("Starting Admin Server.");
+            logger().atInfo().log(() -> "Starting Admin Server.");
             admin(threadFactory, args).start();
         } else {
-            _info().log("Admin Server start skipped.");
+            logger().atInfo().log(() -> "Admin Server start skipped.");
         }
         delivery.join();
     }
