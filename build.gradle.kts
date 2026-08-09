@@ -70,6 +70,9 @@ buildscript {
                 jackson.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.Jackson.DataType.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.Jackson.DataFormat.forceArtifacts(project, cfg, rs)
+                io.spine.dependency.lib.Jackson.V2.forceArtifacts(project, cfg, rs)
+                io.spine.dependency.lib.Jackson.DataTypeV2.forceArtifacts(project, cfg, rs)
+                io.spine.dependency.lib.Jackson.ModuleV2.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.Grpc.forceArtifacts(project, cfg, rs)
                 force(
                     jackson.annotations,
