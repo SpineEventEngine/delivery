@@ -1,4 +1,5 @@
 import io.spine.dependency.local.CoreJvm
+import io.spine.dependency.storage.Redisson
 import io.spine.dependency.test.Kotest
 import io.spine.dependency.test.Testcontainers
 import java.io.ByteArrayOutputStream
@@ -8,8 +9,7 @@ import org.gradle.process.ExecOperations
 dependencies {
     api(CoreJvm.server)
     implementation(project(":storage:base"))
-    // `Redisson` is not part of the shared `config` dependency catalog; declared inline.
-    implementation("org.redisson:redisson:3.52.0")
+    implementation(Redisson.lib)
     testImplementation(Kotest.assertions)
     testImplementation(Testcontainers.lib)
     testImplementation(project(path = ":storage:base", configuration = "testArtifacts"))
