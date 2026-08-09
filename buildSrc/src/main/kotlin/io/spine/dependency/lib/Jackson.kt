@@ -50,7 +50,7 @@ object Jackson : DependencyWithBom() {
      * The version of `jackson-annotations`, which Jackson 3.x deliberately keeps
      * on the 2.x line.
      *
-     * Must match the `jackson.version.annotations` property declared by the [bom].
+     * Must match the `jackson.version.annotations` property declared by the [v2Bom].
      *
      * See: https://github.com/FasterXML/jackson-annotations?tab=readme-ov-file#release-notes
      */
@@ -168,31 +168,46 @@ object Jackson : DependencyWithBom() {
         override val modules = listOf(objects)
     }
 
-    object V2 : Dependency() {
+    val v2Bom = "com.fasterxml.jackson:jackson-bom:${CoreV2.version}"
+
+    object CoreV2 : Dependency() {
         override val version = "2.22.1"
         override val group = "com.fasterxml.jackson.core"
 
-        val core = "${group}:jackson-core:$version"
-        val databind = "${group}:jackson-databind:$version"
+
+        val core = "$group:jackson-core"
+        val databind = "$group:jackson-databind"
 
         override val modules = listOf(core, databind)
     }
 
     object DataTypeV2 : Dependency() {
-        override val version = V2.version
+        override val version = CoreV2.version
         override val group = "com.fasterxml.jackson.datatype"
 
-        val jdk8 = "$group:jackson-datatype-jdk8:$version"
-        val guava = "$group:jackson-datatype-guava:$version"
+        val jdk8 = "$group:jackson-datatype-jdk8"
+        val jsr310 = "$group:jackson-datatype-jsr310"
+        val guava = "$group:jackson-datatype-guava"
 
-        override val modules = listOf(jdk8, guava)
+        override val modules = listOf(jdk8, jsr310, guava)
+    }
+
+    object DataFormatV2 : Dependency() {
+        override val version = CoreV2.version
+        override val group = "com.fasterxml.jackson.dataformat"
+
+        val xml = "$group:jackson-dataformat-xml"
+        val yaml = "$group:jackson-dataformat-yaml"
+        val protobuf = "$group:jackson-dataformat-protobuf"
+
+        override val modules = listOf(xml, yaml, protobuf)
     }
 
     object ModuleV2 : Dependency() {
-        override val version = V2.version
+        override val version = CoreV2.version
         override val group = "com.fasterxml.jackson.module"
 
-        val parameterNames = "$group:jackson-module-parameter-names:$version"
+        val parameterNames = "$group:jackson-module-parameter-names"
 
         override val modules = listOf(parameterNames)
     }

@@ -55,7 +55,7 @@ public final class BlockingMemoizingObserver<T> extends MemoizingObserver<T> {
      * {@code predicate} is delivered to the observer.
      */
     public Future<T> waitForMatching(Predicate<T> predicate) {
-        FutureWithPredicate<T> future = new FutureWithPredicate<>(predicate);
+        var future = new FutureWithPredicate<>(predicate);
         onNextFutures.add(future);
         return future;
     }

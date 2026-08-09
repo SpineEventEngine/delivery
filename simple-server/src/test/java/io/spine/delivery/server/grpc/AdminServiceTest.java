@@ -7,20 +7,15 @@
 package io.spine.delivery.server.grpc;
 
 import com.google.protobuf.Empty;
-import io.spine.logging.WithLogging;
 import io.spine.delivery.admin.given.BlockingMemoizingObserver;
 import io.spine.delivery.admin.given.WithAckObserver;
 import io.spine.delivery.admin.grpc.ShardInfoUpdate;
-import io.spine.delivery.command.PickUpShard;
-import io.spine.delivery.DeliveryPickUpOutcome;
 import io.spine.delivery.server.WithApp;
-import io.spine.server.delivery.ShardIndex;
+import io.spine.logging.WithLogging;
 import io.spine.test.delivery.server.Something;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.Future;
 
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Identifier.newUuid;
@@ -51,16 +46,16 @@ final class AdminServiceTest extends WithApp implements WithLogging {
     @Test
     @DisplayName("get current information about shards")
     void getShardInfo() {
-        ShardIndex shard1 = newIndex(1, 5);
-        ShardIndex shard2 = newIndex(2, 5);
-        ShardIndex shard3 = newIndex(3, 5);
-        ShardIndex shard4 = newIndex(4, 5);
+        var shard1 = newIndex(1, 5);
+        var shard2 = newIndex(2, 5);
+        var shard3 = newIndex(3, 5);
+        var shard4 = newIndex(4, 5);
 
         syncInboxService().writeOne(testMessage(shard1));
         syncInboxService().writeOne(testMessage(shard2));
 
         syncShardService().pickShard(pickUpShard(shard2));
-        DeliveryPickUpOutcome outcome = syncShardService().pickShard(pickUpShard(shard3));
+        var outcome = syncShardService().pickShard(pickUpShard(shard3));
         syncShardService().pickShard(pickUpShard(shard4));
         syncShardService().releaseSession(releaseShard(outcome.getPickedUp()));
 
@@ -81,13 +76,13 @@ final class AdminServiceTest extends WithApp implements WithLogging {
     @Test
     @DisplayName("notify if shard picked")
     void notifyPicked() {
-        ShardIndex index = newIndex(1, 5);
+        var index = newIndex(1, 5);
         var observer = subscribeToUpdates();
 
-        Future<ShardInfoUpdate> future = observer.waitForAny();
+        var future = observer.waitForAny();
         syncShardService().pickShard(pickUpShard(index));
 
-        ShardInfoUpdate expected = shardPickedWithoutTime(index);
+        var expected = shardPickedWithoutTime(index);
 
         assertContains(future, expected);
         assertHasNoError(observer);
@@ -98,7 +93,7 @@ final class AdminServiceTest extends WithApp implements WithLogging {
     @DisplayName("notify if shard is released")
     void notifyUnpicked() {
 
-        ShardIndex index = newIndex(1, 5);
+        var index = newIndex(1, 5);
         var observer = subscribeToUpdates();
 
         var pickedFuture =
@@ -106,12 +101,12 @@ final class AdminServiceTest extends WithApp implements WithLogging {
         var notPickedFuture =
                 observer.waitForMatching(update -> update.getNewStatus() == NOT_PICKED);
 
-        PickUpShard pickUpShard = pickUpShard(index);
-        DeliveryPickUpOutcome outcome = syncShardService().pickShard(pickUpShard);
+        var pickUpShard = pickUpShard(index);
+        var outcome = syncShardService().pickShard(pickUpShard);
         syncShardService().releaseSession(releaseShard(outcome.getPickedUp()));
 
-        ShardInfoUpdate pickedUpdate = shardPickedWithoutTime(index);
-        ShardInfoUpdate unpickedUpdate = shardUnpicked(index);
+        var pickedUpdate = shardPickedWithoutTime(index);
+        var unpickedUpdate = shardUnpicked(index);
 
         assertContains(pickedFuture, pickedUpdate);
         assertContains(notPickedFuture, unpickedUpdate);
@@ -122,7 +117,7 @@ final class AdminServiceTest extends WithApp implements WithLogging {
     @Test
     @DisplayName("notify when message is written")
     void notifyMessageWritten() {
-        ShardIndex index = newIndex(1, 5);
+        var index = newIndex(1, 5);
         var observer = subscribeToUpdates();
         var messageWrittenFuture = observer.waitForAny();
 
@@ -130,7 +125,7 @@ final class AdminServiceTest extends WithApp implements WithLogging {
 
         syncInboxService().writeOne(writeMessage(message));
 
-        ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
+        var messageWritten = messagesCountChangedTo(index, 1);
 
         assertContains(messageWrittenFuture, messageWritten);
         assertHasNoError(observer);
@@ -140,7 +135,7 @@ final class AdminServiceTest extends WithApp implements WithLogging {
     @Test
     @DisplayName("notify when message is removed")
     void notifyMessageRemoved() {
-        ShardIndex index = newIndex(1, 5);
+        var index = newIndex(1, 5);
         var observer = subscribeToUpdates();
         var messageWrittenFuture =
                 observer.waitForMatching(update -> update.getNewMessagesCount() == 1);
@@ -152,8 +147,8 @@ final class AdminServiceTest extends WithApp implements WithLogging {
         syncInboxService().writeOne(writeMessage(message));
         syncInboxService().removeOne(removeMessage(message));
 
-        ShardInfoUpdate messageWritten = messagesCountChangedTo(index, 1);
-        ShardInfoUpdate messageRemoved = messagesCountChangedTo(index, 0);
+        var messageWritten = messagesCountChangedTo(index, 1);
+        var messageRemoved = messagesCountChangedTo(index, 0);
 
         assertContains(messageWrittenFuture, messageWritten);
         assertContains(messageRemovedFuture, messageRemoved);
@@ -164,7 +159,7 @@ final class AdminServiceTest extends WithApp implements WithLogging {
     @Test
     @DisplayName("notify when multiple messages are written")
     void notifyMessagesWritten() {
-        ShardIndex index = newIndex(1, 5);
+        var index = newIndex(1, 5);
         var observer = subscribeToUpdates();
 
         var message1 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
@@ -177,8 +172,8 @@ final class AdminServiceTest extends WithApp implements WithLogging {
 
         syncInboxService().writeMany(writeMessages(index, message1, message2));
 
-        ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
-        ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
+        var message1Written = messagesCountChangedTo(index, 1);
+        var message2Written = messagesCountChangedTo(index, 2);
 
         assertContains(message1WrittenFuture, message1Written);
         assertContains(message2WrittenFuture, message2Written);
@@ -189,7 +184,7 @@ final class AdminServiceTest extends WithApp implements WithLogging {
     @Test
     @DisplayName("notify when multiple messages are removed")
     void notifyMessagesRemoved() {
-        ShardIndex index = newIndex(1, 5);
+        var index = newIndex(1, 5);
         var observer = subscribeToUpdates();
 
         var message1 = copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
@@ -202,8 +197,8 @@ final class AdminServiceTest extends WithApp implements WithLogging {
 
         syncInboxService().writeMany(writeMessages(index, message1, message2));
 
-        ShardInfoUpdate message1Written = messagesCountChangedTo(index, 1);
-        ShardInfoUpdate message2Written = messagesCountChangedTo(index, 2);
+        var message1Written = messagesCountChangedTo(index, 1);
+        var message2Written = messagesCountChangedTo(index, 2);
         assertContains(message1WrittenFuture, message1Written);
         assertContains(message2WrittenFuture, message2Written);
 
@@ -214,8 +209,8 @@ final class AdminServiceTest extends WithApp implements WithLogging {
 
         syncInboxService().removeMany(removeMessages(index, message1, message2));
 
-        ShardInfoUpdate message1Removed = messagesCountChangedTo(index, 1);
-        ShardInfoUpdate message2Removed = messagesCountChangedTo(index, 0);
+        var message1Removed = messagesCountChangedTo(index, 1);
+        var message2Removed = messagesCountChangedTo(index, 0);
 
         assertContains(message1RemovedFuture, message1Removed);
         assertContains(message2RemovedFuture, message2Removed);
@@ -232,12 +227,12 @@ final class AdminServiceTest extends WithApp implements WithLogging {
      * Subscribes to the shard updates on the {@code AdminService} and returns an observer that
      * collects all updates for further assertions.
      *
-     * <p>Also waits for {@link #SLEEP_SECONDS} to ensure that the subscription is created
-     * on the server.
+     * <p>Also waits for {@linkplain WithAckObserver#waitForAcknowledgment() an acknowledgment}
+     * to ensure that the subscription is created on the server.
      */
     private BlockingMemoizingObserver<ShardInfoUpdate> subscribeToUpdates() {
         var observer = new BlockingMemoizingObserver<ShardInfoUpdate>();
-        WithAckObserver ackObserver = new WithAckObserver(observer);
+        var ackObserver = new WithAckObserver(observer);
         adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), ackObserver);
         ackObserver.waitForAcknowledgment();
         return observer;

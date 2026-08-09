@@ -9,7 +9,7 @@ dependencies {
     api(CoreJvm.server)
     implementation(project(":storage:base"))
     // `Redisson` is not part of the shared `config` dependency catalog; declared inline.
-    implementation("org.redisson:redisson:3.16.3")
+    implementation("org.redisson:redisson:3.52.0")
     testImplementation(Kotest.assertions)
     testImplementation(Testcontainers.lib)
     testImplementation(project(path = ":storage:base", configuration = "testArtifacts"))

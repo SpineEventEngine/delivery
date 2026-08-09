@@ -6,7 +6,7 @@
 
 package io.spine.delivery.admin.given;
 
-import com.google.common.truth.Truth8;
+import com.google.common.truth.Truth;
 import com.google.common.truth.extensions.proto.IterableOfProtosFluentAssertion;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.google.protobuf.Message;
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeoutException;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 
 /**
- * A utility for starting an assertion chains with {@code MemoizingObserver}s and {@code Future}s.
+ * A utility for starting an assertion chain with {@code MemoizingObserver}s and {@code Future}s.
  */
 public final class SubscriptionAssertions {
 
@@ -34,12 +34,12 @@ public final class SubscriptionAssertions {
      * Asserts that the given observer has no error.
      */
     public static <T> void assertHasNoError(MemoizingObserver<T> observer) {
-        Truth8.assertThat(Optional.ofNullable(observer.getError()))
-              .isEmpty();
+        Truth.assertThat(Optional.ofNullable(observer.getError()))
+             .isEmpty();
     }
 
     /**
-     * Starts an assertion chain for updates list stored in the given {@code observer}.
+     * Starts an assertion chain for the update list stored in the given {@code observer}.
      */
     public static <T extends Message>
     IterableOfProtosFluentAssertion<T> assertUpdatesIn(MemoizingObserver<T> observer) {

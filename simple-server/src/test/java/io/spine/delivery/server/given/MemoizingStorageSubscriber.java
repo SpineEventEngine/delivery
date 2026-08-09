@@ -91,10 +91,9 @@ public class MemoizingStorageSubscriber<I, R extends Message> implements Storage
             if (this == o) {
                 return true;
             }
-            if (o == null || getClass() != o.getClass()) {
+            if (!(o instanceof SingleWrite<?, ?> write)) {
                 return false;
             }
-            SingleWrite<?, ?> write = (SingleWrite<?, ?>) o;
             return id.equals(write.id) && message.equals(write.message);
         }
 

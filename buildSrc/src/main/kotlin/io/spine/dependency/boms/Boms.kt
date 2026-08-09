@@ -60,7 +60,7 @@ object Boms {
      * Technology-based BOMs.
      */
     object Optional {
-        val jackson = Jackson.bom
+        val jackson = Jackson.v2Bom
         val grpc = Grpc.bom
     }
 }
