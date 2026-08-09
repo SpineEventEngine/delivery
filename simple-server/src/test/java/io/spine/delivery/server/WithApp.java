@@ -9,12 +9,12 @@ package io.spine.delivery.server;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.Time;
+import io.spine.delivery.InboxServiceGrpc;
+import io.spine.delivery.ShardServiceGrpc;
 import io.spine.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
 import io.spine.delivery.admin.grpc.AdminServiceGrpc.AdminServiceStub;
-import io.spine.delivery.InboxServiceGrpc;
 import io.spine.delivery.server.event.TestEvent;
-import io.spine.delivery.ShardServiceGrpc;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.AfterEach;
@@ -24,6 +24,7 @@ import org.junit.jupiter.api.BeforeEach;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
@@ -76,8 +77,17 @@ public abstract class WithApp {
         adminService = AdminServiceGrpc.newStub(serverChannel);
     }
 
+    /**
+     * Shuts down the client channel and then the application.
+     *
+     * <p>The channel is a client-side object with a lifecycle of its own: shutting down
+     * the server does not close it. It is closed first — before the server — so that it
+     * does not attempt to reconnect to an already stopped server.
+     */
     @AfterEach
-    void shutdownApp() {
+    void shutdownApp() throws InterruptedException {
+        serverChannel.shutdownNow();
+        serverChannel.awaitTermination(5, TimeUnit.SECONDS);
         app.shutdown();
     }
 
@@ -132,7 +142,7 @@ public abstract class WithApp {
      * Returns a channel connected to the running application.
      */
     private ManagedChannel newServerChannel() {
-        ManagedChannel channel = ManagedChannelBuilder
+        var channel = ManagedChannelBuilder
                 .forAddress(SimpleApp.HOST, port)
                 .usePlaintext()
                 .build();
