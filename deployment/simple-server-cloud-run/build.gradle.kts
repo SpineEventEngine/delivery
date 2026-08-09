@@ -8,7 +8,6 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.spine.dependency.lib.Flogger
 import io.spine.dependency.lib.Grpc
 import io.spine.dependency.lib.Log4j2
-import io.spine.dependency.lib.Log4j2Bridge
 import io.spine.dependency.lib.Micronaut
 import io.spine.dependency.storage.Hazelcast
 
@@ -22,6 +21,16 @@ plugins {
 // same version alignment under `failOnVersionConflict()`.
 // See the KDoc of `alignMicronautPlatform()` in `buildSrc`.
 alignMicronautPlatform()
+
+/**
+ * The version of the Log4j2 artifacts, taken from the [Log4j2] object so that the
+ * SLF4J bridge below cannot drift from the backend.
+ *
+ * The bridge is not declared by [Log4j2] because that object is distributed by the
+ * `config` module: `./config/pull` copies its `buildSrc` over this one, which would
+ * silently drop any artifact added there.
+ */
+val log4j2Version = Log4j2.core.substringAfterLast(':')
 
 // The fat-JAR classpath is the first place where the graph of `simple-server`
 // (Redisson, Hazelcast, Log4j2) meets the Micronaut platform of `admin-server`.
@@ -43,7 +52,7 @@ configurations.all {
             }
             "io.reactivex.rxjava3" -> useVersion(Micronaut.rxJavaVersion)
             // This build's Log4j2 is newer than the Micronaut platform's pin.
-            "org.apache.logging.log4j" -> useVersion(Log4j2.core.substringAfterLast(':'))
+            "org.apache.logging.log4j" -> useVersion(log4j2Version)
             // Redisson requests a newer SnakeYAML than the Micronaut platform pins.
             "org.yaml" -> useVersion("2.5")
             // `storage:hazelcast` uses a newer Hazelcast than the platform's pin.
@@ -54,8 +63,9 @@ configurations.all {
 
 dependencies {
     runtimeOnly(Grpc.nettyShaded)
-    runtimeOnly(Log4j2Bridge.slf4j2)
     runtimeOnly(Log4j2.core)
+    // Routes the SLF4J calls of Micronaut to the Log4j2 backend above.
+    runtimeOnly("org.apache.logging.log4j:log4j-slf4j2-impl:$log4j2Version")
     runtimeOnly(Flogger.Runtime.log4j2Backend)
     implementation(project(":simple-server"))
     implementation(project(":admin-server"))
