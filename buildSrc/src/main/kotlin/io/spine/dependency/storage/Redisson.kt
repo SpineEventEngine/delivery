@@ -16,6 +16,14 @@ package io.spine.dependency.storage
 @Suppress("unused", "ConstPropertyName")
 object Redisson {
     // https://central.sonatype.com/artifact/org.redisson/redisson
-    const val version = "3.52.0"
+    const val version = "4.7.0"
     const val lib = "org.redisson:redisson:$version"
+
+    /**
+     * Versions of the third-party libraries which this graph brings in, and which win
+     * the cross-stack conflicts on the `simple-server-cloud-run` classpath, where the
+     * Redisson graph meets the Micronaut one. Update together with [version].
+     */
+    const val byteBuddyVersion = "1.18.2"
+    const val snakeYamlVersion = "2.6"
 }
