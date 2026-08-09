@@ -2089,6 +2089,10 @@
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT](https://opensource.org/license/mit)
 
+1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 3.0.1.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.spockframework. **Name** : spock-bom. **Version** : 2.3-groovy-4.0.
      * **Project URL:** [https://spockframework.org](https://spockframework.org)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -2121,10 +2125,40 @@
      * **Project URL:** [https://aws.amazon.com/sdkforjava](https://aws.amazon.com/sdkforjava)
      * **License:** [Apache License, Version 2.0](https://aws.amazon.com/apache2.0)
 
+1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-core. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-databind. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.datatype. **Name** : jackson-datatype-guava. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-datatypes-collections](https://github.com/FasterXML/jackson-datatypes-collections)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.module. **Name** : jackson-module-kotlin. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using 
+This report was generated on **Sun Aug 09 16:14:11 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -2317,11 +2351,6 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -2996,6 +3025,10 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT](https://opensource.org/license/mit)
 
+1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 3.0.1.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.1.2.
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
      * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
@@ -3008,10 +3041,40 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-core. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-databind. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.datatype. **Name** : jackson-datatype-guava. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-datatypes-collections](https://github.com/FasterXML/jackson-datatypes-collections)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.module. **Name** : jackson-module-kotlin. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using 
+This report was generated on **Sun Aug 09 16:14:11 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -3204,11 +3267,6 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -3883,6 +3941,10 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT](https://opensource.org/license/mit)
 
+1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 3.0.1.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.1.2.
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
      * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
@@ -3895,10 +3957,40 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-core. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-databind. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.datatype. **Name** : jackson-datatype-guava. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-datatypes-collections](https://github.com/FasterXML/jackson-datatypes-collections)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.module. **Name** : jackson-module-kotlin. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using 
+This report was generated on **Sun Aug 09 16:14:11 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -4091,11 +4183,6 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -4770,6 +4857,10 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT](https://opensource.org/license/mit)
 
+1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 3.0.1.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.1.2.
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
      * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
@@ -4782,10 +4873,40 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-core. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-databind. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.datatype. **Name** : jackson-datatype-guava. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-datatypes-collections](https://github.com/FasterXML/jackson-datatypes-collections)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.module. **Name** : jackson-module-kotlin. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using 
+This report was generated on **Sun Aug 09 16:14:11 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -4795,6 +4916,17 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
 # Dependencies of `io.spine.delivery:spine-simple-server:0.13.0`
 
 ## Runtime
+1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.6.2.
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
+
+1.  **Group** : com.esotericsoftware. **Name** : minlog. **Version** : 1.3.1.
+     * **Project URL:** [https://github.com/EsotericSoftware/minlog](https://github.com/EsotericSoftware/minlog)
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
+
+1.  **Group** : com.esotericsoftware. **Name** : reflectasm. **Version** : 1.11.9.
+     * **Project URL:** [https://github.com/EsotericSoftware/reflectasm](https://github.com/EsotericSoftware/reflectasm)
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
+
 1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -4818,6 +4950,11 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
      * **Project URL:** [http://source.android.com/](http://source.android.com/)
@@ -4906,35 +5043,39 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.127.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -4942,11 +5083,11 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://github.com/perfmark/perfmark](https://github.com/perfmark/perfmark)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.4.4.
+1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.6.2.
      * **Project URL:** [https://github.com/reactor/reactor-core](https://github.com/reactor/reactor-core)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.0.12.
+1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.8.
      * **Project URL:** [https://github.com/ReactiveX/RxJava](https://github.com/ReactiveX/RxJava)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4954,14 +5095,12 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [http://jcp.org/en/jsr/detail?id=250](http://jcp.org/en/jsr/detail?id=250)
      * **License:** [CDDL + GPLv2 with classpath exception](https://github.com/javaee/javax.annotation/blob/master/LICENSE)
 
-1.  **Group** : javax.cache. **Name** : cache-api. **Version** : 1.0.0.
+1.  **Group** : javax.cache. **Name** : cache-api. **Version** : 1.1.1.
      * **Project URL:** [https://github.com/jsr107/jsr107spec](https://github.com/jsr107/jsr107spec)
-     * **License:** [JSR-000107 JCACHE 2.9 Public Review - Updated Specification
-                License
-            ](https://raw.github.com/jsr107/jsr107spec/master/LICENSE.txt)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.11.0.
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.17.7.
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.apache.logging.log4j. **Name** : log4j-api. **Version** : 2.26.0.
      * **Project URL:** [https://logging.apache.org/log4j/2.x/](https://logging.apache.org/log4j/2.x/)
@@ -4974,14 +5113,6 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
 1.  **Group** : org.codehaus.mojo. **Name** : animal-sniffer-annotations. **Version** : 1.27.
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [MIT license](https://spdx.org/licenses/MIT.txt)
-
-1.  **Group** : org.jboss.marshalling. **Name** : jboss-marshalling. **Version** : 2.0.11.Final.
-     * **License:** [Apache License 2.0](http://repository.jboss.org/licenses/apache-2.0.txt)
-     * **License:** [Public Domain](http://repository.jboss.org/licenses/cc0-1.0.txt)
-
-1.  **Group** : org.jboss.marshalling. **Name** : jboss-marshalling-river. **Version** : 2.0.11.Final.
-     * **License:** [Apache License 2.0](http://repository.jboss.org/licenses/apache-2.0.txt)
-     * **License:** [Public Domain](http://repository.jboss.org/licenses/cc0-1.0.txt)
 
 1.  **Group** : org.jetbrains. **Name** : annotations. **Version** : 26.1.0.
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
@@ -5027,24 +5158,23 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/kotlinx-datetime](https://github.com/Kotlin/kotlinx-datetime)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jodd. **Name** : jodd-bean. **Version** : 5.1.6.
-     * **Project URL:** [http://jodd.org](http://jodd.org)
-     * **License:** [BSD-2-Clause](http://jodd.org/license.html)
-
-1.  **Group** : org.jodd. **Name** : jodd-core. **Version** : 5.1.6.
-     * **Project URL:** [http://jodd.org](http://jodd.org)
-     * **License:** [BSD-2-Clause](http://jodd.org/license.html)
+1.  **Group** : org.jodd. **Name** : jodd-util. **Version** : 6.3.0.
+     * **Project URL:** [https://util.jodd.org](https://util.jodd.org)
+     * **License:** [BSD-2-Clause](https://github.com/oblac/jodd-util/blob/master/LICENSE)
 
 1.  **Group** : org.jspecify. **Name** : jspecify. **Version** : 1.0.0.
      * **Project URL:** [http://jspecify.org/](http://jspecify.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.reactivestreams. **Name** : reactive-streams. **Version** : 1.0.3.
-     * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
-     * **License:** [CC0](http://creativecommons.org/publicdomain/zero/1.0/)
+1.  **Group** : org.objenesis. **Name** : objenesis. **Version** : 3.4.
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.16.3.
-     * **Project URL:** [http://redisson.org](http://redisson.org)
+1.  **Group** : org.reactivestreams. **Name** : reactive-streams. **Version** : 1.0.4.
+     * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
+     * **License:** [MIT-0](https://spdx.org/licenses/MIT-0.html)
+
+1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.52.0.
+     * **Project URL:** [https://redisson.pro](https://redisson.pro)
      * **License:** [Apache v2](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 1.  **Group** : org.slf4j. **Name** : slf4j-api. **Version** : 2.0.18.
@@ -5059,6 +5189,17 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
 1.  **Group** : biz.aQute.bnd. **Name** : biz.aQute.bnd.annotation. **Version** : 7.1.0.
      * **Project URL:** [https://bnd.bndtools.org/](https://bnd.bndtools.org/)
      * **License:** [(Apache-2.0 OR EPL-2.0)](https://opensource.org/licenses/Apache-2.0,https://opensource.org/licenses/EPL-2.0)
+
+1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.6.2.
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
+
+1.  **Group** : com.esotericsoftware. **Name** : minlog. **Version** : 1.3.1.
+     * **Project URL:** [https://github.com/EsotericSoftware/minlog](https://github.com/EsotericSoftware/minlog)
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
+
+1.  **Group** : com.esotericsoftware. **Name** : reflectasm. **Version** : 1.11.9.
+     * **Project URL:** [https://github.com/EsotericSoftware/reflectasm](https://github.com/EsotericSoftware/reflectasm)
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
 
 1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
@@ -5403,35 +5544,39 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.127.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -5439,11 +5584,11 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://github.com/perfmark/perfmark](https://github.com/perfmark/perfmark)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.4.4.
+1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.6.2.
      * **Project URL:** [https://github.com/reactor/reactor-core](https://github.com/reactor/reactor-core)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.0.12.
+1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.8.
      * **Project URL:** [https://github.com/ReactiveX/RxJava](https://github.com/ReactiveX/RxJava)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5451,11 +5596,9 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [http://jcp.org/en/jsr/detail?id=250](http://jcp.org/en/jsr/detail?id=250)
      * **License:** [CDDL + GPLv2 with classpath exception](https://github.com/javaee/javax.annotation/blob/master/LICENSE)
 
-1.  **Group** : javax.cache. **Name** : cache-api. **Version** : 1.0.0.
+1.  **Group** : javax.cache. **Name** : cache-api. **Version** : 1.1.1.
      * **Project URL:** [https://github.com/jsr107/jsr107spec](https://github.com/jsr107/jsr107spec)
-     * **License:** [JSR-000107 JCACHE 2.9 Public Review - Updated Specification
-                License
-            ](https://raw.github.com/jsr107/jsr107spec/master/LICENSE.txt)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : javax.inject. **Name** : javax.inject. **Version** : 1.
      * **Project URL:** [http://code.google.com/p/atinject/](http://code.google.com/p/atinject/)
@@ -5469,8 +5612,8 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://github.com/trustin/os-maven-plugin/](https://github.com/trustin/os-maven-plugin/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.11.0.
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.17.7.
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : net.sf.saxon. **Name** : Saxon-HE. **Version** : 12.2.
      * **Project URL:** [http://www.saxonica.com/](http://www.saxonica.com/)
@@ -5570,14 +5713,6 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **License:** [Apache License 2.0](http://www.apache.org/licenses/)
      * **License:** [LGPL 2.1](http://www.gnu.org/licenses/lgpl-2.1.html)
      * **License:** [MPL 1.1](http://www.mozilla.org/MPL/MPL-1.1.html)
-
-1.  **Group** : org.jboss.marshalling. **Name** : jboss-marshalling. **Version** : 2.0.11.Final.
-     * **License:** [Apache License 2.0](http://repository.jboss.org/licenses/apache-2.0.txt)
-     * **License:** [Public Domain](http://repository.jboss.org/licenses/cc0-1.0.txt)
-
-1.  **Group** : org.jboss.marshalling. **Name** : jboss-marshalling-river. **Version** : 2.0.11.Final.
-     * **License:** [Apache License 2.0](http://repository.jboss.org/licenses/apache-2.0.txt)
-     * **License:** [Public Domain](http://repository.jboss.org/licenses/cc0-1.0.txt)
 
 1.  **Group** : org.jetbrains. **Name** : annotations. **Version** : 23.0.0.
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
@@ -5775,13 +5910,9 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/kotlinx.html](https://github.com/Kotlin/kotlinx.html)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jodd. **Name** : jodd-bean. **Version** : 5.1.6.
-     * **Project URL:** [http://jodd.org](http://jodd.org)
-     * **License:** [BSD-2-Clause](http://jodd.org/license.html)
-
-1.  **Group** : org.jodd. **Name** : jodd-core. **Version** : 5.1.6.
-     * **Project URL:** [http://jodd.org](http://jodd.org)
-     * **License:** [BSD-2-Clause](http://jodd.org/license.html)
+1.  **Group** : org.jodd. **Name** : jodd-util. **Version** : 6.3.0.
+     * **Project URL:** [https://util.jodd.org](https://util.jodd.org)
+     * **License:** [BSD-2-Clause](https://github.com/oblac/jodd-util/blob/master/LICENSE)
 
 1.  **Group** : org.jsoup. **Name** : jsoup. **Version** : 1.16.1.
      * **Project URL:** [https://jsoup.org/](https://jsoup.org/)
@@ -5818,6 +5949,9 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
 1.  **Group** : org.junit.platform. **Name** : junit-platform-launcher. **Version** : 6.1.0.
      * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
+
+1.  **Group** : org.objenesis. **Name** : objenesis. **Version** : 3.4.
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.opentest4j. **Name** : opentest4j. **Version** : 1.3.0.
      * **Project URL:** [https://github.com/ota4j-team/opentest4j](https://github.com/ota4j-team/opentest4j)
@@ -5862,12 +5996,12 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://github.com/hrldcpr/pcollections](https://github.com/hrldcpr/pcollections)
      * **License:** [The MIT License](https://opensource.org/licenses/mit-license.php)
 
-1.  **Group** : org.reactivestreams. **Name** : reactive-streams. **Version** : 1.0.3.
+1.  **Group** : org.reactivestreams. **Name** : reactive-streams. **Version** : 1.0.4.
      * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
-     * **License:** [CC0](http://creativecommons.org/publicdomain/zero/1.0/)
+     * **License:** [MIT-0](https://spdx.org/licenses/MIT-0.html)
 
-1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.16.3.
-     * **Project URL:** [http://redisson.org](http://redisson.org)
+1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.52.0.
+     * **Project URL:** [https://redisson.pro](https://redisson.pro)
      * **License:** [Apache v2](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 1.  **Group** : org.reflections. **Name** : reflections. **Version** : 0.10.2.
@@ -5887,6 +6021,10 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT](https://opensource.org/license/mit)
 
+1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 3.0.1.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.1.2.
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
      * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
@@ -5899,10 +6037,40 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-core. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-databind. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.datatype. **Name** : jackson-datatype-guava. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-datatypes-collections](https://github.com/FasterXML/jackson-datatypes-collections)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.module. **Name** : jackson-module-kotlin. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using 
+This report was generated on **Sun Aug 09 16:14:11 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -6012,11 +6180,6 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
 
 1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jdk8. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jdk8)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -6539,6 +6702,10 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT License](http://www.opensource.org/licenses/mit-license.php)
 
+1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 3.0.1.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.1.2.
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
      * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
@@ -6551,10 +6718,40 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-core. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-databind. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.datatype. **Name** : jackson-datatype-guava. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-datatypes-collections](https://github.com/FasterXML/jackson-datatypes-collections)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.module. **Name** : jackson-module-kotlin. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using 
+This report was generated on **Sun Aug 09 16:14:11 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -6851,11 +7048,6 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -7530,6 +7722,10 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT](https://opensource.org/license/mit)
 
+1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 3.0.1.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.1.2.
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
      * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
@@ -7542,10 +7738,40 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-core. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-databind. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.datatype. **Name** : jackson-datatype-guava. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-datatypes-collections](https://github.com/FasterXML/jackson-datatypes-collections)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.module. **Name** : jackson-module-kotlin. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using 
+This report was generated on **Sun Aug 09 16:14:11 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -7738,11 +7964,6 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -8417,6 +8638,10 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT](https://opensource.org/license/mit)
 
+1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 3.0.1.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.1.2.
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
      * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
@@ -8429,10 +8654,40 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-core. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-databind. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.datatype. **Name** : jackson-datatype-guava. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-datatypes-collections](https://github.com/FasterXML/jackson-datatypes-collections)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.module. **Name** : jackson-module-kotlin. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using 
+This report was generated on **Sun Aug 09 16:14:11 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -8629,11 +8884,6 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
-     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 1.  **Group** : com.fasterxml.jackson.module. **Name** : jackson-module-kotlin. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -9312,6 +9562,10 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT](https://opensource.org/license/mit)
 
+1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 3.0.1.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.xmlresolver. **Name** : xmlresolver. **Version** : 5.1.2.
      * **Project URL:** [https://github.com/xmlresolver/xmlresolver](https://github.com/xmlresolver/xmlresolver)
      * **License:** [Apache License version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
@@ -9324,10 +9578,40 @@ This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-core. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-databind. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.datatype. **Name** : jackson-datatype-guava. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-datatypes-collections](https://github.com/FasterXML/jackson-datatypes-collections)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.module. **Name** : jackson-module-kotlin. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using 
+This report was generated on **Sun Aug 09 16:14:11 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -9337,6 +9621,17 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
 # Dependencies of `io.spine.delivery:spine-redis:0.13.0`
 
 ## Runtime
+1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.6.2.
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
+
+1.  **Group** : com.esotericsoftware. **Name** : minlog. **Version** : 1.3.1.
+     * **Project URL:** [https://github.com/EsotericSoftware/minlog](https://github.com/EsotericSoftware/minlog)
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
+
+1.  **Group** : com.esotericsoftware. **Name** : reflectasm. **Version** : 1.11.9.
+     * **Project URL:** [https://github.com/EsotericSoftware/reflectasm](https://github.com/EsotericSoftware/reflectasm)
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
+
 1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -9360,6 +9655,11 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.fasterxml.jackson.datatype. **Name** : jackson-datatype-jsr310. **Version** : 2.22.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310](https://github.com/FasterXML/jackson-modules-java8/jackson-datatype-jsr310)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
      * **Project URL:** [http://source.android.com/](http://source.android.com/)
@@ -9444,35 +9744,39 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.127.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -9480,11 +9784,11 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://github.com/perfmark/perfmark](https://github.com/perfmark/perfmark)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.4.4.
+1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.6.2.
      * **Project URL:** [https://github.com/reactor/reactor-core](https://github.com/reactor/reactor-core)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.0.12.
+1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.8.
      * **Project URL:** [https://github.com/ReactiveX/RxJava](https://github.com/ReactiveX/RxJava)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -9492,26 +9796,16 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [http://jcp.org/en/jsr/detail?id=250](http://jcp.org/en/jsr/detail?id=250)
      * **License:** [CDDL + GPLv2 with classpath exception](https://github.com/javaee/javax.annotation/blob/master/LICENSE)
 
-1.  **Group** : javax.cache. **Name** : cache-api. **Version** : 1.0.0.
+1.  **Group** : javax.cache. **Name** : cache-api. **Version** : 1.1.1.
      * **Project URL:** [https://github.com/jsr107/jsr107spec](https://github.com/jsr107/jsr107spec)
-     * **License:** [JSR-000107 JCACHE 2.9 Public Review - Updated Specification
-                License
-            ](https://raw.github.com/jsr107/jsr107spec/master/LICENSE.txt)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.11.0.
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.17.7.
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.codehaus.mojo. **Name** : animal-sniffer-annotations. **Version** : 1.27.
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
      * **License:** [MIT license](https://spdx.org/licenses/MIT.txt)
-
-1.  **Group** : org.jboss.marshalling. **Name** : jboss-marshalling. **Version** : 2.0.11.Final.
-     * **License:** [Apache License 2.0](http://repository.jboss.org/licenses/apache-2.0.txt)
-     * **License:** [Public Domain](http://repository.jboss.org/licenses/cc0-1.0.txt)
-
-1.  **Group** : org.jboss.marshalling. **Name** : jboss-marshalling-river. **Version** : 2.0.11.Final.
-     * **License:** [Apache License 2.0](http://repository.jboss.org/licenses/apache-2.0.txt)
-     * **License:** [Public Domain](http://repository.jboss.org/licenses/cc0-1.0.txt)
 
 1.  **Group** : org.jetbrains. **Name** : annotations. **Version** : 26.1.0.
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
@@ -9557,24 +9851,23 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/kotlinx-datetime](https://github.com/Kotlin/kotlinx-datetime)
      * **License:** [Apache-2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jodd. **Name** : jodd-bean. **Version** : 5.1.6.
-     * **Project URL:** [http://jodd.org](http://jodd.org)
-     * **License:** [BSD-2-Clause](http://jodd.org/license.html)
-
-1.  **Group** : org.jodd. **Name** : jodd-core. **Version** : 5.1.6.
-     * **Project URL:** [http://jodd.org](http://jodd.org)
-     * **License:** [BSD-2-Clause](http://jodd.org/license.html)
+1.  **Group** : org.jodd. **Name** : jodd-util. **Version** : 6.3.0.
+     * **Project URL:** [https://util.jodd.org](https://util.jodd.org)
+     * **License:** [BSD-2-Clause](https://github.com/oblac/jodd-util/blob/master/LICENSE)
 
 1.  **Group** : org.jspecify. **Name** : jspecify. **Version** : 1.0.0.
      * **Project URL:** [http://jspecify.org/](http://jspecify.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.reactivestreams. **Name** : reactive-streams. **Version** : 1.0.3.
-     * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
-     * **License:** [CC0](http://creativecommons.org/publicdomain/zero/1.0/)
+1.  **Group** : org.objenesis. **Name** : objenesis. **Version** : 3.4.
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.16.3.
-     * **Project URL:** [http://redisson.org](http://redisson.org)
+1.  **Group** : org.reactivestreams. **Name** : reactive-streams. **Version** : 1.0.4.
+     * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
+     * **License:** [MIT-0](https://spdx.org/licenses/MIT-0.html)
+
+1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.52.0.
+     * **Project URL:** [https://redisson.pro](https://redisson.pro)
      * **License:** [Apache v2](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 1.  **Group** : org.slf4j. **Name** : slf4j-api. **Version** : 2.0.18.
@@ -9586,6 +9879,17 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 ## Compile, tests, and tooling
+1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.6.2.
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
+
+1.  **Group** : com.esotericsoftware. **Name** : minlog. **Version** : 1.3.1.
+     * **Project URL:** [https://github.com/EsotericSoftware/minlog](https://github.com/EsotericSoftware/minlog)
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
+
+1.  **Group** : com.esotericsoftware. **Name** : reflectasm. **Version** : 1.11.9.
+     * **Project URL:** [https://github.com/EsotericSoftware/reflectasm](https://github.com/EsotericSoftware/reflectasm)
+     * **License:** [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause)
+
 1.  **Group** : com.fasterxml.jackson. **Name** : jackson-bom. **Version** : 2.22.1.
      * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -9933,35 +10237,39 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.68.Final.
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.1.127.Final.
+     * **Project URL:** [https://netty.io/](https://netty.io/)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
+
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.1.127.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -9969,11 +10277,11 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://github.com/perfmark/perfmark](https://github.com/perfmark/perfmark)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.4.4.
+1.  **Group** : io.projectreactor. **Name** : reactor-core. **Version** : 3.6.2.
      * **Project URL:** [https://github.com/reactor/reactor-core](https://github.com/reactor/reactor-core)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.0.12.
+1.  **Group** : io.reactivex.rxjava3. **Name** : rxjava. **Version** : 3.1.8.
      * **Project URL:** [https://github.com/ReactiveX/RxJava](https://github.com/ReactiveX/RxJava)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -9981,11 +10289,9 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [http://jcp.org/en/jsr/detail?id=250](http://jcp.org/en/jsr/detail?id=250)
      * **License:** [CDDL + GPLv2 with classpath exception](https://github.com/javaee/javax.annotation/blob/master/LICENSE)
 
-1.  **Group** : javax.cache. **Name** : cache-api. **Version** : 1.0.0.
+1.  **Group** : javax.cache. **Name** : cache-api. **Version** : 1.1.1.
      * **Project URL:** [https://github.com/jsr107/jsr107spec](https://github.com/jsr107/jsr107spec)
-     * **License:** [JSR-000107 JCACHE 2.9 Public Review - Updated Specification
-                License
-            ](https://raw.github.com/jsr107/jsr107spec/master/LICENSE.txt)
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : javax.inject. **Name** : javax.inject. **Version** : 1.
      * **Project URL:** [http://code.google.com/p/atinject/](http://code.google.com/p/atinject/)
@@ -9999,8 +10305,8 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://github.com/trustin/os-maven-plugin/](https://github.com/trustin/os-maven-plugin/)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.11.0.
-     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+1.  **Group** : net.bytebuddy. **Name** : byte-buddy. **Version** : 1.17.7.
+     * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : net.java.dev.jna. **Name** : jna. **Version** : 5.18.1.
      * **Project URL:** [https://github.com/java-native-access/jna](https://github.com/java-native-access/jna)
@@ -10105,14 +10411,6 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **License:** [Apache License 2.0](http://www.apache.org/licenses/)
      * **License:** [LGPL 2.1](http://www.gnu.org/licenses/lgpl-2.1.html)
      * **License:** [MPL 1.1](http://www.mozilla.org/MPL/MPL-1.1.html)
-
-1.  **Group** : org.jboss.marshalling. **Name** : jboss-marshalling. **Version** : 2.0.11.Final.
-     * **License:** [Apache License 2.0](http://repository.jboss.org/licenses/apache-2.0.txt)
-     * **License:** [Public Domain](http://repository.jboss.org/licenses/cc0-1.0.txt)
-
-1.  **Group** : org.jboss.marshalling. **Name** : jboss-marshalling-river. **Version** : 2.0.11.Final.
-     * **License:** [Apache License 2.0](http://repository.jboss.org/licenses/apache-2.0.txt)
-     * **License:** [Public Domain](http://repository.jboss.org/licenses/cc0-1.0.txt)
 
 1.  **Group** : org.jetbrains. **Name** : annotations. **Version** : 23.0.0.
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
@@ -10310,13 +10608,9 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/kotlinx.html](https://github.com/Kotlin/kotlinx.html)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jodd. **Name** : jodd-bean. **Version** : 5.1.6.
-     * **Project URL:** [http://jodd.org](http://jodd.org)
-     * **License:** [BSD-2-Clause](http://jodd.org/license.html)
-
-1.  **Group** : org.jodd. **Name** : jodd-core. **Version** : 5.1.6.
-     * **Project URL:** [http://jodd.org](http://jodd.org)
-     * **License:** [BSD-2-Clause](http://jodd.org/license.html)
+1.  **Group** : org.jodd. **Name** : jodd-util. **Version** : 6.3.0.
+     * **Project URL:** [https://util.jodd.org](https://util.jodd.org)
+     * **License:** [BSD-2-Clause](https://github.com/oblac/jodd-util/blob/master/LICENSE)
 
 1.  **Group** : org.jsoup. **Name** : jsoup. **Version** : 1.16.1.
      * **Project URL:** [https://jsoup.org/](https://jsoup.org/)
@@ -10354,6 +10648,9 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://junit.org/](https://junit.org/)
      * **License:** [Eclipse Public License v2.0](https://www.eclipse.org/legal/epl-v20.html)
 
+1.  **Group** : org.objenesis. **Name** : objenesis. **Version** : 3.4.
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.opentest4j. **Name** : opentest4j. **Version** : 1.3.0.
      * **Project URL:** [https://github.com/ota4j-team/opentest4j](https://github.com/ota4j-team/opentest4j)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -10381,12 +10678,12 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://github.com/hrldcpr/pcollections](https://github.com/hrldcpr/pcollections)
      * **License:** [The MIT License](https://opensource.org/licenses/mit-license.php)
 
-1.  **Group** : org.reactivestreams. **Name** : reactive-streams. **Version** : 1.0.3.
+1.  **Group** : org.reactivestreams. **Name** : reactive-streams. **Version** : 1.0.4.
      * **Project URL:** [http://www.reactive-streams.org/](http://www.reactive-streams.org/)
-     * **License:** [CC0](http://creativecommons.org/publicdomain/zero/1.0/)
+     * **License:** [MIT-0](https://spdx.org/licenses/MIT-0.html)
 
-1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.16.3.
-     * **Project URL:** [http://redisson.org](http://redisson.org)
+1.  **Group** : org.redisson. **Name** : redisson. **Version** : 3.52.0.
+     * **Project URL:** [https://redisson.pro](https://redisson.pro)
      * **License:** [Apache v2](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 1.  **Group** : org.reflections. **Name** : reflections. **Version** : 0.10.2.
@@ -10410,6 +10707,10 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [http://www.slf4j.org](http://www.slf4j.org)
      * **License:** [MIT](https://opensource.org/license/mit)
 
+1.  **Group** : org.snakeyaml. **Name** : snakeyaml-engine. **Version** : 3.0.1.
+     * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml-engine](https://bitbucket.org/snakeyaml/snakeyaml-engine)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 1.  **Group** : org.testcontainers. **Name** : testcontainers. **Version** : 2.0.5.
      * **Project URL:** [https://java.testcontainers.org](https://java.testcontainers.org)
      * **License:** [MIT](http://opensource.org/licenses/MIT)
@@ -10426,9 +10727,39 @@ This report was generated on **Sat Aug 08 01:08:07 WEST 2026** using
      * **Project URL:** [https://bitbucket.org/snakeyaml/snakeyaml](https://bitbucket.org/snakeyaml/snakeyaml)
      * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
+1.  **Group** : tools.jackson. **Name** : jackson-bom. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-bom](https://github.com/FasterXML/jackson-bom)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-core. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-core](https://github.com/FasterXML/jackson-core)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.core. **Name** : jackson-databind. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson](https://github.com/FasterXML/jackson)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.dataformat. **Name** : jackson-dataformat-yaml. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-dataformats-text](https://github.com/FasterXML/jackson-dataformats-text)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.datatype. **Name** : jackson-datatype-guava. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-datatypes-collections](https://github.com/FasterXML/jackson-datatypes-collections)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : tools.jackson.module. **Name** : jackson-module-kotlin. **Version** : 3.2.1.
+     * **Project URL:** [https://github.com/FasterXML/jackson-module-kotlin](https://github.com/FasterXML/jackson-module-kotlin)
+     * **License:** [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+     * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Aug 07 19:03:53 WEST 2026** using 
+This report was generated on **Sun Aug 09 16:14:11 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
