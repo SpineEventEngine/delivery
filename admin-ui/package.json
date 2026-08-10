@@ -1,7 +1,7 @@
 {
   "name": "web-client",
   "version": "0.15.0",
-  "description": "A web client for the Admin Service of Delivery Server.",
+  "description": "A web client for the Admin Service of the Delivery Server.",
   "productName": "spine-delivery-server-admin-web-client",
   "author": "developers@spine.io",
   "private": true,
