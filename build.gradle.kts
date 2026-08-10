@@ -49,11 +49,7 @@ import io.spine.gradle.report.pom.PomGenerator
 import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.testing.configureLogging
 import io.spine.gradle.testing.registerTestTasks
-import java.io.ByteArrayOutputStream
-import java.io.File
-import javax.inject.Inject
 import org.gradle.jvm.tasks.Jar
-import org.gradle.process.ExecOperations
 
 buildscript {
     standardSpineSdkRepositories()
@@ -263,229 +259,18 @@ fun Project.setupKotlin(javaVersion: JavaLanguageVersion) {
 }
 
 /**
- * Names of the modules whose tests run against the Docker-based Datastore Emulator.
- *
- * For these modules a missing Docker environment is a build failure rather than a
- * reason to skip tests: without the emulator the suites verify nothing, so a "passed"
- * run would be misleading. See [CheckDockerAvailable].
- *
- * Declared as a function rather than a top-level `val` so that it is safe to call from
- * the `subprojects {}` configuration, which runs before a top-level property initializer
- * further down the script would have executed.
- */
-fun dockerDependentModules() = setOf("datastore", "testlib")
-
-/**
- * Fails the build unless a Docker environment is available for launching the
- * Datastore Emulator used by tests.
- *
- * Wired as a dependency of the `Test` tasks in [dockerDependentModules] so that an
- * environment without Docker cannot produce a misleading "tests passed" result.
- *
- * The sole exemption is the Windows CI runner, which sets `WINDOWS_CI_NO_DOCKER` because it
- * cannot launch the Linux emulator container. There the gate passes, and the emulator tests
- * are skipped by `EmulatorCondition` in `:testlib`, which reads the same variable.
- */
-abstract class CheckDockerAvailable : DefaultTask() {
-
-    /** The name of the gated module, used in the failure message. */
-    @get:Input
-    abstract val moduleName: Property<String>
-
-    @get:Inject
-    abstract val execOperations: ExecOperations
-
-    private companion object {
-
-        /**
-         * The environment variable the Windows CI job sets to signal that the runner cannot
-         * launch the Docker-based Datastore Emulator.
-         *
-         * Kept in sync with `EmulatorCondition` in `:testlib`, which reads the same variable.
-         */
-        const val WINDOWS_CI_NO_DOCKER = "WINDOWS_CI_NO_DOCKER"
-    }
-
-    @TaskAction
-    fun check() {
-        if (windowsCiWithoutDocker()) {
-            logger.lifecycle(
-                "Skipping the Docker requirement for `:${moduleName.get()}`: " +
-                    "`$WINDOWS_CI_NO_DOCKER` is set, so the Datastore Emulator tests are " +
-                    "skipped on this runner."
-            )
-            return
-        }
-        if (dockerAvailable()) {
-            return
-        }
-        val module = moduleName.get()
-        throw GradleException(
-            """
-            No Docker environment is available, but the tests of `:$module` require one.
-
-            These tests exercise the Datastore Emulator running inside a Docker container.
-            Without Docker they verify nothing, so the build fails here instead of passing
-            silently. Install Docker (or start the Docker daemon) and run the build again.
-
-            The only exemption is the Windows CI runner, which sets `$WINDOWS_CI_NO_DOCKER`
-            (it cannot launch the Linux emulator container); there this gate passes and the
-            emulator tests are skipped by `EmulatorCondition` in `:testlib`.
-            """.trimIndent()
-        )
-    }
-
-    /**
-     * Tells whether the Windows CI runner signalled, via the `WINDOWS_CI_NO_DOCKER`
-     * environment variable, that the Docker-based Datastore Emulator is unavailable there.
-     *
-     * Kept in sync with `EmulatorCondition` in `:testlib`, which reads the same variable to
-     * skip the emulator tests on that runner.
-     */
-    private fun windowsCiWithoutDocker(): Boolean =
-        System.getenv(WINDOWS_CI_NO_DOCKER).toBoolean()
-
-    /**
-     * Returns `true` if `docker info` reports a reachable Docker daemon.
-     *
-     * Any failure to even start the `docker` executable (for example, it is not
-     * installed) is treated as "no Docker available".
-     */
-    private fun dockerAvailable(): Boolean = try {
-        val sink = ByteArrayOutputStream()
-        val result = execOperations.exec {
-            commandLine(dockerInfoCommand())
-            standardOutput = sink
-            errorOutput = sink
-            isIgnoreExitValue = true
-        }
-        result.exitValue == 0
-    } catch (_: Exception) {
-        false
-    }
-
-    /**
-     * The command that probes the Docker daemon, resolved for the current OS.
-     *
-     * On Windows the check is routed through `cmd /c` so that the `docker`
-     * executable is resolved via `PATH`/`PATHEXT` (i.e. `docker.exe` provided by
-     * Docker Desktop); a bare program name is not reliably resolved otherwise. On
-     * other systems `docker` is invoked directly.
-     */
-    private fun dockerInfoCommand(): List<String> {
-        val onWindows = System.getProperty("os.name").startsWith("Windows", ignoreCase = true)
-        return if (onWindows) {
-            listOf("cmd", "/c", "docker", "info")
-        } else {
-            listOf("docker", "info")
-        }
-    }
-}
-
-/**
- * Names of the modules whose tests can additionally run against a *remote* Google Cloud
- * backend — the Datastore service — authenticating with the `spine-dev.json`
- * service-account credential that `copyCredentials` places in their test resources.
- *
- * Unlike [dockerDependentModules], a missing credential is reported as a warning rather
- * than a build failure: the remote suites are written to be skipped when the file is
- * absent (see `README.md`), so a local build without it is legitimate. See
- * [CheckCredentialsAvailable].
- *
- * Declared as a function for the same reason as [dockerDependentModules].
- */
-fun credentialDependentModules() = setOf("datastore", "testlib")
-
-/**
- * Warns when the `spine-dev.json` credential is missing from the project root.
- *
- * The `copyCredentials` task copies that file into a module's test resources only when it
- * exists; when it does not, the `Copy` task is skipped as `NO-SOURCE` without any output,
- * and the remote Google Cloud tests stop running with no trace in the build log. Wired as
- * a dependency of the `Test` tasks in [credentialDependentModules], this gate restores a
- * visible signal.
- *
- * It only warns — see [credentialDependentModules] for why a missing credential is not a
- * build failure.
- */
-abstract class CheckCredentialsAvailable : DefaultTask() {
-
-    /** The name of the module whose remote tests use the credential. */
-    @get:Input
-    abstract val moduleName: Property<String>
-
-    /** The absolute path of the `spine-dev.json` credential expected at the project root. */
-    @get:Input
-    abstract val credentialsPath: Property<String>
-
-    @TaskAction
-    fun check() {
-        if (File(credentialsPath.get()).exists()) {
-            return
-        }
-        val module = moduleName.get()
-        logger.warn(
-            """
-
-            WARNING: `spine-dev.json` was not found at the project root.
-
-            The remote Google Cloud tests of `:$module` authenticate with this
-            service-account credential. Without it, `copyCredentials` copies nothing and
-            those tests are skipped or fail — so the build can pass while verifying less
-            than it appears to.
-
-            Provide the file at the project root to run them; CI decrypts it automatically
-            via `config/scripts/decrypt.sh`. See `README.md`.
-            """.trimIndent()
-        )
-    }
-}
-
-/**
  * Configures test tasks in this project.
+ *
+ * Docker-dependent tests are gated per module — see `storage/redis/build.gradle.kts`,
+ * whose `CheckDockerAvailable` task fails the build when the Redis Testcontainers
+ * tests cannot run.
  */
 fun Project.setupTestTasks() {
-    val gatedModule = name.takeIf { it in dockerDependentModules() }
-    val dockerGate = gatedModule?.let { module ->
-        tasks.register<CheckDockerAvailable>("checkDockerAvailable") {
-            moduleName.set(module)
-        }
-    }
-    val credentialModule = name.takeIf { it in credentialDependentModules() }
-    val credentialsGate = credentialModule?.let { module ->
-        val credentialsFile = "$rootDir/spine-dev.json"
-        tasks.register<CheckCredentialsAvailable>("checkCredentialsAvailable") {
-            moduleName.set(module)
-            credentialsPath.set(credentialsFile)
-        }
-    }
     tasks {
         registerTestTasks()
         test {
             useJUnitPlatform { includeEngines("junit-jupiter") }
             configureLogging()
-        }
-        dockerGate?.let { gate ->
-            withType<Test>().configureEach {
-                dependsOn(gate)
-            }
-        }
-        credentialsGate?.let { gate ->
-            withType<Test>().configureEach {
-                dependsOn(gate)
-            }
-        }
-
-        val copyCredentials = register<Copy>("copyCredentials") {
-            val resourceDir = "$projectDir/src/test/resources"
-            val fileName = "spine-dev.json"
-            val sourceFile = file("$rootDir/$fileName")
-
-            from(sourceFile)
-            into(resourceDir)
-        }
-        processTestResources {
-            dependsOn(copyCredentials)
         }
     }
 }
