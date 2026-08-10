@@ -60,7 +60,7 @@ object Jackson : DependencyWithBom() {
     const val annotationsVersion = "2.22"
 
     // https://github.com/FasterXML/jackson-bom
-    override val bom = "${group}:jackson-bom:$version"
+    override val bom = "$group:jackson-bom:$version"
 
     private val groupPrefix = group
     private val coreGroup = "$groupPrefix.core"
@@ -69,10 +69,10 @@ object Jackson : DependencyWithBom() {
     // Constants coming below without `$version` are covered by the BOM.
 
     // https://github.com/FasterXML/jackson-core
-    val core = "${coreGroup}:jackson-core"
+    val core = "$coreGroup:jackson-core"
 
     // https://github.com/FasterXML/jackson-databind
-    val databind = "${coreGroup}:jackson-databind"
+    val databind = "$coreGroup:jackson-databind"
 
     // https://github.com/FasterXML/jackson-annotations
     val annotations = "com.fasterxml.jackson.core:jackson-annotations:$annotationsVersion"
