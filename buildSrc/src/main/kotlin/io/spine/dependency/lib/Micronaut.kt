@@ -72,10 +72,11 @@ object Micronaut {
      * the cross-stack conflicts on the `simple-server-cloud-run` classpath, where
      * the Micronaut graph meets the Redisson one. Update together with [version].
      *
-     * [nettyVersion] is the platform's own pin, used only to settle those conflicts.
-     * It is deliberately independent of the [Netty] catalog object, which declares
-     * the coordinates for a project depending on Netty directly — this project does
-     * not, so the two values need not agree.
+     * [nettyVersion] is the platform's own pin, used to settle those conflicts. It is
+     * kept equal to the version of the [Netty] catalog object, so that a module
+     * depending on Netty directly resolves what the launcher forces. The two remain
+     * separate constants because a future platform may pin a Netty other than the
+     * catalog's; this one always follows the platform.
      */
     const val nettyVersion = "4.2.16.Final"
     const val reactorCoreVersion = "3.7.12"
