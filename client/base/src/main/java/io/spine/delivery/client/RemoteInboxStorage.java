@@ -27,7 +27,7 @@ import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An {@code InboxStorage} based on a remotely-stored Inbox state.
+ * An {@code InboxStorage} based on a remotely stored Inbox state.
  *
  * <p>The read and write operations invoked by the framework are overridden to run
  * through the {@linkplain InboxClient gRPC client} of the Delivery server. The removal
@@ -35,6 +35,10 @@ import static java.util.Objects.requireNonNull;
  * are served by a gRPC-backed record storage created by the package-private
  * {@code RemoteStorageFactory}.
  */
+@SuppressWarnings({
+        "UnsynchronizedOverridesSynchronized",
+        "NonSynchronizedMethodOverridesSynchronizedMethod" /* Delegating to gRPC client. */
+})
 public final class RemoteInboxStorage extends InboxStorage implements WithLogging {
 
     private final Supplier<InboxClient> client;
@@ -75,7 +79,7 @@ public final class RemoteInboxStorage extends InboxStorage implements WithLoggin
     }
 
     @Override
-    @SuppressWarnings("ReturnValueIgnored" /* It's OK to just throw the exception. */)
+    @SuppressWarnings("ReturnValueIgnored")
     protected void write(InboxMessage message) {
         checkNotDefaultArg(message);
         client().writeMessage(message);
@@ -92,14 +96,14 @@ public final class RemoteInboxStorage extends InboxStorage implements WithLoggin
     @SuppressWarnings("ReturnValueIgnored" /* It's OK to just throw the exception. */)
     protected void writeBatch(Iterable<InboxMessage> messages) {
         checkNotNull(messages);
-        InboxMessage message = requireNonNull(
+        var message = requireNonNull(
                 getFirst(messages, InboxMessage.getDefaultInstance())
         );
         if (isDefault(message)) {
             logger().atTrace().log(() -> "No messages supplied. Skip writing to the inbox.");
             return;
         }
-        ShardIndex shard = message.shardIndex();
+        var shard = message.shardIndex();
         client().writeMessages(shard, messages);
     }
 
