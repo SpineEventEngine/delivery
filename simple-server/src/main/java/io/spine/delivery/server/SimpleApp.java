@@ -55,6 +55,12 @@ public final class SimpleApp implements WithLogging {
      */
     private static final int STARTUP_TIMEOUT_SECONDS = 10;
 
+    /**
+     * How long {@link #shutdown()} waits for the gRPC server to terminate gracefully
+     * before forcing the termination.
+     */
+    private static final int SHUTDOWN_TIMEOUT_SECONDS = 5;
+
     private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB; // 4 MiB
 
     /**
@@ -238,7 +244,15 @@ public final class SimpleApp implements WithLogging {
     }
 
     /**
-     * Shuts down the application.
+     * Shuts down the application and awaits the termination of the gRPC server.
+     *
+     * <p>Awaiting matters both in production — the method runs as a JVM shutdown hook,
+     * so returning early would let the JVM die while connections are still served — and
+     * in tests, where a server still releasing its resources after this method returns
+     * may race the connections of the next started test.
+     *
+     * <p>If the server does not terminate within {@link #SHUTDOWN_TIMEOUT_SECONDS},
+     * or the current thread is interrupted, the termination is forced.
      */
     @VisibleForTesting
     public void shutdown() {
@@ -247,6 +261,24 @@ public final class SimpleApp implements WithLogging {
         }
         if (server != null) {
             server.shutdown();
+            awaitTermination();
+        }
+    }
+
+    /**
+     * Waits until the {@link #server} terminates, forcing the termination on timeout
+     * or interruption.
+     */
+    private void awaitTermination() {
+        try {
+            var terminated = server.awaitTermination(SHUTDOWN_TIMEOUT_SECONDS, SECONDS);
+            if (!terminated) {
+                server.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            server.shutdownNow();
+            Thread.currentThread()
+                  .interrupt();
         }
     }
 

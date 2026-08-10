@@ -14,8 +14,12 @@ import io.spine.delivery.server.WithApp;
 import io.spine.logging.WithLogging;
 import io.spine.test.delivery.server.Something;
 import io.spine.type.TypeUrl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Identifier.newUuid;
@@ -42,6 +46,24 @@ import static io.spine.server.delivery.DeliveryStrategy.newIndex;
 
 @DisplayName("`AdminService` should")
 final class AdminServiceTest extends WithApp implements WithLogging {
+
+    /**
+     * The observers of the {@linkplain #subscribeToUpdates() created} subscriptions,
+     * remembered for the cancellation on the test completion.
+     */
+    private final List<WithAckObserver> subscriptions = new ArrayList<>();
+
+    /**
+     * Cancels the subscriptions created by the test.
+     *
+     * <p>Runs before the superclass shuts down the channel and the server, so that
+     * the still-open streaming calls do not have to be force-killed by the teardown —
+     * which otherwise may race the server shutdown and pollute the log with warnings.
+     */
+    @AfterEach
+    void cancelSubscriptions() {
+        subscriptions.forEach(WithAckObserver::cancel);
+    }
 
     @Test
     @DisplayName("get current information about shards")
@@ -235,6 +257,7 @@ final class AdminServiceTest extends WithApp implements WithLogging {
         var ackObserver = new WithAckObserver(observer);
         adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), ackObserver);
         ackObserver.waitForAcknowledgment();
+        subscriptions.add(ackObserver);
         return observer;
     }
 }

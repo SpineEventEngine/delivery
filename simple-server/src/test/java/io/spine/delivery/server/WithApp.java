@@ -85,11 +85,20 @@ public abstract class WithApp {
      * <p>The channel is a client-side object with a lifecycle of its own: shutting down
      * the server does not close it. It is closed first — before the server — so that it
      * does not attempt to reconnect to an already stopped server.
+     *
+     * <p>The shutdown is graceful: by this point the test has cancelled its streaming
+     * calls (see e.g. {@code AdminServiceTest.cancelSubscriptions()}), so the channel
+     * terminates cleanly. Forceful termination remains only as a timeout fallback.
+     * The app then awaits the termination of its server, so that no released-resource
+     * races are left behind for the next test.
      */
     @AfterEach
     void shutdownApp() throws InterruptedException {
-        serverChannel.shutdownNow();
-        serverChannel.awaitTermination(5, TimeUnit.SECONDS);
+        serverChannel.shutdown();
+        if (!serverChannel.awaitTermination(5, TimeUnit.SECONDS)) {
+            serverChannel.shutdownNow();
+            serverChannel.awaitTermination(5, TimeUnit.SECONDS);
+        }
         app.shutdown();
     }
 
