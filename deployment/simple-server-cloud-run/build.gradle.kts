@@ -84,20 +84,33 @@ tasks.withType<ShadowJar> {
 }
 
 /**
+ * The name under which the target GCP project is passed to the build.
+ *
+ * Shared by all three lookups below, so that a Gradle project property, a system
+ * property, and an environment variable are all spelled the same way.
+ */
+val gcpProjectKey = "GCP_PROJECT"
+
+/**
+ * The GCP project to publish the container image to, when no project is given.
+ */
+val defaultGcpProject = "spine-dev"
+
+/**
  * The GCP project hosting the container registry.
  *
- * Looked up under the `GCP_PROJECT` name as a Gradle project property first, so that
+ * Looked up under [gcpProjectKey] as a Gradle project property first, so that
  * `./gradlew jib -PGCP_PROJECT=<id>` selects the target project, then as a system
  * property, and finally as an environment variable.
  *
- * The order and the `spine-dev` default reproduce those of the `prepareExtras` helper
- * this replaced: pushing to the wrong registry is worse than failing to deploy, so a
- * deployment command must not silently fall back to the default.
+ * The order and the [default][defaultGcpProject] reproduce those of the `prepareExtras`
+ * helper this replaced: pushing to the wrong registry is worse than failing to deploy,
+ * so a deployment command must not silently fall back to the default.
  */
-val gcpProject: String = providers.gradleProperty("GCP_PROJECT")
-    .orElse(providers.systemProperty("GCP_PROJECT"))
-    .orElse(providers.environmentVariable("GCP_PROJECT"))
-    .getOrElse("spine-dev")
+val gcpProject: String = providers.gradleProperty(gcpProjectKey)
+    .orElse(providers.systemProperty(gcpProjectKey))
+    .orElse(providers.environmentVariable(gcpProjectKey))
+    .getOrElse(defaultGcpProject)
 
 fun git(vararg args: String): String = providers.exec {
     commandLine("git", *args)
