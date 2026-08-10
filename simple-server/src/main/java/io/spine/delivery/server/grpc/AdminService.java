@@ -125,8 +125,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
      * Returns a new {@code ShardInfo} from the given {@code shardRecord} and {@code messagesCount}.
      */
     private static ShardInfo shardInfo(ShardSessionRecord shardRecord, int messagesCount) {
-        return ShardInfo
-                .newBuilder()
+        return ShardInfo.newBuilder()
                 .setIndex(shardRecord.getIndex())
                 .setLastPicked(shardRecord.getWhenLastPicked())
                 .setStatus(shardRecord.hasWorker() ? PICKED : NOT_PICKED)
@@ -139,8 +138,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
      * sets the shard status to {@code NOT_PICKED}, and doesn't set the last picked time.
      */
     private static ShardInfo shardInfo(ShardIndex index, int messagesCount) {
-        return ShardInfo
-                .newBuilder()
+        return ShardInfo.newBuilder()
                 .setIndex(index)
                 .setStatus(NOT_PICKED)
                 .setMessages(messagesCount)

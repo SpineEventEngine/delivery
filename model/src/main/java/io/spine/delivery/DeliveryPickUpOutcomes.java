@@ -25,8 +25,7 @@ public final class DeliveryPickUpOutcomes {
      */
     public static DeliveryPickUpOutcome pickedUp(ShardPickedUp event) {
         checkNotDefaultArg(event);
-        return DeliveryPickUpOutcome
-                .newBuilder()
+        return DeliveryPickUpOutcome.newBuilder()
                 .setPickedUp(event)
                 .build();
     }
@@ -37,8 +36,7 @@ public final class DeliveryPickUpOutcomes {
      */
     public static DeliveryPickUpOutcome alreadyPickedUp(Rejections.ShardAlreadyPickedUp rejection) {
         checkNotDefaultArg(rejection);
-        return DeliveryPickUpOutcome
-                .newBuilder()
+        return DeliveryPickUpOutcome.newBuilder()
                 .setAlreadyPickedUp(rejection)
                 .build();
     }

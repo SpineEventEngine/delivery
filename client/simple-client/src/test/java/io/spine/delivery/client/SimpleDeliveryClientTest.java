@@ -115,8 +115,7 @@ final class SimpleDeliveryClientTest {
             assertThat(secondAttempt.hasAlreadyPicked())
                     .isTrue();
 
-            var expected = ShardAlreadyPickedUp
-                    .newBuilder()
+            var expected = ShardAlreadyPickedUp.newBuilder()
                     .setWorker(worker)
                     .buildPartial();
 

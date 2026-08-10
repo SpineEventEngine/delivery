@@ -27,8 +27,7 @@ public final class StoragesTestEnv {
      * Creates a new {@code TestEvent} with the given {@code id}.
      */
     public static TestEvent testEventWith(TestEventId id) {
-        return TestEvent
-                .newBuilder()
+        return TestEvent.newBuilder()
                 .setId(id)
                 .build();
     }
@@ -37,8 +36,7 @@ public final class StoragesTestEnv {
      * Creates a new {@code AnotherTestEvent} with the given {@code id}.
      */
     public static AnotherTestEvent anotherTestEventWith(AnotherTestEventId id) {
-        return AnotherTestEvent
-                .newBuilder()
+        return AnotherTestEvent.newBuilder()
                 .setId(id)
                 .build();
     }

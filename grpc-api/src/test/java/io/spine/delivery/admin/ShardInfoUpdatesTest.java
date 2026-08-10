@@ -40,8 +40,7 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
     void createUpdateWithPositiveCount() {
         var actual = ShardInfoUpdates.messagesCountChangedTo(SHARD, 2);
 
-        var expected = ShardInfoUpdate
-                .newBuilder()
+        var expected = ShardInfoUpdate.newBuilder()
                 .setIndex(SHARD)
                 .setNewMessagesCount(2)
                 .build();
@@ -54,8 +53,7 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
     void createUpdateWithNegativeCount() {
         var actual = ShardInfoUpdates.messagesCountChangedTo(SHARD, -1);
 
-        var expected = ShardInfoUpdate
-                .newBuilder()
+        var expected = ShardInfoUpdate.newBuilder()
                 .setIndex(SHARD)
                 .setNewMessagesCount(-1)
                 .build();
@@ -69,8 +67,7 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
         var whenPicked = currentTime();
         var actual = ShardInfoUpdates.shardPicked(SHARD, whenPicked);
 
-        var expected = ShardInfoUpdate
-                .newBuilder()
+        var expected = ShardInfoUpdate.newBuilder()
                 .setIndex(SHARD)
                 .setNewStatus(PICKED)
                 .setWhenLastPicked(whenPicked)
@@ -84,8 +81,7 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
     void createShardUnpickedUpdate() {
         var actual = ShardInfoUpdates.shardUnpicked(SHARD);
 
-        var expected = ShardInfoUpdate
-                .newBuilder()
+        var expected = ShardInfoUpdate.newBuilder()
                 .setIndex(SHARD)
                 .setNewStatus(NOT_PICKED)
                 .build();

@@ -24,8 +24,7 @@ public final class ShardSessionRecords {
      */
     public static ShardSessionRecord fromEvent(ShardPickedUp pickedUp) {
         checkNotNull(pickedUp);
-        return ShardSessionRecord
-                .newBuilder()
+        return ShardSessionRecord.newBuilder()
                 .setIndex(pickedUp.getShard())
                 .setWorker(pickedUp.getWorker())
                 .setWhenLastPicked(pickedUp.getWhenPicked())

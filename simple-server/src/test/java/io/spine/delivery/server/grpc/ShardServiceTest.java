@@ -95,8 +95,7 @@ final class ShardServiceTest {
             assertThat(secondAttempt.hasAlreadyPickedUp())
                     .isTrue();
 
-            var expected = Rejections.ShardAlreadyPickedUp
-                    .newBuilder()
+            var expected = Rejections.ShardAlreadyPickedUp.newBuilder()
                     .setShard(request.getShard())
                     .setWorker(request.getWorker())
                     .setWhenPicked(frozen)

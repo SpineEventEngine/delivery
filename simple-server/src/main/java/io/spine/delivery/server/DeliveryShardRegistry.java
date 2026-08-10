@@ -100,8 +100,7 @@ public final class DeliveryShardRegistry implements WithLogging {
             if (isStale(record)) {
                 logStale(record);
             } else {
-                throw ShardAlreadyPickedUp
-                        .newBuilder()
+                throw ShardAlreadyPickedUp.newBuilder()
                         .setShard(index)
                         .setWorker(record.getWorker())
                         .setWhenPicked(record.getWhenLastPicked())
