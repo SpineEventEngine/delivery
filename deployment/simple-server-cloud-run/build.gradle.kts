@@ -84,10 +84,18 @@ tasks.withType<ShadowJar> {
 }
 
 /**
- * The GCP project hosting the container registry, as given by the `GCP_PROJECT`
- * system property or environment variable.
+ * The GCP project hosting the container registry.
+ *
+ * Looked up under the `GCP_PROJECT` name as a Gradle project property first, so that
+ * `./gradlew jib -PGCP_PROJECT=<id>` selects the target project, then as a system
+ * property, and finally as an environment variable.
+ *
+ * The order and the `spine-dev` default reproduce those of the `prepareExtras` helper
+ * this replaced: pushing to the wrong registry is worse than failing to deploy, so a
+ * deployment command must not silently fall back to the default.
  */
-val gcpProject: String = providers.systemProperty("GCP_PROJECT")
+val gcpProject: String = providers.gradleProperty("GCP_PROJECT")
+    .orElse(providers.systemProperty("GCP_PROJECT"))
     .orElse(providers.environmentVariable("GCP_PROJECT"))
     .getOrElse("spine-dev")
 
