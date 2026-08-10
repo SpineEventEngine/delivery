@@ -25,7 +25,7 @@ import static io.spine.util.Suppliers2.memoize;
  * A storage factory serving {@link RemoteInboxStorage} with its underlying
  * {@linkplain RemoteRecordStorage gRPC-backed record storage}.
  *
- * <p>The factory is not meant for a general use: the only storage it ever creates
+ * <p>The factory is not meant for general use: the only storage it ever creates
  * stores {@link InboxMessage}s remotely via an {@link InboxClient}.
  */
 final class RemoteStorageFactory implements StorageFactory {

@@ -7,7 +7,7 @@
 package io.spine.delivery.client;
 
 /**
- * Request that doesn't return value.
+ * A request that doesn't return a value.
  */
 public interface VoidRequest {
 

@@ -31,11 +31,11 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
 public final class GreetArmyServlet extends ContextAwareServlet {
 
     @Override
-    @SuppressWarnings("UnstableApiUsage")  /* Using Guava's type which hasn't changed since 2012. */
+    @SuppressWarnings("UnstableApiUsage")  /* Using Guava's type that hasn't changed since 2012. */
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         logger().atDebug().log(() -> "Starting to greet an army.");
 
-        @SuppressWarnings("MagicNumber") var howManySoldiers = 1000;
+        var howManySoldiers = 1000;
         logger().atInfo().log(() -> format("Today's army count is %d.", howManySoldiers));
 
         var greetAnArmy = GreetAnArmy.newBuilder()

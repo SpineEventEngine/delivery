@@ -38,7 +38,7 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
- * Application exposing only an {@link InboxService} and {@link ShardService} instances via gRPC.
+ * Application exposing only {@link InboxService} and {@link ShardService} instances via gRPC.
  */
 public final class SimpleApp implements WithLogging {
 
@@ -73,13 +73,13 @@ public final class SimpleApp implements WithLogging {
     private static final Duration NO_SHARD_PROCESSING_TIMEOUT = Durations.ZERO;
 
     /**
-     * A host to use for gRPC server.
+     * A host to use for a gRPC server.
      */
     @VisibleForTesting
     public static final String HOST = "127.0.0.1";
 
     /**
-     * A port to use for gRPC server.
+     * A port to use for a gRPC server.
      */
     @VisibleForTesting
     public static final int PORT = port();
@@ -142,7 +142,7 @@ public final class SimpleApp implements WithLogging {
     }
 
     /**
-     * Creates and starts a gRPC server and serves {@code Delivery} bounded context.
+     * Creates and starts a gRPC server and serves the {@code Delivery} bounded context.
      */
     public static void main(String[] args) {
         var app = new SimpleApp();
@@ -293,7 +293,7 @@ public final class SimpleApp implements WithLogging {
     /**
      * Closes the given {@code factory}.
      *
-     * <p>Wraps the {@code close()} method into try / catch block and rethrows caught
+     * <p>Wraps the {@code close()} method into a try / catch block and rethrows caught
      * {@code Exception} as {@code UnableToCloseStorageFactory}.
      */
     private static void close(StorageFactory factory) {
@@ -364,7 +364,7 @@ public final class SimpleApp implements WithLogging {
      * Configures Log4j2 as the <a href="https://github.com/google/flogger">Flogger</a> backend.
      */
     @SuppressWarnings({
-            "DuplicateStringLiteralInspection", /* Used in non-related context. */
+            "DuplicateStringLiteralInspection", /* Used in a non-related context. */
             "AccessOfSystemProperties" /* There is no better way to configure Flogger. */
     })
     private static void useLog4j2FloggerBackend() {

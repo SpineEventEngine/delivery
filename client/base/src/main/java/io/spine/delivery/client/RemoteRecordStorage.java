@@ -33,7 +33,7 @@ import static java.util.stream.Collectors.groupingBy;
  * via an {@link InboxClient}.
  *
  * <p>Serves as the record storage underlying {@link RemoteInboxStorage}. The framework
- * reaches this storage for the operations which {@code InboxStorage} does not expose for
+ * reaches this storage for the operations that {@code InboxStorage} does not expose for
  * overriding — most notably, the removal of the delivered messages. The high-level read
  * and write operations are intercepted by {@code RemoteInboxStorage} itself and thus
  * never arrive here.

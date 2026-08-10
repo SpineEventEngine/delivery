@@ -55,7 +55,7 @@ public final class RecordQueryMatcherTestEnv {
     }
 
     /**
-     * A {@code Column} which reads the {@code state} of an {@link EntityRecord} as an {@link Any}.
+     * A {@code Column} that reads the {@code state} of an {@link EntityRecord} as an {@link Any}.
      *
      * <p>Reading a real record field (rather than a constant) lets the current Spine SPI derive
      * per-record column values via {@link io.spine.server.storage.RecordWithColumns#create}.
@@ -74,7 +74,7 @@ public final class RecordQueryMatcherTestEnv {
     }
 
     /**
-     * A {@code Column} which reads the {@code archived} lifecycle flag of an {@link EntityRecord}.
+     * A {@code Column} that reads the {@code archived} lifecycle flag of an {@link EntityRecord}.
      */
     public static RecordColumn<EntityRecord, Boolean> booleanColumn() {
         return booleanColumn("archived");

@@ -44,7 +44,7 @@ import static io.spine.delivery.admin.grpc.ShardStatus.PICKED;
 import static io.spine.server.delivery.InboxMessageMixin.generateIdWith;
 
 /**
- * A utility with given values for {@link AdminServiceTest} testing class.
+ * A utility with given values for the {@link AdminServiceTest} testing class.
  */
 public final class AdminServiceTestEnv {
 
@@ -204,7 +204,7 @@ public final class AdminServiceTestEnv {
     }
 
     /**
-     * Create a new {@code ShardInfoUpdate} indicating that the shard with the given {@code index}
+     * Creates a new {@code ShardInfoUpdate} indicating that the shard with the given {@code index}
      * is picked.
      *
      * <p>Does not set the {@code whenLastPicked} field.
@@ -247,7 +247,7 @@ public final class AdminServiceTestEnv {
     }
 
     /**
-     * Creates new {@code InboxSignalId} with the given {@code value}.
+     * Creates a new {@code InboxSignalId} with the given {@code value}.
      */
     private static InboxSignalId inboxSignalId(String value) {
         return InboxSignalId.newBuilder()
@@ -269,7 +269,7 @@ public final class AdminServiceTestEnv {
     }
 
     /**
-     * Creates new {@code EntityId} with the given {@code eventId}.
+     * Creates a new {@code EntityId} with the given {@code eventId}.
      */
     private static EntityId entityId(TestEventId eventId) {
         return EntityId.newBuilder()
@@ -278,7 +278,7 @@ public final class AdminServiceTestEnv {
     }
 
     /**
-     * Creates new {@code TestEventId} with the given {@code value}.
+     * Creates a new {@code TestEventId} with the given {@code value}.
      */
     private static TestEventId testEventId(String value) {
         return TestEventId.newBuilder()

@@ -52,7 +52,7 @@ public final class JettyStarter {
     }
 
     /**
-     * Starts Jetty server.
+     * Starts the Jetty server.
      */
     public static void main(String[] args) {
         var starter = newBuilder().build();
@@ -73,7 +73,7 @@ public final class JettyStarter {
         try {
             server.join();
         } catch (InterruptedException ignored) {
-            // there's nothing we can do when the server is interrupted.
+            // There's nothing we can do when the server is interrupted.
         }
     }
 
@@ -162,7 +162,7 @@ public final class JettyStarter {
         }
 
         /**
-         * Gets the port form the {@code PORT} environment variable, or returns {@code 8080}
+         * Gets the port from the {@code PORT} environment variable, or returns {@code 8080}
          * if not set.
          */
         @SuppressWarnings("CallToSystemGetenv") // We want to use environment variables.

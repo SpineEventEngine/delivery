@@ -22,7 +22,7 @@ node {
 }
 
 /**
- * Task that runs `npx quasar dev` command.
+ * A task that runs `npx quasar dev` command.
  */
 abstract class Serve : NpxTask() {
   init {
@@ -33,7 +33,7 @@ abstract class Serve : NpxTask() {
 }
 
 /**
- * Task that runs `npx quasar build` command.
+ * A task that runs `npx quasar build` command.
  */
 abstract class Build : NpxTask() {
   init {
@@ -47,7 +47,7 @@ abstract class Build : NpxTask() {
 }
 
 /**
- * Task that runs `npx quasar clean` command.
+ * A task that runs `npx quasar clean` command.
  */
 abstract class Clean : NpxTask() {
   init {
@@ -86,7 +86,7 @@ val npmInstall = tasks.getByName(NpmInstallTask.NAME)
 val generateProto = tasks.withType(GenerateTsProto::class)
 
 /**
- * Runs `npx quasar dev` command.
+ * Runs the `npx quasar dev` command.
  *
  * @see Serve
  */
@@ -96,7 +96,7 @@ tasks.register<Serve>("qserve") {
 }
 
 /**
- * Runs `npx quasar build` command.
+ * Runs the `npx quasar build` command.
  *
  * @see Build
  */
@@ -106,7 +106,7 @@ tasks.register<Build>("qbuild") {
 }
 
 /**
- * Runs `npx quasar clean` command.
+ * Runs the `npx quasar clean` command.
  *
  * @see Clean
  */

@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Collection of the {@code StreamObserver} for {@code ShardInfoUpdate}.
  *
- * <p>Holds and manges several {@code StreamObserver<ShardInfoUpdate>} in a thread-safe manner.
+ * <p>Holds and manages several {@code StreamObserver<ShardInfoUpdate>} in a thread-safe manner.
  *
  * <p>We use {@code ConcurrentHashMap} to avoid {@code ConcurrentModificationException}
  * in cases when we are iterating over the set to notify subscribers and a new subscriber
@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>It's possible that one thread iterates over the set to notify subscribers and
  * one subscriber is being closed at this moment and removed from the collection.
  * In this scenario if we started to iterate over the collection before the subscriber
- * is closed and removed most probably we will get the closed subscriber during the iteration
+ * is closed and removed, most probably we will get the closed subscriber during the iteration
  * and will try to notify it. But this will not lead to a problem because
  * the {@link #notifySubs(ShardInfoUpdate)} handles invalid subscribers removing them from
  * the collection, which is not a problem also, even if we will try to remove an already
@@ -56,7 +56,7 @@ public final class ShardUpdateSubscribersHolder implements WithLogging {
     /**
      * Notifies all existent subscribers about the new {@code ShardInfoChange}.
      *
-     * <p>If an error occurs when trying to notify subscriber it is marked as invalid and removed
+     * <p>If an error occurs when trying to notify a subscriber, it is marked as invalid and removed
      * from the subscribers list.
      */
     public void notifySubs(ShardInfoUpdate update) {

@@ -26,7 +26,7 @@ public final class StreamObservers {
      * Casts the given {@code observer} to the {@code ServerCallStreamObserver}.
      *
      * <p>According to the {@link ServerCallStreamObserver} docs it's safe to cast
-     * {@code StreamObserver} to {@code ServerCallStreamObserver} in server side implementation
+     * {@code StreamObserver} to {@code ServerCallStreamObserver} in a server-side implementation
      * of the service.
      */
     public static <T> ServerCallStreamObserver<T> toServerCall(StreamObserver<T> observer) {

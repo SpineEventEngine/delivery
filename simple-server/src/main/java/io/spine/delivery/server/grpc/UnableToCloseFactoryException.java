@@ -7,7 +7,7 @@
 package io.spine.delivery.server.grpc;
 
 /**
- * There was some problem attempting to close {@code StorageFactory}.
+ * There was some problem attempting to close a {@code StorageFactory}.
  */
 public final class UnableToCloseFactoryException extends RuntimeException {
 

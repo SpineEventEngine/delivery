@@ -12,7 +12,7 @@ import static com.google.common.base.Throwables.getStackTraceAsString;
 import static java.lang.System.lineSeparator;
 
 /**
- * Occurs when a {@link RequestExecutionStrategy} failed to recover after exception
+ * Occurs when a {@link RequestExecutionStrategy} failed to recover after an exception
  * occurred during the request execution.
  */
 public final class ExecutionFailedException extends RuntimeException {
@@ -29,7 +29,7 @@ public final class ExecutionFailedException extends RuntimeException {
     }
 
     /**
-     * Returns exceptions occurred during request execution.
+     * Returns exceptions occurred during the request execution.
      *
      * <p>Each element of the list is an exception occurred during a single try of
      * the request execution. Depending on the implementation of

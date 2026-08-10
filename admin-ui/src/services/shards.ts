@@ -19,7 +19,7 @@ import {
 import { ShardIndex } from 'src/gen/spine/server/delivery/delivery_pb';
 
 /**
- * Composable that gives access to shard information from the server.
+ * A composable that gives access to shard information from the server.
  *
  * The shard info will be updated automatically on server updates.
  */

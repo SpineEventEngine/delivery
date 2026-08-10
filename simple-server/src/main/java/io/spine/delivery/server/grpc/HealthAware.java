@@ -22,6 +22,6 @@ public interface HealthAware {
      * Sets the service health status.
      */
     default void healthy(boolean value) {
-        // do nothing.
+        // Do nothing.
     }
 }

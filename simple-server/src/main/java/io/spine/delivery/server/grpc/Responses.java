@@ -46,7 +46,7 @@ final class Responses {
     /**
      * Completes the provided {@code observer}.
      *
-     * <p>Sends {@linkplain Empty#getDefaultInstance() empty} response prior to completion.
+     * <p>Sends an {@linkplain Empty#getDefaultInstance() empty} response prior to completion.
      */
     static void completeCall(StreamObserver<Empty> observer) {
         observer.onNext(Empty.getDefaultInstance());

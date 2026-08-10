@@ -9,7 +9,7 @@ package io.spine.delivery.admin.security;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 
 /**
- * Username and password credentials that is used in {@code HTTP Basic Auth} scheme.
+ * Username and password credentials that are used in the {@code HTTP Basic Auth} scheme.
  */
 public final class HttpBasicAuthCredentials {
 
@@ -23,14 +23,14 @@ public final class HttpBasicAuthCredentials {
     }
 
     /**
-     * Returns username.
+     * Returns the username.
      */
     String username() {
         return username;
     }
 
     /**
-     * Returns password.
+     * Returns the password.
      */
     String password() {
         return password;

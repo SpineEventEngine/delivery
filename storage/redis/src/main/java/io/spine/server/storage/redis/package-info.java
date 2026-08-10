@@ -5,7 +5,7 @@
  */
 
 /**
- * This package provides implementation of Redis-based storages.
+ * This package provides an implementation of Redis-based storages.
  *
  * <p>Redis storage supports multitenancy. Data for each tenant is stored
  * in a "slice" represented by a data class prefixed with {@code Tenant}.

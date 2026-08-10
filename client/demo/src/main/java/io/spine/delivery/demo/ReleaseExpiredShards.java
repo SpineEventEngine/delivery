@@ -8,9 +8,7 @@ package io.spine.delivery.demo;
 
 import com.google.common.collect.Iterables;
 import com.google.common.net.MediaType;
-import com.google.protobuf.Duration;
 import com.google.protobuf.util.Durations;
-import io.spine.server.delivery.ShardIndex;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,14 +20,13 @@ import static java.lang.String.format;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 /**
- * Provides a GET HTTP request handler which releases expired shards.
+ * Provides a GET HTTP request handler that releases expired shards.
  */
 @SuppressWarnings("serial")
 @WebServlet(name = "Release Expired Shard", value = "/work-registry/release-expired")
 public final class ReleaseExpiredShards extends ContextAwareServlet {
 
     @Override
-    @SuppressWarnings("UnstableApiUsage" /* `MediaType` is available for around 10 years now. */)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         var requestedMins = req.getParameter("inactivityMins");
         var inactivityMins = isNullOrEmpty(requestedMins) ? "10" : requestedMins;

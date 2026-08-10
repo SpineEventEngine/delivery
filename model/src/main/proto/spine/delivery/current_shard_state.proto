@@ -33,6 +33,6 @@ message CurrentShardState {
     //
     spine.server.delivery.WorkerId worker = 2;
 
-    // Time when the `worker` has picked up the shard last time.
+    // The time when the `worker` has picked up the shard last time.
     google.protobuf.Timestamp when_last_picked = 4;
 }

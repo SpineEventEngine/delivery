@@ -7,7 +7,7 @@
 package io.spine.delivery.client;
 
 /**
- * Request that has result after execution.
+ * A request that has a result after execution.
  *
  * @param <R>
  *         type of the result

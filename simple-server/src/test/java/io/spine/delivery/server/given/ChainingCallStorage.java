@@ -35,7 +35,7 @@ public final class ChainingCallStorage extends RecordStorage<TestEventId, TestEv
     private final Map<TestEventId, TestEvent> store = new HashMap<>();
 
     /**
-     * Creates the new storage instance.
+     * Creates a new storage instance.
      */
     public ChainingCallStorage() {
         super(newTestContext(), specForTestEvent());

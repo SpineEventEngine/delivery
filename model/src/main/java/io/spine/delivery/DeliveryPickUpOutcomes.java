@@ -32,7 +32,7 @@ public final class DeliveryPickUpOutcomes {
 
     /**
      * Creates a new {@code DeliveryPickUpOutcome} with the given {@code rejection} identifying that
-     * shard is already picked up by another worker.
+     * the shard is already picked up by another worker.
      */
     public static DeliveryPickUpOutcome alreadyPickedUp(Rejections.ShardAlreadyPickedUp rejection) {
         checkNotDefaultArg(rejection);

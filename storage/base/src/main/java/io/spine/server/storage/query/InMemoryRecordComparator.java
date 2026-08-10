@@ -37,8 +37,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
  * @implNote More sophisticated storage implementations can sort records by
  *         non-{@link Comparable} fields like {@link Message message}-type
  *         fields, depending on their storage method (e.g. comparing the string content of
- *         messages).The in-memory implementation stores all column values "as-is" and cannot do
- *         that. Trying to {@linkplain SortBy sort by} column of non-comparable type will lead to
+ *         messages). The in-memory implementation stores all column values "as-is" and cannot do
+ *         that. Trying to {@linkplain SortBy sort by} a column of non-comparable type will lead to
  *         an exception being thrown.
  */
 public final class InMemoryRecordComparator<I, R extends Message>

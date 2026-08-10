@@ -14,7 +14,7 @@ import io.grpc.MethodDescriptor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A test-only stub channel which does nothing.
+ * A test-only stub channel that does nothing.
  */
 public final class NoOpChannel extends ManagedChannel {
 

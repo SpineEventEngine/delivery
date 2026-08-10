@@ -45,7 +45,7 @@ public interface InboxReader {
     Page<InboxMessage> readAll(ShardIndex shard, int pageSize);
 
     /**
-     * Reads the messages of the given shard which were received strictly later
+     * Reads the messages of the given shard that were received strictly later
      * than the specified {@code sinceWhen} value.
      *
      * <p>The older items go first.

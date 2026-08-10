@@ -55,7 +55,7 @@ import static io.spine.util.Preconditions2.checkPositive;
 import static java.lang.String.format;
 
 /**
- * A delivery client which performs all of its operation through {@code Inbox} and {@code Shard}
+ * A delivery client that performs all of its operation through {@code Inbox} and {@code Shard}
  * gRPC services.
  *
  * @see InboxServiceGrpc
@@ -81,7 +81,7 @@ public final class SimpleDeliveryClient
     }
 
     /**
-     * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
+     * Creates a new delivery client that connects to a gRPC server on the specified {@code host}
      * and {@code port} and uses the {@link Propagate} {@code RequestExecutionStrategy}.
      */
     public static SimpleDeliveryClient create(String host, int port) {
@@ -89,7 +89,7 @@ public final class SimpleDeliveryClient
     }
 
     /**
-     * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
+     * Creates a new delivery client that connects to a gRPC server on the specified {@code host}
      * and {@code port}, and with the given {@code RequestExecutionStrategy}.
      */
     public static SimpleDeliveryClient create(String host, int port, RequestExecutionStrategy strategy) {
@@ -103,16 +103,16 @@ public final class SimpleDeliveryClient
     }
 
     /**
-     * Creates a new delivery client which connects to a gRPC server
-     * using specified {@code channel} and {@link Propagate} {@code RequestExecutionStrategy}.
+     * Creates a new delivery client that connects to a gRPC server
+     * using the specified {@code channel} and {@link Propagate} {@code RequestExecutionStrategy}.
      */
     public static SimpleDeliveryClient create(ManagedChannel channel) {
         return create(channel, new Propagate());
     }
 
     /**
-     * Creates a new delivery client which connects to a gRPC server
-     * using specified {@code channel}, and with the given {@code RequestExecutionStrategy}.
+     * Creates a new delivery client that connects to a gRPC server
+     * using the specified {@code channel}, and with the given {@code RequestExecutionStrategy}.
      */
     public static SimpleDeliveryClient create(ManagedChannel channel,
                                               RequestExecutionStrategy strategy) {
@@ -126,7 +126,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -144,7 +144,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -165,7 +165,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -183,7 +183,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -204,7 +204,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -241,7 +241,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -261,7 +261,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -286,7 +286,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -314,7 +314,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -332,7 +332,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -365,7 +365,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override

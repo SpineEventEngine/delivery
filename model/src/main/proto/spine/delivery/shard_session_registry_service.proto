@@ -3,6 +3,7 @@
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
+
 syntax = "proto3";
 
 package spine.delivery;
@@ -26,6 +27,6 @@ service ShardSessionRegistryService {
     // Picks up the shard for processing.
     rpc PickShard(PickUpShard) returns (DeliveryPickUpOutcome);
 
-    // Releases sessions which were picked up earlier that the configured inactivity period.
+    // Releases sessions that were picked up earlier than the configured inactivity period.
     rpc ReleaseSessions(ReleaseExpiredSessions) returns (ExpiredSessionsReleased);
 }

@@ -18,7 +18,7 @@ import java.util.function.Predicate;
 import static java.util.Collections.synchronizedList;
 
 /**
- * An observer that allows to wait for a particular messages being sent to it.
+ * An observer that allows waiting for a particular message being sent to it.
  *
  * @param <T>
  *         type of the observer values

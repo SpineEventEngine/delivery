@@ -11,7 +11,7 @@ import io.spine.delivery.client.VoidRequest;
 import static java.lang.String.format;
 
 /**
- * Request for testing purposes that count executions of itself and returns nothing.
+ * A request for testing purposes that counts executions of itself and returns nothing.
  *
  * <p>Can be instructed to throw exceptions.
  */
@@ -58,7 +58,7 @@ public final class RunCountingVoidRequest implements VoidRequest {
     }
 
     /**
-     * Returns the amount of tomes the {@linkplain #run()} method was called.
+     * Returns the amount of times the {@linkplain #run()} method was called.
      */
     public int runCount() {
         return runCount;

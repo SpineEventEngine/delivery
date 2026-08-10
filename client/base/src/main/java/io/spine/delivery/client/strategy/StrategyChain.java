@@ -20,8 +20,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * A chain of execution strategies.
  *
- * <p>Executes a request starting with the first strategy in chain. In case the execution fails,
- * the next strategy in chain is picked.
+ * <p>Executes a request starting with the first strategy in the chain. In case the execution fails,
+ * the next strategy in the chain is picked.
  */
 public final class StrategyChain implements RequestExecutionStrategy {
 
@@ -44,7 +44,7 @@ public final class StrategyChain implements RequestExecutionStrategy {
     }
 
     /**
-     * Executes the given {@code request} applying one strategy after another in case if previous
+     * Executes the given {@code request} applying one strategy after another in case if the previous
      * strategy could not handle the occurred exception (the {@code StrategyFailedException} was
      * thrown by the strategy).
      *
@@ -67,7 +67,7 @@ public final class StrategyChain implements RequestExecutionStrategy {
     }
 
     /**
-     * Executes the given {@code request} applying one strategy after another in case if previous
+     * Executes the given {@code request} applying one strategy after another in case if the previous
      * strategy could not handle the occurred exception (the {@code StrategyFailedException} was
      * thrown by the strategy).
      *

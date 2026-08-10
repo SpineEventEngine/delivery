@@ -48,7 +48,7 @@ public final class SubscriptionAssertions {
 
     /**
      * Asserts that the given {@code future} will be resolved in a {@linkplain #WAIT_SECONDS}
-     * timeout with the message equals to the {@code expected} one.
+     * timeout with the message equal to the {@code expected} one.
      *
      * @return the message returned by the given {@code future}.
      */

@@ -3,6 +3,7 @@
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
+
 syntax = "proto3";
 
 package spine.delivery;
@@ -59,7 +60,7 @@ service ShardService {
     // Releases the shard after its processing is done.
     rpc ReleaseSession(ReleaseShard) returns (google.protobuf.Empty);
 
-    // Releases sessions which were picked up earlier that the configured inactivity period.
+    // Releases sessions that were picked up earlier than the configured inactivity period.
     rpc ReleaseSessions(ReleaseExpiredSessions) returns (ExpiredSessionsReleased);
 }
 

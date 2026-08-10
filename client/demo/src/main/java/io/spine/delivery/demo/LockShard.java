@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import static io.spine.delivery.demo.GreeterContext.NAME;
 
 /**
- * Provides a GET HTTP request handler which picks up a delivery shard
+ * Provides a GET HTTP request handler that picks up a delivery shard
  * using the {@link io.spine.delivery.client.SimpleDeliveryClient SimpleDeliveryClient}.
  */
 @SuppressWarnings("serial")

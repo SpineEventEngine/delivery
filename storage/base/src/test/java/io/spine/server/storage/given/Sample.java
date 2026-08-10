@@ -154,7 +154,7 @@ public class Sample {
     /**
      * Generates a random enum value for the specified {@code field}.
      *
-     * <p>Value under index 0 is usually used to store `undefined` option so it is skipped.
+     * <p>The value under index 0 is usually used to store the `undefined` option so it is skipped.
      * Use values with indexes from 1 to n.
      */
     private static Object enumValueFor(FieldDescriptor field, Random random) {

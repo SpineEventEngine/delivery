@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * An abstract base for tests which rely on the running {@linkplain SimpleApp app}.
+ * An abstract base for tests that rely on the running {@linkplain SimpleApp app}.
  */
 public abstract class WithApp {
 
@@ -122,14 +122,14 @@ public abstract class WithApp {
     }
 
     /**
-     * Returns blocking {@code ShardService} connected to the app.
+     * Returns the blocking {@code ShardService} connected to the app.
      */
     protected final ShardServiceGrpc.ShardServiceBlockingStub syncShardService() {
         return ShardServiceGrpc.newBlockingStub(serverChannel());
     }
 
     /**
-     * Returns blocking {@code AdminService} connected to the app.
+     * Returns the blocking {@code AdminService} connected to the app.
      */
     protected final AdminServiceBlockingStub syncAdminService() {
         return adminServiceBlocking;
@@ -143,7 +143,7 @@ public abstract class WithApp {
     }
 
     /**
-     * Returns blocking {@code InboxService} connected to the app.
+     * Returns the blocking {@code InboxService} connected to the app.
      */
     protected final InboxServiceGrpc.InboxServiceBlockingStub syncInboxService() {
         return InboxServiceGrpc.newBlockingStub(serverChannel());

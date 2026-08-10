@@ -43,8 +43,8 @@ import static io.spine.util.Exceptions.newIllegalStateException;
 /**
  * An abstract base servlet for the demo Application.
  *
- * <p>Starts and configures {@link GreeterContext demo} server and exposes a {@link Client} to the
- * server to inheritors.
+ * <p>Starts and configures the {@link GreeterContext demo} server and exposes a {@link Client} to
+ * the server to inheritors.
  */
 @SuppressWarnings("serial")
 abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
@@ -143,7 +143,7 @@ abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
     }
 
     /**
-     * An asynchronous shard observer which delivers the observed messages
+     * An asynchronous shard observer that delivers the observed messages
      * on the {@linkplain #observerExecutor dedicated executor}.
      */
     private static final class AsyncLocalObserver implements ShardObserver {

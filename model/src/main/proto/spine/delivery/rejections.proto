@@ -36,7 +36,7 @@ message UnableToReleaseShard {
     // The shard that should have been released.
     spine.server.delivery.ShardIndex shard = 1 [(required) = true];
 
-    // The worker which was trying to release the `shard`.
+    // The worker that was trying to release the `shard`.
     spine.server.delivery.WorkerId worker = 2 [(required) = true];
 
     Reason reason = 3;

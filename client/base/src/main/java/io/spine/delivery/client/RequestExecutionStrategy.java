@@ -7,7 +7,7 @@
 package io.spine.delivery.client;
 
 /**
- * Strategy that executes requests and decides how to handle errors if any occurred.
+ * A strategy that executes requests and decides how to handle errors if any occurred.
  */
 public interface RequestExecutionStrategy {
 
@@ -16,7 +16,7 @@ public interface RequestExecutionStrategy {
      * implemented in a particular strategy.
      *
      * @throws ExecutionFailedException
-     *         if strategy is unable to handle the occurred exception
+     *         if the strategy is unable to handle the occurred exception
      */
     void execute(VoidRequest operation) throws ExecutionFailedException;
 
@@ -25,7 +25,7 @@ public interface RequestExecutionStrategy {
      * implemented in a particular strategy.
      *
      * @throws ExecutionFailedException
-     *         if strategy is unable to handle the occurred exception
+     *         if the strategy is unable to handle the occurred exception
      */
     <R> R evaluate(RequestWithResult<R> operation) throws ExecutionFailedException;
 }

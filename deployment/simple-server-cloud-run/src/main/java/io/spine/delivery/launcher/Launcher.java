@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadFactory;
 import static java.lang.Boolean.parseBoolean;
 
 /**
- * An entrypoint for launching Delivery server.
+ * An entrypoint for launching the Delivery server.
  */
 public final class Launcher implements WithLogging {
 
@@ -39,7 +39,7 @@ public final class Launcher implements WithLogging {
     }
 
     /**
-     * Launches the Delivery server, also launches the Admin Server if configured.
+     * Launches the Delivery server; also launches the Admin Server if configured.
      *
      * <p>Blocks execution until the Delivery server stops.
      *
@@ -76,7 +76,7 @@ public final class Launcher implements WithLogging {
     }
 
     /**
-     * Creates new daemon {@code Thread} that starts and executes the Admin Server code.
+     * Creates a new daemon {@code Thread} that starts and executes the Admin Server code.
      *
      * <p>The thread is a daemon one so that it never keeps the container alive after
      * the Delivery server, which the launcher waits for, has stopped.

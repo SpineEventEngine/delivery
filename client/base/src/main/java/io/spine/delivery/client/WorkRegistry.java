@@ -40,7 +40,7 @@ public final class WorkRegistry implements ShardedWorkRegistry {
      * {@inheritDoc}
      *
      * <p>The ID of the worker that tries to pick a shard is the concatenation of the
-     * provided node ID and current thread ID.
+     * provided node ID and the current thread ID.
      */
     @Override
     public PickUpOutcome pickUp(ShardIndex index, NodeId nodeId) {

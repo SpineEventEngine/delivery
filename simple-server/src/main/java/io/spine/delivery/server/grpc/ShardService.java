@@ -42,7 +42,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
-     * Creates a new {@code ShardService} backed by {@link DeliveryShardRegistry}.
+     * Creates a new {@code ShardService} backed by a {@link DeliveryShardRegistry}.
      *
      * @param factory
      *         storage to be used to store registry's records

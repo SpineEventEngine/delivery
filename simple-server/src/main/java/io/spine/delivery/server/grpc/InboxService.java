@@ -46,7 +46,7 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
-     * Creates a {@code InboxService} backed by an {@link ExtendedInboxStorage} created from
+     * Creates an {@code InboxService} backed by an {@link ExtendedInboxStorage} created from
      * the configured {@code factory}.
      */
     public InboxService(StorageFactory factory) {

@@ -20,8 +20,8 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  *
  * <p>The factory assumes that the Delivery server is running on the same instance, so it
  * tries to get the port of the Delivery server from the {@code PORT} environment variable that
- * is used to configure Delivery server's port. If the {@code PORT} is not set it
- * defaults to {@code 8484} which is default port for the Delivery server.
+ * is used to configure the Delivery server's port. If the {@code PORT} is not set, it
+ * defaults to {@code 8484} that is the default port for the Delivery server.
  */
 @Factory
 final class AdminServiceFactory {
@@ -45,7 +45,7 @@ final class AdminServiceFactory {
     }
 
     /**
-     * Returns port from the {@code PORT} environment variable or default {@code 8484} if not set.
+     * Returns the port from the {@code PORT} environment variable or the default {@code 8484} if not set.
      */
     private static int port() {
         @SuppressWarnings("CallToSystemGetenv")

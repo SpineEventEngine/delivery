@@ -9,7 +9,7 @@ package io.spine.delivery.client.strategy;
 import static com.google.common.base.Preconditions.checkArgument;
 
 /**
- * Strategy that will be immediately retrying requests in case of failures.
+ * A strategy that will be immediately retrying requests in case of failures.
  */
 public final class RetryImmediately extends AbstractExecutionStrategy {
 
@@ -18,7 +18,7 @@ public final class RetryImmediately extends AbstractExecutionStrategy {
     private int attempts = 0;
 
     /**
-     * Create a new {@code RetryImmediately} strategy with the given amount of retry attempts.
+     * Creates a new {@code RetryImmediately} strategy with the given amount of retry attempts.
      */
     public static RetryImmediately times(int n) {
         checkArgument(n > 0, "A positive value expected. Encountered: %s.", n);

@@ -58,7 +58,7 @@ public final class HazelcastRecordStorage<I, R extends Message> extends RecordSt
     private final @Nullable StorageGroup group;
 
     /**
-     * Creates the new storage instance.
+     * Creates a new storage instance.
      *
      * @param context
      *         specification of the Bounded Context in scope of which the storage will be used

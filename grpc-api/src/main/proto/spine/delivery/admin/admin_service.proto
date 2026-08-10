@@ -3,6 +3,7 @@
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
+
 syntax = "proto3";
 
 package spine.delivery;
@@ -20,23 +21,23 @@ import "google/protobuf/empty.proto";
 
 import "spine/server/delivery/delivery.proto";
 
-// Acts as a backend implementation for `AdminService`
+// Acts as a backend implementation for `AdminService`.
 service AdminService {
 
-    // Gets an information about shards on Delivery server.
+    // Gets information about shards on the Delivery server.
     rpc GetShardInfo(google.protobuf.Empty) returns (ShardInfoList);
 
     // Subscribes to the updates of shard info.
     //
     // The first received `SubscriptionResponse` is an acknowledgement of a successfully created
-    // subscription and contains only the `created` filed set. All other responses contain
+    // subscription and contains only the `created` field set. All other responses contain
     // `ShardInfoUpdate`. It is guaranteed that the acknowledgement is sent only once as a first
     // response and never repeated again. Also, it is impossible that any update comes
     // before the acknowledgement.
     //
     // Users should consider the subscription as created only after receiving the acknowledgement
     // in the `SubscriptionResponse`. All changes in the system occurred before the subscription
-    // acknowledgement is not tracked by this call.
+    // acknowledgement are not tracked by this call.
     //
     // Each update is sent as a single `ShardInfoUpdate`.
     //
