@@ -29,6 +29,6 @@ public final class ShardSessionRecords {
                 .setIndex(pickedUp.getShard())
                 .setWorker(pickedUp.getWorker())
                 .setWhenLastPicked(pickedUp.getWhenPicked())
-                .vBuild();
+                .build();
     }
 }

@@ -7,12 +7,11 @@
 package io.spine.delivery.client;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.delivery.client.strategy.Propagate;
 import io.spine.delivery.command.PickUpShard;
 import io.spine.delivery.command.ReleaseExpiredSessions;
@@ -53,6 +52,7 @@ import static io.spine.server.delivery.PickUpOutcomeMixin.pickedUp;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.util.Preconditions2.checkPositive;
+import static java.lang.String.format;
 
 /**
  * A delivery client which performs all of its operation through {@code Inbox} and {@code Shard}
@@ -63,9 +63,7 @@ import static io.spine.util.Preconditions2.checkPositive;
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored", "OverlyCoupledClass", "FutureReturnValueIgnored"})
 public final class SimpleDeliveryClient
-        implements InboxClient, SessionRegistryClient, Logging {
-
-    private static final FluentLogger logger = Logging.loggerFor(SimpleDeliveryClient.class);
+        implements InboxClient, SessionRegistryClient, WithLogging {
 
     private final ShardServiceBlockingStub shardService;
     private final InboxServiceBlockingStub inboxService;
@@ -73,6 +71,10 @@ public final class SimpleDeliveryClient
     private final RequestExecutionStrategy requestExecutionStrategy;
 
     private SimpleDeliveryClient(ManagedChannel channel, RequestExecutionStrategy strategy) {
+        logger().atDebug()
+                .log(() -> format(
+                        "Creating a `SimpleDeliveryClient` for the channel `%s`.", channel
+                ));
         shardService = ShardServiceGrpc.newBlockingStub(channel);
         inboxService = InboxServiceGrpc.newBlockingStub(channel);
         requestExecutionStrategy = strategy;
@@ -115,8 +117,6 @@ public final class SimpleDeliveryClient
     public static SimpleDeliveryClient create(ManagedChannel channel,
                                               RequestExecutionStrategy strategy) {
         checkNotNull(channel);
-        logger.atConfig()
-              .log("Creating a `SimpleDeliveryClient` for the channel `%s`.", channel);
         return new SimpleDeliveryClient(channel, strategy);
     }
 
@@ -134,7 +134,7 @@ public final class SimpleDeliveryClient
         checkNotDefaultArg(message);
         WriteMessage writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
         requestExecutionStrategy.evaluate(() -> inboxService.writeOne(writeMessage));
     }
 
@@ -155,7 +155,7 @@ public final class SimpleDeliveryClient
         WriteMessages writeMessages = WriteMessages.newBuilder()
                 .setShard(shard)
                 .addAllMessage(messages)
-                .vBuild();
+                .build();
         requestExecutionStrategy.evaluate(() -> inboxService.writeMany(writeMessages));
     }
 
@@ -173,7 +173,7 @@ public final class SimpleDeliveryClient
         checkNotDefaultArg(message);
         RemoveMessage removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
         requestExecutionStrategy.evaluate(() -> inboxService.removeOne(removeMessage));
     }
 
@@ -194,7 +194,7 @@ public final class SimpleDeliveryClient
         RemoveMessages removeMessages = RemoveMessages.newBuilder()
                 .setShard(shard)
                 .addAllMessage(messages)
-                .vBuild();
+                .build();
         requestExecutionStrategy.evaluate(() -> inboxService.removeMany(removeMessages));
     }
 
@@ -215,7 +215,7 @@ public final class SimpleDeliveryClient
         PickUpShard pickUpShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
         try {
             DeliveryPickUpOutcome outcome = requestExecutionStrategy
                     .evaluate(() -> shardService.pickShard(pickUpShard));
@@ -228,8 +228,9 @@ public final class SimpleDeliveryClient
         } catch (ExecutionFailedException e) {
             ImmutableList<RuntimeException> occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
-            _trace().log("[SimpleClient] Unable to pick up shard `%s`: %s.",
-                         shard, getStackTraceAsString(last));
+            logger().atTrace()
+                    .log(() -> format("[SimpleClient] Unable to pick up shard `%s`: %s.",
+                                      shard, getStackTraceAsString(last)));
             throw e;
         }
     }
@@ -250,7 +251,7 @@ public final class SimpleDeliveryClient
         ReleaseShard releaseShard = ReleaseShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
         requestExecutionStrategy.evaluate(() -> shardService.releaseSession(releaseShard));
     }
 
@@ -269,9 +270,9 @@ public final class SimpleDeliveryClient
         checkNotDefaultArg(inactivityPeriod);
         ReleaseExpiredSessions command = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(inactivityPeriod)
-                .vBuild();
-        _trace().log(
-                "[SimpleClient] Posting `ReleaseExpiredSessions` command" +
+                .build();
+        logger().atTrace().log(
+                () -> "[SimpleClient] Posting `ReleaseExpiredSessions` command" +
                         " and waiting for a response event `ExpiredSessionsReleased`."
         );
         ExpiredSessionsReleased sessionsReleased =
@@ -325,15 +326,28 @@ public final class SimpleDeliveryClient
         return page;
     }
 
-    private ImmutableList<InboxMessage>
-    readAll(ShardIndex shard, @Nullable Timestamp sinceWhen, int pageSize) {
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
+    @Override
+    public ImmutableList<InboxMessage>
+    readAll(ShardIndex shard, @Nullable Timestamp sinceWhen, int pageSize)
+            throws ExecutionFailedException {
+        checkNotDefaultArg(shard);
+        checkPositive(pageSize);
         ReadMessagesSinceTime.Builder queryBuilder = ReadMessagesSinceTime.newBuilder()
                 .setShard(shard)
                 .setPageSize(pageSize);
         if (sinceWhen != null) {
             queryBuilder.setSinceWhen(sinceWhen);
         }
-        ReadMessagesSinceTime query = queryBuilder.vBuild();
+        ReadMessagesSinceTime query = queryBuilder.build();
 
         PageOfMessages page =
                 requestExecutionStrategy.evaluate(() -> inboxService.findManyInShard(query));

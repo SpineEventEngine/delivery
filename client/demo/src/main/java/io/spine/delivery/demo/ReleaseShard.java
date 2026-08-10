@@ -27,11 +27,11 @@ public final class ReleaseShard extends ContextAwareServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        _info().log("Releasing a shard!");
+        logger().atInfo().log(() -> "Releasing a shard!");
         WorkerId worker = WorkerId.newBuilder()
                 .setNodeId(ServerEnvironment.instance().nodeId())
                 .setValue(NAME)
-                .vBuild();
+                .build();
         ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
         client.get()
               .releaseShard(shard, worker);

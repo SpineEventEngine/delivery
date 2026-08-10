@@ -8,23 +8,19 @@ package io.spine.delivery.demo;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.ProtocolStringList;
-import io.spine.logging.Logging;
 import io.spine.delivery.demo.command.PersonAlreadyGreeted;
 import io.spine.delivery.demo.command.SayHello;
 import io.spine.delivery.demo.event.SaidHello;
 import io.spine.server.aggregate.Aggregate;
-import io.spine.server.aggregate.Apply;
 import io.spine.server.command.Assign;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
+import java.security.SecureRandom;
 import java.util.Random;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The one who greets people, but only once.
  */
-final class GreatGreeter extends Aggregate<String, Greeter, Greeter.Builder> implements Logging {
+final class GreatGreeter extends Aggregate<String, Greeter, Greeter.Builder> {
 
     private static final ImmutableList<String> greetings = ImmutableList.<String>builder()
             .add("Hello %s.")
@@ -38,7 +34,7 @@ final class GreatGreeter extends Aggregate<String, Greeter, Greeter.Builder> imp
             .add("Hey. ‘Sup %s?")
             .build();
 
-    private @MonotonicNonNull Random random;
+    private static final Random random = new SecureRandom();
 
     @Assign
     SaidHello handle(SayHello c) throws PersonAlreadyGreeted {
@@ -49,29 +45,15 @@ final class GreatGreeter extends Aggregate<String, Greeter, Greeter.Builder> imp
                     .setName(personName)
                     .build();
         }
+        builder().addName(personName);
         return SaidHello.newBuilder()
                 .setName(personName)
                 .setGreeting(randomGreeting(personName))
-                .vBuild();
+                .build();
     }
 
-    @Apply
-    private void on(SaidHello e) {
-        builder().addName(e.getName());
-    }
-
-    private String randomGreeting(String name) {
+    private static String randomGreeting(String name) {
         String greeting = greetings.get(random.nextInt(greetings.size()));
         return String.format(greeting, name);
-    }
-
-    /**
-     * Sets {@link #random} to be used during handling of signals.
-     *
-     * @implNote the method is intended to be used as part of the entity configuration
-     *         done through the repository
-     */
-    void setRandom(Random random) {
-        this.random = checkNotNull(random);
     }
 }

@@ -8,7 +8,6 @@ package io.spine.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Duration;
-import io.spine.logging.Logging;
 import io.spine.delivery.event.ExpiredSession;
 import io.spine.delivery.event.ExpiredSessionsReleased;
 import io.spine.server.NodeId;
@@ -26,7 +25,7 @@ import static io.spine.util.Preconditions2.checkNotDefaultArg;
 /**
  * A work registry backed by the remote {@link SessionRegistryClient}.
  */
-public final class WorkRegistry implements ShardedWorkRegistry, Logging {
+public final class WorkRegistry implements ShardedWorkRegistry {
 
     private final Supplier<? extends SessionRegistryClient> client;
 
@@ -63,7 +62,7 @@ public final class WorkRegistry implements ShardedWorkRegistry, Logging {
         return WorkerId.newBuilder()
                 .setNodeId(nodeId)
                 .setValue(threadId)
-                .vBuild();
+                .build();
     }
 
     private void releaseShard(ShardSessionRecord session) {

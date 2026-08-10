@@ -18,14 +18,15 @@ import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 import io.spine.test.delivery.client.Something;
 import io.spine.type.TypeUrl;
+import com.google.common.collect.ImmutableList;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.shaded.com.google.common.collect.ImmutableList;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
@@ -35,13 +36,21 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth8.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.delivery.client.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+/**
+ * Tests the {@link SimpleDeliveryClient} against the Delivery server running in
+ * a Docker container.
+ *
+ * <p>Tagged as {@code integration}: the suite requires a Docker environment and
+ * the access to the {@code gcr.io/spine-dev} registry hosting the server image
+ * built by {@code :simple-server-cloud-run:jib}.
+ */
+@Tag("integration")
 @DisplayName("`SimpleDeliveryClient` should")
 final class SimpleDeliveryClientTest {
 
@@ -73,11 +82,11 @@ final class SimpleDeliveryClientTest {
         private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
         private final NodeId node = NodeId.newBuilder()
                 .setValue(SimpleDeliveryClient.class.getName())
-                .vBuild();
+                .build();
         private final WorkerId worker = WorkerId.newBuilder()
                 .setNodeId(node)
                 .setValue(SimpleDeliveryClient.class.getName())
-                .vBuild();
+                .build();
 
         @Test
         @DisplayName("pick up a shard for delivery")

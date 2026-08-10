@@ -6,7 +6,7 @@
 
 package io.spine.delivery;
 
-import com.google.common.truth.Truth8;
+import com.google.common.collect.ImmutableList;
 import com.google.protobuf.util.Timestamps;
 import io.spine.delivery.client.SimpleDeliveryClient;
 import io.spine.server.delivery.InboxMessage;
@@ -19,7 +19,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.testcontainers.shaded.com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.Optional;
@@ -99,8 +98,8 @@ public class ConsistencyTest extends DistributedTest {
         client1.writeMessage(message);
 
         Optional<InboxMessage> readMessage = client2.find(message.getId());
-        Truth8.assertThat(readMessage)
-              .isPresent();
+        assertThat(readMessage)
+                .isPresent();
     }
 
     @ParameterizedTest
@@ -139,12 +138,12 @@ public class ConsistencyTest extends DistributedTest {
         Page<InboxMessage> writtenMessages = client2.readAll(shard, pageSize);
         assertThat(writtenMessages.size())
                 .isEqualTo(pageSize);
-        Truth8.assertThat(writtenMessages.next())
-              .isPresent();
-        Truth8.assertThat(writtenMessages.next())
-              .isPresent();
-        Truth8.assertThat(writtenMessages.next())
-              .isEmpty();
+        assertThat(writtenMessages.next())
+                .isPresent();
+        assertThat(writtenMessages.next())
+                .isPresent();
+        assertThat(writtenMessages.next())
+                .isEmpty();
     }
 
     @ParameterizedTest
@@ -174,7 +173,7 @@ public class ConsistencyTest extends DistributedTest {
 
         Optional<InboxMessage> actual =
                 client2.newestMessageToDeliver(olderMessage.shardIndex());
-        Truth8.assertThat(actual)
-              .hasValue(newestMessage);
+        assertThat(actual)
+                .hasValue(newestMessage);
     }
 }

@@ -6,6 +6,7 @@
 
 @file:Suppress("unused", "TopLevelPropertyNaming", "ObjectPropertyName")
 
+import io.spine.dependency.gcloud.AppEnginePlugin
 import io.spine.dependency.lib.Jib
 import io.spine.dependency.lib.Micronaut
 import org.gradle.plugin.use.PluginDependenciesSpec
@@ -35,3 +36,9 @@ val PluginDependenciesSpec.`micronaut-application`: PluginDependencySpec
  */
 val PluginDependenciesSpec.jib: PluginDependencySpec
     get() = id(Jib.GradlePlugin.id).version(Jib.GradlePlugin.version)
+
+/**
+ * Shortcut for applying the `app.yaml`-based [App Engine][AppEnginePlugin] Gradle plugin.
+ */
+val PluginDependenciesSpec.`appengine-appyaml`: PluginDependencySpec
+    get() = id(AppEnginePlugin.appYamlId).version(AppEnginePlugin.version)

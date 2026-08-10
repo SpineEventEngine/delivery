@@ -22,7 +22,7 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Suppliers.memoize;
+import static io.spine.util.Suppliers2.memoize;
 
 /**
  * Provides fluent API for building a {@link Delivery} backed by the Message Delivery Server.

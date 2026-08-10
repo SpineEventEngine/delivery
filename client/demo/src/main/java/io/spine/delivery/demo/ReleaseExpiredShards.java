@@ -31,16 +31,15 @@ public final class ReleaseExpiredShards extends ContextAwareServlet {
     @Override
     @SuppressWarnings("UnstableApiUsage" /* `MediaType` is available for around 10 years now. */)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String inactivityMins = req.getParameter("inactivityMins");
-        if (isNullOrEmpty(inactivityMins)) {
-            inactivityMins = "10";
-        }
+        String requestedMins = req.getParameter("inactivityMins");
+        String inactivityMins = isNullOrEmpty(requestedMins) ? "10" : requestedMins;
         Duration inactivityPeriod = Durations.fromMinutes(Long.parseLong(inactivityMins));
-        _info().log("Releasing expired shards inactive for `%s` minutes.", inactivityMins);
+        logger().atInfo().log(() -> format(
+                "Releasing expired shards inactive for `%s` minutes.", inactivityMins));
         Iterable<ShardIndex> releasedShards =
                 workRegistry.releaseExpiredSessions(inactivityPeriod);
         int numberOfShards = Iterables.size(releasedShards);
-        _info().log("Released `%d` expired shards.", numberOfShards);
+        logger().atInfo().log(() -> format("Released `%d` expired shards.", numberOfShards));
         resp.setContentType(MediaType.PLAIN_TEXT_UTF_8.type());
         resp.getWriter()
             .println(format(

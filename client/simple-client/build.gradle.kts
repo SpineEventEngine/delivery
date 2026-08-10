@@ -1,25 +1,27 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
 
-import io.spine.internal.dependency.Flogger
-import io.spine.internal.dependency.Grpc
-import io.spine.internal.dependency.Log4j2
-import io.spine.internal.dependency.Spine
-import io.spine.internal.dependency.Testcontainers
+import io.spine.dependency.lib.Grpc
+import io.spine.dependency.test.Testcontainers
 
 dependencies {
-    api(project(":base"))
-    implementation(Spine.Stable.server)
-    implementation(Spine.Stable.client)
-    testImplementation(project(":testutil-client"))
-    testImplementation(project(path = ":base", configuration = "testArtifacts"))
+    api(project(":client:delivery-client-base"))
+    // The gRPC stubs of the `Inbox` and `Shard` services.
+    implementation(project(":grpc-api"))
+    testImplementation(project(":client:testutil-client"))
+    testImplementation(project(path = ":client:delivery-client-base", configuration = "testArtifacts"))
     testImplementation(Testcontainers.lib)
     testImplementation(Testcontainers.junitJupiter)
     testRuntimeOnly(Grpc.nettyShaded)
-    testRuntimeOnly(Log4j2.slf4jBridge)
-    testRuntimeOnly(Log4j2.core)
-    testRuntimeOnly(Flogger.Runtime.log4J2)
+}
+
+tasks.test {
+    useJUnitPlatform {
+        // The `integration`-tagged tests require a Docker environment and the access
+        // to the `gcr.io/spine-dev` registry with the Delivery server image.
+        excludeTags("integration")
+    }
 }

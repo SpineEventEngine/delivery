@@ -6,11 +6,14 @@
 
 package io.spine.delivery.client;
 
+import com.google.common.collect.ImmutableList;
+import com.google.protobuf.Timestamp;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.InboxMessageStatus;
 import io.spine.server.delivery.Page;
 import io.spine.server.delivery.ShardIndex;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 
@@ -40,6 +43,25 @@ public interface InboxReader {
      * @return the first page of the results
      */
     Page<InboxMessage> readAll(ShardIndex shard, int pageSize);
+
+    /**
+     * Reads the messages of the given shard which were received strictly later
+     * than the specified {@code sinceWhen} value.
+     *
+     * <p>The older items go first.
+     *
+     * @param shard
+     *         the shard index to return the results for
+     * @param sinceWhen
+     *         the time since when the messages should be read;
+     *         {@code null} if no time filtering should be applied
+     * @param pageSize
+     *         the maximum number of the elements to return
+     * @return the messages found, ordered chronologically
+     */
+    ImmutableList<InboxMessage> readAll(ShardIndex shard,
+                                        @Nullable Timestamp sinceWhen,
+                                        int pageSize);
 
     /**
      * Finds the newest message {@linkplain InboxMessageStatus#TO_DELIVER to deliver}

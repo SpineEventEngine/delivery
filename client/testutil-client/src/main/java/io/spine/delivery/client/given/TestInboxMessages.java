@@ -50,7 +50,7 @@ public final class TestInboxMessages {
     public static InboxMessage copyWithNewId(InboxMessage original) {
         return original.toBuilder()
                 .setId(InboxMessageMixin.generateIdWith(original.shardIndex()))
-                .vBuild();
+                .build();
     }
 
     /**
@@ -59,7 +59,7 @@ public final class TestInboxMessages {
     public static InboxMessage copyWithStatus(InboxMessage original, InboxMessageStatus newStatus) {
         return original.toBuilder()
                 .setStatus(newStatus)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -95,7 +95,7 @@ public final class TestInboxMessages {
         return newMessage(targetId, targetType, TO_CATCH_UP)
                 .toBuilder()
                 .setWhenReceived(whenReceived)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -131,7 +131,7 @@ public final class TestInboxMessages {
         return newMessage(targetId, targetType, TO_DELIVER)
                 .toBuilder()
                 .setWhenReceived(whenReceived)
-                .vBuild();
+                .build();
     }
 
     /**
@@ -152,7 +152,7 @@ public final class TestInboxMessages {
                 .toBuilder()
                 .setWhenReceived(whenReceived)
                 .setId(message.getId().toBuilder().setIndex(shard))
-                .vBuild();
+                .build();
     }
 
     /**
@@ -204,7 +204,7 @@ public final class TestInboxMessages {
                 .setSignalId(signalId)
                 .setLabel(InboxLabel.HANDLE_COMMAND)
                 .setWhenReceived(whenReceived)
-                .vBuild();
+                .build();
         return result;
     }
 
@@ -213,17 +213,17 @@ public final class TestInboxMessages {
                 .setEntityId(
                         EntityId.newBuilder()
                                 .setId(Identifier.pack(targetId))
-                                .vBuild()
+                                .build()
                 )
                 .setTypeUrl(targetType.value())
-                .vBuild();
+                .build();
     }
 
     private static Command generateCommand(Object targetId) {
         DoSmth commandMessage = DoSmth.newBuilder()
                 .setId("some-id-" + targetId)
                 .setWhatToDo("Something!")
-                .vBuild();
+                .build();
         return factory.createCommand(commandMessage);
     }
 }

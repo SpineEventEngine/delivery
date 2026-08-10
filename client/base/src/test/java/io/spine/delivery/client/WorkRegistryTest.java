@@ -24,7 +24,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth8.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static io.spine.base.Time.currentTime;
 import static io.spine.delivery.client.ShardSessionRecords.fromEvent;
@@ -37,11 +37,11 @@ final class WorkRegistryTest {
     private static final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
     private static final NodeId node = NodeId.newBuilder()
             .setValue("test-node")
-            .vBuild();
+            .build();
     private static final WorkerId worker = WorkerId.newBuilder()
             .setNodeId(node)
             .setValue("test-worker")
-            .vBuild();
+            .build();
 
     @Test
     @DisplayName("be `NPE`-safe")
@@ -49,7 +49,7 @@ final class WorkRegistryTest {
         NullPointerTester tester = new NullPointerTester();
         tester.setDefault(ShardIndex.class, shard);
         tester.setDefault(NodeId.class, node);
-        tester.setDefault(Duration.class, Durations2.fromMinutes(1));
+        tester.setDefault(Duration.class, Durations2.minutes(1));
         tester.testAllPublicConstructors(WorkRegistry.class);
         tester.testAllPublicInstanceMethods(new WorkRegistry(NoOpClient::new));
     }
@@ -73,7 +73,7 @@ final class WorkRegistryTest {
                     .setShard(shard)
                     .setWorker(worker)
                     .setWhenPicked(currentTime())
-                    .vBuild();
+                    .build();
             ShardedWorkRegistry registry =
                     new WorkRegistry(Suppliers.ofInstance(new NoOpClient(shardPickedUp)));
             PickUpOutcome result = registry.pickUp(shard, node);

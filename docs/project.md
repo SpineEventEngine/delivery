@@ -17,22 +17,18 @@ and a set of runnable applications.
 
 ## Architecture
 
-Role: **application + published libraries** — a multi-module Gradle build whose
-`simple-server` and `model` modules are published as Maven artifacts under the
-`io.spine.delivery` group (no `spine-` prefix), while the deployment modules
-produce runnable Docker images.
-
-The build is split into two parts. The main build targets the current Spine SDK
-(`2.0.0-SNAPSHOT`); the [`client`](../client) directory is a separate **included
-build** deliberately kept on Spine 1.x / Gradle 6, so that applications still on
-Spine 1.x can depend on the server's Protobuf contract without inheriting the
-newer Spine runtime.
+Role: **application + published libraries** — a multi-module Gradle build
+targeting the current Spine SDK (`2.0.0-SNAPSHOT`). The published Maven
+artifacts live under the `io.spine.delivery` group with the standard `spine-`
+prefix: `spine-model`, `spine-simple-server`, `spine-delivery-client`, and
+`spine-delivery-client-base`. The deployment modules produce runnable Docker
+images and an App Engine application.
 
 ### Main build
 
-- `model` — the Protobuf domain model shared by the servers: commands, events,
-  rejections, the shard-session registry types, and the `DeliveryPickUpOutcome`
-  bridge type that connects core `2.0.x` servers with core `1.9.x` clients.
+- `model` — the Protobuf domain model shared by the servers and the clients:
+  commands, events, rejections, the shard-session registry types, and the
+  `DeliveryPickUpOutcome` type carrying shard pick-up results to clients.
 - `grpc-api` — the gRPC service contract (`message_delivery.proto`,
   `admin/admin_service.proto`, plus a vendored `grpc.health.v1` service) and the
   supporting stream-observer/admin helper classes.
@@ -52,16 +48,24 @@ newer Spine runtime.
   `simple-server` inside one Docker container (built with the Jib and Shadow
   plugins).
 
-### `client` included build (Spine 1.x)
+### Client modules (the `client` directory)
 
-- `base` — interfaces and Protos: the grounding parts of the Delivery Server client.
-- `simple-client` — the Delivery Server client implementation; talks plain gRPC
-  to the `simple-server`.
-- `testutil-client` — test fixtures and Protobuf test types for the client modules.
-- `demo` — a demo "Greeter" Spine application exercising the client.
-- `integration-test` — Testcontainers-based tests running several server instances.
-- `deployment/demo-appengine-8`, `deployment/demo-appengine-11` — App Engine
-  deployments of the demo.
+The two published client modules carry Gradle project names distinct from their
+directories, so that their Maven artifacts get the desired IDs (see
+`settings.gradle.kts`):
+
+- `client/base` → `:client:delivery-client-base` — the grounding interfaces of
+  the Delivery Server client, published as `spine-delivery-client-base`.
+- `client/simple-client` → `:client:delivery-client` — the client
+  implementation talking plain gRPC to the `simple-server`, published as
+  `spine-delivery-client`.
+- `client/testutil-client` — test fixtures and Protobuf test types for the
+  client modules (not published).
+- `client/demo` — a demo "Greeter" Spine application exercising the client.
+- `client/integration-test` — Testcontainers-based tests running several server
+  instances; tagged `integration` and excluded from the default build.
+- `client/deployment/demo-appengine-11` — the App Engine (Java 11 runtime)
+  deployment of the demo.
 
 ### Key constraints
 
@@ -70,8 +74,10 @@ newer Spine runtime.
   `simple-server` are breaking. Renaming a Protobuf `package` also changes the
   wire-level type URL, so proto, Java, and the `admin-ui` generated code must
   move together.
-- **Two Spine generations**: the `client` included build stays on Spine 1.x /
-  Gradle 6 on purpose — do not fold it into the main build.
+- **Single Spine generation**: since `0.15.0` the client modules are part of
+  the main Spine 2.x build. Applications still on Spine 1.x must pin the client
+  artifacts of the `0.14.x` line (published as `io.spine.delivery:base` and
+  `io.spine.delivery:simple-client`).
 - **Distribution**: `simple-server` ships as a Docker container on the Google
   Container Registry and is deployed via a Terraform module. All server
   configuration is available through environment variables (`PORT`, `USE_REDIS`,

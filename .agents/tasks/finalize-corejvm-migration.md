@@ -74,7 +74,11 @@ full `./gradlew build` green.
       `ubuntu-latest` ships a running daemon at `/var/run/docker.sock`, so the
       `storage:redis` tests pass there — just keep Docker-gated tests on Linux runners
       (macOS/Windows GitHub runners lack a usable Linux-container Docker daemon).
-- [ ] Decide + implement the `client` build relationship (standalone vs re-pointed).
+- [x] Decide + implement the `client` build relationship — folded into the main
+      build as root-project modules on Spine v2 (branch `restore-client-modules`,
+      see `.agents/tasks/restore-client-modules.md`). The stale `"client"` entry in
+      the old `projectsToPublish` referred to the retired `client/client` module
+      (`782cd7cf`) — nothing to publish for the `client` container itself.
 - [ ] Full `./gradlew build` green (with Docker available for the Redis Testcontainers test).
 - [ ] Delete the per-module task docs as they complete; delete this one on merge to master.
 

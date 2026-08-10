@@ -28,12 +28,12 @@ public final class LockShard extends ContextAwareServlet {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        _info().log("Picking up a shard!");
+        logger().atInfo().log(() -> "Picking up a shard!");
         WorkerId worker = WorkerId.newBuilder()
                 .setNodeId(ServerEnvironment.instance()
                                    .nodeId())
                 .setValue(NAME)
-                .vBuild();
+                .build();
         ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
         client.get()
               .pickUpShard(shard, worker);

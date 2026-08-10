@@ -44,8 +44,8 @@ public final class NoOpChannel extends ManagedChannel {
     }
 
     @Override
-    public <RequestT, ResponseT> ClientCall<RequestT, ResponseT> newCall(
-            MethodDescriptor<RequestT, ResponseT> methodDescriptor,
+    public <T, R> ClientCall<T, R> newCall(
+            MethodDescriptor<T, R> methodDescriptor,
             CallOptions callOptions) {
         throw notSupported();
     }

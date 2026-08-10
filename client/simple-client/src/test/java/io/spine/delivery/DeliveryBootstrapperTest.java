@@ -11,7 +11,7 @@ import io.spine.server.delivery.DeliveryBuilder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.google.common.truth.Truth8.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("`DeliveryBootstrapper` should")
@@ -34,9 +34,9 @@ final class DeliveryBootstrapperTest {
         DeliveryBuilder builder = DeliveryBootstrapper.newInstance()
                 .withChannel(NoOpChannel::new)
                 .init();
-        assertThat(builder.inboxStorage())
-                .isPresent();
-        assertThat(builder.workRegistry())
-                .isPresent();
+        assertThat(builder.hasInboxStorage())
+                .isTrue();
+        assertThat(builder.hasWorkRegistry())
+                .isTrue();
     }
 }

@@ -43,7 +43,7 @@ final class TestEnv {
     public static final NodeId NODE = NodeId
             .newBuilder()
             .setValue(SimpleDeliveryClient.class.getName())
-            .vBuild();
+            .build();
 
     /**
      * Predefined {@code WorkerId} that uses predefined {@code NODE} and
@@ -53,7 +53,7 @@ final class TestEnv {
             .newBuilder()
             .setNodeId(NODE)
             .setValue(SimpleDeliveryClient.class.getName())
-            .vBuild();
+            .build();
 
     /**
      * Creates a new {@code InboxMessage} with the {@linkplain Something} target type and a random
