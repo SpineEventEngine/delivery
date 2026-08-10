@@ -25,11 +25,14 @@ import io.spine.server.storage.redis.RedisStorageFactory;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
+import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.protobuf.util.Durations.checkPositive;
 import static java.util.concurrent.Executors.newFixedThreadPool;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Application exposing only an {@link InboxService} and {@link ShardService} instances via gRPC.
@@ -43,6 +46,11 @@ public final class SimpleApp implements WithLogging {
     private static final int DEFAULT_PORT = 8484;
 
     private static final int BYTES_IN_MB = 1_048_576;
+
+    /**
+     * How long {@link #awaitPort()} waits for the gRPC server to start.
+     */
+    private static final int STARTUP_TIMEOUT_SECONDS = 10;
 
     private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB; // 4 MiB
 
@@ -93,8 +101,17 @@ public final class SimpleApp implements WithLogging {
 
     /**
      * The port at which the gRPC server is exposed.
+     *
+     * <p>Zero asks the operating system to assign a free port when the server starts.
+     * The assigned port is then available via {@link #awaitPort()}.
      */
     private final int port;
+
+    /**
+     * Opens once the gRPC server has started, so that {@link #awaitPort()} can tell
+     * the port apart from the not-yet-started state.
+     */
+    private final CountDownLatch started = new CountDownLatch(1);
 
     /**
      * Creates a new instance of the application exposed at the {@linkplain #PORT default port}.
@@ -153,7 +170,10 @@ public final class SimpleApp implements WithLogging {
                     SHARD_PROCESSING_TIMEOUT.getSeconds()));
         try {
             server.start();
-            logger().atInfo().log(() -> format("gRPC server started at host '%s' and port '%d'.", HOST, port));
+            started.countDown();
+            var boundPort = server.getPort();
+            logger().atInfo().log(() -> format(
+                    "gRPC server started at host '%s' and port '%d'.", HOST, boundPort));
             server.awaitTermination();
         } catch (Exception e) {
             logger().atError().withCause(e)
@@ -161,6 +181,24 @@ public final class SimpleApp implements WithLogging {
         } finally {
             close(factory);
         }
+    }
+
+    /**
+     * Waits for the gRPC server to start, and returns the port it listens on.
+     *
+     * <p>Tests construct the app with port zero and read the port back here, instead of
+     * picking a free port in advance: the operating system assigns the port while binding
+     * it, so no other process can take it in between.
+     *
+     * @throws IllegalStateException
+     *         if the server does not start within {@link #STARTUP_TIMEOUT_SECONDS} seconds
+     */
+    @VisibleForTesting
+    int awaitPort() throws InterruptedException {
+        checkState(started.await(STARTUP_TIMEOUT_SECONDS, SECONDS),
+                   "The gRPC server has not started within %s seconds.",
+                   STARTUP_TIMEOUT_SECONDS);
+        return server.getPort();
     }
 
     /**
