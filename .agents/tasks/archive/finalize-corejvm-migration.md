@@ -2,7 +2,7 @@
 slug: finalize-corejvm-migration
 branch: renaming
 owner: claude
-status: blocked
+status: in-progress
 started: 2026-07-06
 ---
 
@@ -18,13 +18,11 @@ full `./gradlew build` green.
   modules are green (`model`, `testutil-server`, `grpc-api`, `server`, `simple-server`,
   `storage:base/redis/hazelcast`). The parked modules are tracked in their own docs:
   [admin-server-micronaut-4], [admin-ui-gradle-9], [deployment-gradle-9].
-- `.github/workflows/pr.yml` and `master.yml` still reference the OLD build (Gradle 7.2,
-  mc-java) and will fail. They need updating for Gradle 9.5.1 / the new toolchain, plus
-  the GitHub Packages `read:packages` credential the build now needs to resolve Spine.
-- The `client` build is a Spine-1.x / Gradle-6 **included** build; it was decoupled from
-  the composite (removed `includeBuild("client")`, commit `cea7b7f7`) because a Gradle-9
-  composite can't host a Gradle-6 build. Decide whether to re-point it at published server
-  Protobuf artifacts or leave it standalone (built via `client/gradlew`).
+- ~~`.github/workflows/pr.yml` and `master.yml` still reference the OLD build.~~ Resolved:
+  the repo moved to the workflow set `config` distributes, and the two pre-migration
+  files were archived in `9b6c2074` (then deleted — see the CI item in the plan).
+- ~~The `client` build is a Spine-1.x / Gradle-6 **included** build.~~ Resolved: folded
+  into the main build as root-project modules (see the plan item below).
 
 ## Deferred decisions surfaced during the migration
 
@@ -64,23 +62,40 @@ full `./gradlew build` green.
 
 ## Plan
 
-- [ ] After admin-server / admin-ui / deployment are migrated, re-enable all in
+- [x] After admin-server / admin-ui / deployment are migrated, re-enable all in
       `settings.gradle.kts` (remove the parked comments + restore `includeBuild`/`deployment`).
-- [ ] Update `.github/workflows/pr.yml` + `master.yml`: they still target JDK 16/11
-      (need 17), old `actions/*@v1/v2` (need `submodules: recursive` for `config` /
-      `.agents/shared`), and jobs for parked modules (`:*-cloud-run:jibDockerBuild`,
-      `:admin-ui:qbuild`). Add `GITHUB_ACTOR` + a `read:packages` token for Spine SNAPSHOT
-      resolution. Docker/Testcontainers needs NO special CI handling: GitHub-hosted
-      `ubuntu-latest` ships a running daemon at `/var/run/docker.sock`, so the
-      `storage:redis` tests pass there — just keep Docker-gated tests on Linux runners
-      (macOS/Windows GitHub runners lack a usable Linux-container Docker daemon).
+      All three are included again; `deployment-gradle-9.md` is `status: done`.
+- [x] Refresh CI. The work turned out to be already done by adopting the workflow set
+      that `config` distributes; `pr.yml` and `master.yml` were archived in `9b6c2074`
+      and are now deleted. What runs today:
+      - `build-on-ubuntu.yml` — `./gradlew build` + `dokkaGenerate` on JDK 17 with
+        `actions/checkout@v6` and submodules, plus Codecov. It builds the client
+        modules along with everything else, so the retired `build-client` job (which
+        ran `cd client && ./gradlew build`) needs no replacement.
+      - `publish.yml` — `./gradlew publish -x test` with `GITHUB_TOKEN`/`REPO_SLUG`,
+        which covers the `gitHub("delivery-server")` destination. The client artifacts
+        publish from the root build, so the retired `publish-client` job (which ran
+        `cd client && ./gradlew publish`) needs no replacement either.
+      - `build-on-windows-delivery.yml` — the only project-owned workflow; a
+        `config:replaces` variant that sets `WINDOWS_CI_NO_DOCKER` so the Redis
+        Testcontainers suites skip on Windows runners. This closes item (3) of the
+        Testcontainers note above.
+      No `read:packages` credential is needed: `buildSrc` ships a read-only PAT, and
+      the Docker-gated tests already run on the Ubuntu runner.
+      **Still dormant** (parked with their modules, not a CI regression): the container
+      build (`:simple-server-cloud-run:jibDockerBuild`), the `:admin-ui:qbuild` job, and
+      the App Engine deployment of the demo. The commented-out originals are in
+      `9b6c2074^:.github/workflows-archived/master.yml` if they are ever restored.
 - [x] Decide + implement the `client` build relationship — folded into the main
       build as root-project modules on Spine v2 (branch `restore-client-modules`,
       see `.agents/tasks/restore-client-modules.md`). The stale `"client"` entry in
       the old `projectsToPublish` referred to the retired `client/client` module
       (`782cd7cf`) — nothing to publish for the `client` container itself.
-- [ ] Full `./gradlew build` green (with Docker available for the Redis Testcontainers test).
+- [x] Full `./gradlew build` green (with Docker available for the Redis Testcontainers test).
+      Confirmed on branch `restore-client-modules`, Docker running, `dokkaGenerate` green
+      as well. This also settles item (1) of the Testcontainers note above.
 - [ ] Delete the per-module task docs as they complete; delete this one on merge to master.
+      `deployment-gradle-9.md` is done and can be archived.
 
 ## Log
 
@@ -90,3 +105,10 @@ full `./gradlew build` green.
   adapted the two redis tests (`getHost()`, dropped inert `@Container`), and ported
   gcloud-jvm's `CheckDockerAvailable` gate + `@RequiresDocker`/`RequiresDockerCondition`.
   Not yet build-verified (needs Docker + `read:packages`).
+- 2026-08-10 — CI item closed. Reviewing it found the refresh already done: the repo runs
+  the workflow set `config` distributes, byte-identical to the submodule's copies, and the
+  pre-migration `pr.yml`/`master.yml` had been archived out of `.github/workflows/`, where
+  GitHub never read them. Deleted that dead `workflows-archived/` directory — its only live
+  job duplicated `build-on-ubuntu.yml`, and its commented client jobs invoked the
+  `client/gradlew` build that no longer exists. Verified the un-parking and the green
+  build at the same time, so the only item left is deleting the task docs on merge.
