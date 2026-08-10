@@ -13,8 +13,9 @@ package io.spine.dependency.lib
  * turns it into the `micronaut-platform` BOM
  * (`micronaut { version.set(Micronaut.version) }`), so the module artifacts below
  * are declared without versions.
+ *
+ * @see <a href="https://micronaut.io/">Micronaut official website</a>
  */
-// https://micronaut.io/
 @Suppress("unused", "ConstPropertyName")
 object Micronaut {
 
@@ -27,7 +28,7 @@ object Micronaut {
      * officially support Gradle 9) is compiled for JVM 25. In practice, 4.6.2
      * configures and runs cleanly on Gradle 9.6.1.
      *
-     * @see https://plugins.gradle.org/plugin/io.micronaut.application
+     * @see <a href="https://plugins.gradle.org/plugin/io.micronaut.application">Micronaut Gradle plugin</a>
      */
     object GradlePlugin {
         const val id = "io.micronaut.application"
@@ -37,7 +38,17 @@ object Micronaut {
     /** The group of the Micronaut core modules. */
     const val group = "io.micronaut"
 
-    // https://repo1.maven.org/maven2/io/micronaut/platform/micronaut-platform/
+    /**
+     * The version of the Micronaut Platform, and the highest one this project can run.
+     *
+     * 4.10.17 is the last release of the 4.x line. The 5.x line is compiled for JVM 25
+     * — `micronaut-core:5.1.10` is a class-file of major version 69 — while this project
+     * targets Java 17 (`BuildSettings.javaVersion`). Moving to 5.x therefore requires
+     * raising the project's toolchain first, together with
+     * [the Gradle plugin][GradlePlugin], which is compiled for JVM 25 as well.
+     *
+     * @see <a href="https://repo1.maven.org/maven2/io/micronaut/platform/micronaut-platform/">Micronaut Platform releases at Maven Central</a>
+     */
     const val version = "4.10.17"
     const val bom = "$group.platform:micronaut-platform:$version"
 
