@@ -11,13 +11,11 @@ import io.spine.delivery.client.ExecutionFailedException;
 
 import java.util.function.Supplier;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 /**
  * Summary of the {@code RequestWithResult} failure.
  *
  * @param <R>
- *         type of result that have to be returned by the {@code RequestWithResult}.
+ *         type of the result that has to be returned by the {@code RequestWithResult}.
  */
 public final class FailedRequest<R> {
 
@@ -26,7 +24,7 @@ public final class FailedRequest<R> {
     private final ImmutableList<RuntimeException> allExceptions;
 
     /**
-     * Create a new {@code FailedRequest} with the given {@code retry} function and
+     * Creates a new {@code FailedRequest} with the given {@code retry} function and
      * previously occurred exceptions.
      *
      * @param retry
@@ -35,7 +33,7 @@ public final class FailedRequest<R> {
      *         previously occurred exceptions.
      */
     FailedRequest(Supplier<R> retry, ImmutableList<RuntimeException> allExceptions) {
-        checkArgument(!allExceptions.isEmpty(), "The exception list should not be empty.");
+        FailedRequests.checkHasExceptions(allExceptions);
         this.retry = retry;
         this.allExceptions = allExceptions;
     }
@@ -57,7 +55,7 @@ public final class FailedRequest<R> {
     }
 
     /**
-     * Returns last occurred exception.
+     * Returns the last occurred exception.
      */
     public Exception lastException() {
         return allExceptions.get(allExceptions().size() - 1);

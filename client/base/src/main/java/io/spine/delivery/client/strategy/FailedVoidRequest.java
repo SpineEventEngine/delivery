@@ -9,8 +9,6 @@ package io.spine.delivery.client.strategy;
 import com.google.common.collect.ImmutableList;
 import io.spine.delivery.client.ExecutionFailedException;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 /**
  * Summary of the {@code VoidRequest} failure.
  */
@@ -21,7 +19,7 @@ public final class FailedVoidRequest {
     private final ImmutableList<RuntimeException> allExceptions;
 
     /**
-     * Create a new {@code FailedVoidRequest} with the given {@code retry} function and
+     * Creates a new {@code FailedVoidRequest} with the given {@code retry} function and
      * previously occurred exceptions.
      *
      * @param retry
@@ -30,7 +28,7 @@ public final class FailedVoidRequest {
      *         previously occurred exceptions.
      */
     FailedVoidRequest(Runnable retry, ImmutableList<RuntimeException> allExceptions) {
-        checkArgument(!allExceptions.isEmpty(), "The exception list should not be empty.");
+        FailedRequests.checkHasExceptions(allExceptions);
         this.retry = retry;
         this.allExceptions = allExceptions;
     }
@@ -51,7 +49,7 @@ public final class FailedVoidRequest {
     }
 
     /**
-     * Returns last occurred exception.
+     * Returns the last occurred exception.
      */
     public Exception lastException() {
         return allExceptions.get(allExceptions.size() - 1);
