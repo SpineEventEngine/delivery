@@ -40,7 +40,7 @@ public abstract class WithApp {
     private final SimpleApp app = new SimpleApp(0);
 
     /**
-     * The port the {@linkplain #app app} listens on, known only once it has started.
+     * The port the {@link #app} listens on, known only once it has started.
      */
     private int port;
 

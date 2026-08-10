@@ -68,9 +68,14 @@ object Micronaut {
     const val groovyVersion = "4.0.28"
 
     /**
-     * Versions of the third-party libraries pinned by the platform [bom] which win
+     * Versions of the third-party libraries pinned by the platform [bom] that win
      * the cross-stack conflicts on the `simple-server-cloud-run` classpath, where
      * the Micronaut graph meets the Redisson one. Update together with [version].
+     *
+     * [nettyVersion] is the platform's own pin, used only to settle those conflicts.
+     * It is deliberately independent of the [Netty] catalog object, which declares
+     * the coordinates for a project depending on Netty directly — this project does
+     * not, so the two values need not agree.
      */
     const val nettyVersion = "4.2.16.Final"
     const val reactorCoreVersion = "3.7.12"

@@ -73,6 +73,7 @@ buildscript {
                 io.spine.dependency.lib.Jackson.DataFormat.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.JacksonV2.Core.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.JacksonV2.DataType.forceArtifacts(project, cfg, rs)
+                io.spine.dependency.lib.JacksonV2.DataFormat.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.JacksonV2.Module.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.Grpc.forceArtifacts(project, cfg, rs)
                 force(
@@ -578,7 +579,7 @@ fun Project.forceConfigurations() {
                     // The `proto-google-cloud-*` libraries bring an older `failureaccess`
                     // than the one used by the forced Guava version above.
                     "com.google.guava:failureaccess:1.0.3",
-                    "junit:junit:4.13.2",
+                    JUnit.legacy,
 
                     Base.lib,
                     Base.annotations,
