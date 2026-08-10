@@ -33,16 +33,16 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
     private final StorageFactory delegate;
 
     /**
-     * The field preserves all storages that is created by this factory.
+     * The field preserves all storages that are created by this factory.
      *
      * <p>This is done to add new subscriptions to already created storages.
      */
     private final Map<TypeSpec<?, ?>, Set<ReportingRecordStorage<?, ?>>> storages = new ConcurrentHashMap<>();
 
     /**
-     * The field preserves subscriptions that is passed to the factory.
+     * The field preserves subscriptions that are passed to the factory.
      *
-     * <p>This is done to add already existent subscriptions to a newly created storages.
+     * <p>This is done to add already existent subscriptions to newly created storages.
      */
     private final Map<String, CompositeSubscription<?, ?>> subscriptions = new ConcurrentHashMap<>();
 
@@ -120,7 +120,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
     }
 
     /**
-     * Saves the given {@code subscription} and returns such {@code UpdateSubscription} that will
+     * Saves the given {@code subscription} and returns such a {@code UpdateSubscription} that will
      * remove the subscription if canceled.
      */
     private <I, R extends Message> StorageSubscription
@@ -144,7 +144,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
     /**
      * Returns a {@code Set} of storages of the given {@code typeSpec}.
      *
-     * <p>If there is no storages for the given types returns an empty {@code Set}.
+     * <p>If there are no storages for the given types, returns an empty {@code Set}.
      */
     private Set<ReportingRecordStorage<?, ?>> storages(TypeSpec<?, ?> typeSpec) {
         return storages.computeIfAbsent(typeSpec, k -> newConcurrentHashSet());
@@ -153,14 +153,14 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
     /**
      * Subscription for multiple storages of the same type.
      *
-     * <p>Holds and manages several subscriptions to a different storage instances
+     * <p>Holds and manages several subscriptions to different storage instances
      * of the same {@code ID} and {@code Record} types.
      *
-     * <p>Since the factory allows to subscribe to stored types instead of particular
+     * <p>Since the factory allows subscribing to stored types instead of a particular
      * storage it's possible that the factory will create several storages managing the same types
-     * of records. The factory then have to manage subscriptions of all storages of the same type.
+     * of records. The factory then has to manage subscriptions of all storages of the same type.
      * That's why this class represents a “subscription” that points to several subscriptions,
-     * for different storage each.
+     * for a different storage each.
      *
      * @param <I>
      *         the type of the record identifiers
@@ -195,7 +195,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
         }
 
         /**
-         * Returns {@code UpdateSubscriber} associated with this subscription.
+         * Returns a {@code UpdateSubscriber} associated with this subscription.
          */
         private StorageSubscriber<I, R> subscriber() {
             return subscriber;

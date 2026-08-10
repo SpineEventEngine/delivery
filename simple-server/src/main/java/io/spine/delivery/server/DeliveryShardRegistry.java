@@ -186,7 +186,7 @@ public final class DeliveryShardRegistry implements WithLogging {
 
     /**
      * Clears up the recorded {@code WorkerId}s from the session records if there was no activity
-     * for longer than passed {@code inactivityPeriod}.
+     * for longer than the passed {@code inactivityPeriod}.
      *
      * <p>It may be handy if an application node hangs or gets killed — so that it is not able
      * to complete the session in a conventional way.

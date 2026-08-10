@@ -22,7 +22,7 @@ import java.util.Optional;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Extends the {@link InboxStorage} by exposing some of API endpoints into {@code public}.
+ * Extends the {@link InboxStorage} by exposing some of the API endpoints into {@code public}.
  */
 public final class ExtendedInboxStorage extends InboxStorage {
 

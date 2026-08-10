@@ -41,7 +41,7 @@ public final class SingletonStorageFactory implements StorageFactory {
      * Creates a new {@code SingletonStorageFactory} with the given {@code delegate}.
      *
      * @param delegate
-     *         factory that will be used to create storage in case the requested storage
+     *         factory that will be used to create a storage in case the requested storage
      *         has never been created yet.
      */
     public SingletonStorageFactory(StorageFactory delegate) {
@@ -50,7 +50,7 @@ public final class SingletonStorageFactory implements StorageFactory {
     }
 
     /**
-     * Returns already created {@code RecordStorage} or delegates creation to the delegate if
+     * Returns an already created {@code RecordStorage} or delegates creation to the delegate if
      * there is no storage created for the given {@code context}, {@code spec}, and {@code group}.
      */
     @SuppressWarnings("unchecked")
@@ -97,7 +97,7 @@ public final class SingletonStorageFactory implements StorageFactory {
         }
 
         /**
-         * Creates a new {@code Key} with provided {@code context}, {@code spec},
+         * Creates a new {@code Key} with the provided {@code context}, {@code spec},
          * and {@code group}.
          */
         private static Key of(ContextSpec context,
