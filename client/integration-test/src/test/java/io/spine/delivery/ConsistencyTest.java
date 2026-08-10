@@ -41,10 +41,10 @@ public class ConsistencyTest extends DistributedTest {
     @DisplayName("pick up on one node and release on another")
     void pickUpAndRelease(Supplier<SimpleDeliveryClient> first,
                           Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
+        var client1 = first.get();
+        var client2 = second.get();
 
-        PickUpOutcome outcome = client1.pickUpShard(SHARD, WORKER);
+        var outcome = client1.pickUpShard(SHARD, WORKER);
         assertThat(outcome.hasSession())
                 .isTrue();
         assertDoesNotThrow(() -> client2.releaseShard(SHARD, WORKER));
@@ -55,13 +55,13 @@ public class ConsistencyTest extends DistributedTest {
     @DisplayName("do not pick up on another node if already picked up")
     void doesNotPickUpShard(Supplier<SimpleDeliveryClient> first,
                             Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
+        var client1 = first.get();
+        var client2 = second.get();
 
-        PickUpOutcome firstAttempt = client1.pickUpShard(SHARD, WORKER);
+        var firstAttempt = client1.pickUpShard(SHARD, WORKER);
         assertThat(firstAttempt.hasSession())
                 .isTrue();
-        PickUpOutcome secondAttempt = client2.pickUpShard(SHARD, WORKER);
+        var secondAttempt = client2.pickUpShard(SHARD, WORKER);
         assertThat(secondAttempt.hasAlreadyPicked())
                 .isTrue();
     }
@@ -71,17 +71,17 @@ public class ConsistencyTest extends DistributedTest {
     @DisplayName("pick up, release, and allow a new pick up")
     void allowToPickUpReleasedShard(Supplier<SimpleDeliveryClient> first,
                                     Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
+        var client1 = first.get();
+        var client2 = second.get();
 
-        PickUpOutcome firstAttempt = client1.pickUpShard(SHARD, WORKER);
+        var firstAttempt = client1.pickUpShard(SHARD, WORKER);
         assertThat(firstAttempt.hasSession())
                 .isTrue();
-        PickUpOutcome secondAttempt = client2.pickUpShard(SHARD, WORKER);
+        var secondAttempt = client2.pickUpShard(SHARD, WORKER);
         assertThat(secondAttempt.hasAlreadyPicked())
                 .isTrue();
         assertDoesNotThrow(() -> client2.releaseShard(SHARD, WORKER));
-        PickUpOutcome thirdAttempt = client1.pickUpShard(SHARD, WORKER);
+        var thirdAttempt = client1.pickUpShard(SHARD, WORKER);
         assertThat(thirdAttempt.hasSession())
                 .isTrue();
     }
@@ -91,13 +91,13 @@ public class ConsistencyTest extends DistributedTest {
     @DisplayName("write a message to the Inbox")
     void writeMessage(Supplier<SimpleDeliveryClient> first,
                       Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
+        var client1 = first.get();
+        var client2 = second.get();
 
-        InboxMessage message = newMessage();
+        var message = newMessage();
         client1.writeMessage(message);
 
-        Optional<InboxMessage> readMessage = client2.find(message.getId());
+        var readMessage = client2.find(message.getId());
         assertThat(readMessage)
                 .isPresent();
     }
@@ -107,16 +107,16 @@ public class ConsistencyTest extends DistributedTest {
     @DisplayName("write messages to the Inbox in bulk")
     void writeMessages(Supplier<SimpleDeliveryClient> first,
                        Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
+        var client1 = first.get();
+        var client2 = second.get();
 
-        InboxMessage firstMessage = newMessage();
-        InboxMessage secondMessage = newMessage();
-        ShardIndex shard = firstMessage.shardIndex();
+        var firstMessage = newMessage();
+        var secondMessage = newMessage();
+        var shard = firstMessage.shardIndex();
         client1.writeMessages(
                 shard, ImmutableList.of(firstMessage, secondMessage)
         );
-        Page<InboxMessage> writtenMessages = client2.readAll(shard, 10);
+        var writtenMessages = client2.readAll(shard, 10);
         assertThat(writtenMessages.size())
                 .isEqualTo(2);
     }
@@ -126,16 +126,16 @@ public class ConsistencyTest extends DistributedTest {
     @DisplayName("read messages in pages")
     void readPages(Supplier<SimpleDeliveryClient> first,
                    Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
+        var client1 = first.get();
+        var client2 = second.get();
 
-        List<InboxMessage> messages = generate(30);
-        ShardIndex shard = messages.get(0)
-                                   .shardIndex();
+        var messages = generate(30);
+        var shard = messages.get(0)
+                            .shardIndex();
         client1.writeMessages(shard, messages);
 
-        int pageSize = 10;
-        Page<InboxMessage> writtenMessages = client2.readAll(shard, pageSize);
+        var pageSize = 10;
+        var writtenMessages = client2.readAll(shard, pageSize);
         assertThat(writtenMessages.size())
                 .isEqualTo(pageSize);
         assertThat(writtenMessages.next())
@@ -151,18 +151,18 @@ public class ConsistencyTest extends DistributedTest {
     @DisplayName("read newest message to deliver")
     void readNewest(Supplier<SimpleDeliveryClient> first,
                     Supplier<SimpleDeliveryClient> second) {
-        SimpleDeliveryClient client1 = first.get();
-        SimpleDeliveryClient client2 = second.get();
+        var client1 = first.get();
+        var client2 = second.get();
 
-        InboxMessage olderMessage = toDeliver(
+        var olderMessage = toDeliver(
                 Timestamps.fromSeconds(100000L),
                 TypeUrl.from(Something.getDescriptor())
         );
-        InboxMessage newerMessage = toDeliver(
+        var newerMessage = toDeliver(
                 Timestamps.fromSeconds(100001L),
                 TypeUrl.from(Something.getDescriptor())
         );
-        InboxMessage newestMessage = toDeliver(
+        var newestMessage = toDeliver(
                 Timestamps.fromSeconds(100002L),
                 TypeUrl.from(Something.getDescriptor())
         );
@@ -171,7 +171,7 @@ public class ConsistencyTest extends DistributedTest {
                 ImmutableList.of(olderMessage, newestMessage, newerMessage)
         );
 
-        Optional<InboxMessage> actual =
+        var actual =
                 client2.newestMessageToDeliver(olderMessage.shardIndex());
         assertThat(actual)
                 .hasValue(newestMessage);

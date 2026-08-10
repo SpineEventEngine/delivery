@@ -78,8 +78,8 @@ public final class RedisRecordStorage<I, R extends Message> extends RecordStorag
 
     @Override
     protected void writeAllRecords(Iterable<? extends RecordWithColumns<I, R>> records) {
-        TenantRecords<I, R> tenantRecords = records();
-        for (RecordWithColumns<I, R> record : records) {
+        var tenantRecords = records();
+        for (var record : records) {
             tenantRecords.put(record.id(), record);
         }
     }

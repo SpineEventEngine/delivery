@@ -46,7 +46,7 @@ final class WorkRegistryTest {
     @Test
     @DisplayName("be `NPE`-safe")
     void beNpeSafe() {
-        NullPointerTester tester = new NullPointerTester();
+        var tester = new NullPointerTester();
         tester.setDefault(ShardIndex.class, shard);
         tester.setDefault(NodeId.class, node);
         tester.setDefault(Duration.class, Durations2.minutes(1));
@@ -69,17 +69,17 @@ final class WorkRegistryTest {
         @Test
         @DisplayName("returning a `ShardProcessingSession`")
         void session() {
-            ShardPickedUp shardPickedUp = ShardPickedUp.newBuilder()
+            var shardPickedUp = ShardPickedUp.newBuilder()
                     .setShard(shard)
                     .setWorker(worker)
                     .setWhenPicked(currentTime())
                     .build();
             ShardedWorkRegistry registry =
                     new WorkRegistry(Suppliers.ofInstance(new NoOpClient(shardPickedUp)));
-            PickUpOutcome result = registry.pickUp(shard, node);
+            var result = registry.pickUp(shard, node);
             assertThat(result.session())
                     .isPresent();
-            ShardSessionRecord session = result.getSession();
+            var session = result.getSession();
             assertThat(session.getIndex())
                     .isEqualTo(shard);
         }

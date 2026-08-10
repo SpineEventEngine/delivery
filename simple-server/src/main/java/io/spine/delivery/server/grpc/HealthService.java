@@ -59,7 +59,7 @@ public final class HealthService extends HealthGrpc.HealthImplBase
     @Override
     public void check(HealthCheckRequest request,
                       StreamObserver<HealthCheckResponse> responseObserver) {
-        String serviceToCheck = request.getService();
+        var serviceToCheck = request.getService();
         if (isNullOrEmpty(serviceToCheck)) {
             checkAllHealthy(responseObserver);
             return;
@@ -99,12 +99,12 @@ public final class HealthService extends HealthGrpc.HealthImplBase
     }
 
     private boolean healthy(String serviceName) {
-        NamedHealthAwareService service = services.get(serviceName);
+        var service = services.get(serviceName);
         return service != null && service.healthy();
     }
 
     private boolean allHealthy() {
-        for (NamedHealthAwareService service : services.values()) {
+        for (var service : services.values()) {
             if (!service.healthy()) {
                 return false;
             }
@@ -131,7 +131,7 @@ public final class HealthService extends HealthGrpc.HealthImplBase
      * Marks all registered services as non-healthy.
      */
     public void markNonHealthy() {
-        for (NamedHealthAwareService service : services.values()) {
+        for (var service : services.values()) {
             service.healthy(false);
         }
     }

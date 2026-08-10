@@ -111,7 +111,7 @@ final class RemoteRecordStorage extends RecordStorage<InboxMessageId, InboxMessa
     @Override
     protected void deleteAll(Iterable<InboxMessageId> ids) {
         checkNotNull(ids);
-        Map<ShardIndex, List<InboxMessageId>> byShard =
+        var byShard =
                 stream(ids).collect(groupingBy(InboxMessageId::getIndex));
         byShard.forEach(this::removeAllInShard);
     }

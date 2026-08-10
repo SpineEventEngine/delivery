@@ -35,8 +35,8 @@ class RecordQueryMatcherTest {
     @Test
     @DisplayName("match everything except `null` to empty query")
     void matchEverythingToEmpty() {
-        Subject<Object, EntityRecord> sampleSubject = recordSubject();
-        RecordQueryMatcher<Object, EntityRecord> matcher = new RecordQueryMatcher<>(sampleSubject);
+        var sampleSubject = recordSubject();
+        var matcher = new RecordQueryMatcher<Object, EntityRecord>(sampleSubject);
 
         assertFalse(matcher.test(nullRef()));
         assertTrue(matcher.test(recordWith(Object.class, sampleEntityRecord())));
@@ -45,12 +45,12 @@ class RecordQueryMatcherTest {
     @Test
     @DisplayName("match IDs")
     void matchIds() {
-        ProjectId genericId = Sample.messageOfType(ProjectId.class);
-        Subject<ProjectId, EntityRecord> subject = recordSubject(genericId);
+        var genericId = Sample.messageOfType(ProjectId.class);
+        var subject = recordSubject(genericId);
 
-        RecordQueryMatcher<ProjectId, EntityRecord> matcher = new RecordQueryMatcher<>(subject);
-        EntityRecord matching = sampleEntityRecord(genericId);
-        EntityRecord nonMatching = sampleEntityRecord(Sample.messageOfType(ProjectId.class));
+        var matcher = new RecordQueryMatcher<ProjectId, EntityRecord>(subject);
+        var matching = sampleEntityRecord(genericId);
+        var nonMatching = sampleEntityRecord(Sample.messageOfType(ProjectId.class));
         assertTrue(matcher.test(recordWith(ProjectId.class, matching)));
         assertFalse(matcher.test(recordWith(ProjectId.class, nonMatching)));
     }
@@ -58,17 +58,17 @@ class RecordQueryMatcherTest {
     @Test
     @DisplayName("match columns")
     void matchColumns() {
-        RecordColumn<EntityRecord, Boolean> column = booleanColumn();
-        boolean actualValue = true;
-        RecordQuery<Object, EntityRecord> query =
+        var column = booleanColumn();
+        var actualValue = true;
+        var query =
                 newBuilder().where(column)
                             .is(actualValue)
                             .build();
-        RecordQueryMatcher<Object, EntityRecord> matcher =
-                new RecordQueryMatcher<>(query.subject());
+        var matcher =
+                new RecordQueryMatcher<Object, EntityRecord>(query.subject());
 
-        EntityRecord matching = archivedEntityRecord(actualValue);
-        EntityRecord nonMatching = archivedEntityRecord(!actualValue);
+        var matching = archivedEntityRecord(actualValue);
+        var nonMatching = archivedEntityRecord(!actualValue);
         assertTrue(matcher.test(recordWith(Object.class, matching)));
         assertFalse(matcher.test(recordWith(Object.class, nonMatching)));
     }
@@ -76,27 +76,27 @@ class RecordQueryMatcherTest {
     @Test
     @DisplayName("match `Any` instances")
     void matchAnyInstances() {
-        RecordColumn<EntityRecord, Any> column = anyColumn();
-        Any actualValue = anyValue();
-        RecordQuery<Object, EntityRecord> query =
+        var column = anyColumn();
+        var actualValue = anyValue();
+        var query =
                 newBuilder().where(column)
                             .is(actualValue)
                             .build();
-        RecordQueryMatcher<Object, EntityRecord> matcher = new RecordQueryMatcher<>(query);
+        var matcher = new RecordQueryMatcher<Object, EntityRecord>(query);
 
-        EntityRecord matching = statefulEntityRecord(actualValue);
+        var matching = statefulEntityRecord(actualValue);
         assertTrue(matcher.test(recordWith(Object.class, matching)));
     }
 
     @Test
     @DisplayName("not match by wrong field name")
     void notMatchByWrongField() {
-        RecordColumn<EntityRecord, Boolean> target = booleanColumn("some_random_name");
-        RecordQuery<Object, EntityRecord> query =
+        var target = booleanColumn("some_random_name");
+        var query =
                 newBuilder().where(target)
                             .is(true)
                             .build();
-        RecordQueryMatcher<Object, EntityRecord> matcher = new RecordQueryMatcher<>(query);
+        var matcher = new RecordQueryMatcher<Object, EntityRecord>(query);
 
         assertFalse(matcher.test(recordWith(Object.class, sampleEntityRecord())));
     }

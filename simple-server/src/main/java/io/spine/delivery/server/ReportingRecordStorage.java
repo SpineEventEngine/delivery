@@ -56,7 +56,7 @@ public final class ReportingRecordStorage<I, R extends Message>
      * Subscribes to the update operations of this storage with the given {@code subscriber}.
      */
     public StorageSubscription subscribe(StorageSubscriber<I, R> subscriber) {
-        String id = randomUUID().toString();
+        var id = randomUUID().toString();
         this.subscriptions.put(id, subscriber);
         return () -> subscriptions.remove(id);
     }

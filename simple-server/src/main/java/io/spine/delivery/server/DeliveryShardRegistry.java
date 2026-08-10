@@ -113,17 +113,17 @@ public final class DeliveryShardRegistry implements WithLogging {
     }
 
     private void logStale(ShardSessionRecord session) {
-        String mainMsg = format("Shard %d reached the processing timeout and was" +
+        var mainMsg = format("Shard %d reached the processing timeout and was" +
                                         " released automatically.", session.getIndex()
                                                                            .getIndex());
-        Duration processingTime = between(session.getWhenLastPicked(), currentTime());
-        ImmutableList<String> logStatements = ImmutableList.<String>builder()
+        var processingTime = between(session.getWhenLastPicked(), currentTime());
+        var logStatements = ImmutableList.<String>builder()
                 .add(mainMsg)
                 .add(format("Processing time: %d seconds.", processingTime.getSeconds()))
                 .add(format("Configured threshold: %d seconds.", processingTimeout.getSeconds()))
                 .build();
-        String logMessage = Joiner.on(lineSeparator())
-                                  .join(logStatements);
+        var logMessage = Joiner.on(lineSeparator())
+                               .join(logStatements);
         logger().atWarning().log(() -> format(logMessage));
     }
 
@@ -131,10 +131,10 @@ public final class DeliveryShardRegistry implements WithLogging {
         if (processingTimeout.getSeconds() == 0) {
             return false;
         }
-        Timestamp whenPicked = session.getWhenLastPicked();
-        Duration elapsed = between(whenPicked, currentTime());
-        int comparison = compare(elapsed, processingTimeout);
-        boolean result = comparison > 0;
+        var whenPicked = session.getWhenLastPicked();
+        var elapsed = between(whenPicked, currentTime());
+        var comparison = compare(elapsed, processingTimeout);
+        var result = comparison > 0;
         return result;
     }
 
@@ -199,10 +199,10 @@ public final class DeliveryShardRegistry implements WithLogging {
         storage.readAll()
                .forEachRemaining(record -> {
                    if (record.hasWorker()) {
-                       Timestamp whenPicked = record.getWhenLastPicked();
-                       Duration elapsed = between(whenPicked, currentTime());
+                       var whenPicked = record.getWhenLastPicked();
+                       var elapsed = between(whenPicked, currentTime());
 
-                       int comparison = compare(elapsed, inactivityPeriod);
+                       var comparison = compare(elapsed, inactivityPeriod);
                        if (comparison >= 0) {
                            clearWorker(record);
                            resultBuilder.add(record);
@@ -224,7 +224,7 @@ public final class DeliveryShardRegistry implements WithLogging {
 
         @Override
         protected void complete() {
-            Optional<ShardSessionRecord> record = storage.read(shardIndex());
+            var record = storage.read(shardIndex());
             record.ifPresent(DeliveryShardRegistry.this::clearWorker);
         }
     }

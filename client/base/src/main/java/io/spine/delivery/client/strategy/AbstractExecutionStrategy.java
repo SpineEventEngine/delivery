@@ -41,7 +41,7 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
         try {
             request.run();
         } catch (RuntimeException e) {
-            ImmutableList<RuntimeException> allExceptions = append(previous, e);
+            var allExceptions = append(previous, e);
             Runnable retry = () -> tryExecute(request, allExceptions);
             handleException(new FailedVoidRequest(retry, allExceptions)).execute();
         }
@@ -57,7 +57,7 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
         try {
             return request.evaluate();
         } catch (RuntimeException e) {
-            ImmutableList<RuntimeException> allExceptions = append(previous, e);
+            var allExceptions = append(previous, e);
             Supplier<R> retry = () -> tryEvaluate(request, allExceptions);
             return handleException(new FailedRequest<>(retry, allExceptions)).execute();
         }

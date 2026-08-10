@@ -38,9 +38,9 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
     @Test
     @DisplayName("create a `ShardInfoUpdate` with positive message count")
     void createUpdateWithPositiveCount() {
-        ShardInfoUpdate actual = ShardInfoUpdates.messagesCountChangedTo(SHARD, 2);
+        var actual = ShardInfoUpdates.messagesCountChangedTo(SHARD, 2);
 
-        ShardInfoUpdate expected = ShardInfoUpdate
+        var expected = ShardInfoUpdate
                 .newBuilder()
                 .setIndex(SHARD)
                 .setNewMessagesCount(2)
@@ -52,9 +52,9 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
     @Test
     @DisplayName("create a `ShardInfoUpdate` with negative message count")
     void createUpdateWithNegativeCount() {
-        ShardInfoUpdate actual = ShardInfoUpdates.messagesCountChangedTo(SHARD, -1);
+        var actual = ShardInfoUpdates.messagesCountChangedTo(SHARD, -1);
 
-        ShardInfoUpdate expected = ShardInfoUpdate
+        var expected = ShardInfoUpdate
                 .newBuilder()
                 .setIndex(SHARD)
                 .setNewMessagesCount(-1)
@@ -66,10 +66,10 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
     @Test
     @DisplayName("create `ShardInfoUpdate` for a picked shard.")
     void createShardPickedUpdate() {
-        Timestamp whenPicked = currentTime();
-        ShardInfoUpdate actual = ShardInfoUpdates.shardPicked(SHARD, whenPicked);
+        var whenPicked = currentTime();
+        var actual = ShardInfoUpdates.shardPicked(SHARD, whenPicked);
 
-        ShardInfoUpdate expected = ShardInfoUpdate
+        var expected = ShardInfoUpdate
                 .newBuilder()
                 .setIndex(SHARD)
                 .setNewStatus(PICKED)
@@ -82,9 +82,9 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
     @Test
     @DisplayName("create `ShardInfoUpdate` for an unpicked shard.")
     void createShardUnpickedUpdate() {
-        ShardInfoUpdate actual = ShardInfoUpdates.shardUnpicked(SHARD);
+        var actual = ShardInfoUpdates.shardUnpicked(SHARD);
 
-        ShardInfoUpdate expected = ShardInfoUpdate
+        var expected = ShardInfoUpdate
                 .newBuilder()
                 .setIndex(SHARD)
                 .setNewStatus(NOT_PICKED)

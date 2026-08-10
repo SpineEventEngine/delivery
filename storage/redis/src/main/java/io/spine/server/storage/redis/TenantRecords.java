@@ -66,8 +66,8 @@ final class TenantRecords<I, R extends Message>
 
     @Override
     public Iterator<I> index() {
-        Set<String> keys = records.keySet();
-        Iterator<I> result = transform(
+        var keys = records.keySet();
+        var result = transform(
                 keys.iterator(), this::fromStorageKey
         );
         return result;
@@ -77,8 +77,8 @@ final class TenantRecords<I, R extends Message>
      * Obtains the iterator over the identifiers of the records which match the passed query.
      */
     Iterator<I> index(RecordQuery<I, R> query) {
-        List<RecordWithColumns<I, R>> subset = findRecords(query);
-        Iterator<I> result = transform(subset.iterator(), RecordWithColumns::id);
+        var subset = findRecords(query);
+        var result = transform(subset.iterator(), RecordWithColumns::id);
         return result;
     }
 
@@ -95,10 +95,10 @@ final class TenantRecords<I, R extends Message>
 
     @SuppressWarnings("unchecked" /* Ensured by generics and serialization approach. */)
     private RecordWithColumns<I, R> deserialize(I id, byte[] recordBytes) {
-        Class<R> recordType = spec.recordType();
+        var recordType = spec.recordType();
         try {
             @SuppressWarnings("unchecked" /* Checked by generic. */)
-            R record = (R) Messages
+            var record = (R) Messages
                     .builderFor(recordType)
                     .mergeFrom(recordBytes)
                     .buildPartial();
@@ -129,11 +129,11 @@ final class TenantRecords<I, R extends Message>
 
     @Override
     public Optional<RecordWithColumns<I, R>> get(I id) {
-        byte[] recordBytes = records.get(toStorageKey(id));
+        var recordBytes = records.get(toStorageKey(id));
         if (recordBytes == null) {
             return Optional.empty();
         }
-        RecordWithColumns<I, R> record = deserialize(id, recordBytes);
+        var record = deserialize(id, recordBytes);
         return Optional.of(record);
     }
 
@@ -152,8 +152,8 @@ final class TenantRecords<I, R extends Message>
      * <p>Filters and sorts the results based on the query spec.
      */
     Iterator<R> readAll(RecordQuery<I, R> query) {
-        FieldMask fieldMask = query.mask();
-        List<RecordWithColumns<I, R>> records = findRecords(query);
+        var fieldMask = query.mask();
+        var records = findRecords(query);
         return records
                 .stream()
                 .map(RecordWithColumns::record)
@@ -162,18 +162,18 @@ final class TenantRecords<I, R extends Message>
     }
 
     private List<RecordWithColumns<I, R>> findRecords(RecordQuery<I, R> query) {
-        Stream<RecordWithColumns<I, R>> stream = filterRecords(query.subject());
+        var stream = filterRecords(query.subject());
         return sortAndLimit(stream, query).collect(toList());
     }
 
     private static <I, R extends Message> Stream<RecordWithColumns<I, R>>
     sortAndLimit(Stream<RecordWithColumns<I, R>> data, RecordQuery<I, R> query) {
-        Stream<RecordWithColumns<I, R>> stream = data;
-        ImmutableList<SortBy<?, R>> sortingSpecs = query.sorting();
+        var stream = data;
+        var sortingSpecs = query.sorting();
         if (sortingSpecs.size() > 0) {
             stream = stream.sorted(accordingTo(sortingSpecs));
         }
-        Integer limit = query.limit();
+        var limit = query.limit();
         if (limit != null && limit > 0) {
             stream = stream.limit(limit);
         }
@@ -236,8 +236,8 @@ final class TenantRecords<I, R extends Message>
 
         private EntityRecord maskEntityRecord(EntityRecord input) {
             checkNotNull(input);
-            Any maskedState = maskAny(input.getState());
-            EntityRecord result = EntityRecord
+            var maskedState = maskAny(input.getState());
+            var result = EntityRecord
                     .newBuilder(input)
                     .setState(maskedState)
                     .build();
@@ -245,9 +245,9 @@ final class TenantRecords<I, R extends Message>
         }
 
         private Any maskAny(Any message) {
-            Message stateMessage = unpack(message);
-            Message maskedMessage = applyMask(fieldMask, stateMessage);
-            Any result = pack(maskedMessage);
+            var stateMessage = unpack(message);
+            var maskedMessage = applyMask(fieldMask, stateMessage);
+            var result = pack(maskedMessage);
             return result;
         }
     }

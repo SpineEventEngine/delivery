@@ -25,13 +25,13 @@ final class ArmyGreetPolicy extends AbstractCommander implements WithLogging {
 
     @Command
     Iterable<SayHello> handle(GreetAnArmy command) {
-        int howManySoldiers = command.getHowManySoldiers();
-        String armyId = Identifier.newUuid();
+        var howManySoldiers = command.getHowManySoldiers();
+        var armyId = Identifier.newUuid();
         logger().atInfo().log(() -> format(
                 "Greeting %d soldiers of the army `%s`", howManySoldiers, armyId));
         ImmutableList.Builder<SayHello> builder = ImmutableList.builder();
-        for (int soldierIndex = 0; soldierIndex < howManySoldiers; soldierIndex++) {
-            SayHello sayHello = newCommand(armyId, soldierIndex);
+        for (var soldierIndex = 0; soldierIndex < howManySoldiers; soldierIndex++) {
+            var sayHello = newCommand(armyId, soldierIndex);
             builder.add(sayHello);
         }
         return builder.build();

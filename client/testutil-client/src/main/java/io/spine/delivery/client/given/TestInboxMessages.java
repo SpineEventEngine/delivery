@@ -146,7 +146,7 @@ public final class TestInboxMessages {
      * @return an instance of the generated message
      */
     public static InboxMessage toDeliver(Timestamp whenReceived, ShardIndex shard) {
-        InboxMessage message =
+        var message =
                 newMessage(Identifier.newUuid(), TypeUrl.of(Something.class), TO_DELIVER);
         return message
                 .toBuilder()
@@ -175,15 +175,15 @@ public final class TestInboxMessages {
      * of the passed in command and sets the receiving time according to the passed value.
      */
     public static InboxMessage toDeliver(Command source, Timestamp whenReceived) {
-        InboxId inboxId = newInboxId("some-target", TypeUrl.of(Something.class));
-        InboxMessage message = messageReceivedAt(source, TO_DELIVER, inboxId, whenReceived);
+        var inboxId = newInboxId("some-target", TypeUrl.of(Something.class));
+        var message = messageReceivedAt(source, TO_DELIVER, inboxId, whenReceived);
         return message;
     }
 
     private static InboxMessage newMessage(Object target, TypeUrl type, InboxMessageStatus status) {
-        Command command = generateCommand(target);
-        InboxId inboxId = newInboxId(target, type);
-        InboxMessage message = messageReceivedAt(command, status, inboxId, Time.currentTime());
+        var command = generateCommand(target);
+        var inboxId = newInboxId(target, type);
+        var message = messageReceivedAt(command, status, inboxId, Time.currentTime());
         return message;
     }
 
@@ -191,12 +191,12 @@ public final class TestInboxMessages {
                                                   InboxMessageStatus status,
                                                   InboxId inboxId,
                                                   Timestamp whenReceived) {
-        ShardIndex index = DeliveryStrategy.newIndex(0, 1);
-        InboxMessageId id = InboxMessageMixin.generateIdWith(index);
-        InboxSignalId.Builder signalId = InboxSignalId.newBuilder()
+        var index = DeliveryStrategy.newIndex(0, 1);
+        var id = InboxMessageMixin.generateIdWith(index);
+        var signalId = InboxSignalId.newBuilder()
                 .setValue(command.getId()
                                  .value());
-        InboxMessage result = InboxMessage.newBuilder()
+        var result = InboxMessage.newBuilder()
                 .setId(id)
                 .setStatus(status)
                 .setCommand(command)
@@ -220,7 +220,7 @@ public final class TestInboxMessages {
     }
 
     private static Command generateCommand(Object targetId) {
-        DoSmth commandMessage = DoSmth.newBuilder()
+        var commandMessage = DoSmth.newBuilder()
                 .setId("some-id-" + targetId)
                 .setWhatToDo("Something!")
                 .build();

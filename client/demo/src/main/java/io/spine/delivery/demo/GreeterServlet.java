@@ -38,7 +38,7 @@ public final class GreeterServlet extends ContextAwareServlet {
     @SuppressWarnings("UnstableApiUsage" /* `MediaType` is available for around 10 years now. */)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         logger().atDebug().log(() -> "Handling a greeting.");
-        String personName = req.getParameter("name");
+        var personName = req.getParameter("name");
         if (Strings.isNullOrEmpty(personName)) {
             logger().atInfo().log(() -> "No person name specified.");
             resp.sendError(
@@ -48,17 +48,17 @@ public final class GreeterServlet extends ContextAwareServlet {
             return;
         }
         logger().atInfo().log(() -> format("Greeting person `%s`.", personName));
-        SayHello sayHello = SayHello.newBuilder()
+        var sayHello = SayHello.newBuilder()
                 .setName(personName)
                 .build();
-        CountDownLatch greeted = new CountDownLatch(1);
-        long startTime = System.currentTimeMillis();
-        ImmutableSet<Subscription> subscriptions = spineClient
+        var greeted = new CountDownLatch(1);
+        var startTime = System.currentTimeMillis();
+        var subscriptions = spineClient
                 .asGuest()
                 .command(sayHello)
                 .observe(SaidHello.class, e -> {
-                    long endTime = System.currentTimeMillis();
-                    String greeting = e.getGreeting();
+                    var endTime = System.currentTimeMillis();
+                    var greeting = e.getGreeting();
                     logger().atInfo().log(() -> format(
                             "Said `%s` to `%s` in %d ms.",
                             greeting, personName, (endTime - startTime)));

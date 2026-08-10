@@ -28,7 +28,7 @@ final class RequiresDockerCondition implements ExecutionCondition {
 
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
-        boolean noDocker = Boolean.parseBoolean(System.getenv(WINDOWS_CI_NO_DOCKER));
+        var noDocker = Boolean.parseBoolean(System.getenv(WINDOWS_CI_NO_DOCKER));
         if (noDocker) {
             return ConditionEvaluationResult.disabled(
                     "Disabled on a CI runner (`WINDOWS_CI_NO_DOCKER`) that cannot launch the "

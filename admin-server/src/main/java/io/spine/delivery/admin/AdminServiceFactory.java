@@ -49,7 +49,7 @@ final class AdminServiceFactory {
      */
     private static int port() {
         @SuppressWarnings("CallToSystemGetenv")
-        String port = System.getenv("PORT");
+        var port = System.getenv("PORT");
         if (isNullOrEmpty(port)) {
             return DEFAULT_PORT;
         }

@@ -38,7 +38,7 @@ final class GreatGreeter extends Aggregate<String, Greeter, Greeter.Builder> {
 
     @Assign
     SaidHello handle(SayHello c) throws PersonAlreadyGreeted {
-        String personName = c.getName();
+        var personName = c.getName();
         ProtocolStringList alreadyGreetedPeople = state().getNameList();
         if (alreadyGreetedPeople.contains(personName)) {
             throw PersonAlreadyGreeted.newBuilder()
@@ -53,7 +53,7 @@ final class GreatGreeter extends Aggregate<String, Greeter, Greeter.Builder> {
     }
 
     private static String randomGreeting(String name) {
-        String greeting = greetings.get(random.nextInt(greetings.size()));
+        var greeting = greetings.get(random.nextInt(greetings.size()));
         return String.format(greeting, name);
     }
 }

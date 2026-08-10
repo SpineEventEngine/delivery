@@ -85,7 +85,7 @@ final class AdminController {
      * and generating a new {@code UUID} for the event.
      */
     private static Event<String> toEvent(ShardInfoUpdate update) {
-        String uuid = randomUUID().toString();
+        var uuid = randomUUID().toString();
         return Event.of(toCompactJson(update))
                     .id(uuid);
     }

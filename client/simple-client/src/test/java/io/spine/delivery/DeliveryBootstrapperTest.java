@@ -24,16 +24,16 @@ final class DeliveryBootstrapperTest {
                 NullPointerException.class,
                 () -> DeliveryBootstrapper.newInstance().init()
         );
-        NullPointerTester tester = new NullPointerTester();
+        var tester = new NullPointerTester();
         tester.testAllPublicInstanceMethods(DeliveryBootstrapper.newInstance());
     }
 
     @Test
     @DisplayName("bootstrap `DeliveryBuilder` configuration")
     void bootstrapDeliveryConfig() {
-        DeliveryBuilder builder = DeliveryBootstrapper.newInstance()
-                .withChannel(NoOpChannel::new)
-                .init();
+        var builder = DeliveryBootstrapper.newInstance()
+                                          .withChannel(NoOpChannel::new)
+                                          .init();
         assertThat(builder.hasInboxStorage())
                 .isTrue();
         assertThat(builder.hasWorkRegistry())

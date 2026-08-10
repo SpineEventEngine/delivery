@@ -43,8 +43,8 @@ class ReportingStorageFactoryTest {
         factory.subscribe(TestEventId.class, TestEvent.class, sub);
         var storage = factory.createRecordStorage(newTestContext(), specForTestEvent());
 
-        TestEventId id = TestEventId.generate();
-        TestEvent record = testEventWith(id);
+        var id = TestEventId.generate();
+        var record = testEventWith(id);
 
         storage.write(id, record);
 
@@ -60,8 +60,8 @@ class ReportingStorageFactoryTest {
         var storage = factory.createRecordStorage(newTestContext(), specForTestEvent());
         factory.subscribe(TestEventId.class, TestEvent.class, sub);
 
-        TestEventId id = TestEventId.generate();
-        TestEvent record = testEventWith(id);
+        var id = TestEventId.generate();
+        var record = testEventWith(id);
 
         storage.write(id, record);
 
@@ -78,8 +78,8 @@ class ReportingStorageFactoryTest {
         // Subscription to another storage type.
         factory.subscribe(TestEventId.class, TestEvent.class, sub);
 
-        AnotherTestEventId id = AnotherTestEventId.generate();
-        AnotherTestEvent record = anotherTestEventWith(id);
+        var id = AnotherTestEventId.generate();
+        var record = anotherTestEventWith(id);
 
         storage.write(id, record);
 
@@ -95,8 +95,8 @@ class ReportingStorageFactoryTest {
         var storage = factory.createRecordStorage(
                 newTestContext(), specForTestEvent(), new StorageGroup("example.Journal"));
 
-        TestEventId id = TestEventId.generate();
-        TestEvent record = testEventWith(id);
+        var id = TestEventId.generate();
+        var record = testEventWith(id);
 
         storage.write(id, record);
 
@@ -111,8 +111,8 @@ class ReportingStorageFactoryTest {
         var storage = factory.createRecordStorage(newTestContext(), specForTestEvent());
         var subscription = factory.subscribe(TestEventId.class, TestEvent.class, sub);
 
-        TestEventId id = TestEventId.generate();
-        TestEvent record = testEventWith(id);
+        var id = TestEventId.generate();
+        var record = testEventWith(id);
 
         storage.write(id, record);
 
@@ -132,8 +132,8 @@ class ReportingStorageFactoryTest {
         factory.createRecordStorage(newTestContext(), specForTestEvent());
         var subscription = factory.subscribe(TestEventId.class, TestEvent.class, sub);
 
-        TestEventId id = TestEventId.generate();
-        TestEvent record = testEventWith(id);
+        var id = TestEventId.generate();
+        var record = testEventWith(id);
 
         subscription.cancel();
 
@@ -154,8 +154,8 @@ class ReportingStorageFactoryTest {
         factory.subscribe(TestEventId.class, TestEvent.class, firstSub);
         factory.subscribe(TestEventId.class, TestEvent.class, secondSub);
 
-        TestEventId id = TestEventId.generate();
-        TestEvent record = testEventWith(id);
+        var id = TestEventId.generate();
+        var record = testEventWith(id);
 
         storage.write(id, record);
 
@@ -175,8 +175,8 @@ class ReportingStorageFactoryTest {
         factory.subscribe(TestEventId.class, TestEvent.class, firstSub);
         var secondSubscription = factory.subscribe(TestEventId.class, TestEvent.class, secondSub);
 
-        TestEventId id = TestEventId.generate();
-        TestEvent record = testEventWith(id);
+        var id = TestEventId.generate();
+        var record = testEventWith(id);
 
         storage.write(id, record);
         secondSubscription.cancel();
@@ -197,8 +197,8 @@ class ReportingStorageFactoryTest {
         var storage1 = factory.createRecordStorage(newTestContext(), specForTestEvent());
         var storage2 = factory.createRecordStorage(newTestContext(), specForTestEvent());
 
-        TestEventId id = TestEventId.generate();
-        TestEvent record = testEventWith(id);
+        var id = TestEventId.generate();
+        var record = testEventWith(id);
 
         storage1.write(id, record);
         storage2.write(id, record);
@@ -216,8 +216,8 @@ class ReportingStorageFactoryTest {
         var storage1 = factory.createRecordStorage(newTestContext(), specForTestEvent());
         var storage2 = factory.createRecordStorage(newTestContext(), specForTestEvent());
 
-        TestEventId id = TestEventId.generate();
-        TestEvent record = testEventWith(id);
+        var id = TestEventId.generate();
+        var record = testEventWith(id);
 
         storage1.write(id, record);
         storage2.write(id, record);

@@ -33,7 +33,7 @@ final class PropagateTest {
     @Test
     @DisplayName("do not allow `null`s")
     void beNpeSafe() {
-        NullPointerTester tester = new NullPointerTester();
+        var tester = new NullPointerTester();
         tester.testAllPublicInstanceMethods(strategy);
         tester.testAllPublicConstructors(strategy.getClass());
         tester.testAllPublicStaticMethods(strategy.getClass());
@@ -42,7 +42,7 @@ final class PropagateTest {
     @Test
     @DisplayName("execute `VoidRequest`")
     void executeVoidRequest() {
-        RunCountingVoidRequest operation = newRunCountingVoidRequest();
+        var operation = newRunCountingVoidRequest();
         strategy.execute(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
@@ -51,7 +51,7 @@ final class PropagateTest {
     @Test
     @DisplayName("execute `RequestWithResult`")
     void executeRequestWithResult() {
-        RunCountingRequestWithResult operation = newRunCountingRequestWithResult();
+        var operation = newRunCountingRequestWithResult();
         strategy.evaluate(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);

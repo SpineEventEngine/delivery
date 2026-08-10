@@ -39,8 +39,8 @@ final class HttpBasicAuthCredentialsFactory {
      */
     @SuppressWarnings("CallToSystemGetenv")
     private static Optional<HttpBasicAuthCredentials> fromEnvVars() {
-        String username = System.getenv(A_USERNAME);
-        String password = System.getenv(A_PASSWORD);
+        var username = System.getenv(A_USERNAME);
+        var password = System.getenv(A_PASSWORD);
         if (isNullOrEmpty(username) || isNullOrEmpty(password)) {
             return Optional.empty();
         } else {

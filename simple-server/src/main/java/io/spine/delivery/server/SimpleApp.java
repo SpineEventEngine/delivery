@@ -171,10 +171,10 @@ public final class SimpleApp implements WithLogging {
      * a caller waiting for the port learns the cause instead of waiting for the timeout.
      */
     private void runServer() throws Exception {
-        ReportingStorageFactory factory = storageFactory();
-        InboxService inboxService = new InboxService(factory);
-        ShardService shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
-        AdminService adminService = new AdminService(factory);
+        var factory = storageFactory();
+        var inboxService = new InboxService(factory);
+        var shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
+        var adminService = new AdminService(factory);
         healthService = new HealthService()
                 .register(inboxService)
                 .register(shardService)
@@ -190,7 +190,7 @@ public final class SimpleApp implements WithLogging {
                 .build();
         logger().atInfo().log(() -> format("Starting gRPC server..."));
         logger().atInfo().log(() -> format("Configured inbound message size: `%d` bytes.", MESSAGE_SIZE));
-        Runtime runtime = Runtime.getRuntime();
+        var runtime = Runtime.getRuntime();
         logger().atInfo().log(() -> format("Available memory %dMb.", runtime.maxMemory() / BYTES_IN_MB));
         logger().atInfo().log(() -> format("Configured shard processing timeout: `%d` seconds.",
                     SHARD_PROCESSING_TIMEOUT.getSeconds()));
@@ -306,7 +306,7 @@ public final class SimpleApp implements WithLogging {
 
     private static int port() {
         @SuppressWarnings("CallToSystemGetenv")
-        String port = System.getenv("PORT");
+        var port = System.getenv("PORT");
         if (isNullOrEmpty(port)) {
             return DEFAULT_PORT;
         }
@@ -315,7 +315,7 @@ public final class SimpleApp implements WithLogging {
 
     private static int messageSize() {
         @SuppressWarnings("CallToSystemGetenv")
-        String size = System.getenv("MAX_INBOUND_MESSAGE_SIZE");
+        var size = System.getenv("MAX_INBOUND_MESSAGE_SIZE");
         if (isNullOrEmpty(size)) {
             return DEFAULT_MESSAGE_SIZE;
         }
@@ -324,7 +324,7 @@ public final class SimpleApp implements WithLogging {
 
     private static Duration shardProcessingTimeout() {
         @SuppressWarnings("CallToSystemGetenv")
-        String envVariable = System.getenv("SHARD_PROCESSING_TIMEOUT");
+        var envVariable = System.getenv("SHARD_PROCESSING_TIMEOUT");
         if (isNullOrEmpty(envVariable)) {
             return NO_SHARD_PROCESSING_TIMEOUT;
         }
@@ -350,13 +350,13 @@ public final class SimpleApp implements WithLogging {
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static boolean useRedis() {
-        Map<String, String> envs = System.getenv();
+        var envs = System.getenv();
         return envs.containsKey("USE_REDIS") && envs.containsKey("REDIS_HOST");
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static boolean useHazelcast() {
-        Map<String, String> envs = System.getenv();
+        var envs = System.getenv();
         return envs.containsKey("USE_HAZELCAST");
     }
 

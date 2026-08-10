@@ -70,8 +70,8 @@ abstract class DistributedTest {
                 .withNetwork(network)
                 .withEnv("USE_HAZELCAST", "true")
                 .withCreateContainerCmdModifier(m -> {
-                    HostConfig config = m.getHostConfig()
-                                         .withCapAdd(Capability.NET_ADMIN);
+                    var config = m.getHostConfig()
+                                  .withCapAdd(Capability.NET_ADMIN);
                     m.withHostConfig(config);
                 });
     }

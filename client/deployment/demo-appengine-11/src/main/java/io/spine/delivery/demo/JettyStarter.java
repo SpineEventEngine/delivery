@@ -55,7 +55,7 @@ public final class JettyStarter {
      * Starts Jetty server.
      */
     public static void main(String[] args) {
-        JettyStarter starter = newBuilder().build();
+        var starter = newBuilder().build();
         Runtime.getRuntime()
                .addShutdownHook(new Thread(starter::stop));
         starter.start();
@@ -93,7 +93,7 @@ public final class JettyStarter {
      * resource base set to the folder where the application was run from.
      */
     private static WebAppContext webAppContext() {
-        WebAppContext webapp = new WebAppContext();
+        var webapp = new WebAppContext();
         webapp.getSessionHandler()
               .setMaxInactiveInterval(DAY);
         webapp.setResourceBase(CURRENT_DIRECTORY);
@@ -167,7 +167,7 @@ public final class JettyStarter {
          */
         @SuppressWarnings("CallToSystemGetenv") // We want to use environment variables.
         private static int portFromEnvVariable() {
-            String port = System.getenv(PORT_ENV_NAME);
+            var port = System.getenv(PORT_ENV_NAME);
             port = isNullOrEmpty(port) ? "8080" : port;
             return parseInt(port);
         }

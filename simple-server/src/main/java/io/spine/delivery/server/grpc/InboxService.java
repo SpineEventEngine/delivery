@@ -58,8 +58,8 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     @Override
     public void writeOne(WriteMessage request, StreamObserver<Empty> observer) {
         log("`writeOne()`");
-        InboxMessageId id = request.messageId();
-        InboxMessage message = request.getMessage();
+        var id = request.messageId();
+        var message = request.getMessage();
         inboxStorage.write(id, message);
         completeCall(observer);
     }
@@ -67,7 +67,7 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     @Override
     public void writeMany(WriteMessages request, StreamObserver<Empty> observer) {
         log("`writeMany()`");
-        List<InboxMessage> messages = request.getMessageList();
+        var messages = request.getMessageList();
         inboxStorage.writeBatch(messages);
         completeCall(observer);
     }
@@ -82,7 +82,7 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     @Override
     public void removeMany(RemoveMessages request, StreamObserver<Empty> observer) {
         log("`removeMany()`");
-        ImmutableList<InboxMessageId> ids =
+        var ids =
                 request.getMessageList()
                        .stream()
                        .map(InboxMessage::getId)
@@ -94,7 +94,7 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     @Override
     public void findOne(InboxMessageId id, StreamObserver<OptionalInboxMessage> observer) {
         log("`findOne()`");
-        Optional<InboxMessage> result = inboxStorage.read(id);
+        var result = inboxStorage.read(id);
         writeOptionalMessage(observer, result);
     }
 
@@ -106,15 +106,15 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
                      .equals(sinceWhen)) {
             sinceWhen = null;
         }
-        int pageSize = request.getPageSize();
-        ShardIndex shard = request.getShard();
-        ImmutableList<InboxMessage> messages =
+        var pageSize = request.getPageSize();
+        var shard = request.getShard();
+        var messages =
                 inboxStorage.readAll(shard, sinceWhen, pageSize);
-        PageOfMessages.Builder responseBuilder =
+        var responseBuilder =
                 PageOfMessages.newBuilder()
                         .addAllMessage(messages);
         log(shard, messages);
-        PageOfMessages result = responseBuilder.build();
+        var result = responseBuilder.build();
         observer.onNext(result);
         observer.onCompleted();
     }
@@ -122,7 +122,7 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     @Override
     public void newestMessageToDeliver(ShardIndex request,
                                        StreamObserver<OptionalInboxMessage> observer) {
-        Optional<InboxMessage> message = inboxStorage.newestMessageToDeliver(request);
+        var message = inboxStorage.newestMessageToDeliver(request);
         writeOptionalMessage(observer, message);
     }
 

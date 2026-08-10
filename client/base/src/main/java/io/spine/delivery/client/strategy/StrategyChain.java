@@ -55,7 +55,7 @@ public final class StrategyChain implements RequestExecutionStrategy {
     public void execute(VoidRequest request) throws ExecutionFailedException {
         checkNotNull(request);
         List<RuntimeException> occurredExceptions = new ArrayList<>();
-        for (RequestExecutionStrategy strategy : strategies) {
+        for (var strategy : strategies) {
             try {
                 strategy.execute(request);
                 return;
@@ -78,7 +78,7 @@ public final class StrategyChain implements RequestExecutionStrategy {
     public <R> R evaluate(RequestWithResult<R> request) throws ExecutionFailedException {
         checkNotNull(request);
         List<RuntimeException> occurredExceptions = new ArrayList<>();
-        for (RequestExecutionStrategy strategy : strategies) {
+        for (var strategy : strategies) {
             try {
                 return strategy.evaluate(request);
             } catch (ExecutionFailedException e) {

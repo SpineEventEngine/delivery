@@ -59,7 +59,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     @Override
     public void pickShard(PickUpShard request, StreamObserver<DeliveryPickUpOutcome> response) {
         var shard = request.getShard();
-        int index = shard.getIndex();
+        var index = shard.getIndex();
         var worker = request.getWorker();
         try {
             var session = registry.pickUp(shard, worker);

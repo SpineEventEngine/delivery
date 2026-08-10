@@ -79,10 +79,10 @@ public abstract class RecordStorageContractTest {
         @Test
         @DisplayName("when calling `index(RecordQuery query)`")
         void indexQuery() {
-            ProjectId someId = ProjectId.newBuilder()
+            var someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
                     .build();
-            RecordQuery<ProjectId, Project> query =
+            var query =
                     Project.query()
                            .id()
                            .is(someId)
@@ -95,10 +95,10 @@ public abstract class RecordStorageContractTest {
         @Test
         @DisplayName("when calling `readAllRecords`")
         void readAllRecords() {
-            ProjectId someId = ProjectId.newBuilder()
+            var someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
                     .build();
-            RecordQuery<ProjectId, Project> query =
+            var query =
                     Project.query()
                            .id()
                            .is(someId)
@@ -111,7 +111,7 @@ public abstract class RecordStorageContractTest {
         @Test
         @DisplayName("when calling `deleteRecord`")
         void deleteRecord() {
-            ProjectId someId = ProjectId.newBuilder()
+            var someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
                     .build();
             assertThat(storage.deleteRecord(someId))
@@ -121,10 +121,10 @@ public abstract class RecordStorageContractTest {
         @Test
         @DisplayName("when calling `write`")
         void write() {
-            ProjectId someId = ProjectId.newBuilder()
+            var someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
                     .build();
-            Project someRecord = Project.newBuilder()
+            var someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
             assertDoesNotThrow(() -> storage.write(someId, someRecord));
@@ -133,10 +133,10 @@ public abstract class RecordStorageContractTest {
         @Test
         @DisplayName("when calling `writeAllRecords`")
         void writeAll() {
-            ProjectId someId = ProjectId.newBuilder()
+            var someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
                     .build();
-            Project someRecord = Project.newBuilder()
+            var someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
             assertDoesNotThrow(() ->
@@ -182,10 +182,10 @@ public abstract class RecordStorageContractTest {
         @Test
         @DisplayName("not return record with non-matching query")
         void indexQuery() {
-            ProjectId someId = ProjectId.newBuilder()
+            var someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
                     .build();
-            RecordQuery<ProjectId, Project> query =
+            var query =
                     Project.query()
                            .id()
                            .is(someId)
@@ -198,7 +198,7 @@ public abstract class RecordStorageContractTest {
         @Test
         @DisplayName("return record with matching ID query")
         void idQuery() {
-            RecordQuery<ProjectId, Project> query =
+            var query =
                     Project.query()
                            .id()
                            .is(existingProjectId)
@@ -211,7 +211,7 @@ public abstract class RecordStorageContractTest {
         @Test
         @DisplayName("return record with matching column query")
         void columnQuery() {
-            RecordQuery<ProjectId, Project> query =
+            var query =
                     Project.query()
                            .name()
                            .is(existingProject.getName())
@@ -224,10 +224,10 @@ public abstract class RecordStorageContractTest {
         @Test
         @DisplayName("read existing records")
         void readAllRecords() {
-            ProjectId someId = ProjectId.newBuilder()
+            var someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
                     .build();
-            RecordQuery<ProjectId, Project> query =
+            var query =
                     Project.query()
                            .id()
                            .in(someId, existingProjectId)
@@ -247,15 +247,15 @@ public abstract class RecordStorageContractTest {
         @Test
         @DisplayName("overwrite existing record")
         void write() {
-            ProjectId someId = ProjectId.newBuilder()
+            var someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
                     .build();
-            Project someRecord = Project.newBuilder()
+            var someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
             storage.write(existingProjectId, someRecord);
-            Project overwritten = storage.read(existingProjectId)
-                                         .orElseThrow();
+            var overwritten = storage.read(existingProjectId)
+                                     .orElseThrow();
             assertThat(overwritten)
                     .isEqualTo(someRecord);
         }
@@ -263,17 +263,17 @@ public abstract class RecordStorageContractTest {
         @Test
         @DisplayName("overwrite existing records while writing in batch")
         void writeAll() {
-            ProjectId someId = ProjectId.newBuilder()
+            var someId = ProjectId.newBuilder()
                     .setId(Identifier.newUuid())
                     .build();
-            Project someRecord = Project.newBuilder()
+            var someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
             storage.writeAllRecords(ImmutableList.of(
                     RecordWithColumns.of(existingProjectId, someRecord))
             );
-            Project overwritten = storage.read(existingProjectId)
-                                         .orElseThrow();
+            var overwritten = storage.read(existingProjectId)
+                                     .orElseThrow();
             assertThat(overwritten)
                     .isEqualTo(someRecord);
         }

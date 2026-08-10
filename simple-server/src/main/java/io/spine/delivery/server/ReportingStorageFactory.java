@@ -55,7 +55,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
     createRecordStorage(ContextSpec context,
                         RecordSpec<I, R> spec,
                         @Nullable StorageGroup group) {
-        TypeSpec<I, R> typeSpec = TypeSpec.of(spec, group);
+        var typeSpec = TypeSpec.of(spec, group);
         var storage = delegate.createRecordStorage(context, spec, group);
         var reportingStorage = new ReportingRecordStorage<>(context, storage);
         remember(typeSpec, reportingStorage);
@@ -100,7 +100,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
      */
     public <I, R extends Message> StorageSubscription
     subscribe(Class<I> idType, Class<R> recordType, StorageSubscriber<I, R> subscriber) {
-        TypeSpec<I, R> typeSpec = new TypeSpec<>(idType, recordType, null);
+        var typeSpec = new TypeSpec<I, R>(idType, recordType, null);
         var subscriptions = subscribeOnExistentStorages(typeSpec, subscriber);
         return remember(new CompositeSubscription<>(typeSpec, subscriber, subscriptions));
     }
@@ -113,7 +113,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
     subscribeOnExistentStorages(TypeSpec<I, R> spec, StorageSubscriber<I, R> subscriber) {
         Set<StorageSubscription> subscriptions = new HashSet<>();
         storages(spec).forEach(storage -> {
-            ReportingRecordStorage<I, R> typedStorage = (ReportingRecordStorage<I, R>) storage;
+            var typedStorage = (ReportingRecordStorage<I, R>) storage;
             subscriptions.add(typedStorage.subscribe(subscriber));
         });
         return subscriptions;
@@ -125,7 +125,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
      */
     private <I, R extends Message> StorageSubscription
     remember(CompositeSubscription<I, R> subscription) {
-        String id = randomUUID().toString();
+        var id = randomUUID().toString();
         this.subscriptions.put(id, subscription);
         StorageSubscription storageSubscription = () -> Optional
                 .ofNullable(this.subscriptions.remove(id))
@@ -266,7 +266,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
             if (!(o instanceof TypeSpec)) {
                 return false;
             }
-            TypeSpec<?, ?> typeSpec = (TypeSpec<?, ?>) o;
+            var typeSpec = (TypeSpec<?, ?>) o;
             return idType.equals(typeSpec.idType)
                     && recordType.equals(typeSpec.recordType)
                     && Objects.equals(group, typeSpec.group);

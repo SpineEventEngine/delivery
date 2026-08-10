@@ -57,8 +57,8 @@ public final class WorkRegistry implements ShardedWorkRegistry {
     }
 
     private static WorkerId workerId(NodeId nodeId) {
-        String threadId = String.valueOf(Thread.currentThread()
-                                               .getId());
+        var threadId = String.valueOf(Thread.currentThread()
+                                            .getId());
         return WorkerId.newBuilder()
                 .setNodeId(nodeId)
                 .setValue(threadId)
@@ -66,8 +66,8 @@ public final class WorkRegistry implements ShardedWorkRegistry {
     }
 
     private void releaseShard(ShardSessionRecord session) {
-        WorkerId worker = session.getWorker();
-        ShardIndex shard = session.getIndex();
+        var worker = session.getWorker();
+        var shard = session.getIndex();
         client.get()
               .releaseShard(shard, worker);
     }
@@ -75,7 +75,7 @@ public final class WorkRegistry implements ShardedWorkRegistry {
     @Override
     public Iterable<ShardIndex> releaseExpiredSessions(Duration inactivityPeriod) {
         checkNotDefaultArg(inactivityPeriod);
-        ExpiredSessionsReleased sessionsReleased =
+        var sessionsReleased =
                 client.get()
                       .releaseExpiredSessions(inactivityPeriod);
         return sessionsReleased

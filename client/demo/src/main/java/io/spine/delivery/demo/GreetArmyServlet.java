@@ -35,16 +35,16 @@ public final class GreetArmyServlet extends ContextAwareServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         logger().atDebug().log(() -> "Starting to greet an army.");
 
-        @SuppressWarnings("MagicNumber") int howManySoldiers = 1000;
+        @SuppressWarnings("MagicNumber") var howManySoldiers = 1000;
         logger().atInfo().log(() -> format("Today's army count is %d.", howManySoldiers));
 
-        GreetAnArmy greetAnArmy = GreetAnArmy.newBuilder()
+        var greetAnArmy = GreetAnArmy.newBuilder()
                 .setHowManySoldiers(howManySoldiers)
                 .build();
 
-        long startMillis = System.currentTimeMillis();
-        CountDownLatch greeted = new CountDownLatch(howManySoldiers);
-        Subscription subscription = spineClient
+        var startMillis = System.currentTimeMillis();
+        var greeted = new CountDownLatch(howManySoldiers);
+        var subscription = spineClient
                 .asGuest()
                 .subscribeToEvent(SaidHello.class)
                 .onStreamingError(error -> logger()
@@ -52,7 +52,7 @@ public final class GreetArmyServlet extends ContextAwareServlet {
                         .withCause(error)
                         .log(() -> "gRPC streaming error occurred while observing greetings."))
                 .observe(e -> {
-                    String greeting = e.getGreeting();
+                    var greeting = e.getGreeting();
                     logger().atInfo().log(() -> format(
                             "One of the soldiers was greeted: `%s`", greeting));
                     greeted.countDown();
@@ -84,7 +84,7 @@ public final class GreetArmyServlet extends ContextAwareServlet {
                     e, "Hanged while waiting for the army to be greeted greeting :-("
             );
         }
-        long durationMillis = System.currentTimeMillis() - startMillis;
+        var durationMillis = System.currentTimeMillis() - startMillis;
         logger().atDebug().log(() -> "Unsubscribing from the greeting updates.");
         spineClient.subscriptions()
                    .cancel(subscription);
@@ -95,9 +95,9 @@ public final class GreetArmyServlet extends ContextAwareServlet {
     }
 
     private void logPerformance(int howManySoldiers, long startMillis) {
-        long endMillis = System.currentTimeMillis();
-        long durationMillis = endMillis - startMillis;
-        double perSoldier = durationMillis / (double) howManySoldiers;
+        var endMillis = System.currentTimeMillis();
+        var durationMillis = endMillis - startMillis;
+        var perSoldier = durationMillis / (double) howManySoldiers;
         logger().atInfo().log(() -> format("Army was greeted for %d ms. That's about %f ms per soldier.",
                     durationMillis, perSoldier));
     }

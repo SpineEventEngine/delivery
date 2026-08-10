@@ -42,8 +42,8 @@ public final class ShardUpdateSubscribersHolder implements WithLogging {
             new ConcurrentHashMap<>();
 
     public void addSubscriber(ServerCallStreamObserver<ShardInfoUpdate> subscriber) {
-        String uuid = UUID.randomUUID()
-                          .toString();
+        var uuid = UUID.randomUUID()
+                       .toString();
         subscribers.put(uuid, subscriber);
         logger().atDebug().log(() -> format("Added new subscriber [%s], current number of subscribers = %d",
                      uuid, subscribers.size()));

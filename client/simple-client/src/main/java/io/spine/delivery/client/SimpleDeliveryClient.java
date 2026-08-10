@@ -95,7 +95,7 @@ public final class SimpleDeliveryClient
     public static SimpleDeliveryClient create(String host, int port, RequestExecutionStrategy strategy) {
         checkNotEmptyOrBlank(host);
         checkPositive(port);
-        ManagedChannel channel = ManagedChannelBuilder
+        var channel = ManagedChannelBuilder
                 .forAddress(host, port)
                 .usePlaintext()
                 .build();
@@ -132,7 +132,7 @@ public final class SimpleDeliveryClient
     @Override
     public void writeMessage(InboxMessage message) throws ExecutionFailedException {
         checkNotDefaultArg(message);
-        WriteMessage writeMessage = WriteMessage.newBuilder()
+        var writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
                 .build();
         requestExecutionStrategy.evaluate(() -> inboxService.writeOne(writeMessage));
@@ -152,7 +152,7 @@ public final class SimpleDeliveryClient
             throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotNull(messages);
-        WriteMessages writeMessages = WriteMessages.newBuilder()
+        var writeMessages = WriteMessages.newBuilder()
                 .setShard(shard)
                 .addAllMessage(messages)
                 .build();
@@ -171,7 +171,7 @@ public final class SimpleDeliveryClient
     @Override
     public void removeMessage(InboxMessage message) throws ExecutionFailedException {
         checkNotDefaultArg(message);
-        RemoveMessage removeMessage = RemoveMessage.newBuilder()
+        var removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
                 .build();
         requestExecutionStrategy.evaluate(() -> inboxService.removeOne(removeMessage));
@@ -191,7 +191,7 @@ public final class SimpleDeliveryClient
             throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotNull(messages);
-        RemoveMessages removeMessages = RemoveMessages.newBuilder()
+        var removeMessages = RemoveMessages.newBuilder()
                 .setShard(shard)
                 .addAllMessage(messages)
                 .build();
@@ -212,21 +212,21 @@ public final class SimpleDeliveryClient
             throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
-        PickUpShard pickUpShard = PickUpShard.newBuilder()
+        var pickUpShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
                 .build();
         try {
-            DeliveryPickUpOutcome outcome = requestExecutionStrategy
+            var outcome = requestExecutionStrategy
                     .evaluate(() -> shardService.pickShard(pickUpShard));
             if (outcome.hasPickedUp()) {
                 return pickedUp(fromEvent(outcome.getPickedUp()));
             } else {
-                Rejections.ShardAlreadyPickedUp rejection = outcome.getAlreadyPickedUp();
+                var rejection = outcome.getAlreadyPickedUp();
                 return alreadyPicked(rejection.getWorker(), rejection.getWhenPicked());
             }
         } catch (ExecutionFailedException e) {
-            ImmutableList<RuntimeException> occurredExceptions = e.causes();
+            var occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
             logger().atTrace()
                     .log(() -> format("[SimpleClient] Unable to pick up shard `%s`: %s.",
@@ -248,7 +248,7 @@ public final class SimpleDeliveryClient
     public void releaseShard(ShardIndex shard, WorkerId worker) throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
-        ReleaseShard releaseShard = ReleaseShard.newBuilder()
+        var releaseShard = ReleaseShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
                 .build();
@@ -268,14 +268,14 @@ public final class SimpleDeliveryClient
     public ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod)
             throws ExecutionFailedException {
         checkNotDefaultArg(inactivityPeriod);
-        ReleaseExpiredSessions command = ReleaseExpiredSessions.newBuilder()
+        var command = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(inactivityPeriod)
                 .build();
         logger().atTrace().log(
                 () -> "[SimpleClient] Posting `ReleaseExpiredSessions` command" +
                         " and waiting for a response event `ExpiredSessionsReleased`."
         );
-        ExpiredSessionsReleased sessionsReleased =
+        var sessionsReleased =
                 requestExecutionStrategy.evaluate(() -> shardService.releaseSessions(command));
         return sessionsReleased;
     }
@@ -293,14 +293,14 @@ public final class SimpleDeliveryClient
     public Optional<InboxMessage> find(InboxMessageId messageId) throws ExecutionFailedException {
         checkNotDefaultArg(messageId);
 
-        OptionalInboxMessage result =
+        var result =
                 requestExecutionStrategy.evaluate(() -> inboxService.findOne(messageId));
         return asOptional(result);
     }
 
     @NonNull
     private static Optional<InboxMessage> asOptional(OptionalInboxMessage result) {
-        InboxMessage message = result.getMessage();
+        var message = result.getMessage();
         if (isDefault(message)) {
             return Optional.empty();
         } else {
@@ -341,17 +341,17 @@ public final class SimpleDeliveryClient
             throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkPositive(pageSize);
-        ReadMessagesSinceTime.Builder queryBuilder = ReadMessagesSinceTime.newBuilder()
+        var queryBuilder = ReadMessagesSinceTime.newBuilder()
                 .setShard(shard)
                 .setPageSize(pageSize);
         if (sinceWhen != null) {
             queryBuilder.setSinceWhen(sinceWhen);
         }
-        ReadMessagesSinceTime query = queryBuilder.build();
+        var query = queryBuilder.build();
 
-        PageOfMessages page =
+        var page =
                 requestExecutionStrategy.evaluate(() -> inboxService.findManyInShard(query));
-        ImmutableList<InboxMessage> result =
+        var result =
                 page.getMessageList()
                     .stream()
                     .sorted(InboxMessageComparator.chronologically)
@@ -371,7 +371,7 @@ public final class SimpleDeliveryClient
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard)
             throws ExecutionFailedException {
-        OptionalInboxMessage message = requestExecutionStrategy
+        var message = requestExecutionStrategy
                 .evaluate(() -> inboxService.newestMessageToDeliver(shard));
         return asOptional(message);
     }

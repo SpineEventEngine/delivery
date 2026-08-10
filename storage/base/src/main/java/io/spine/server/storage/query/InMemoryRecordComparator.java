@@ -67,10 +67,10 @@ public final class InMemoryRecordComparator<I, R extends Message>
         checkArgument(!sortByList.isEmpty(),
                       "`RecordComparator` requires at least one `SortBy` instance.");
         Comparator<RecordWithColumns<I, R>> result = null;
-        for (SortBy<?, R> sortBy : sortByList) {
+        for (var sortBy : sortByList) {
             Comparator<RecordWithColumns<I, R>> thisComparator;
-            Direction direction = sortBy.direction();
-            RecordColumn<R, ?> column = sortBy.column();
+            var direction = sortBy.direction();
+            var column = sortBy.column();
             thisComparator = direction == Direction.ASC
                              ? ascending(column)
                              : descending(column);

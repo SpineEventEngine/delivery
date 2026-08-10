@@ -85,7 +85,7 @@ abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
      * <p>For load-testing purposes only.
      */
     private static ManagedChannel deliveryServerChannel() {
-        String server = "dns:///" + GCE_SERVER + ":8484";
+        var server = "dns:///" + GCE_SERVER + ":8484";
         // Or use this one for local runs.
 //        String server = "127.0.0.1:8484";
         return ManagedChannelBuilder
@@ -96,7 +96,7 @@ abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
     }
 
     private static Client inProcessClient() {
-        ManagedChannel channel = InProcessChannelBuilder
+        var channel = InProcessChannelBuilder
                 .forName(SERVER_NAME)
                 .executor(limitedCachingExecutor)
                 .build();
@@ -109,10 +109,10 @@ abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
      * Configures and starts the {@link GreeterContext demo} server.
      */
     private static Server startServer() {
-        BoundedContextBuilder demoContext = GreeterContext.builder();
-        Server server = Server.inProcess(SERVER_NAME)
-                              .add(demoContext)
-                              .build();
+        var demoContext = GreeterContext.builder();
+        var server = Server.inProcess(SERVER_NAME)
+                           .add(demoContext)
+                           .build();
         try {
             server.start();
         } catch (IOException e) {
@@ -127,10 +127,10 @@ abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
     private static ShardedWorkRegistry configureEnv() {
         logger.atDebug()
               .log(() -> "Configuring `ServerEnvironment`.");
-        DeliveryBuilder deliveryBuilder = DeliveryBootstrapper.newInstance()
-                .withChannel(ofInstance(channel))
-                .init();
-        Delivery delivery = deliveryBuilder
+        var deliveryBuilder = DeliveryBootstrapper.newInstance()
+                                                  .withChannel(ofInstance(channel))
+                                                  .init();
+        var delivery = deliveryBuilder
                 .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
                 .build();
         delivery.subscribe(new AsyncLocalObserver(observerExecutor));
@@ -158,15 +158,15 @@ abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
         @SuppressWarnings("FutureReturnValueIgnored")
         @Override
         public void onMessage(InboxMessage update) {
-            Delivery delivery = ServerEnvironment.instance()
-                    .delivery();
-            ShardIndex index = update.shardIndex();
+            var delivery = ServerEnvironment.instance()
+                                            .delivery();
+            var index = update.shardIndex();
             executor.submit(() -> runDelivery(update, delivery, index));
         }
 
         @SuppressWarnings("HandleMethodResult")
         private static void runDelivery(InboxMessage message, Delivery delivery, ShardIndex index) {
-            TenantId tenant = message.tenant();
+            var tenant = message.tenant();
             TenantAwareRunner.with(tenant)
                              .run(() -> delivery.deliverMessagesFrom(index));
         }

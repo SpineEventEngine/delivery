@@ -48,8 +48,8 @@ public final class Launcher implements WithLogging {
      *         be passed to both Delivery and Admin server as is.
      */
     private void launch(String[] args) throws InterruptedException {
-        ThreadFactory threadFactory = Executors.defaultThreadFactory();
-        Thread delivery = delivery(threadFactory, args);
+        var threadFactory = Executors.defaultThreadFactory();
+        var delivery = delivery(threadFactory, args);
         delivery.start();
         if (useAdminServer()) {
             logger().atInfo().log(() -> "Starting Admin Server.");
@@ -70,7 +70,7 @@ public final class Launcher implements WithLogging {
      */
     @VisibleForTesting
     static Thread delivery(ThreadFactory threads, String[] args) {
-        Thread delivery = threads.newThread(() -> SimpleApp.main(args));
+        var delivery = threads.newThread(() -> SimpleApp.main(args));
         delivery.setName("delivery");
         return delivery;
     }
@@ -88,7 +88,7 @@ public final class Launcher implements WithLogging {
      */
     @VisibleForTesting
     static Thread admin(ThreadFactory threads, String[] args) {
-        Thread adminServer = threads.newThread(() -> AdminServer.main(args));
+        var adminServer = threads.newThread(() -> AdminServer.main(args));
         adminServer.setDaemon(true);
         adminServer.setName("admin");
         return adminServer;

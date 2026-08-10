@@ -75,16 +75,16 @@ public final class AdminServiceTestEnv {
      * <p>All other necessary parameters are predefined.
      */
     public static WriteMessage testMessage(ShardIndex shardIndex) {
-        String randomTestString = UUID
+        var randomTestString = UUID
                 .randomUUID()
                 .toString();
-        TestEventId testEventId = testEventId(randomTestString);
-        InboxId inboxId = InboxId
+        var testEventId = testEventId(randomTestString);
+        var inboxId = InboxId
                 .newBuilder()
                 .setEntityId(entityId(testEventId))
                 .setTypeUrl("type.spine.io/spine.delivery.TestEvent")
                 .build();
-        InboxMessage inboxMessage = InboxMessage
+        var inboxMessage = InboxMessage
                 .newBuilder()
                 .setId(inboxMessageId(shardIndex))
                 .setInboxId(inboxId)
@@ -127,14 +127,14 @@ public final class AdminServiceTestEnv {
      * Creates a new {@code PickUpShard} request for the given {@code index}.
      */
     public static PickUpShard pickUpShard(ShardIndex index) {
-        String uuid = UUID
+        var uuid = UUID
                 .randomUUID()
                 .toString();
-        NodeId nodeId = NodeId
+        var nodeId = NodeId
                 .newBuilder()
                 .setValue(uuid)
                 .build();
-        WorkerId workerId = WorkerId
+        var workerId = WorkerId
                 .newBuilder()
                 .setValue(uuid)
                 .setNodeId(nodeId)
@@ -233,20 +233,20 @@ public final class AdminServiceTestEnv {
      * Creates a new {@code Event} with the given {@code id}.
      */
     private static Event event(TestEventId id) {
-        TestEvent eventMessage = TestEvent
+        var eventMessage = TestEvent
                 .newBuilder()
                 .setId(id)
                 .build();
-        EventId eventId = EventId
+        var eventId = EventId
                 .newBuilder()
                 .setValue(id.getUuid())
                 .build();
-        Version version = Version
+        var version = Version
                 .newBuilder()
                 .setNumber(1)
                 .setTimestamp(Time.currentTime())
                 .build();
-        EventContext eventContext = EventContext
+        var eventContext = EventContext
                 .newBuilder()
                 .setTimestamp(version.getTimestamp())
                 .setVersion(version)
@@ -274,7 +274,7 @@ public final class AdminServiceTestEnv {
      * Creates a new {@code InboxMessageId} with the given {@code index} and a new random UUID.
      */
     private static InboxMessageId inboxMessageId(ShardIndex index) {
-        String uuid = UUID
+        var uuid = UUID
                 .randomUUID()
                 .toString();
         return InboxMessageId

@@ -68,8 +68,8 @@ public final class RecordQueryMatcherTestEnv {
      * A sample {@link Any} value that can be stored in the {@link #anyColumn() any column}.
      */
     public static Any anyValue() {
-        Project someMessage = Sample.messageOfType(Project.class);
-        Any value = AnyPacker.pack(someMessage);
+        var someMessage = Sample.messageOfType(Project.class);
+        var value = AnyPacker.pack(someMessage);
         return value;
     }
 
