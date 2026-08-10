@@ -5,6 +5,7 @@
  */
 
 import io.spine.dependency.lib.Grpc
+import io.spine.dependency.test.Kotest
 
 dependencies {
     // `ManagedChannel` appears in the public API of `AbstractDeliveryBootstrapper`.
@@ -12,6 +13,7 @@ dependencies {
     // Command, event, and rejection types of the Delivery server appear in
     // the public API of the client contracts.
     api(project(":model"))
+    testImplementation(Kotest.assertions)
 }
 
 apply {

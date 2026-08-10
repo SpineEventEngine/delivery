@@ -7,16 +7,13 @@
 package io.spine.delivery.client.strategy;
 
 import com.google.common.collect.ImmutableList;
-import io.spine.delivery.client.ExecutionFailedException;
 
 /**
  * Summary of the {@code VoidRequest} failure.
  */
-public final class FailedVoidRequest {
+public final class FailedVoidRequest extends AbstractFailedRequest<Action> {
 
     private final Runnable retry;
-
-    private final ImmutableList<RuntimeException> allExceptions;
 
     /**
      * Creates a new {@code FailedVoidRequest} with the given {@code retry} function and
@@ -28,40 +25,15 @@ public final class FailedVoidRequest {
      *         previously occurred exceptions.
      */
     FailedVoidRequest(Runnable retry, ImmutableList<RuntimeException> allExceptions) {
-        FailedRequests.checkHasExceptions(allExceptions);
+        super(allExceptions);
         this.retry = retry;
-        this.allExceptions = allExceptions;
     }
 
     /**
      * Returns a predefined {@code Action} that retries failed {@code VoidRequest}.
      */
+    @Override
     public Action retry() {
         return retry::run;
-    }
-
-    /**
-     * Returns a predefined {@code Action} that propagates current and previously occurred
-     * exceptions as an {@code ExecutionFailedException}.
-     */
-    public Action propagate() {
-        throw new ExecutionFailedException(allExceptions);
-    }
-
-    /**
-     * Returns the last occurred exception.
-     */
-    public Exception lastException() {
-        return allExceptions.get(allExceptions.size() - 1);
-    }
-
-    /**
-     * Returns a list of all occurred exceptions.
-     *
-     * <p>The exception thrown first will be the first element in the list. The last element in
-     * the list is the exception that caused this failure.
-     */
-    public ImmutableList<RuntimeException> allExceptions() {
-        return allExceptions;
     }
 }
