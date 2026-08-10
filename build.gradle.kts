@@ -16,6 +16,7 @@ import io.spine.dependency.lib.GoogleApis
 import io.spine.dependency.lib.Grpc
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.Jackson
+import io.spine.dependency.lib.JacksonV2
 import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.lib.PerfMark
 import io.spine.dependency.lib.Slf4J
@@ -70,6 +71,10 @@ buildscript {
                 jackson.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.Jackson.DataType.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.Jackson.DataFormat.forceArtifacts(project, cfg, rs)
+                io.spine.dependency.lib.JacksonV2.Core.forceArtifacts(project, cfg, rs)
+                io.spine.dependency.lib.JacksonV2.DataType.forceArtifacts(project, cfg, rs)
+                io.spine.dependency.lib.JacksonV2.DataFormat.forceArtifacts(project, cfg, rs)
+                io.spine.dependency.lib.JacksonV2.Module.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.Grpc.forceArtifacts(project, cfg, rs)
                 force(
                     jackson.annotations,
@@ -536,13 +541,19 @@ fun Project.forceConfigurations() {
 
         all {
             resolutionStrategy {
+                val cfg = this@all
+                val rs = this@resolutionStrategy
                 /* The gRPC artifacts are version-less and get their versions from the
                    gRPC BOM. We force the whole set via `forceArtifacts()` and pin the BOM
                    to keep a single gRPC version across modules and the compiler plugins. */
-                Grpc.forceArtifacts(project, this@all, this@resolutionStrategy)
-                Jackson.forceArtifacts(project, this@all, this@resolutionStrategy)
-                Jackson.DataType.forceArtifacts(project, this@all, this@resolutionStrategy)
-                Jackson.DataFormat.forceArtifacts(project, this@all, this@resolutionStrategy)
+                Grpc.forceArtifacts(project, cfg, rs)
+                Jackson.forceArtifacts(project, cfg, rs)
+                Jackson.DataType.forceArtifacts(project, cfg, rs)
+                Jackson.DataFormat.forceArtifacts(project, cfg, rs)
+                JacksonV2.Core.forceArtifacts(project, cfg, rs)
+                JacksonV2.DataType.forceArtifacts(project, cfg, rs)
+                JacksonV2.DataFormat.forceArtifacts(project, cfg, rs)
+                JacksonV2.Module.forceArtifacts(project, cfg, rs)
                 // The `google-cloud-*` libraries pull additional gRPC artifacts
                 // (`grpc-alts`, `grpc-xds`, `grpc-grpclb`, `grpc-services`, etc.) at an
                 // older version. Align the `io.grpc` group with the version defined by the
@@ -560,12 +571,15 @@ fun Project.forceConfigurations() {
                     JUnit.bom,
                     Jackson.annotations,
                     Jackson.bom,
+                    JacksonV2.bom,
                     Grpc.ProtocPlugin.artifact,
                     Grpc.bom,
                     Guava.lib,
+                    Guava.testLib,
                     // The `proto-google-cloud-*` libraries bring an older `failureaccess`
                     // than the one used by the forced Guava version above.
                     "com.google.guava:failureaccess:1.0.3",
+                    JUnit.legacy,
 
                     Base.lib,
                     Base.annotations,
@@ -574,6 +588,7 @@ fun Project.forceConfigurations() {
                     Reflect.lib,
                     Validation.runtime,
                     Time.lib,
+                    Time.testLib,
                     Time.javaExtensions,
                     Logging.lib,
                     Logging.libJvm,

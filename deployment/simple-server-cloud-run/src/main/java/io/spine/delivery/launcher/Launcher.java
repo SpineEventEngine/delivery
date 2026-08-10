@@ -6,9 +6,10 @@
 
 package io.spine.delivery.launcher;
 
-import io.spine.logging.Logging;
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.delivery.admin.AdminServer;
 import io.spine.delivery.server.SimpleApp;
+import io.spine.logging.WithLogging;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -18,7 +19,7 @@ import static java.lang.Boolean.parseBoolean;
 /**
  * An entrypoint for launching Delivery server.
  */
-public final class Launcher implements Logging {
+public final class Launcher implements WithLogging {
 
     private static final String ADMIN_SERVER_ENV = "ADMIN_SERVER";
 
@@ -51,10 +52,10 @@ public final class Launcher implements Logging {
         Thread delivery = delivery(threadFactory, args);
         delivery.start();
         if (useAdminServer()) {
-            _info().log("Starting Admin Server.");
+            logger().atInfo().log(() -> "Starting Admin Server.");
             admin(threadFactory, args).start();
         } else {
-            _info().log("Admin Server start skipped.");
+            logger().atInfo().log(() -> "Admin Server start skipped.");
         }
         delivery.join();
     }
@@ -67,7 +68,8 @@ public final class Launcher implements Logging {
      * @param args
      *         startup arguments
      */
-    private static Thread delivery(ThreadFactory threads, String[] args) {
+    @VisibleForTesting
+    static Thread delivery(ThreadFactory threads, String[] args) {
         Thread delivery = threads.newThread(() -> SimpleApp.main(args));
         delivery.setName("delivery");
         return delivery;
@@ -76,12 +78,16 @@ public final class Launcher implements Logging {
     /**
      * Creates new daemon {@code Thread} that starts and executes the Admin Server code.
      *
+     * <p>The thread is a daemon one so that it never keeps the container alive after
+     * the Delivery server, which the launcher waits for, has stopped.
+     *
      * @param threads
      *         factory to create a new thread
      * @param args
      *         startup arguments
      */
-    private static Thread admin(ThreadFactory threads, String[] args) {
+    @VisibleForTesting
+    static Thread admin(ThreadFactory threads, String[] args) {
         Thread adminServer = threads.newThread(() -> AdminServer.main(args));
         adminServer.setDaemon(true);
         adminServer.setName("admin");
@@ -93,7 +99,8 @@ public final class Launcher implements Logging {
      * value equals ignore case to "true" and returns {@code false} otherwise.
      */
     @SuppressWarnings("CallToSystemGetenv")
-    private static boolean useAdminServer() {
+    @VisibleForTesting
+    static boolean useAdminServer() {
         return parseBoolean(System.getenv(ADMIN_SERVER_ENV));
     }
 }

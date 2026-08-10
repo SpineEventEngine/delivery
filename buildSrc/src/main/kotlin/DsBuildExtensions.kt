@@ -6,6 +6,7 @@
 
 @file:Suppress("unused", "TopLevelPropertyNaming", "ObjectPropertyName")
 
+import io.spine.dependency.lib.Jib
 import io.spine.dependency.lib.Micronaut
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
@@ -28,3 +29,9 @@ private const val ABOUT = ""
  */
 val PluginDependenciesSpec.`micronaut-application`: PluginDependencySpec
     get() = id(Micronaut.GradlePlugin.id).version(Micronaut.GradlePlugin.version)
+
+/**
+ * Shortcut for applying the [Jib][Jib.GradlePlugin] Gradle plugin.
+ */
+val PluginDependenciesSpec.jib: PluginDependencySpec
+    get() = id(Jib.GradlePlugin.id).version(Jib.GradlePlugin.version)

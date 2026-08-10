@@ -9,24 +9,21 @@ package io.spine.delivery.server;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.Time;
+import io.spine.delivery.InboxServiceGrpc;
+import io.spine.delivery.ShardServiceGrpc;
 import io.spine.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
 import io.spine.delivery.admin.grpc.AdminServiceGrpc.AdminServiceStub;
-import io.spine.delivery.InboxServiceGrpc;
 import io.spine.delivery.server.event.TestEvent;
-import io.spine.delivery.ShardServiceGrpc;
 import io.spine.type.KnownTypes;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 
 /**
  * An abstract base for tests which rely on the running {@linkplain SimpleApp app}.
@@ -34,12 +31,18 @@ import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterrup
 public abstract class WithApp {
 
     /**
-     * A free port picked per test instance, so that concurrently running servers — such as the
-     * {@code server} module's app during a parallel build — never clash on a shared fixed port.
+     * The app under test, bound to an ephemeral port.
+     *
+     * <p>Port zero makes the operating system assign a free port while the server binds it,
+     * so that concurrently running servers — such as another module's app during a parallel
+     * build — never clash, and no other process can take the port in between.
      */
-    private final int port = freePort();
+    private final SimpleApp app = new SimpleApp(0);
 
-    private final SimpleApp app = new SimpleApp(port);
+    /**
+     * The port the {@link #app} listens on, known only once it has started.
+     */
+    private int port;
 
     private AdminServiceBlockingStub adminServiceBlocking;
 
@@ -67,17 +70,26 @@ public abstract class WithApp {
     }
 
     @BeforeEach
-    void startApp() {
+    void startApp() throws InterruptedException {
         var appThread = new Thread(app::initAndStart);
         appThread.start();
-        sleepUninterruptibly(Duration.ofSeconds(1)); // allow the server to start.
+        port = app.awaitPort();
         serverChannel = newServerChannel();
         adminServiceBlocking = AdminServiceGrpc.newBlockingStub(serverChannel);
         adminService = AdminServiceGrpc.newStub(serverChannel);
     }
 
+    /**
+     * Shuts down the client channel and then the application.
+     *
+     * <p>The channel is a client-side object with a lifecycle of its own: shutting down
+     * the server does not close it. It is closed first — before the server — so that it
+     * does not attempt to reconnect to an already stopped server.
+     */
     @AfterEach
-    void shutdownApp() {
+    void shutdownApp() throws InterruptedException {
+        serverChannel.shutdownNow();
+        serverChannel.awaitTermination(5, TimeUnit.SECONDS);
         app.shutdown();
     }
 
@@ -132,22 +144,10 @@ public abstract class WithApp {
      * Returns a channel connected to the running application.
      */
     private ManagedChannel newServerChannel() {
-        ManagedChannel channel = ManagedChannelBuilder
+        var channel = ManagedChannelBuilder
                 .forAddress(SimpleApp.HOST, port)
                 .usePlaintext()
                 .build();
         return channel;
-    }
-
-    /**
-     * Reserves a free ephemeral port from the operating system.
-     */
-    private static int freePort() {
-        try (var socket = new ServerSocket(0)) {
-            return socket.getLocalPort();
-        } catch (IOException e) {
-            throw new IllegalStateException(
-                    "Unable to reserve a free port for the test gRPC server.", e);
-        }
     }
 }

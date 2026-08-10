@@ -24,12 +24,18 @@ import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.server.storage.redis.RedisStorageFactory;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.protobuf.util.Durations.checkPositive;
 import static java.util.concurrent.Executors.newFixedThreadPool;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * Application exposing only an {@link InboxService} and {@link ShardService} instances via gRPC.
@@ -43,6 +49,11 @@ public final class SimpleApp implements WithLogging {
     private static final int DEFAULT_PORT = 8484;
 
     private static final int BYTES_IN_MB = 1_048_576;
+
+    /**
+     * How long {@link #awaitPort()} waits for the gRPC server to start.
+     */
+    private static final int STARTUP_TIMEOUT_SECONDS = 10;
 
     private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB; // 4 MiB
 
@@ -93,8 +104,17 @@ public final class SimpleApp implements WithLogging {
 
     /**
      * The port at which the gRPC server is exposed.
+     *
+     * <p>Zero asks the operating system to assign a free port when the server starts.
+     * The assigned port is then available via {@link #awaitPort()}.
      */
     private final int port;
+
+    /**
+     * Completes with the port the gRPC server listens on once it has started, or
+     * completes exceptionally if the application fails to start.
+     */
+    private final CompletableFuture<Integer> boundPort = new CompletableFuture<>();
 
     /**
      * Creates a new instance of the application exposed at the {@linkplain #PORT default port}.
@@ -128,6 +148,23 @@ public final class SimpleApp implements WithLogging {
     @VisibleForTesting
     @SuppressWarnings("OverlyBroadCatchBlock" /* We do want to catch all exceptions. */)
     void initAndStart() {
+        try {
+            runServer();
+        } catch (Exception e) {
+            boundPort.completeExceptionally(e);
+            logger().atError().withCause(e)
+                    .log(() -> format("Error running the gRPC server."));
+        }
+    }
+
+    /**
+     * Creates the storage, starts the gRPC server, and blocks until the server terminates.
+     *
+     * <p>Completes {@link #boundPort} with the port the started server listens on. Failures
+     * are left to {@link #initAndStart()}, which records them in the same future, so that
+     * a caller waiting for the port learns the cause instead of waiting for the timeout.
+     */
+    private void runServer() throws Exception {
         ReportingStorageFactory factory = storageFactory();
         InboxService inboxService = new InboxService(factory);
         ShardService shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
@@ -153,13 +190,50 @@ public final class SimpleApp implements WithLogging {
                     SHARD_PROCESSING_TIMEOUT.getSeconds()));
         try {
             server.start();
-            logger().atInfo().log(() -> format("gRPC server started at host '%s' and port '%d'.", HOST, port));
+            var assignedPort = server.getPort();
+            boundPort.complete(assignedPort);
+            logger().atInfo().log(() -> format(
+                    "gRPC server started at host '%s' and port '%d'.", HOST, assignedPort));
             server.awaitTermination();
-        } catch (Exception e) {
-            logger().atError().withCause(e)
-                    .log(() -> format("Error running the gRPC server."));
         } finally {
             close(factory);
+        }
+    }
+
+    /**
+     * Waits for the gRPC server to start, and returns the port it listens on.
+     *
+     * <p>Tests construct the app with port zero and read the port back here, instead of
+     * picking a free port in advance: the operating system assigns the port while binding
+     * it, so no other process can take it in between.
+     *
+     * @throws IllegalStateException
+     *         if the application fails to start, with the original failure as the cause, or
+     *         if it does not start within {@link #STARTUP_TIMEOUT_SECONDS} seconds
+     * @throws InterruptedException
+     *         if the current thread is interrupted while waiting
+     */
+    @VisibleForTesting
+    int awaitPort() throws InterruptedException {
+        return awaitPort(STARTUP_TIMEOUT_SECONDS, SECONDS);
+    }
+
+    /**
+     * Same as {@link #awaitPort()}, but waiting for the given time.
+     *
+     * <p>Allows a test to exercise the timeout without waiting for
+     * {@link #STARTUP_TIMEOUT_SECONDS} seconds.
+     */
+    @VisibleForTesting
+    int awaitPort(long timeout, TimeUnit unit) throws InterruptedException {
+        try {
+            return boundPort.get(timeout, unit);
+        } catch (ExecutionException e) {
+            throw new IllegalStateException("The gRPC server failed to start.", e.getCause());
+        } catch (TimeoutException e) {
+            throw new IllegalStateException(
+                    format("The gRPC server has not started within %d %s.",
+                           timeout, unit.name().toLowerCase(Locale.ROOT)), e);
         }
     }
 

@@ -228,8 +228,8 @@ final class TenantRecords<I, R extends Message>
                                           .isEmpty()) {
                 return input;
             }
-            if (input instanceof EntityRecord) {
-                return (R) maskEntityRecord((EntityRecord) input);
+            if (input instanceof EntityRecord entityRecord) {
+                return (R) maskEntityRecord(entityRecord);
             }
             return applyMask(fieldMask, input);
         }

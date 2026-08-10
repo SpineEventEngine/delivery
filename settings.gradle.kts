@@ -20,8 +20,7 @@ include("storage:base")
 // `includeBuild("client")`; build it standalone via `client/gradlew`. It consumes the servers'
 // published Protobuf artifacts rather than being wired in as a source dependency.
 
-// TEMPORARILY PARKED — the Jib/Shadow packaging config needs Gradle-9 updates.
-// deployment("simple-server-cloud-run")
+deployment("simple-server-cloud-run")
 
 fun deployment(name: String) {
     val path = ":${name}"
