@@ -10,6 +10,7 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.io.IOException
 import java.net.ServerSocket
+import java.util.concurrent.TimeUnit.MILLISECONDS
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Timeout
@@ -45,5 +46,19 @@ internal class SimpleAppStartupSpec {
             // The port is taken, so binding fails with `BindException`, wrapped by gRPC.
             error.cause.shouldBeInstanceOf<IOException>()
         }
+    }
+
+    @Test
+    @Timeout(5)
+    @DisplayName("report the timeout when the server does not start at all")
+    fun reportStartupTimeout() {
+        // The app is never started, so the port is never assigned.
+        val app = SimpleApp(0)
+
+        val error = assertThrows<IllegalStateException> {
+            app.awaitPort(50, MILLISECONDS)
+        }
+
+        error.message shouldContain "has not started within 50 milliseconds"
     }
 }

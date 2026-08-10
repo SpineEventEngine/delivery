@@ -6,6 +6,7 @@
 
 package io.spine.delivery.launcher;
 
+import com.google.common.annotations.VisibleForTesting;
 import io.spine.delivery.admin.AdminServer;
 import io.spine.delivery.server.SimpleApp;
 import io.spine.logging.WithLogging;
@@ -67,7 +68,8 @@ public final class Launcher implements WithLogging {
      * @param args
      *         startup arguments
      */
-    private static Thread delivery(ThreadFactory threads, String[] args) {
+    @VisibleForTesting
+    static Thread delivery(ThreadFactory threads, String[] args) {
         Thread delivery = threads.newThread(() -> SimpleApp.main(args));
         delivery.setName("delivery");
         return delivery;
@@ -76,12 +78,16 @@ public final class Launcher implements WithLogging {
     /**
      * Creates new daemon {@code Thread} that starts and executes the Admin Server code.
      *
+     * <p>The thread is a daemon one so that it never keeps the container alive after
+     * the Delivery server, which the launcher waits for, has stopped.
+     *
      * @param threads
      *         factory to create a new thread
      * @param args
      *         startup arguments
      */
-    private static Thread admin(ThreadFactory threads, String[] args) {
+    @VisibleForTesting
+    static Thread admin(ThreadFactory threads, String[] args) {
         Thread adminServer = threads.newThread(() -> AdminServer.main(args));
         adminServer.setDaemon(true);
         adminServer.setName("admin");
@@ -93,7 +99,8 @@ public final class Launcher implements WithLogging {
      * value equals ignore case to "true" and returns {@code false} otherwise.
      */
     @SuppressWarnings("CallToSystemGetenv")
-    private static boolean useAdminServer() {
+    @VisibleForTesting
+    static boolean useAdminServer() {
         return parseBoolean(System.getenv(ADMIN_SERVER_ENV));
     }
 }

@@ -24,10 +24,12 @@ import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.server.storage.redis.RedisStorageFactory;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
@@ -213,14 +215,25 @@ public final class SimpleApp implements WithLogging {
      */
     @VisibleForTesting
     int awaitPort() throws InterruptedException {
+        return awaitPort(STARTUP_TIMEOUT_SECONDS, SECONDS);
+    }
+
+    /**
+     * Same as {@link #awaitPort()}, but waiting for the given time.
+     *
+     * <p>Allows a test to exercise the timeout without waiting for
+     * {@link #STARTUP_TIMEOUT_SECONDS} seconds.
+     */
+    @VisibleForTesting
+    int awaitPort(long timeout, TimeUnit unit) throws InterruptedException {
         try {
-            return boundPort.get(STARTUP_TIMEOUT_SECONDS, SECONDS);
+            return boundPort.get(timeout, unit);
         } catch (ExecutionException e) {
             throw new IllegalStateException("The gRPC server failed to start.", e.getCause());
         } catch (TimeoutException e) {
             throw new IllegalStateException(
-                    format("The gRPC server has not started within %d seconds.",
-                           STARTUP_TIMEOUT_SECONDS), e);
+                    format("The gRPC server has not started within %d %s.",
+                           timeout, unit.name().toLowerCase(Locale.ROOT)), e);
         }
     }
 
