@@ -59,7 +59,7 @@ public final class SingletonStorageFactory implements StorageFactory {
     createRecordStorage(ContextSpec context,
                         RecordSpec<I, R> spec,
                         @Nullable StorageGroup group) {
-        Key key = Key.of(context, spec, group);
+        var key = Key.of(context, spec, group);
         return (RecordStorage<I, R>)
                 map.computeIfAbsent(key,
                                     (k) -> delegate.createRecordStorage(context, spec, group));
@@ -100,9 +100,9 @@ public final class SingletonStorageFactory implements StorageFactory {
          * Creates a new {@code Key} with provided {@code context}, {@code spec},
          * and {@code group}.
          */
-        public static Key of(ContextSpec context,
-                             RecordSpec<?, ?> spec,
-                             @Nullable StorageGroup group) {
+        private static Key of(ContextSpec context,
+                              RecordSpec<?, ?> spec,
+                              @Nullable StorageGroup group) {
             checkNotNull(context);
             checkNotNull(spec);
             return new Key(context, spec, group);
@@ -113,10 +113,9 @@ public final class SingletonStorageFactory implements StorageFactory {
             if (this == o) {
                 return true;
             }
-            if (!(o instanceof Key)) {
+            if (!(o instanceof Key toCompare)) {
                 return false;
             }
-            Key toCompare = (Key) o;
             return context.equals(toCompare.context)
                     && spec.idType().equals(toCompare.spec.idType())
                     && spec.sourceType().equals(toCompare.spec.sourceType())

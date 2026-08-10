@@ -190,28 +190,28 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
         /**
          * Returns a {@code TypeSpec} of this subscription.
          */
-        public TypeSpec<I, R> typeSpec() {
+        private TypeSpec<I, R> typeSpec() {
             return typeSpec;
         }
 
         /**
          * Returns {@code UpdateSubscriber} associated with this subscription.
          */
-        public StorageSubscriber<I, R> subscriber() {
+        private StorageSubscriber<I, R> subscriber() {
             return subscriber;
         }
 
         /**
          * Cancels all underlying subscriptions.
          */
-        public void unsubscribeAll() {
+        private void unsubscribeAll() {
             subscriptions.forEach(StorageSubscription::cancel);
         }
 
         /**
          * Adds a new {@code subscription} to this complex subscription.
          */
-        public void addSubscription(StorageSubscription subscription) {
+        private void addSubscription(StorageSubscription subscription) {
             checkNotNull(subscription);
             subscriptions.add(subscription);
         }
@@ -243,7 +243,7 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
         /**
          * Creates a new {@code TypeSpec} of the given {@code RecordSpec} and {@code group}.
          */
-        public static <I, R extends Message> TypeSpec<I, R>
+        private static <I, R extends Message> TypeSpec<I, R>
         of(RecordSpec<I, R> spec, @Nullable StorageGroup group) {
             return new TypeSpec<>(spec.idType(), spec.recordType(), group);
         }

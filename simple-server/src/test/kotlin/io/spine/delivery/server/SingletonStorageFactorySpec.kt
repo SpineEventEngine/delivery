@@ -102,6 +102,7 @@ internal class SingletonStorageFactorySpec {
     /**
      * A [StorageFactory] counting the storages it has created.
      */
+    @Suppress("JavaDefaultMethodsNotOverriddenByDelegation")
     private class CountingFactory(
         private val delegate: StorageFactory
     ) : StorageFactory by delegate {
