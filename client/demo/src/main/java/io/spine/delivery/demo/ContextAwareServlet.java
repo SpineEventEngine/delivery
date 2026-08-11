@@ -10,17 +10,14 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.spine.client.Client;
-import io.spine.core.TenantId;
+import io.spine.delivery.DeliveryBootstrapper;
+import io.spine.delivery.client.SimpleDeliveryClient;
 import io.spine.logging.Logger;
 import io.spine.logging.LoggingFactory;
 import io.spine.logging.WithLogging;
-import io.spine.delivery.DeliveryBootstrapper;
-import io.spine.delivery.client.SimpleDeliveryClient;
-import io.spine.server.BoundedContextBuilder;
 import io.spine.server.Server;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.Delivery;
-import io.spine.server.delivery.DeliveryBuilder;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardObserver;
@@ -37,7 +34,6 @@ import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Suppliers.ofInstance;
 import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
@@ -72,7 +68,7 @@ abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
         workRegistry = configureEnv();
         server = startServer();
         spineClient = inProcessClient();
-        client = ofInstance(remoteDelivery());
+        client = ContextAwareServlet::remoteDelivery;
     }
 
     private static SimpleDeliveryClient remoteDelivery() {
@@ -128,7 +124,7 @@ abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
         logger.atDebug()
               .log(() -> "Configuring `ServerEnvironment`.");
         var deliveryBuilder = DeliveryBootstrapper.newInstance()
-                                                  .withChannel(ofInstance(channel))
+                                                  .withChannel(() -> channel)
                                                   .init();
         var delivery = deliveryBuilder
                 .setStrategy(UniformAcrossAllShards.forNumber(NUMBER_OF_SHARDS))
