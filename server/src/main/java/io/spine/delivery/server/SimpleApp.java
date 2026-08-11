@@ -11,21 +11,18 @@ import com.google.protobuf.Duration;
 import com.google.protobuf.util.Durations;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import io.spine.logging.WithLogging;
-import static java.lang.String.format;
 import io.spine.delivery.server.grpc.AdminService;
 import io.spine.delivery.server.grpc.HealthService;
 import io.spine.delivery.server.grpc.InboxService;
 import io.spine.delivery.server.grpc.ShardService;
-import io.spine.delivery.server.grpc.UnableToCloseFactoryException;
-import io.spine.server.storage.StorageFactory;
+import io.spine.logging.WithLogging;
 import io.spine.server.storage.hazelcast.HazelcastStorageFactory;
 import io.spine.server.storage.memory.InMemoryStorageFactory;
 import io.spine.server.storage.redis.RedisStorageFactory;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
+import java.io.IOException;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -34,6 +31,7 @@ import java.util.concurrent.TimeoutException;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.protobuf.util.Durations.checkPositive;
+import static java.lang.String.format;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -41,10 +39,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * Application exposing only {@link InboxService} and {@link ShardService} instances via gRPC.
  */
 public final class SimpleApp implements WithLogging {
-
-    static {
-        useLog4j2FloggerBackend();
-    }
 
     private static final int DEFAULT_PORT = 8484;
 
@@ -152,14 +146,13 @@ public final class SimpleApp implements WithLogging {
     }
 
     @VisibleForTesting
-    @SuppressWarnings("OverlyBroadCatchBlock" /* We do want to catch all exceptions. */)
     void initAndStart() {
         try {
             runServer();
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             boundPort.completeExceptionally(e);
             logger().atError().withCause(e)
-                    .log(() -> format("Error running the gRPC server."));
+                    .log(() -> "Error running the gRPC server.");
         }
     }
 
@@ -170,7 +163,7 @@ public final class SimpleApp implements WithLogging {
      * are left to {@link #initAndStart()}, which records them in the same future, so that
      * a caller waiting for the port learns the cause instead of waiting for the timeout.
      */
-    private void runServer() throws Exception {
+    private void runServer() throws IOException, InterruptedException {
         var factory = storageFactory();
         var inboxService = new InboxService(factory);
         var shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
@@ -188,11 +181,15 @@ public final class SimpleApp implements WithLogging {
                 .addService(healthService)
                 .maxInboundMessageSize(MESSAGE_SIZE)
                 .build();
-        logger().atInfo().log(() -> format("Starting gRPC server..."));
-        logger().atInfo().log(() -> format("Configured inbound message size: `%d` bytes.", MESSAGE_SIZE));
+        logger().atInfo()
+                .log(() -> "Starting gRPC server...");
+        logger().atInfo()
+                .log(() -> format("Configured inbound message size: `%d` bytes.", MESSAGE_SIZE));
         var runtime = Runtime.getRuntime();
-        logger().atInfo().log(() -> format("Available memory %dMb.", runtime.maxMemory() / BYTES_IN_MB));
-        logger().atInfo().log(() -> format("Configured shard processing timeout: `%d` seconds.",
+        logger().atInfo()
+                .log(() -> format("Available memory %dMb.", runtime.maxMemory() / BYTES_IN_MB));
+        logger().atInfo()
+                .log(() -> format("Configured shard processing timeout: `%d` seconds.",
                     SHARD_PROCESSING_TIMEOUT.getSeconds()));
         try {
             server.start();
@@ -202,7 +199,7 @@ public final class SimpleApp implements WithLogging {
                     "gRPC server started at host '%s' and port '%d'.", HOST, assignedPort));
             server.awaitTermination();
         } finally {
-            close(factory);
+            factory.close();
         }
     }
 
@@ -231,6 +228,9 @@ public final class SimpleApp implements WithLogging {
      * {@link #STARTUP_TIMEOUT_SECONDS} seconds.
      */
     @VisibleForTesting
+    @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException" /*
+        We get the original exception as the cause, so it is not ignored.
+    */)
     int awaitPort(long timeout, TimeUnit unit) throws InterruptedException {
         try {
             return boundPort.get(timeout, unit);
@@ -294,20 +294,6 @@ public final class SimpleApp implements WithLogging {
         return healthService;
     }
 
-    /**
-     * Closes the given {@code factory}.
-     *
-     * <p>Wraps the {@code close()} method into a try / catch block and rethrows caught
-     * {@code Exception} as {@code UnableToCloseStorageFactory}.
-     */
-    private static void close(StorageFactory factory) {
-        try {
-            factory.close();
-        } catch (Exception e) {
-            throw new UnableToCloseFactoryException(e);
-        }
-    }
-
     private static int port() {
         @SuppressWarnings("CallToSystemGetenv")
         var port = System.getenv("PORT");
@@ -337,17 +323,16 @@ public final class SimpleApp implements WithLogging {
         return checkPositive(duration);
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection" /* Used in a different module. */)
     private ReportingStorageFactory storageFactory() {
         if (useRedis()) {
-            logger().atConfig().log(() -> format("Using Redis storage."));
+            logger().atConfig().log(() -> "Using Redis storage.");
             return new ReportingStorageFactory(RedisStorageFactory.newInstance());
         }
         if (useHazelcast()) {
-            logger().atConfig().log(() -> format("Using Hazelcast storage."));
+            logger().atConfig().log(() -> "Using Hazelcast storage.");
             return new ReportingStorageFactory(HazelcastStorageFactory.newInstance());
         }
-        logger().atConfig().log(() -> format("Using in-memory storage."));
+        logger().atConfig().log(() -> "Using in-memory storage.");
         var factory = new SingletonStorageFactory(InMemoryStorageFactory.newInstance());
         return new ReportingStorageFactory(factory);
     }
@@ -362,19 +347,5 @@ public final class SimpleApp implements WithLogging {
     private static boolean useHazelcast() {
         var envs = System.getenv();
         return envs.containsKey("USE_HAZELCAST");
-    }
-
-    /**
-     * Configures Log4j2 as the <a href="https://github.com/google/flogger">Flogger</a> backend.
-     */
-    @SuppressWarnings({
-            "DuplicateStringLiteralInspection", /* Used in a non-related context. */
-            "AccessOfSystemProperties" /* There is no better way to configure Flogger. */
-    })
-    private static void useLog4j2FloggerBackend() {
-        System.setProperty(
-                "flogger.backend_factory",
-                "com.google.common.flogger.backend.log4j2.Log4j2BackendFactory#getInstance"
-        );
     }
 }
