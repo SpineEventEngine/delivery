@@ -61,8 +61,8 @@ include("client:integration-test")
 
 // The Cloud Run deployment also carries a project name distinct from its
 // directory, so that its artifact is named `spine-delivery-server-cloud-run`:
-//   `deployment/simple-server-cloud-run` -> `:delivery-server-cloud-run`
-deployment("delivery-server-cloud-run", inDirectory = "simple-server-cloud-run")
+//   `deployment/cloud-run` -> `:delivery-server-cloud-run`
+deployment("delivery-server-cloud-run", inDirectory = "cloud-run")
 clientDeployment("demo-appengine-11")
 
 fun deployment(name: String, inDirectory: String = name) {

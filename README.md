@@ -29,12 +29,12 @@ This repository contains several runnable applications:
 instances. It connects to the Delivery Server and provides information about shard status over HTTP
 for maintenance and administration purposes.
 
-[deployment / simple-server-cloud-run](deployment/simple-server-cloud-run) — the application that
+[deployment / cloud-run](deployment/cloud-run) — the application that
 starts the [server](server) inside a Docker container. The
 [Launcher][server-launcher] is responsible for starting the Delivery Server.
 
 
-[server-launcher]: deployment/simple-server-cloud-run/src/main/java/io/spine/delivery/launcher/Launcher.java
+[server-launcher]: deployment/cloud-run/src/main/java/io/spine/delivery/launcher/Launcher.java
 
 Compatibility
 --------------
