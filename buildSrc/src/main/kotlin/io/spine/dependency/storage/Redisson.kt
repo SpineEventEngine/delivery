@@ -21,7 +21,7 @@ object Redisson {
 
     /**
      * Versions of the third-party libraries that this graph brings in, and that win
-     * the cross-stack conflicts on the `simple-server-cloud-run` classpath, where the
+     * the cross-stack conflicts on the `delivery-server-cloud-run` classpath, where the
      * Redisson graph meets the Micronaut one. Update together with [version].
      */
     const val byteBuddyVersion = "1.18.2"

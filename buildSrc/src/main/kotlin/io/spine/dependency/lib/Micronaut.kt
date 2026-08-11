@@ -69,7 +69,7 @@ object Micronaut {
 
     /**
      * Versions of the third-party libraries pinned by the platform [bom] that win
-     * the cross-stack conflicts on the `simple-server-cloud-run` classpath, where
+     * the cross-stack conflicts on the `delivery-server-cloud-run` classpath, where
      * the Micronaut graph meets the Redisson one. Update together with [version].
      *
      * [nettyVersion] is the platform's own pin, used to settle those conflicts. It is

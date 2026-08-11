@@ -48,7 +48,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
  *
  * <p>Tagged as {@code integration}: the suite requires a Docker environment and
  * the access to the {@code gcr.io/spine-dev} registry hosting the server image
- * built by {@code :simple-server-cloud-run:jib}.
+ * built by {@code :delivery-server-cloud-run:jib}.
  */
 @Tag("integration")
 @DisplayName("`SimpleDeliveryClient` should")

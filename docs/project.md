@@ -45,9 +45,9 @@ modules produce runnable Docker images and an App Engine application.
   packages.
 - `storage:base`, `storage:redis`, `storage:hazelcast` — the storage SPI and its
   Redis and Hazelcast implementations.
-- `deployment/simple-server-cloud-run` — a Cloud Run launcher that starts
-  the `server` inside one Docker container (built with the Jib and Shadow
-  plugins).
+- `deployment/simple-server-cloud-run` (the `:delivery-server-cloud-run`
+  project) — a Cloud Run launcher that starts the `server` inside one Docker
+  container (built with the Jib and Shadow plugins). Not published to Maven.
 
 ### Client modules (the `client` directory)
 

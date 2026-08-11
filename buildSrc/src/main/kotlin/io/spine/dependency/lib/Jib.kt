@@ -8,7 +8,7 @@ package io.spine.dependency.lib
 
 /**
  * [Jib](https://github.com/GoogleContainerTools/jib) builds container images
- * for JVM applications; used by the `simple-server-cloud-run` module.
+ * for JVM applications; used by the `delivery-server-cloud-run` module.
  *
  * This file is owned by this repository — the `config` distribution does not
  * ship Jib, so the plugin must not be declared in `buildSrc/build.gradle.kts`,

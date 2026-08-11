@@ -22,7 +22,7 @@ import org.gradle.api.Project
  * the platform's pick — the same way the root build aligns the `io.grpc` group.
  *
  * Required by `admin-server`, which uses Micronaut directly, and by any module
- * resolving `admin-server` from its classpath — such as `simple-server-cloud-run` —
+ * resolving `admin-server` from its classpath — such as `delivery-server-cloud-run` —
  * because the conflicting constraints surface in every resolution of the
  * Micronaut graph.
  *
