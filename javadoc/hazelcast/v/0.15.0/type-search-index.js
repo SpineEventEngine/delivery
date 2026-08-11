@@ -1,0 +1,1 @@
+var typeSearchIndex = [{"p":"io.spine.server.storage.hazelcast","l":"HazelcastRecordStorage","url":"io/spine/server/storage/hazelcast/HazelcastRecordStorage.html"}, {"p":"io.spine.server.storage.hazelcast","l":"HazelcastStorageFactory","url":"io/spine/server/storage/hazelcast/HazelcastStorageFactory.html"}, {"l":"All classes","url":"allclasses.html"}]
