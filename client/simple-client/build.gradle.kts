@@ -12,7 +12,8 @@ dependencies {
     // The gRPC stubs of the `Inbox` and `Shard` services.
     implementation(project(":grpc-api"))
     testImplementation(project(":client:testutil-client"))
-    testImplementation(project(path = ":client:delivery-client-base", configuration = "testArtifacts"))
+    testImplementation(project(path = ":client:delivery-client-base",
+                               configuration = "testArtifacts"))
     testImplementation(Testcontainers.lib)
     testImplementation(Testcontainers.junitJupiter)
     testRuntimeOnly(Grpc.nettyShaded)

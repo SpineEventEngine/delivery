@@ -159,7 +159,8 @@ subprojects {
     // generated sources into the source sets, but not the gRPC service stubs. Configure the
     // `grpc` protoc plugin so the `*Grpc` classes are generated for the modules that declare
     // gRPC services (`grpc-api`, `simple-server`).
-    @Suppress("DEPRECATION") // `Grpc.ProtocPlugin.artifact` is the Java stub; `GrpcKotlin` is for Kotlin.
+    // `Grpc.ProtocPlugin.artifact` is the Java stub; `GrpcKotlin` is for Kotlin.
+    @Suppress("DEPRECATION")
     configure<com.google.protobuf.gradle.ProtobufExtension> {
         plugins {
             id("grpc") {

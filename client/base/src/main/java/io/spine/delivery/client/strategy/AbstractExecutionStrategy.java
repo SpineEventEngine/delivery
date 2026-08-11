@@ -17,8 +17,8 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * A basic implementation of the {@code RequestExecutionStrategy} that executes requests and delegates
- * error handling, if any, to subclasses.
+ * A basic implementation of the {@code RequestExecutionStrategy} that executes requests
+ * and delegates error handling, if any, to subclasses.
  */
 public abstract class AbstractExecutionStrategy implements RequestExecutionStrategy {
 

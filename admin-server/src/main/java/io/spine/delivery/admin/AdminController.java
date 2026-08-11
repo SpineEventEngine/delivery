@@ -40,8 +40,8 @@ final class AdminController {
     /**
      * Empty request that is used to invoke gRPC methods of {@code AdminService}.
      *
-     * <p>Requests don't need any parameters right now but the {@code .proto} gRPC definition requires
-     * some input parameters anyway.
+     * <p>Requests don't need any parameters right now but the {@code .proto} gRPC definition
+     * requires some input parameters anyway.
      */
     private static final Empty REQUEST = Empty.getDefaultInstance();
 
