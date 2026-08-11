@@ -30,10 +30,13 @@ jobs:
       - name: Configure Pagefile
         uses: al-cheb/configure-pagefile-action@v1.3
 
-      # GitHub-hosted Windows runners cannot launch the Linux Docker container that the
-      # Redis Testcontainers tests need. `WINDOWS_CI_NO_DOCKER` signals this: the
-      # `checkDockerAvailable` Gradle gate passes without probing Docker, and the redis
-      # suites (annotated `@RequiresDocker`) are skipped by `RequiresDockerCondition`.
+      # GitHub-hosted Windows runners cannot launch the Linux Docker containers that the
+      # Testcontainers suites need. `WINDOWS_CI_NO_DOCKER` signals this: the
+      # `checkDockerAvailable` Gradle gate passes without probing Docker, and the affected
+      # suites are skipped by their JUnit conditions — the redis ones (`@RequiresDocker`)
+      # by `RequiresDockerCondition`, and the `integration`-tagged client suites
+      # (`@RequiresDeliveryImage`) by `RequiresDeliveryImageCondition`, which reads the
+      # same variable. `checkDeliveryImageAvailable` stays quiet here for the same reason.
       # The remaining tests still run, so this job is a Windows compilation + unit-test
       # check. Docker stays mandatory everywhere else (dev machines and the Ubuntu runner).
       - name: Build project and run tests

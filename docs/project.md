@@ -64,9 +64,26 @@ directories, so that their Maven artifacts get the desired IDs (see
   `spine-delivery-client`.
 - `client/demo` — a demo "Greeter" Spine application exercising the client.
 - `client/integration-test` — Testcontainers-based tests running several server
-  instances; tagged `integration` and excluded from the default build.
+  instances; tagged `integration`. Gated on the Delivery server image being
+  present locally (see "Docker-backed tests" below).
 - `client/deployment/demo-appengine-11` — the App Engine (Java 11 runtime)
   deployment of the demo.
+
+### Docker-backed tests
+
+Some suites run their dependencies in Docker containers via Testcontainers. Two
+Gradle gates, wired from the root build and modeled on the `gcloud-jvm` repository,
+keep a Docker-less environment from reporting a misleading "tests passed":
+
+- `checkDockerAvailable` **fails** the build when Docker is missing for a module
+  listed in `dockerDependentModules()` (`redis`, `delivery-client`,
+  `integration-test`). The sole exemption is a CI runner setting
+  `WINDOWS_CI_NO_DOCKER`, which cannot launch Linux containers.
+- `checkDeliveryImageAvailable` only **warns** when the Delivery server image is
+  absent, because it lives in the private `gcr.io/spine-dev` registry. The
+  `integration`-tagged suites are annotated `@RequiresDeliveryImage` and skip
+  themselves visibly. Build the image locally with
+  `./gradlew :delivery-server-cloud-run:jibDockerBuild`.
 
 ### Key constraints
 

@@ -174,9 +174,21 @@ all modules and does not describe the project structure per-subproject.
     <scope>compile</scope>
   </dependency>
   <dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-api</artifactId>
+    <version>6.1.0</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
     <groupId>org.redisson</groupId>
     <artifactId>redisson</artifactId>
     <version>4.7.0</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.testcontainers</groupId>
+    <artifactId>testcontainers</artifactId>
+    <version>2.0.5</version>
     <scope>compile</scope>
   </dependency>
   <dependency>
@@ -277,12 +289,6 @@ all modules and does not describe the project structure per-subproject.
   </dependency>
   <dependency>
     <groupId>org.junit.jupiter</groupId>
-    <artifactId>junit-jupiter-api</artifactId>
-    <version>6.1.0</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
-    <groupId>org.junit.jupiter</groupId>
     <artifactId>junit-jupiter-engine</artifactId>
     <version>6.1.0</version>
     <scope>test</scope>
@@ -303,12 +309,6 @@ all modules and does not describe the project structure per-subproject.
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-simple</artifactId>
     <version>2.0.18</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
-    <groupId>org.testcontainers</groupId>
-    <artifactId>testcontainers</artifactId>
-    <version>2.0.5</version>
     <scope>test</scope>
   </dependency>
   <dependency>

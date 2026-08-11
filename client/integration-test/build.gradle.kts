@@ -17,8 +17,6 @@ dependencies {
     testRuntimeOnly(Grpc.nettyShaded)
 }
 
-tasks.test {
-    useJUnitPlatform {
-        excludeTags("integration")
-    }
-}
+// The `integration`-tagged suites run the Delivery server from a Docker image. They are
+// no longer excluded: `checkDockerAvailable` enforces Docker, and each suite is annotated
+// `@RequiresDeliveryImage`, which skips it when the image is absent.

@@ -20,6 +20,8 @@ import io.spine.test.delivery.Something;
 import io.spine.type.TypeUrl;
 import com.google.common.collect.ImmutableList;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import io.spine.delivery.given.DeliveryImage;
+import io.spine.delivery.given.RequiresDeliveryImage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +29,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
 import java.util.Optional;
@@ -51,11 +52,12 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
  * built by {@code :delivery-server-cloud-run:jib}.
  */
 @Tag("integration")
+@RequiresDeliveryImage
 @DisplayName("`SimpleDeliveryClient` should")
 final class DeliveryClientTest {
 
     private final GenericContainer<?> server = new GenericContainer<>(
-            DockerImageName.parse("gcr.io/spine-dev/simple-message-delivery-server:latest")
+            DeliveryImage.dockerImageName()
     ).withExposedPorts(8484);
 
     private @MonotonicNonNull SimpleDeliveryClient client;

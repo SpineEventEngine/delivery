@@ -6,6 +6,8 @@
 
 import io.spine.dependency.lib.Grpc
 import io.spine.dependency.local.CoreJvm
+import io.spine.dependency.test.JUnit
+import io.spine.dependency.test.Testcontainers
 
 /**
  * Test fixtures shared by the client and the server test suites.
@@ -17,4 +19,8 @@ dependencies {
     api(CoreJvm.serverTestLib)
     // `NoOpChannel` extends `ManagedChannel`.
     api(Grpc.core)
+    // `RequiresDeliveryImage` is a JUnit extension; `DeliveryImage` returns
+    // a Testcontainers `DockerImageName`.
+    api(JUnit.Jupiter.api)
+    api(Testcontainers.lib)
 }

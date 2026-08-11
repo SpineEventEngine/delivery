@@ -50,6 +50,9 @@ import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.testing.configureLogging
 import io.spine.gradle.testing.registerTestTasks
 import org.gradle.jvm.tasks.Jar
+import org.gradle.process.ExecOperations
+import java.io.ByteArrayOutputStream
+import javax.inject.Inject
 
 buildscript {
     standardSpineSdkRepositories()
@@ -263,18 +266,231 @@ fun Project.setupKotlin(javaVersion: JavaLanguageVersion) {
 }
 
 /**
+ * Names of the modules whose tests need a Docker environment.
+ *
+ * Matched against `project.name` — the Gradle project name, which for several modules
+ * differs from the directory (see `settings.gradle.kts`).
+ *
+ * Their `Test` tasks depend on [CheckDockerAvailable], so that an environment without
+ * Docker cannot produce a misleading "tests passed" result.
+ *
+ * Declared as a function rather than a top-level `val` so that it is safe to call from
+ * the `subprojects {}` configuration, which runs before a top-level property initializer
+ * further down the script would have executed.
+ */
+fun dockerDependentModules() = setOf("redis", "delivery-client", "integration-test")
+
+/**
+ * Names of the modules whose tests additionally need the Delivery server *image*.
+ *
+ * Unlike [dockerDependentModules], a missing image is reported as a warning rather than
+ * a build failure: the image lives in a private registry most developers cannot reach,
+ * and the suites needing it skip themselves when it is absent (see
+ * `RequiresDeliveryImage`). See [CheckDeliveryImageAvailable].
+ *
+ * Declared as a function for the same reason as [dockerDependentModules].
+ */
+fun imageDependentModules() = setOf("delivery-client", "integration-test")
+
+/**
+ * The Delivery server image the `integration`-tagged suites run against.
+ *
+ * Kept in sync with the `jib` configuration of `deployment/cloud-run/build.gradle.kts`
+ * and with `DeliveryImage` of the `:fixtures` module, which probes for the same name.
+ *
+ * Declared as a function for the same reason as [dockerDependentModules].
+ */
+fun deliveryServerImage() = "gcr.io/spine-dev/simple-message-delivery-server:latest"
+
+/**
+ * Common base of the Docker-related gates, holding the `docker` probe.
+ *
+ * The probe lives here rather than at the script's top level because a task class cannot
+ * reach script-scope declarations. `gcloud-jvm` solves this by duplicating the helper in
+ * each gate; a shared base keeps one copy.
+ */
+abstract class DockerGate : DefaultTask() {
+
+    @get:Inject
+    abstract val execOperations: ExecOperations
+
+    protected companion object {
+
+        /**
+         * The environment variable a CI runner sets to mark itself unable to launch Docker
+         * containers.
+         *
+         * Kept in sync with `RequiresDockerCondition` and `RequiresDeliveryImageCondition`,
+         * which read the same variable to skip the affected tests there.
+         */
+        const val WINDOWS_CI_NO_DOCKER = "WINDOWS_CI_NO_DOCKER"
+    }
+
+    /** Tells whether this runner declared itself unable to launch Docker containers. */
+    protected fun windowsCiWithoutDocker(): Boolean =
+        System.getenv(WINDOWS_CI_NO_DOCKER).toBoolean()
+
+    /**
+     * Tells whether `docker info` reports a reachable Docker daemon.
+     *
+     * Any failure to even start the `docker` executable (for example, it is not installed)
+     * is treated as "no Docker available".
+     */
+    protected fun dockerAvailable(): Boolean = dockerSucceeds("info")
+
+    /** Tells whether the given image is present in the local Docker daemon. */
+    protected fun imagePresent(image: String): Boolean =
+        dockerSucceeds("image", "inspect", image)
+
+    /**
+     * Runs `docker` with the given arguments, reporting whether it exited successfully.
+     *
+     * On Windows the call is routed through `cmd /c` so that the `docker` executable is
+     * resolved via `PATH`/`PATHEXT` (i.e. `docker.exe` from Docker Desktop); a bare program
+     * name is not reliably resolved otherwise. Elsewhere `docker` is invoked directly.
+     */
+    private fun dockerSucceeds(vararg args: String): Boolean = try {
+        val onWindows = System.getProperty("os.name").startsWith("Windows", ignoreCase = true)
+        val command =
+            if (onWindows) listOf("cmd", "/c", "docker") + args
+            else listOf("docker") + args
+        val sink = ByteArrayOutputStream()
+        val result = execOperations.exec {
+            commandLine(command)
+            standardOutput = sink
+            errorOutput = sink
+            isIgnoreExitValue = true
+        }
+        result.exitValue == 0
+    } catch (_: Exception) {
+        false
+    }
+}
+
+/**
+ * Fails the build unless a Docker environment is available for the Testcontainers-based
+ * tests of the [Docker-dependent modules][dockerDependentModules].
+ *
+ * Without Docker these suites verify nothing, so the build fails here instead of passing
+ * silently. The sole exemption is a CI runner that sets `WINDOWS_CI_NO_DOCKER` because it
+ * cannot launch the Linux containers; there the gate passes and the tests are skipped by
+ * their JUnit conditions, which read the same variable.
+ *
+ * Mirrors the `CheckDockerAvailable` gate in the `gcloud-jvm` repository.
+ */
+abstract class CheckDockerAvailable : DockerGate() {
+
+    /** The name of the gated module, used in the failure message. */
+    @get:Input
+    abstract val moduleName: Property<String>
+
+    @TaskAction
+    fun check() {
+        val module = moduleName.get()
+        if (windowsCiWithoutDocker()) {
+            logger.lifecycle(
+                "Skipping the Docker requirement for `:$module`: `$WINDOWS_CI_NO_DOCKER` " +
+                    "is set, so the Testcontainers tests are skipped on this runner."
+            )
+            return
+        }
+        if (dockerAvailable()) {
+            return
+        }
+        throw GradleException(
+            """
+            No Docker environment is available, but the tests of `:$module` require one.
+
+            These tests exercise services running inside Docker containers
+            (Testcontainers). Without Docker they verify nothing, so the build fails here
+            instead of passing silently. Install Docker (or start the Docker daemon) and
+            run the build again.
+
+            The only exemption is a CI runner that sets `$WINDOWS_CI_NO_DOCKER` (it cannot
+            launch the Linux containers); there this gate passes and the tests are skipped
+            by their JUnit conditions.
+            """.trimIndent()
+        )
+    }
+}
+
+/**
+ * Warns when the Delivery server image is missing from the local Docker daemon.
+ *
+ * The `integration`-tagged suites of the [image-dependent modules][imageDependentModules]
+ * run the server from that image. Without it they skip themselves, so the build can pass
+ * while verifying less than it appears to; this gate restores a visible signal.
+ *
+ * It only warns — see [imageDependentModules] for why a missing image is not a build
+ * failure. Mirrors `CheckCredentialsAvailable` in the `gcloud-jvm` repository.
+ */
+abstract class CheckDeliveryImageAvailable : DockerGate() {
+
+    /** The name of the module whose integration suites use the image. */
+    @get:Input
+    abstract val moduleName: Property<String>
+
+    /** The image the suites run against. */
+    @get:Input
+    abstract val image: Property<String>
+
+    @TaskAction
+    fun check() {
+        if (windowsCiWithoutDocker()) {
+            return
+        }
+        val image = image.get()
+        if (imagePresent(image)) {
+            return
+        }
+        logger.warn(
+            """
+
+            WARNING: the Delivery server image `$image` is not in the local Docker daemon.
+
+            The `integration`-tagged tests of `:${moduleName.get()}` run the server from
+            this image. Without it they are skipped, so the build can pass while verifying
+            less than it appears to.
+
+            Build the image locally to run them:
+
+                ./gradlew :delivery-server-cloud-run:jibDockerBuild
+
+            The image is otherwise hosted in the private `gcr.io/spine-dev` registry.
+            """.trimIndent()
+        )
+    }
+}
+
+/**
  * Configures test tasks in this project.
  *
- * Docker-dependent tests are gated per module — see `storage/redis/build.gradle.kts`,
- * whose `CheckDockerAvailable` task fails the build when the Redis Testcontainers
- * tests cannot run.
+ * Docker-dependent tests are gated per module: [CheckDockerAvailable] fails the build
+ * where Docker is required but missing, and [CheckDeliveryImageAvailable] warns where the
+ * Delivery server image is required but missing.
  */
 fun Project.setupTestTasks() {
+    val dockerGate = name.takeIf { it in dockerDependentModules() }?.let { module ->
+        tasks.register<CheckDockerAvailable>("checkDockerAvailable") {
+            moduleName.set(module)
+        }
+    }
+    val imageGate = name.takeIf { it in imageDependentModules() }?.let { module ->
+        tasks.register<CheckDeliveryImageAvailable>("checkDeliveryImageAvailable") {
+            moduleName.set(module)
+            image.set(deliveryServerImage())
+        }
+    }
     tasks {
         registerTestTasks()
         test {
             useJUnitPlatform { includeEngines("junit-jupiter") }
             configureLogging()
+        }
+        listOfNotNull(dockerGate, imageGate).forEach { gate ->
+            withType<Test>().configureEach {
+                dependsOn(gate)
+            }
         }
     }
 }
