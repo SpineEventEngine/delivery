@@ -42,7 +42,6 @@ with(project(":server")) {
     projectDir = file("./server")
 }
 
-include("testutil-server")
 include("admin-server")
 include("admin-ui")
 include("storage:hazelcast")
