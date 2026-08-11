@@ -8,7 +8,7 @@ package io.spine.delivery.launcher;
 
 import com.google.common.annotations.VisibleForTesting;
 import io.spine.delivery.admin.AdminServer;
-import io.spine.delivery.server.SimpleApp;
+import io.spine.delivery.server.DeliveryServerApp;
 import io.spine.logging.WithLogging;
 
 import java.util.concurrent.Executors;
@@ -70,7 +70,7 @@ public final class Launcher implements WithLogging {
      */
     @VisibleForTesting
     static Thread delivery(ThreadFactory threads, String[] args) {
-        var delivery = threads.newThread(() -> SimpleApp.main(args));
+        var delivery = threads.newThread(() -> DeliveryServerApp.main(args));
         delivery.setName("delivery");
         return delivery;
     }

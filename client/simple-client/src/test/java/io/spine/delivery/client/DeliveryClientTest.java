@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
  */
 @Tag("integration")
 @DisplayName("`SimpleDeliveryClient` should")
-final class SimpleDeliveryClientTest {
+final class DeliveryClientTest {
 
     private final GenericContainer<?> server = new GenericContainer<>(
             DockerImageName.parse("gcr.io/spine-dev/simple-message-delivery-server:latest")

@@ -29,7 +29,7 @@ import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Isolated
-@DisplayName("`SimpleApp` should")
+@DisplayName("`DeliveryServerApp` should")
 final class SimpleAppTest extends WithApp {
 
     @Nested

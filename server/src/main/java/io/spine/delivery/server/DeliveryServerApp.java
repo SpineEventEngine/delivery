@@ -38,7 +38,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 /**
  * Application exposing only {@link InboxService} and {@link ShardService} instances via gRPC.
  */
-public final class SimpleApp implements WithLogging {
+public final class DeliveryServerApp implements WithLogging {
 
     private static final int DEFAULT_PORT = 8484;
 
@@ -119,7 +119,7 @@ public final class SimpleApp implements WithLogging {
     /**
      * Creates a new instance of the application exposed at the {@linkplain #PORT default port}.
      */
-    public SimpleApp() {
+    public DeliveryServerApp() {
         this(PORT);
     }
 
@@ -131,7 +131,7 @@ public final class SimpleApp implements WithLogging {
      * clash on a shared fixed port.
      */
     @VisibleForTesting
-    SimpleApp(int port) {
+    DeliveryServerApp(int port) {
         this.port = port;
     }
 
@@ -139,7 +139,7 @@ public final class SimpleApp implements WithLogging {
      * Creates and starts a gRPC server and serves the {@code Delivery} bounded context.
      */
     public static void main(String[] args) {
-        var app = new SimpleApp();
+        var app = new DeliveryServerApp();
         Runtime.getRuntime()
                .addShutdownHook(new Thread(app::shutdown));
         app.initAndStart();

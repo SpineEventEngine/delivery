@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * An abstract base for tests that rely on the running {@linkplain SimpleApp app}.
+ * An abstract base for tests that rely on the running {@linkplain DeliveryServerApp app}.
  */
 public abstract class WithApp {
 
@@ -37,7 +37,7 @@ public abstract class WithApp {
      * so that concurrently running servers — such as another module's app during a parallel
      * build — never clash, and no other process can take the port in between.
      */
-    private final SimpleApp app = new SimpleApp(0);
+    private final DeliveryServerApp app = new DeliveryServerApp(0);
 
     /**
      * The port the {@link #app} listens on, known only once it has started.
@@ -117,7 +117,7 @@ public abstract class WithApp {
     /**
      * Returns the running application instance.
      */
-    protected final SimpleApp app() {
+    protected final DeliveryServerApp app() {
         return app;
     }
 
@@ -154,7 +154,7 @@ public abstract class WithApp {
      */
     private ManagedChannel newServerChannel() {
         var channel = ManagedChannelBuilder
-                .forAddress(SimpleApp.HOST, port)
+                .forAddress(DeliveryServerApp.HOST, port)
                 .usePlaintext()
                 .build();
         return channel;
