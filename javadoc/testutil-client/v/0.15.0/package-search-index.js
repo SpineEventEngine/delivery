@@ -1,0 +1,1 @@
+var packageSearchIndex = [{"l":"io.spine.delivery","url":"io/spine/delivery/package-summary.html"}, {"l":"io.spine.delivery.client.given","url":"io/spine/delivery/client/given/package-summary.html"}, {"l":"io.spine.test.delivery.client","url":"io/spine/test/delivery/client/package-summary.html"}, {"l":"All packages","url":"index.html"}]

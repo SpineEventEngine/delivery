@@ -1,0 +1,13 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.test.delivery.client/DoSmth.Builder///PointingToDeclaration/io/spine/test/delivery/client/DoSmth.Builder.html
+$dokka.location:io.spine.test.delivery.client/SmthDone.Builder///PointingToDeclaration/io/spine/test/delivery/client/SmthDone.Builder.html
+$dokka.location:io.spine.test.delivery.client/SmthDone.Field///PointingToDeclaration/io/spine/test/delivery/client/SmthDone.Field.html
+$dokka.location:io.spine.test.delivery.client/Something.Builder///PointingToDeclaration/io/spine/test/delivery/client/Something.Builder.html
+$dokka.location:io.spine.test.delivery.client/Something.Column///PointingToDeclaration/io/spine/test/delivery/client/Something.Column.html
+$dokka.location:io.spine.test.delivery.client/Something.Field///PointingToDeclaration/io/spine/test/delivery/client/Something.Field.html
+$dokka.location:io.spine.test.delivery.client/Something.Query///PointingToDeclaration/io/spine/test/delivery/client/Something.Query.html
+$dokka.location:io.spine.test.delivery.client/Something.QueryBuilder///PointingToDeclaration/io/spine/test/delivery/client/Something.QueryBuilder.html
+io.spine.delivery
+io.spine.delivery.client.given
+io.spine.test.delivery.client
