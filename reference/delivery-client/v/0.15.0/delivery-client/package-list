@@ -1,0 +1,27 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.delivery.client////PointingToDeclaration/delivery-client/io.spine.delivery.client/index.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient///PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/index.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/create/#io.grpc.ManagedChannel#io.spine.delivery.client.RequestExecutionStrategy/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/create.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/create/#io.grpc.ManagedChannel/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/create.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/create/#java.lang.String#int#io.spine.delivery.client.RequestExecutionStrategy/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/create.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/create/#java.lang.String#int/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/create.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/find/#io.spine.server.delivery.InboxMessageId/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/find.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/newestMessageToDeliver/#io.spine.server.delivery.ShardIndex/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/newest-message-to-deliver.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/pickUpShard/#io.spine.server.delivery.ShardIndex#io.spine.server.delivery.WorkerId/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/pick-up-shard.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/readAll/#io.spine.server.delivery.ShardIndex#com.google.protobuf.Timestamp#int/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/read-all.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/readAll/#io.spine.server.delivery.ShardIndex#int/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/read-all.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/releaseExpiredSessions/#com.google.protobuf.Duration/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/release-expired-sessions.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/releaseShard/#io.spine.server.delivery.ShardIndex#io.spine.server.delivery.WorkerId/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/release-shard.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/removeMessage/#io.spine.server.delivery.InboxMessage/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/remove-message.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/removeMessages/#io.spine.server.delivery.ShardIndex#java.lang.Iterable<io.spine.server.delivery.InboxMessage>/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/remove-messages.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/writeMessage/#io.spine.server.delivery.InboxMessage/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/write-message.html
+$dokka.location:io.spine.delivery.client/SimpleDeliveryClient/writeMessages/#io.spine.server.delivery.ShardIndex#java.lang.Iterable<io.spine.server.delivery.InboxMessage>/PointingToDeclaration/delivery-client/io.spine.delivery.client/-simple-delivery-client/write-messages.html
+$dokka.location:io.spine.delivery////PointingToDeclaration/delivery-client/io.spine.delivery/index.html
+$dokka.location:io.spine.delivery/DeliveryBootstrapper///PointingToDeclaration/delivery-client/io.spine.delivery/-delivery-bootstrapper/index.html
+$dokka.location:io.spine.delivery/DeliveryBootstrapper/newInboxClient/#java.util.function.Supplier<io.grpc.ManagedChannel>/PointingToDeclaration/delivery-client/io.spine.delivery/-delivery-bootstrapper/new-inbox-client.html
+$dokka.location:io.spine.delivery/DeliveryBootstrapper/newInstance/#/PointingToDeclaration/delivery-client/io.spine.delivery/-delivery-bootstrapper/new-instance.html
+$dokka.location:io.spine.delivery/DeliveryBootstrapper/newSessionRegistryClient/#java.util.function.Supplier<io.grpc.ManagedChannel>/PointingToDeclaration/delivery-client/io.spine.delivery/-delivery-bootstrapper/new-session-registry-client.html
+$dokka.location:io.spine.delivery/DeliveryBootstrapper/self/#/PointingToDeclaration/delivery-client/io.spine.delivery/-delivery-bootstrapper/self.html
+io.spine.delivery
+io.spine.delivery.client
