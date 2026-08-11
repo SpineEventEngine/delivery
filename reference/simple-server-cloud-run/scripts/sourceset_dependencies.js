@@ -1,0 +1,1 @@
+sourceset_dependencies='{":simple-server-cloud-run/main":[]}'
