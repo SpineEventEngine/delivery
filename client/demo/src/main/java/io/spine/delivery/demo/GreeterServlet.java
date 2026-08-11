@@ -83,7 +83,7 @@ public final class GreeterServlet extends ContextAwareServlet {
                 })
                 .post();
         try {
-            logger().atDebug().log(() -> "Waiting for the command to path through.");
+            logger().atDebug().log(() -> "Waiting for the command to pass through.");
             greeted.await(30, TimeUnit.SECONDS);
             logger().atTrace().log(() -> format(
                     "Greeted latch count is %d.", greeted.getCount()));

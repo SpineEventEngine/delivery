@@ -24,8 +24,8 @@ import static com.hazelcast.core.Hazelcast.newHazelcastInstance;
  * <a href="https://hazelcast.com/">Hazelcast</a></p> official website.
  *
  * <p>The main feature of the storages produced by this factory is replication support. When the
- * factory instance is obtained, a new embedded Hazelcast server is started. The server allows discovering
- * another servers running in the same network. Servers will automatically form a cluster
+ * factory instance is obtained, a new embedded Hazelcast server is started. The server allows
+ * discovering other servers running in the same network. Servers will automatically form a cluster
  * where each server is storing a copy of all the cluster data. This means that records stored on
  * one instance will be available for read and modification for all the Delivery instances
  * in the same network.

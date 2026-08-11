@@ -71,7 +71,11 @@ public class WithAckObserver implements ClientResponseObserver<Empty, Subscripti
     public void waitForAcknowledgment() {
         try {
             ack.get();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread()
+                  .interrupt();
+            throw new IllegalStateException(e);
+        } catch (ExecutionException e) {
             throw new IllegalStateException(e);
         }
     }
