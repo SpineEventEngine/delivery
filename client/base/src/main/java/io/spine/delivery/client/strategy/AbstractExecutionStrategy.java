@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Basic implementation of the {@code RequestExecutionStrategy} that executes requests and delegates
+ * A basic implementation of the {@code RequestExecutionStrategy} that executes requests and delegates
  * error handling, if any, to subclasses.
  */
 public abstract class AbstractExecutionStrategy implements RequestExecutionStrategy {
@@ -33,7 +33,7 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
     }
 
     /**
-     * Tries to execute the {@code request} and handles occurred exception
+     * Tries to execute the {@code request} and handles an occurred exception
      * using {@link #handleException(FailedVoidRequest)} if any.
      */
     private void tryExecute(VoidRequest request, ImmutableList<RuntimeException> previous) {
@@ -41,14 +41,14 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
         try {
             request.run();
         } catch (RuntimeException e) {
-            ImmutableList<RuntimeException> allExceptions = append(previous, e);
+            var allExceptions = append(previous, e);
             Runnable retry = () -> tryExecute(request, allExceptions);
             handleException(new FailedVoidRequest(retry, allExceptions)).execute();
         }
     }
 
     /**
-     * Tries to evaluate the {@code request} and handles occurred exception
+     * Tries to evaluate the {@code request} and handles an occurred exception
      * using {@link #handleException(FailedRequest)} if any.
      */
     private <R> R
@@ -57,7 +57,7 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
         try {
             return request.evaluate();
         } catch (RuntimeException e) {
-            ImmutableList<RuntimeException> allExceptions = append(previous, e);
+            var allExceptions = append(previous, e);
             Supplier<R> retry = () -> tryEvaluate(request, allExceptions);
             return handleException(new FailedRequest<>(retry, allExceptions)).execute();
         }
@@ -76,7 +76,7 @@ public abstract class AbstractExecutionStrategy implements RequestExecutionStrat
     protected abstract Action handleException(FailedVoidRequest failure);
 
     /**
-     * Returns a list of the given {@code elements} withe appended {@code element}.
+     * Returns a list of the given {@code elements} with the appended {@code element}.
      */
     private static <T> ImmutableList<T> append(Iterable<T> elements, T element) {
         return ImmutableList.<T>builder()

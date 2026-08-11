@@ -5,7 +5,7 @@
  */
 
 /**
- * Test environment classes for testing {@code io.spine.delivery.server} package.
+ * Test environment classes for testing the {@code io.spine.delivery.server} package.
  */
 @CheckReturnValue
 @NullMarked

@@ -23,7 +23,7 @@ public interface SessionRegistryClient {
      * @param shard
      *         the shard to pick up
      * @param worker
-     *         the ID of the worker which would like to work with the shard
+     *         the ID of the worker that would like to work with the shard
      * @return the shard picked up acknowledgement event if the shard was picked up, empty otherwise
      */
     PickUpOutcome pickUpShard(ShardIndex shard, WorkerId worker);
@@ -31,19 +31,19 @@ public interface SessionRegistryClient {
     /**
      * Attempts to release the {@code shard}.
      *
-     * <p>The same worker which picked up the shard must also release it. It is prohibited
-     * to release shards which are picked up by other workers.
+     * <p>The same worker that picked up the shard must also release it. It is prohibited
+     * to release shards that are picked up by other workers.
      *
      * @param shard
      *         the shard to be released
      * @param worker
-     *         the ID of the worker which would like to release the shard
+     *         the ID of the worker that would like to release the shard
      */
     void releaseShard(ShardIndex shard, WorkerId worker);
 
     /**
      * Clears up the recorded {@code NodeId}s from the session records if there was no activity
-     * for longer than passed {@code inactivityPeriod}.
+     * for longer than the passed {@code inactivityPeriod}.
      *
      * <p>It may be handy if an application node hangs or gets killed — so that it is not able
      * to complete the session in a conventional way.

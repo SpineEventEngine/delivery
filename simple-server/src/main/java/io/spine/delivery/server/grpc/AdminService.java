@@ -95,11 +95,11 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
      * Fetches information about all shards.
      */
     private ShardInfoList fetch() {
-        Map<ShardIndex, Integer> messagesCount = this.messagesCount.toMutableMap();
+        var messagesCount = this.messagesCount.toMutableMap();
         var shards = shardStorage.readAll();
         var shardListBuilder = ShardInfoList.newBuilder();
         shards.forEachRemaining(shard -> {
-            ShardInfo info = shardInfo(shard, messagesCount.getOrDefault(shard.getIndex(), 0));
+            var info = shardInfo(shard, messagesCount.getOrDefault(shard.getIndex(), 0));
             shardListBuilder.addShards(info);
             messagesCount.remove(shard.getIndex());
         });
@@ -112,10 +112,10 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
      */
     private Map<ShardIndex, Integer> messagesInShards() {
         Map<ShardIndex, Integer> messagesCount = new HashMap<>();
-        Iterator<InboxMessage> messages = inboxStorage.readAll();
+        var messages = inboxStorage.readAll();
         messages.forEachRemaining(message -> {
-            InboxMessageId inboxMessageId = message.getId();
-            ShardIndex shardIndex = inboxMessageId.getIndex();
+            var inboxMessageId = message.getId();
+            var shardIndex = inboxMessageId.getIndex();
             messagesCount.put(shardIndex, messagesCount.getOrDefault(shardIndex, 0) + 1);
         });
         return messagesCount;
@@ -125,8 +125,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
      * Returns a new {@code ShardInfo} from the given {@code shardRecord} and {@code messagesCount}.
      */
     private static ShardInfo shardInfo(ShardSessionRecord shardRecord, int messagesCount) {
-        return ShardInfo
-                .newBuilder()
+        return ShardInfo.newBuilder()
                 .setIndex(shardRecord.getIndex())
                 .setLastPicked(shardRecord.getWhenLastPicked())
                 .setStatus(shardRecord.hasWorker() ? PICKED : NOT_PICKED)
@@ -139,8 +138,7 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
      * sets the shard status to {@code NOT_PICKED}, and doesn't set the last picked time.
      */
     private static ShardInfo shardInfo(ShardIndex index, int messagesCount) {
-        return ShardInfo
-                .newBuilder()
+        return ShardInfo.newBuilder()
                 .setIndex(index)
                 .setStatus(NOT_PICKED)
                 .setMessages(messagesCount)
@@ -171,14 +169,14 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
 
         @Override
         public void onWrite(InboxMessageId id, InboxMessage message) {
-            ShardIndex index = id.getIndex();
+            var index = id.getIndex();
             var update = messagesCountChangedTo(index, messagesCount.updateCount(index, 1));
             subscribers.notifySubs(update);
         }
 
         @Override
         public void onDelete(InboxMessageId id) {
-            ShardIndex index = id.getIndex();
+            var index = id.getIndex();
             var update = messagesCountChangedTo(index, messagesCount.updateCount(index, -1));
             subscribers.notifySubs(update);
         }
@@ -193,9 +191,9 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
 
         @Override
         public void onWrite(ShardIndex id, ShardSessionRecord message) {
-            ShardInfoUpdate update = message.hasWorker() ?
-                                     shardPicked(id, message.getWhenLastPicked()) :
-                                     shardUnpicked(id);
+            var update = message.hasWorker() ?
+                         shardPicked(id, message.getWhenLastPicked()) :
+                         shardUnpicked(id);
             subscribers.notifySubs(update);
         }
 

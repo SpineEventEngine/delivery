@@ -18,14 +18,15 @@ import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
 import io.spine.test.delivery.client.Something;
 import io.spine.type.TypeUrl;
+import com.google.common.collect.ImmutableList;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.shaded.com.google.common.collect.ImmutableList;
 import org.testcontainers.utility.DockerImageName;
 
 import java.util.List;
@@ -35,13 +36,21 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.Truth8.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.base.Identifier.newUuid;
 import static io.spine.delivery.client.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+/**
+ * Tests the {@link SimpleDeliveryClient} against the Delivery server running in
+ * a Docker container.
+ *
+ * <p>Tagged as {@code integration}: the suite requires a Docker environment and
+ * the access to the {@code gcr.io/spine-dev} registry hosting the server image
+ * built by {@code :simple-server-cloud-run:jib}.
+ */
+@Tag("integration")
 @DisplayName("`SimpleDeliveryClient` should")
 final class SimpleDeliveryClientTest {
 
@@ -73,16 +82,16 @@ final class SimpleDeliveryClientTest {
         private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
         private final NodeId node = NodeId.newBuilder()
                 .setValue(SimpleDeliveryClient.class.getName())
-                .vBuild();
+                .build();
         private final WorkerId worker = WorkerId.newBuilder()
                 .setNodeId(node)
                 .setValue(SimpleDeliveryClient.class.getName())
-                .vBuild();
+                .build();
 
         @Test
         @DisplayName("pick up a shard for delivery")
         void pickUpShard() {
-            PickUpOutcome outcome = client.pickUpShard(shard, worker);
+            var outcome = client.pickUpShard(shard, worker);
             assertThat(outcome.hasSession())
                     .isTrue();
         }
@@ -90,7 +99,7 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("release a previously picked up shard")
         void releaseShard() {
-            PickUpOutcome outcome = client.pickUpShard(shard, worker);
+            var outcome = client.pickUpShard(shard, worker);
             assertThat(outcome.hasSession())
                     .isTrue();
             assertDoesNotThrow(() -> client.releaseShard(shard, worker));
@@ -99,15 +108,14 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("do not pick up a shard for delivery if one is already picked up")
         void notPickUpShard() {
-            PickUpOutcome firstAttempt = client.pickUpShard(shard, worker);
+            var firstAttempt = client.pickUpShard(shard, worker);
             assertThat(firstAttempt.hasSession())
                     .isTrue();
-            PickUpOutcome secondAttempt = client.pickUpShard(shard, worker);
+            var secondAttempt = client.pickUpShard(shard, worker);
             assertThat(secondAttempt.hasAlreadyPicked())
                     .isTrue();
 
-            ShardAlreadyPickedUp expected = ShardAlreadyPickedUp
-                    .newBuilder()
+            var expected = ShardAlreadyPickedUp.newBuilder()
                     .setWorker(worker)
                     .buildPartial();
 
@@ -147,10 +155,10 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("write a message to the Inbox")
         void writeMessage() {
-            InboxMessage message = newMessage();
+            var message = newMessage();
             client.writeMessage(message);
 
-            Optional<InboxMessage> readMessage = client.find(message.getId());
+            var readMessage = client.find(message.getId());
             assertThat(readMessage)
                     .isPresent();
         }
@@ -158,13 +166,13 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("write messages to the Inbox in bulk")
         void writeMessages() {
-            InboxMessage firstMessage = newMessage();
-            InboxMessage secondMessage = newMessage();
-            ShardIndex shard = firstMessage.shardIndex();
+            var firstMessage = newMessage();
+            var secondMessage = newMessage();
+            var shard = firstMessage.shardIndex();
             client.writeMessages(
                     shard, ImmutableList.of(firstMessage, secondMessage)
             );
-            Page<InboxMessage> writtenMessages = client.readAll(shard, 10);
+            var writtenMessages = client.readAll(shard, 10);
             assertThat(writtenMessages.size())
                     .isEqualTo(2);
         }
@@ -172,10 +180,10 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("remove a message from the Inbox")
         void removeMessage() {
-            InboxMessage message = newMessage();
+            var message = newMessage();
             client.writeMessage(message);
             client.removeMessage(message);
-            Optional<InboxMessage> readMessage = client.find(message.getId());
+            var readMessage = client.find(message.getId());
             assertThat(readMessage)
                     .isEmpty();
         }
@@ -183,16 +191,16 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("remove messages from the Inbox in bulk")
         void removeMessages() {
-            InboxMessage firstMessage = newMessage();
-            InboxMessage secondMessage = newMessage();
-            ShardIndex shard = firstMessage.shardIndex();
+            var firstMessage = newMessage();
+            var secondMessage = newMessage();
+            var shard = firstMessage.shardIndex();
             client.writeMessages(
                     shard, ImmutableList.of(firstMessage, secondMessage)
             );
             client.removeMessages(
                     shard, ImmutableList.of(firstMessage, secondMessage)
             );
-            Page<InboxMessage> writtenMessages = client.readAll(shard, 10);
+            var writtenMessages = client.readAll(shard, 10);
             assertThat(writtenMessages.size())
                     .isEqualTo(0);
         }
@@ -200,7 +208,7 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` writing a message")
         void useStrategyWritingMessage() {
-            InboxMessage message = newMessage();
+            var message = newMessage();
             client.writeMessage(message);
 
             assertThat(strategy.voidExecutions())
@@ -212,7 +220,7 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` removing a message")
         void useStrategyRemovingMessage() {
-            InboxMessage message = newMessage();
+            var message = newMessage();
             client.writeMessage(message);
             client.removeMessage(message);
 
@@ -225,9 +233,9 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` writing multiple messages")
         void useStrategyWritingMessages() {
-            InboxMessage firstMessage = newMessage();
-            InboxMessage secondMessage = newMessage();
-            ShardIndex shard = firstMessage.shardIndex();
+            var firstMessage = newMessage();
+            var secondMessage = newMessage();
+            var shard = firstMessage.shardIndex();
             client.writeMessages(
                     shard, ImmutableList.of(firstMessage, secondMessage)
             );
@@ -241,9 +249,9 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` removing multiple messages")
         void useStrategyRemovingMessages() {
-            InboxMessage firstMessage = newMessage();
-            InboxMessage secondMessage = newMessage();
-            ShardIndex shard = firstMessage.shardIndex();
+            var firstMessage = newMessage();
+            var secondMessage = newMessage();
+            var shard = firstMessage.shardIndex();
             client.writeMessages(
                     shard, ImmutableList.of(firstMessage, secondMessage)
             );
@@ -265,8 +273,8 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("return empty optional if the message with the ID is not found")
         void findNone() {
-            InboxMessage message = newMessage();
-            Optional<InboxMessage> readMessage = client.find(message.getId());
+            var message = newMessage();
+            var readMessage = client.find(message.getId());
             assertThat(readMessage)
                     .isEmpty();
         }
@@ -274,10 +282,10 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("find a message in the inbox")
         void find() {
-            InboxMessage message = newMessage();
+            var message = newMessage();
             client.writeMessage(message);
 
-            Optional<InboxMessage> readMessage = client.find(message.getId());
+            var readMessage = client.find(message.getId());
             assertThat(readMessage)
                     .isPresent();
         }
@@ -285,13 +293,13 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("read messages in pages")
         void readPages() {
-            List<InboxMessage> messages = generate(30);
-            ShardIndex shard = messages.get(0)
-                                       .shardIndex();
+            var messages = generate(30);
+            var shard = messages.get(0)
+                                .shardIndex();
             client.writeMessages(shard, messages);
 
-            int pageSize = 10;
-            Page<InboxMessage> writtenMessages = client.readAll(shard, pageSize);
+            var pageSize = 10;
+            var writtenMessages = client.readAll(shard, pageSize);
             assertThat(writtenMessages.size())
                     .isEqualTo(pageSize);
             assertThat(writtenMessages.next())
@@ -305,15 +313,15 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("read newest message to deliver")
         void readNewest() {
-            InboxMessage olderMessage = toDeliver(
+            var olderMessage = toDeliver(
                     Timestamps.fromSeconds(100000L),
                     TypeUrl.from(Something.getDescriptor())
             );
-            InboxMessage newerMessage = toDeliver(
+            var newerMessage = toDeliver(
                     Timestamps.fromSeconds(100001L),
                     TypeUrl.from(Something.getDescriptor())
             );
-            InboxMessage newestMessage = toDeliver(
+            var newestMessage = toDeliver(
                     Timestamps.fromSeconds(100002L),
                     TypeUrl.from(Something.getDescriptor())
             );
@@ -322,7 +330,7 @@ final class SimpleDeliveryClientTest {
                     ImmutableList.of(olderMessage, newestMessage, newerMessage)
             );
 
-            Optional<InboxMessage> actual =
+            var actual =
                     client.newestMessageToDeliver(olderMessage.shardIndex());
             assertThat(actual)
                     .hasValue(newestMessage);
@@ -331,7 +339,7 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` finding a message")
         void useStrategyFinding() {
-            InboxMessage message = newMessage();
+            var message = newMessage();
             client.find(message.getId());
 
             assertThat(strategy.voidExecutions())
@@ -343,12 +351,12 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` finding multiple messages")
         void useStrategyFindingMany() {
-            List<InboxMessage> messages = generate(30);
-            ShardIndex shard = messages.get(0)
-                                       .shardIndex();
+            var messages = generate(30);
+            var shard = messages.get(0)
+                                .shardIndex();
             client.writeMessages(shard, messages);
             sleepUninterruptibly(1, TimeUnit.SECONDS);
-            int pageSize = 10;
+            var pageSize = 10;
             client.readAll(shard, pageSize);
 
             assertThat(strategy.voidExecutions())
@@ -360,15 +368,15 @@ final class SimpleDeliveryClientTest {
         @Test
         @DisplayName("use provided `RequestExecutionStrategy` finding newest messages")
         void useStrategyReadingNewest() {
-            InboxMessage olderMessage = toDeliver(
+            var olderMessage = toDeliver(
                     Timestamps.fromSeconds(100000L),
                     TypeUrl.from(Something.getDescriptor())
             );
-            InboxMessage newerMessage = toDeliver(
+            var newerMessage = toDeliver(
                     Timestamps.fromSeconds(100001L),
                     TypeUrl.from(Something.getDescriptor())
             );
-            InboxMessage newestMessage = toDeliver(
+            var newestMessage = toDeliver(
                     Timestamps.fromSeconds(100002L),
                     TypeUrl.from(Something.getDescriptor())
             );

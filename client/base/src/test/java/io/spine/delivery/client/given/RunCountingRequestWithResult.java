@@ -11,7 +11,7 @@ import io.spine.delivery.client.RequestWithResult;
 import static java.lang.String.format;
 
 /**
- * Request for testing purposes that count executions of itself and returns a predefined
+ * A request for testing purposes that counts executions of itself and returns a predefined
  * string result.
  *
  * <p>Can be instructed to throw exceptions.
@@ -61,7 +61,7 @@ public final class RunCountingRequestWithResult implements RequestWithResult<Str
     }
 
     /**
-     * Returns the amount of tomes the {@linkplain #evaluate()} method was called.
+     * Returns the amount of times the {@linkplain #evaluate()} method was called.
      */
     public int runCount() {
         return runCount;

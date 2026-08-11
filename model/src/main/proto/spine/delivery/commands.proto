@@ -67,7 +67,7 @@ message PickUpShard {
     spine.server.delivery.WorkerId worker = 2 [(required) = true];
 }
 
-// Releases the shard which has been previously picked up.
+// Releases the shard that has been previously picked up.
 message ReleaseShard {
 
     // The shard to release.

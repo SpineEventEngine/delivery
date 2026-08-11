@@ -10,6 +10,6 @@ option java_package="io.spine.delivery.demo.command";
 // The person has been already greeted by the greeter.
 message PersonAlreadyGreeted {
 
-    // The name of the person who was already greeted..
+    // The name of the person who was already greeted.
     string name = 1 [(required) = true];
 }

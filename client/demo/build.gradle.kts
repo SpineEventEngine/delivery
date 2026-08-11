@@ -1,28 +1,18 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
-import io.spine.internal.dependency.AppEngine
-import io.spine.internal.dependency.Flogger
-import io.spine.internal.dependency.Grpc
-import io.spine.internal.dependency.JavaX
-import io.spine.internal.dependency.Log4j2
-import io.spine.internal.dependency.Spine
 
-plugins {
-    war
-}
+import io.spine.dependency.lib.Grpc
+import io.spine.dependency.lib.JavaX
 
 dependencies {
+    implementation(project(":client:delivery-client"))
+    // The in-process transport hosting the demo server.
+    implementation(Grpc.inProcess)
+    // The servlet container of the deployment module provides the API at runtime.
+    compileOnly(JavaX.servletApi)
+    // A gRPC transport for connecting to the Delivery server.
     runtimeOnly(Grpc.nettyShaded)
-    runtimeOnly(Log4j2.slf4jBridge)
-    runtimeOnly(Log4j2.core)
-    runtimeOnly(Flogger.Runtime.log4J2)
-    implementation(project(":simple-client"))
-    implementation(Log4j2.api)
-    implementation(Spine.Stable.server)
-    implementation(Spine.Stable.client)
-    implementation(AppEngine.api)  // Latest App Engine APIs.
-    providedCompile(JavaX.servlets)
 }

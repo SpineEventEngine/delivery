@@ -13,7 +13,7 @@ import routes from './routes';
  * directly export the Router instantiation;
  *
  * The function below can be async too; either use
- * async/await or return a Promise which resolves
+ * async/await or return a Promise that resolves
  * with the Router instance.
  */
 

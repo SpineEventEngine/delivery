@@ -1,7 +1,7 @@
 module.exports = {
   // https://eslint.org/docs/user-guide/configuring#configuration-cascading-and-hierarchy
   // This option interrupts the configuration hierarchy at this file
-  // Remove this if you have an higher level ESLint config file (it usually happens into a monorepos)
+  // Remove this if you have a higher-level ESLint config file (it usually happens into a monorepos)
   root: true,
 
   // https://eslint.vuejs.org/user-guide/#how-to-use-a-custom-parser
@@ -40,7 +40,7 @@ module.exports = {
   ],
 
   plugins: [
-    // required to apply rules which need type information
+    // required to apply rules that need type information
     '@typescript-eslint',
 
     // https://eslint.vuejs.org/user-guide/#why-doesn-t-it-work-on-vue-files
@@ -94,7 +94,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
 
     // The core 'no-unused-vars' rules (in the eslint:recommended ruleset)
-    // does not work with type definitions
+    // do not work with type definitions
     'no-unused-vars': 'off',
 
     // allow debugger during development only

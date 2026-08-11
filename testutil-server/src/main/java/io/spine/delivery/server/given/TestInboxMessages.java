@@ -30,7 +30,7 @@ import static io.spine.server.delivery.InboxMessageStatus.TO_CATCH_UP;
 import static io.spine.server.delivery.InboxMessageStatus.TO_DELIVER;
 
 /**
- * Provides the instances of {@link InboxMessage}s to use as a data in tests.
+ * Provides the instances of {@link InboxMessage}s to use as data in tests.
  */
 public final class TestInboxMessages {
 
@@ -38,7 +38,7 @@ public final class TestInboxMessages {
             new TestActorRequestFactory(TestInboxMessages.class);
 
     /**
-     * Does not allow to instantiate this utility class.
+     * Does not allow instantiating this utility class.
      */
     private TestInboxMessages() {
     }
@@ -171,18 +171,18 @@ public final class TestInboxMessages {
     /**
      * Generates a new {@code InboxMessage} in
      * {@link InboxMessageStatus#TO_DELIVER TO_DELIVER} status on top
-     * of the passed in command and sets the receiving time according to the passed value.
+     * of the passed-in command and sets the receiving time according to the passed value.
      */
     public static InboxMessage toDeliver(Command source, Timestamp whenReceived) {
-        InboxId inboxId = newInboxId("some-target", TypeUrl.of(Something.class));
-        InboxMessage message = messageReceivedAt(source, TO_DELIVER, inboxId, whenReceived);
+        var inboxId = newInboxId("some-target", TypeUrl.of(Something.class));
+        var message = messageReceivedAt(source, TO_DELIVER, inboxId, whenReceived);
         return message;
     }
 
     private static InboxMessage newMessage(Object target, TypeUrl type, InboxMessageStatus status) {
-        Command command = generateCommand(target);
-        InboxId inboxId = newInboxId(target, type);
-        InboxMessage message = messageReceivedAt(command, status, inboxId, Time.currentTime());
+        var command = generateCommand(target);
+        var inboxId = newInboxId(target, type);
+        var message = messageReceivedAt(command, status, inboxId, Time.currentTime());
         return message;
     }
 
@@ -190,12 +190,12 @@ public final class TestInboxMessages {
                                                   InboxMessageStatus status,
                                                   InboxId inboxId,
                                                   Timestamp whenReceived) {
-        ShardIndex index = DeliveryStrategy.newIndex(0, 1);
-        InboxMessageId id = InboxMessageMixin.generateIdWith(index);
-        InboxSignalId.Builder signalId = InboxSignalId.newBuilder()
+        var index = DeliveryStrategy.newIndex(0, 1);
+        var id = InboxMessageMixin.generateIdWith(index);
+        var signalId = InboxSignalId.newBuilder()
                 .setValue(command.getId()
                                  .value());
-        InboxMessage result = InboxMessage.newBuilder()
+        var result = InboxMessage.newBuilder()
                 .setId(id)
                 .setStatus(status)
                 .setCommand(command)
@@ -219,7 +219,7 @@ public final class TestInboxMessages {
     }
 
     private static Command generateCommand(Object targetId) {
-        DoSmth commandMessage = DoSmth.newBuilder()
+        var commandMessage = DoSmth.newBuilder()
                 .setId("some-id-" + targetId)
                 .setWhatToDo("Something!")
                 .build();

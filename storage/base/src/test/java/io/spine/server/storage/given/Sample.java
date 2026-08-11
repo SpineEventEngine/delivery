@@ -130,38 +130,31 @@ public class Sample {
         var type = field.getType();
         var javaType = type.getJavaType();
         Random random = new SecureRandom();
-        switch (javaType) {
-            case INT:
-                return random.nextInt();
-            case LONG:
-                return random.nextLong();
-            case FLOAT:
-                return random.nextFloat();
-            case DOUBLE:
-                return random.nextDouble();
-            case BOOLEAN:
-                return random.nextBoolean();
-            case STRING:
+        return switch (javaType) {
+            case INT -> random.nextInt();
+            case LONG -> random.nextLong();
+            case FLOAT -> random.nextFloat();
+            case DOUBLE -> random.nextDouble();
+            case BOOLEAN -> random.nextBoolean();
+            case STRING -> {
                 var bytes = new byte[8];
                 random.nextBytes(bytes);
-                return new String(bytes, StandardCharsets.UTF_8);
-            case BYTE_STRING:
+                yield new String(bytes, StandardCharsets.UTF_8);
+            }
+            case BYTE_STRING -> {
                 var bytesPrimitive = new byte[8];
                 random.nextBytes(bytesPrimitive);
-                return ByteString.copyFrom(bytesPrimitive);
-            case ENUM:
-                return enumValueFor(field, random);
-            case MESSAGE:
-                return messageValueFor(field);
-            default:
-                throw new IllegalArgumentException(format("Field type %s is not supported.", type));
-        }
+                yield ByteString.copyFrom(bytesPrimitive);
+            }
+            case ENUM -> enumValueFor(field, random);
+            case MESSAGE -> messageValueFor(field);
+        };
     }
 
     /**
      * Generates a random enum value for the specified {@code field}.
      *
-     * <p>Value under index 0 is usually used to store `undefined` option so it is skipped.
+     * <p>The value under index 0 is usually used to store the `undefined` option so it is skipped.
      * Use values with indexes from 1 to n.
      */
     private static Object enumValueFor(FieldDescriptor field, Random random) {

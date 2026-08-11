@@ -5,7 +5,7 @@
  */
 
 /**
- * This package contains a storage query-related types.
+ * This package contains storage query-related types.
  */
 @CheckReturnValue
 @NullMarked

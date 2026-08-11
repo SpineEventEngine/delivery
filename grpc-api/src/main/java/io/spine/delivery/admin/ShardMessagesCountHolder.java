@@ -37,7 +37,7 @@ public final class ShardMessagesCountHolder implements WithLogging {
     }
 
     /**
-     * Creates a new {@code ShardMessagesHolder} and feels it with the given {@code initial}
+     * Creates a new {@code ShardMessagesHolder} and fills it with the given {@code initial}
      * mapping.
      */
     public ShardMessagesCountHolder(Map<ShardIndex, Integer> initial) {
@@ -49,11 +49,11 @@ public final class ShardMessagesCountHolder implements WithLogging {
      *
      * <p>In the implementation we rely on the fact that the {@code merge()}
      * operation is atomic in the {@code ConcurrentHashMap}. If one update of the map
-     * is in progress other updates will be postponed by the time when
-     * the first update pass.
+     * is in progress, other updates will be postponed by the time when
+     * the first update passes.
      *
      * <p>In some rare cases if the {@code delta} is {@code -1} (message removed) and the
-     * map doesn't contain any info about the shard with the {@code index} the count will
+     * map doesn't contain any info about the shard with the {@code index}, the count will
      * become {@code -1}. This means that we have events misordering and
      * the “MessageRemoved” update arrived earlier than the “MessageWritten”.
      * That's why we don't force the count to be always positive, hoping that
@@ -67,7 +67,7 @@ public final class ShardMessagesCountHolder implements WithLogging {
     /**
      * Creates and returns a new mutable copy of the underlying mapping.
      *
-     * <p>Changes in the returned map doesn't affect the original mapping.
+     * <p>Changes in the returned map don't affect the original mapping.
      */
     public Map<ShardIndex, Integer> toMutableMap() {
         return new HashMap<>(messagesInShards);

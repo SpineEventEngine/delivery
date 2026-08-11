@@ -52,18 +52,18 @@ class MultitenantStorageTest {
     @BeforeEach
     void setUp() {
         redis.start();
-        Config redisConfig = new Config();
-        String redisAddress = String.format(
+        var redisConfig = new Config();
+        var redisAddress = String.format(
                 "redis://%s:%d", redis.getHost(), redis.getFirstMappedPort()
         );
         redisConfig.useSingleServer()
                    .setAddress(redisAddress);
-        RedissonClient client = Redisson.create(redisConfig);
+        var client = Redisson.create(redisConfig);
         multitenantStorage =
                 new MultitenantStorage<>(IS_MULTITENANT) {
                     @Override
                     TenantRecords<ProjectId, Project> createSlice(TenantId tenant) {
-                        String recordsMap = tenant.getValue() + '-' + getClass().getName();
+                        var recordsMap = tenant.getValue() + '-' + getClass().getName();
                         RMap<String, byte[]> records = client.getMap(recordsMap);
                         return new TenantRecords<>(records, recordSpec);
                     }
@@ -79,31 +79,31 @@ class MultitenantStorageTest {
     @DisplayName("return same slice within single tenant and multitenant environment")
     void returnSameSlice()
             throws InterruptedException, ExecutionException {
-        int numberOfTasks = 1000;
+        var numberOfTasks = 1000;
         Collection<Callable<TenantRecords<ProjectId, Project>>> tasks =
                 newArrayListWithExpectedSize(numberOfTasks);
 
-        for (int i = 0; i < numberOfTasks; i++) {
+        for (var i = 0; i < numberOfTasks; i++) {
             tasks.add(() -> {
-                TenantRecords<ProjectId, Project> storage =
+                var storage =
                         multitenantStorage.currentSlice();
                 return storage;
             });
         }
 
-        List<Future<TenantRecords<ProjectId, Project>>> futures =
+        var futures =
                 executeInMultithreadedEnvironment(tasks);
-        Set<TenantRecords<ProjectId, Project>> tenantRecords =
+        var tenantRecords =
                 convertFuturesToSetOfCompletedResults(futures);
 
-        int expected = 1;
+        var expected = 1;
         assertEquals(expected, tenantRecords.size());
     }
 
     private static <R> Set<R> convertFuturesToSetOfCompletedResults(List<Future<R>> futures)
             throws ExecutionException, InterruptedException {
         Set<R> tenantRecords = newHashSetWithExpectedSize(futures.size());
-        for (Future<R> future : futures) {
+        for (var future : futures) {
             tenantRecords.add(future.get());
         }
         return tenantRecords;
@@ -111,9 +111,9 @@ class MultitenantStorageTest {
 
     private static <R> List<Future<R>>
     executeInMultithreadedEnvironment(Collection<Callable<R>> tasks) throws InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime()
-                                                                       .availableProcessors() * 2);
-        List<Future<R>> futures = executor.invokeAll(tasks);
+        var executor = Executors.newFixedThreadPool(Runtime.getRuntime()
+                                                           .availableProcessors() * 2);
+        var futures = executor.invokeAll(tasks);
         return futures;
     }
 }

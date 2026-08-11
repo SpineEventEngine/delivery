@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Filters out updates that were sent before the response had been acknowledged.
  *
  * <p>This observer guarantees that the {@code SubscriptionResponse} acknowledging the subscription
- * arrives first. All the updates that may be posted before acknowledging response
+ * arrives first. All the updates that may be posted before acknowledging the response
  * are omitted by this observer.
  */
 public final class FilteringObserver extends ServerCallStreamObserver<SubscriptionResponse> {

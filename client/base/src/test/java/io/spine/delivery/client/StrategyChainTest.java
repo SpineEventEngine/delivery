@@ -39,7 +39,7 @@ final class StrategyChainTest {
     @Test
     @DisplayName("do not allow `null`s")
     void beNpeSafe() {
-        NullPointerTester tester = new NullPointerTester();
+        var tester = new NullPointerTester();
         tester.testAllPublicInstanceMethods(strategy);
         tester.testAllPublicConstructors(strategy.getClass());
         tester.testAllPublicStaticMethods(strategy.getClass());
@@ -48,7 +48,7 @@ final class StrategyChainTest {
     @Test
     @DisplayName("use only first strategy if `VoidRequest` succeeds")
     void useOnlyFirstStrategyWithVoidRequest() {
-        RunCountingVoidRequest operation = newRunCountingVoidRequest();
+        var operation = newRunCountingVoidRequest();
         strategy.execute(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
@@ -62,7 +62,7 @@ final class StrategyChainTest {
     @Test
     @DisplayName("use only first strategy `RequestWithResult` succeeds")
     void useOnlyFirstStrategyWithRequestWithResult() {
-        RunCountingRequestWithResult operation = newRunCountingRequestWithResult();
+        var operation = newRunCountingRequestWithResult();
         strategy.evaluate(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);

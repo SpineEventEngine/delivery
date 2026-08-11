@@ -38,7 +38,7 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
- * Application exposing only an {@link InboxService} and {@link ShardService} instances via gRPC.
+ * Application exposing only {@link InboxService} and {@link ShardService} instances via gRPC.
  */
 public final class SimpleApp implements WithLogging {
 
@@ -55,6 +55,12 @@ public final class SimpleApp implements WithLogging {
      */
     private static final int STARTUP_TIMEOUT_SECONDS = 10;
 
+    /**
+     * How long {@link #shutdown()} waits for the gRPC server to terminate gracefully
+     * before forcing the termination.
+     */
+    private static final int SHUTDOWN_TIMEOUT_SECONDS = 5;
+
     private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB; // 4 MiB
 
     /**
@@ -67,13 +73,13 @@ public final class SimpleApp implements WithLogging {
     private static final Duration NO_SHARD_PROCESSING_TIMEOUT = Durations.ZERO;
 
     /**
-     * A host to use for gRPC server.
+     * A host to use for a gRPC server.
      */
     @VisibleForTesting
     public static final String HOST = "127.0.0.1";
 
     /**
-     * A port to use for gRPC server.
+     * A port to use for a gRPC server.
      */
     @VisibleForTesting
     public static final int PORT = port();
@@ -136,7 +142,7 @@ public final class SimpleApp implements WithLogging {
     }
 
     /**
-     * Creates and starts a gRPC server and serves {@code Delivery} bounded context.
+     * Creates and starts a gRPC server and serves the {@code Delivery} bounded context.
      */
     public static void main(String[] args) {
         var app = new SimpleApp();
@@ -165,10 +171,10 @@ public final class SimpleApp implements WithLogging {
      * a caller waiting for the port learns the cause instead of waiting for the timeout.
      */
     private void runServer() throws Exception {
-        ReportingStorageFactory factory = storageFactory();
-        InboxService inboxService = new InboxService(factory);
-        ShardService shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
-        AdminService adminService = new AdminService(factory);
+        var factory = storageFactory();
+        var inboxService = new InboxService(factory);
+        var shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
+        var adminService = new AdminService(factory);
         healthService = new HealthService()
                 .register(inboxService)
                 .register(shardService)
@@ -184,7 +190,7 @@ public final class SimpleApp implements WithLogging {
                 .build();
         logger().atInfo().log(() -> format("Starting gRPC server..."));
         logger().atInfo().log(() -> format("Configured inbound message size: `%d` bytes.", MESSAGE_SIZE));
-        Runtime runtime = Runtime.getRuntime();
+        var runtime = Runtime.getRuntime();
         logger().atInfo().log(() -> format("Available memory %dMb.", runtime.maxMemory() / BYTES_IN_MB));
         logger().atInfo().log(() -> format("Configured shard processing timeout: `%d` seconds.",
                     SHARD_PROCESSING_TIMEOUT.getSeconds()));
@@ -238,7 +244,15 @@ public final class SimpleApp implements WithLogging {
     }
 
     /**
-     * Shuts down the application.
+     * Shuts down the application and awaits the termination of the gRPC server.
+     *
+     * <p>Awaiting matters both in production — the method runs as a JVM shutdown hook,
+     * so returning early would let the JVM die while connections are still served — and
+     * in tests, where a server still releasing its resources after this method returns
+     * may race the connections of the next started test.
+     *
+     * <p>If the server does not terminate within {@link #SHUTDOWN_TIMEOUT_SECONDS},
+     * or the current thread is interrupted, the termination is forced.
      */
     @VisibleForTesting
     public void shutdown() {
@@ -247,6 +261,28 @@ public final class SimpleApp implements WithLogging {
         }
         if (server != null) {
             server.shutdown();
+            awaitTermination();
+        }
+    }
+
+    /**
+     * Waits until the {@link #server} terminates, forcing the termination on timeout
+     * or interruption.
+     */
+    private void awaitTermination() {
+        try {
+            var terminated = server.awaitTermination(SHUTDOWN_TIMEOUT_SECONDS, SECONDS);
+            if (!terminated) {
+                // A forceful shutdown is asynchronous too, so it is awaited as well.
+                // Otherwise this method could return while `runServer()` is still
+                // blocked and its storage factory still open.
+                server.shutdownNow();
+                server.awaitTermination(SHUTDOWN_TIMEOUT_SECONDS, SECONDS);
+            }
+        } catch (InterruptedException e) {
+            server.shutdownNow();
+            Thread.currentThread()
+                  .interrupt();
         }
     }
 
@@ -261,7 +297,7 @@ public final class SimpleApp implements WithLogging {
     /**
      * Closes the given {@code factory}.
      *
-     * <p>Wraps the {@code close()} method into try / catch block and rethrows caught
+     * <p>Wraps the {@code close()} method into a try / catch block and rethrows caught
      * {@code Exception} as {@code UnableToCloseStorageFactory}.
      */
     private static void close(StorageFactory factory) {
@@ -274,7 +310,7 @@ public final class SimpleApp implements WithLogging {
 
     private static int port() {
         @SuppressWarnings("CallToSystemGetenv")
-        String port = System.getenv("PORT");
+        var port = System.getenv("PORT");
         if (isNullOrEmpty(port)) {
             return DEFAULT_PORT;
         }
@@ -283,7 +319,7 @@ public final class SimpleApp implements WithLogging {
 
     private static int messageSize() {
         @SuppressWarnings("CallToSystemGetenv")
-        String size = System.getenv("MAX_INBOUND_MESSAGE_SIZE");
+        var size = System.getenv("MAX_INBOUND_MESSAGE_SIZE");
         if (isNullOrEmpty(size)) {
             return DEFAULT_MESSAGE_SIZE;
         }
@@ -292,7 +328,7 @@ public final class SimpleApp implements WithLogging {
 
     private static Duration shardProcessingTimeout() {
         @SuppressWarnings("CallToSystemGetenv")
-        String envVariable = System.getenv("SHARD_PROCESSING_TIMEOUT");
+        var envVariable = System.getenv("SHARD_PROCESSING_TIMEOUT");
         if (isNullOrEmpty(envVariable)) {
             return NO_SHARD_PROCESSING_TIMEOUT;
         }
@@ -318,13 +354,13 @@ public final class SimpleApp implements WithLogging {
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static boolean useRedis() {
-        Map<String, String> envs = System.getenv();
+        var envs = System.getenv();
         return envs.containsKey("USE_REDIS") && envs.containsKey("REDIS_HOST");
     }
 
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static boolean useHazelcast() {
-        Map<String, String> envs = System.getenv();
+        var envs = System.getenv();
         return envs.containsKey("USE_HAZELCAST");
     }
 
@@ -332,7 +368,7 @@ public final class SimpleApp implements WithLogging {
      * Configures Log4j2 as the <a href="https://github.com/google/flogger">Flogger</a> backend.
      */
     @SuppressWarnings({
-            "DuplicateStringLiteralInspection", /* Used in non-related context. */
+            "DuplicateStringLiteralInspection", /* Used in a non-related context. */
             "AccessOfSystemProperties" /* There is no better way to configure Flogger. */
     })
     private static void useLog4j2FloggerBackend() {

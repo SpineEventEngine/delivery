@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static java.util.UUID.randomUUID;
 
 /**
- * Storage that can report update operation performed with its records to subscribers.
+ * Storage that can report an update operation performed with its records to subscribers.
  *
  * @param <I>
  *         the type of the record identifiers
@@ -34,7 +34,7 @@ public final class ReportingRecordStorage<I, R extends Message>
     /**
      * Stores subscriptions of this storage.
      *
-     * <p>The implementation is {@code ConcurrentHashMap} to avoid
+     * <p>The implementation is a {@code ConcurrentHashMap} to avoid
      * the {@code ConcurrentModificationException} in cases when we iterate over the map values
      * to notify subscribers and a new subscriber appears.
      */
@@ -56,7 +56,7 @@ public final class ReportingRecordStorage<I, R extends Message>
      * Subscribes to the update operations of this storage with the given {@code subscriber}.
      */
     public StorageSubscription subscribe(StorageSubscriber<I, R> subscriber) {
-        String id = randomUUID().toString();
+        var id = randomUUID().toString();
         this.subscriptions.put(id, subscriber);
         return () -> subscriptions.remove(id);
     }

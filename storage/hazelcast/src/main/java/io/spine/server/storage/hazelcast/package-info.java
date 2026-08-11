@@ -5,11 +5,7 @@
  */
 
 /**
- * This package provides implementation of Hazelcast-based storages.
- */
-
-/**
- * Package provides Hazelcast-based implementation of storages.
+ * This package provides an implementation of Hazelcast-based storages.
  */
 @CheckReturnValue
 @NullMarked

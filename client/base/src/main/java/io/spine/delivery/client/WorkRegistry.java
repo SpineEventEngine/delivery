@@ -8,7 +8,6 @@ package io.spine.delivery.client;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Duration;
-import io.spine.logging.Logging;
 import io.spine.delivery.event.ExpiredSession;
 import io.spine.delivery.event.ExpiredSessionsReleased;
 import io.spine.server.NodeId;
@@ -26,7 +25,7 @@ import static io.spine.util.Preconditions2.checkNotDefaultArg;
 /**
  * A work registry backed by the remote {@link SessionRegistryClient}.
  */
-public final class WorkRegistry implements ShardedWorkRegistry, Logging {
+public final class WorkRegistry implements ShardedWorkRegistry {
 
     private final Supplier<? extends SessionRegistryClient> client;
 
@@ -41,7 +40,7 @@ public final class WorkRegistry implements ShardedWorkRegistry, Logging {
      * {@inheritDoc}
      *
      * <p>The ID of the worker that tries to pick a shard is the concatenation of the
-     * provided node ID and current thread ID.
+     * provided node ID and the current thread ID.
      */
     @Override
     public PickUpOutcome pickUp(ShardIndex index, NodeId nodeId) {
@@ -58,17 +57,17 @@ public final class WorkRegistry implements ShardedWorkRegistry, Logging {
     }
 
     private static WorkerId workerId(NodeId nodeId) {
-        String threadId = String.valueOf(Thread.currentThread()
-                                               .getId());
+        var threadId = String.valueOf(Thread.currentThread()
+                                            .getId());
         return WorkerId.newBuilder()
                 .setNodeId(nodeId)
                 .setValue(threadId)
-                .vBuild();
+                .build();
     }
 
     private void releaseShard(ShardSessionRecord session) {
-        WorkerId worker = session.getWorker();
-        ShardIndex shard = session.getIndex();
+        var worker = session.getWorker();
+        var shard = session.getIndex();
         client.get()
               .releaseShard(shard, worker);
     }
@@ -76,7 +75,7 @@ public final class WorkRegistry implements ShardedWorkRegistry, Logging {
     @Override
     public Iterable<ShardIndex> releaseExpiredSessions(Duration inactivityPeriod) {
         checkNotDefaultArg(inactivityPeriod);
-        ExpiredSessionsReleased sessionsReleased =
+        var sessionsReleased =
                 client.get()
                       .releaseExpiredSessions(inactivityPeriod);
         return sessionsReleased

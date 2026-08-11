@@ -22,10 +22,10 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import java.util.function.Supplier;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Suppliers.memoize;
+import static io.spine.util.Suppliers2.memoize;
 
 /**
- * Provides fluent API for building a {@link Delivery} backed by the Message Delivery Server.
+ * Provides a fluent API for building a {@link Delivery} backed by the Message Delivery Server.
  *
  * @param <T>
  *         the type of the bootstrapper
@@ -45,8 +45,8 @@ public abstract class AbstractDeliveryBootstrapper<T extends AbstractDeliveryBoo
     }
 
     /**
-     * Configures delivery to be using the given {@code strategy} to handle possible failures
-     * during interaction with server.
+     * Configures the delivery to be using the given {@code strategy} to handle possible failures
+     * during interaction with the server.
      */
     public final T withExecutionStrategy(RequestExecutionStrategy strategy) {
         this.strategy = checkNotNull(strategy);
@@ -70,12 +70,12 @@ public abstract class AbstractDeliveryBootstrapper<T extends AbstractDeliveryBoo
     }
 
     /**
-     * Returns typed bootstrapper.
+     * Returns the typed bootstrapper.
      */
     protected abstract T self();
 
     /**
-     * Returns configured {@code RequestExecutionStrategy} or {@link Propagate} strategy
+     * Returns the configured {@code RequestExecutionStrategy} or {@link Propagate} strategy
      * if it was not customized.
      */
     protected final RequestExecutionStrategy executionStrategy() {
@@ -83,12 +83,12 @@ public abstract class AbstractDeliveryBootstrapper<T extends AbstractDeliveryBoo
     }
 
     /**
-     * Creates a new {@code InboxClient} which uses supplied {@code channel}.
+     * Creates a new {@code InboxClient} that uses the supplied {@code channel}.
      */
     protected abstract InboxClient newInboxClient(Supplier<ManagedChannel> channel);
 
     /**
-     * Creates a new {@code SessionRegistryClient} which uses supplied {@code channel}.
+     * Creates a new {@code SessionRegistryClient} that uses the supplied {@code channel}.
      */
     protected abstract SessionRegistryClient
     newSessionRegistryClient(Supplier<ManagedChannel> channel);

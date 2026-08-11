@@ -47,7 +47,7 @@ public final class RedisStorageFactory implements StorageFactory {
     }
 
     /**
-     * Creates new instance of the factory which uses supplied {@code client} to talk to Redis.
+     * Creates a new instance of the factory that uses the supplied {@code client} to talk to Redis.
      *
      * @return new instance of the factory
      */
@@ -56,7 +56,7 @@ public final class RedisStorageFactory implements StorageFactory {
     }
 
     /**
-     * Creates new instance of the factory which would serve the specified context.
+     * Creates a new instance of the factory that would serve the specified context.
      *
      * <p>Parses Redis {@link org.redisson.config.Config configuration} from
      * a {@linkplain #DEFAULT_CONFIG_LOCATIONS well-known configuration file}.

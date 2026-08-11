@@ -8,7 +8,7 @@ package io.spine.delivery.demo;
 
 import com.google.common.net.MediaType;
 import io.spine.client.Subscription;
-import io.spine.json.Json;
+import io.spine.type.Json;
 import io.spine.delivery.demo.command.GreetAnArmy;
 import io.spine.delivery.demo.event.SaidHello;
 
@@ -31,60 +31,61 @@ import static javax.servlet.http.HttpServletResponse.SC_OK;
 public final class GreetArmyServlet extends ContextAwareServlet {
 
     @Override
-    @SuppressWarnings("UnstableApiUsage")  /* Using Guava's type which hasn't changed since 2012. */
+    @SuppressWarnings("UnstableApiUsage")  /* Using Guava's type that hasn't changed since 2012. */
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        _debug().log("Starting to greet an army.");
+        logger().atDebug().log(() -> "Starting to greet an army.");
 
-        @SuppressWarnings("MagicNumber") int howManySoldiers = 1000;
-        _info().log("Today's army count is %d.", howManySoldiers);
+        var howManySoldiers = 1000;
+        logger().atInfo().log(() -> format("Today's army count is %d.", howManySoldiers));
 
-        GreetAnArmy greetAnArmy = GreetAnArmy.newBuilder()
+        var greetAnArmy = GreetAnArmy.newBuilder()
                 .setHowManySoldiers(howManySoldiers)
-                .vBuild();
+                .build();
 
-        long startMillis = System.currentTimeMillis();
-        CountDownLatch greeted = new CountDownLatch(howManySoldiers);
-        Subscription subscription = spineClient
+        var startMillis = System.currentTimeMillis();
+        var greeted = new CountDownLatch(howManySoldiers);
+        var subscription = spineClient
                 .asGuest()
-                .onServerError((msg, error) -> {
-                    _trace().log(
-                            "Server was not able to `%s`: %s",
-                            msg.getClass(), error
-                    );
-                    throw newIllegalStateException(
-                            "Something went terribly wrong: %s.", Json.toCompactJson(error)
-                    );
-                })
-                .onStreamingError(error -> _trace()
-                        .withCause(error)
-                        .log("gRPC streaming error occurred while observing greetings."))
                 .subscribeToEvent(SaidHello.class)
+                .onStreamingError(error -> logger()
+                        .atTrace()
+                        .withCause(error)
+                        .log(() -> "gRPC streaming error occurred while observing greetings."))
                 .observe(e -> {
-                    String greeting = e.getGreeting();
-                    _info().log("One of the soldiers was greeted: `%s`", greeting);
+                    var greeting = e.getGreeting();
+                    logger().atInfo().log(() -> format(
+                            "One of the soldiers was greeted: `%s`", greeting));
                     greeted.countDown();
                     if (greeted.getCount() == 0) {
                         logPerformance(howManySoldiers, startMillis);
                     }
                 })
                 .post();
-        _debug().log("Subscribed on `SaidHello` events.");
+        logger().atDebug().log(() -> "Subscribed on `SaidHello` events.");
         spineClient
                 .asGuest()
                 .command(greetAnArmy)
+                .onServerError((msg, error) -> {
+                    logger().atTrace().log(() -> format("Server was not able to `%s`: %s",
+                            msg.getClass(), error));
+                    throw newIllegalStateException(
+                            "Something went terribly wrong: %s.", Json.toCompactJson(error)
+                    );
+                })
                 .postAndForget();
-        _debug().log("Army greeting requested.");
+        logger().atDebug().log(() -> "Army greeting requested.");
         try {
-            _debug().log("Waiting the army to be greeted.");
+            logger().atDebug().log(() -> "Waiting the army to be greeted.");
             greeted.await(5, TimeUnit.MINUTES);
-            _trace().log("Greeted army latch count is %d.", greeted.getCount());
+            logger().atTrace().log(() -> format(
+                    "Greeted army latch count is %d.", greeted.getCount()));
         } catch (InterruptedException e) {
             throw newIllegalStateException(
                     e, "Hanged while waiting for the army to be greeted greeting :-("
             );
         }
-        long durationMillis = System.currentTimeMillis() - startMillis;
-        _debug().log("Unsubscribing from the greeting updates.");
+        var durationMillis = System.currentTimeMillis() - startMillis;
+        logger().atDebug().log(() -> "Unsubscribing from the greeting updates.");
         spineClient.subscriptions()
                    .cancel(subscription);
         resp.setContentType(MediaType.PLAIN_TEXT_UTF_8.type());
@@ -94,10 +95,10 @@ public final class GreetArmyServlet extends ContextAwareServlet {
     }
 
     private void logPerformance(int howManySoldiers, long startMillis) {
-        long endMillis = System.currentTimeMillis();
-        long durationMillis = endMillis - startMillis;
-        double perSoldier = durationMillis / (double) howManySoldiers;
-        _info().log("Army was greeted for %d ms. That's about %f ms per soldier.",
-                    durationMillis, perSoldier);
+        var endMillis = System.currentTimeMillis();
+        var durationMillis = endMillis - startMillis;
+        var perSoldier = durationMillis / (double) howManySoldiers;
+        logger().atInfo().log(() -> format("Army was greeted for %d ms. That's about %f ms per soldier.",
+                    durationMillis, perSoldier));
     }
 }

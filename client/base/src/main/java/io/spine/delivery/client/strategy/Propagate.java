@@ -7,7 +7,7 @@
 package io.spine.delivery.client.strategy;
 
 /**
- * Strategy that doesn't handle errors but propagates them if the request failed.
+ * A strategy that doesn't handle errors but propagates them if the request failed.
  */
 public final class Propagate extends AbstractExecutionStrategy {
 

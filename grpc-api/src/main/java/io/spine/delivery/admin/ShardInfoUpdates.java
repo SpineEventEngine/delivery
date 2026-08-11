@@ -67,8 +67,7 @@ public final class ShardInfoUpdates {
      */
     private static ShardInfoUpdate.Builder changesFor(ShardIndex index) {
         checkNotDefaultArg(index);
-        return ShardInfoUpdate
-                .newBuilder()
+        return ShardInfoUpdate.newBuilder()
                 .setIndex(index);
     }
 }

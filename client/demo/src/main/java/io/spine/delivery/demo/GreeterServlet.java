@@ -21,6 +21,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import static io.spine.util.Exceptions.newIllegalStateException;
+import static java.lang.String.format;
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 import static javax.servlet.http.HttpServletResponse.SC_OK;
 
@@ -36,30 +37,31 @@ public final class GreeterServlet extends ContextAwareServlet {
     @Override
     @SuppressWarnings("UnstableApiUsage" /* `MediaType` is available for around 10 years now. */)
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        _debug().log("Handling a greeting.");
-        String personName = req.getParameter("name");
+        logger().atDebug().log(() -> "Handling a greeting.");
+        var personName = req.getParameter("name");
         if (Strings.isNullOrEmpty(personName)) {
-            _info().log("No person name specified.");
+            logger().atInfo().log(() -> "No person name specified.");
             resp.sendError(
                     SC_BAD_REQUEST,
                     "The person name must be specified in the `name` parameter."
             );
             return;
         }
-        _info().log("Greeting person `%s`.", personName);
-        SayHello sayHello = SayHello.newBuilder()
+        logger().atInfo().log(() -> format("Greeting person `%s`.", personName));
+        var sayHello = SayHello.newBuilder()
                 .setName(personName)
-                .vBuild();
-        CountDownLatch greeted = new CountDownLatch(1);
-        long startTime = System.currentTimeMillis();
-        ImmutableSet<Subscription> subscriptions = spineClient
+                .build();
+        var greeted = new CountDownLatch(1);
+        var startTime = System.currentTimeMillis();
+        var subscriptions = spineClient
                 .asGuest()
                 .command(sayHello)
                 .observe(SaidHello.class, e -> {
-                    long endTime = System.currentTimeMillis();
-                    String greeting = e.getGreeting();
-                    _info().log("Said `%s` to `%s` in %d ms.",
-                                greeting, personName, (endTime - startTime));
+                    var endTime = System.currentTimeMillis();
+                    var greeting = e.getGreeting();
+                    logger().atInfo().log(() -> format(
+                            "Said `%s` to `%s` in %d ms.",
+                            greeting, personName, (endTime - startTime)));
                     try {
                         resp.setContentType(MediaType.PLAIN_TEXT_UTF_8.type());
                         resp.getWriter()
@@ -74,21 +76,21 @@ public final class GreeterServlet extends ContextAwareServlet {
                     }
                 })
                 .onServerError((msg, error) -> {
-                    _trace().log(
+                    logger().atTrace().log(() -> format(
                             "Server was not able to handle the command `%s`: %s",
-                            msg.getClass(), error
-                    );
+                            msg.getClass(), error));
                     greeted.countDown();
                 })
                 .post();
         try {
-            _debug().log("Waiting for the command to path through.");
+            logger().atDebug().log(() -> "Waiting for the command to pass through.");
             greeted.await(30, TimeUnit.SECONDS);
-            _trace().log("Greeted latch count is %d.", greeted.getCount());
+            logger().atTrace().log(() -> format(
+                    "Greeted latch count is %d.", greeted.getCount()));
         } catch (InterruptedException e) {
             throw newIllegalStateException(e, "Hanged while waiting for a greeting :-(");
         }
-        _debug().log("Unsubscribing from updates.");
+        logger().atDebug().log(() -> "Unsubscribing from updates.");
         subscriptions.forEach(spineClient.subscriptions()::cancel);
     }
 }

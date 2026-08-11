@@ -50,7 +50,7 @@ public class MemoizingStorageSubscriber<I, R extends Message> implements Storage
     }
 
     /**
-     * Represents a single write operation that the {@code MemoizingUpdateSubscriber} have been
+     * Represents a single write operation that the {@code MemoizingUpdateSubscriber} has been
      * notified about.
      */
     public static class SingleWrite<I, R extends Message> {

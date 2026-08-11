@@ -11,7 +11,7 @@ import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterrup
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
- * An error handling strategy that will be waiting a certain amount of time before
+ * An error-handling strategy that will be waiting a certain amount of time before
  * retrying a failed request.
  */
 public final class WaitAndRetry extends AbstractExecutionStrategy {
@@ -22,10 +22,10 @@ public final class WaitAndRetry extends AbstractExecutionStrategy {
     private int attempts = 0;
 
     /**
-     * Starts creation chain for the {@code WaitAndRetry} strategy.
+     * Starts a creation chain for the {@code WaitAndRetry} strategy.
      *
      * @param seconds
-     *         amount of seconds to wait before trying to execute failed request again.
+     *         the amount of seconds to wait before trying to execute a failed request again.
      */
     public static Builder forSeconds(int seconds) {
         checkArgument(seconds > 0, "Number of seconds must be positive. Encountered: %s.", seconds);

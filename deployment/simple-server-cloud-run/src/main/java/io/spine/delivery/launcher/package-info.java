@@ -5,7 +5,7 @@
  */
 
 /**
- * Contains classes that help running the Delivery server.
+ * Contains classes that help run the Delivery server.
  */
 @CheckReturnValue
 @NullMarked

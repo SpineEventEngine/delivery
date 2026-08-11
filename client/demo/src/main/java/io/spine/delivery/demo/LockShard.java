@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import static io.spine.delivery.demo.GreeterContext.NAME;
 
 /**
- * Provides a GET HTTP request handler which picks up a delivery shard
+ * Provides a GET HTTP request handler that picks up a delivery shard
  * using the {@link io.spine.delivery.client.SimpleDeliveryClient SimpleDeliveryClient}.
  */
 @SuppressWarnings("serial")
@@ -28,13 +28,13 @@ public final class LockShard extends ContextAwareServlet {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        _info().log("Picking up a shard!");
-        WorkerId worker = WorkerId.newBuilder()
+        logger().atInfo().log(() -> "Picking up a shard!");
+        var worker = WorkerId.newBuilder()
                 .setNodeId(ServerEnvironment.instance()
                                    .nodeId())
                 .setValue(NAME)
-                .vBuild();
-        ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
+                .build();
+        var shard = DeliveryStrategy.newIndex(1, 2);
         client.get()
               .pickUpShard(shard, worker);
     }

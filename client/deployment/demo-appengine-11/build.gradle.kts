@@ -5,24 +5,46 @@
  */
 
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import io.spine.internal.dependency.Jetty
+import io.spine.dependency.lib.Log4j2
+import io.spine.dependency.local.Logging
+import io.spine.dependency.web.Jetty
 
 plugins {
     application
-    id("com.github.johnrengelman.shadow")
-    id("com.google.cloud.tools.appengine-appyaml")
+    id("com.gradleup.shadow")
+    `appengine-appyaml`
 }
 
-val extras by extra(io.spine.internal.gradle.prepareExtras(project))
+// The Spine Logging backend requests an older Log4j2 patch than the one
+// this build uses. Under `failOnVersionConflict()` the disagreement is
+// settled explicitly, taking the newer version.
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "org.apache.logging.log4j") {
+            useVersion(Log4j2.version)
+        }
+    }
+}
 
 dependencies {
     Jetty.all.forEach { implementation(it) }
-    implementation(project(":demo"))
+    implementation(project(":client:demo"))
+    runtimeOnly(Log4j2.core)
+    // Routes the SLF4J calls of Jetty to the Log4j2 backend above.
+    runtimeOnly(Log4j2.slf4j2Bridge)
+    runtimeOnly(Logging.log4j2Backend)
 }
-val uberJarName = "app"
-val uberJarFolder = "${buildDir}/uberJar"
+
 val appClassName = "io.spine.delivery.demo.JettyStarter"
-project.setProperty("mainClassName", appClassName)
+val uberJarName = "app"
+val uberJarDir = layout.buildDirectory.dir("uberJar")
+
+application {
+    mainClass.set(appClassName)
+    applicationDefaultJvmArgs = listOf(
+        "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
+    )
+}
 
 tasks.withType<ShadowJar> {
     archiveBaseName.set(uberJarName)
@@ -35,23 +57,44 @@ tasks.withType<ShadowJar> {
         attributes["Multi-Release"] = "true" // https://github.com/johnrengelman/shadow/issues/449
         attributes["Main-Class"] = appClassName
     }
-    destinationDirectory.set(file(uberJarFolder))
+    destinationDirectory.set(uberJarDir)
 }
 
-application {
-    applicationDefaultJvmArgs = listOf(
-        "-Xdebug", "-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005"
-    )
-}
+/**
+ * The name under which the target GCP project is passed to the build.
+ *
+ * Kept spelled the same way as in `deployment/simple-server-cloud-run`, so that
+ * one `-PGCP_PROJECT=<id>` selects the target for both deployment modules.
+ */
+val gcpProjectKey = "GCP_PROJECT"
+
+/**
+ * The GCP project to deploy the demo application to, when no project is given.
+ */
+val defaultGcpProject = "spine-dev"
+
+/**
+ * The GCP project hosting the App Engine application.
+ *
+ * Looked up under [gcpProjectKey] as a Gradle project property first, so that
+ * `./gradlew appengineDeploy -PGCP_PROJECT=<id>` selects the target project, then as
+ * a system property, and finally as an environment variable.
+ */
+val gcpProject: String = providers.gradleProperty(gcpProjectKey)
+    .orElse(providers.systemProperty(gcpProjectKey))
+    .orElse(providers.environmentVariable(gcpProjectKey))
+    .getOrElse(defaultGcpProject)
 
 appengine {
     deploy {
-        projectId = extras.gcpProject
+        projectId = gcpProject
         version = "4"
     }
     stage {
-        setArtifact(file("${uberJarFolder}/${uberJarName}.jar"))
+        setArtifact(uberJarDir.get().file("${uberJarName}.jar").asFile)
     }
 }
 
-tasks.getByName("appengineStage").dependsOn(tasks.getByName("shadowJar"))
+tasks.named("appengineStage") {
+    dependsOn(tasks.named("shadowJar"))
+}

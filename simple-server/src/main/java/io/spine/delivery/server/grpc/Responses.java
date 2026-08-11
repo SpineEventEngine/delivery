@@ -35,7 +35,7 @@ final class Responses {
      * <p>The picked up time is set to the {@linkplain Time#currentTime() current time}.
      */
     static ShardPickedUp shardPickedUp(ShardIndex shard, WorkerId worker) {
-        ShardPickedUp pickedUp = ShardPickedUp.newBuilder()
+        var pickedUp = ShardPickedUp.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
                 .setWhenPicked(Time.currentTime())
@@ -46,7 +46,7 @@ final class Responses {
     /**
      * Completes the provided {@code observer}.
      *
-     * <p>Sends {@linkplain Empty#getDefaultInstance() empty} response prior to completion.
+     * <p>Sends an {@linkplain Empty#getDefaultInstance() empty} response prior to completion.
      */
     static void completeCall(StreamObserver<Empty> observer) {
         observer.onNext(Empty.getDefaultInstance());
@@ -59,9 +59,9 @@ final class Responses {
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType" /* By intention. */)
     static void writeOptionalMessage(StreamObserver<OptionalInboxMessage> observer,
                                      Optional<InboxMessage> message) {
-        OptionalInboxMessage.Builder responseBuilder = OptionalInboxMessage.newBuilder();
+        var responseBuilder = OptionalInboxMessage.newBuilder();
         message.ifPresent(responseBuilder::setMessage);
-        OptionalInboxMessage response = responseBuilder.build();
+        var response = responseBuilder.build();
         observer.onNext(response);
         observer.onCompleted();
     }

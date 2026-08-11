@@ -16,7 +16,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 /**
  * Creates {@code HttpBasicAuthCredentials} that the application was preconfigured to accept.
  *
- * <p>Valid credentials should be set in {@code ADMIN_USERNAME} and {@code ADMIN_PASSWORD}
+ * <p>Valid credentials should be set in the {@code ADMIN_USERNAME} and {@code ADMIN_PASSWORD}
  * environment variables.
  */
 @Factory
@@ -39,8 +39,8 @@ final class HttpBasicAuthCredentialsFactory {
      */
     @SuppressWarnings("CallToSystemGetenv")
     private static Optional<HttpBasicAuthCredentials> fromEnvVars() {
-        String username = System.getenv(A_USERNAME);
-        String password = System.getenv(A_PASSWORD);
+        var username = System.getenv(A_USERNAME);
+        var password = System.getenv(A_PASSWORD);
         if (isNullOrEmpty(username) || isNullOrEmpty(password)) {
             return Optional.empty();
         } else {

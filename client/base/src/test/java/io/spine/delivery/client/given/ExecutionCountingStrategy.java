@@ -13,7 +13,7 @@ import io.spine.delivery.client.RequestWithResult;
 import io.spine.delivery.client.VoidRequest;
 
 /**
- * A strategy for testing that counts amount of operstions executed.
+ * A strategy for testing that counts the amount of operations executed.
  */
 public final class ExecutionCountingStrategy implements RequestExecutionStrategy {
 
@@ -25,7 +25,7 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
      * Increments the execution counter for {@code VoidRequest} and executes
      * the given {@code operation}.
      *
-     * <p>Even if the operation throws an exception it will be counted as execution.
+     * <p>Even if the operation throws an exception, it will be counted as an execution.
      *
      * @throws ExecutionFailedException if the operation throws an exception
      */
@@ -43,7 +43,7 @@ public final class ExecutionCountingStrategy implements RequestExecutionStrategy
      * Increments the execution counter for {@code RequestWithResult} and executes
      * the given {@code operation}.
      *
-     * <p>Even if the operation throws an exception it will be counted as execution.
+     * <p>Even if the operation throws an exception, it will be counted as an execution.
      *
      * @throws ExecutionFailedException if the operation throws an exception
      */

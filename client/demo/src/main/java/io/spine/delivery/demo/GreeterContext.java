@@ -9,15 +9,11 @@ package io.spine.delivery.demo;
 import io.spine.server.BoundedContext;
 import io.spine.server.BoundedContextBuilder;
 
-import java.security.SecureRandom;
-import java.util.Random;
-
 /**
  * Represents the context of this demo application.
  */
 final class GreeterContext {
 
-    private static final Random random = new SecureRandom();
     /**
      * The name of this context.
      */
@@ -42,7 +38,7 @@ final class GreeterContext {
     static BoundedContextBuilder builder() {
         return BoundedContext
                 .singleTenant(NAME)
-                .add(new GreeterRepo(random))
+                .add(new GreeterRepo())
                 .addCommandDispatcher(new ArmyGreetPolicy());
     }
 }

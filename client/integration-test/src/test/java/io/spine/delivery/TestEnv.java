@@ -40,20 +40,18 @@ final class TestEnv {
      * Predefined {@code NodeId} with the {@code SimpleDeliveryClient} full class name used
      * as its value.
      */
-    public static final NodeId NODE = NodeId
-            .newBuilder()
+    public static final NodeId NODE = NodeId.newBuilder()
             .setValue(SimpleDeliveryClient.class.getName())
-            .vBuild();
+            .build();
 
     /**
      * Predefined {@code WorkerId} that uses predefined {@code NODE} and
      * {@code SimpleDeliveryClient} full class name as its values.
      */
-    public static final WorkerId WORKER = WorkerId
-            .newBuilder()
+    public static final WorkerId WORKER = WorkerId.newBuilder()
             .setNodeId(NODE)
             .setValue(SimpleDeliveryClient.class.getName())
-            .vBuild();
+            .build();
 
     /**
      * Creates a new {@code InboxMessage} with the {@linkplain Something} target type and a random

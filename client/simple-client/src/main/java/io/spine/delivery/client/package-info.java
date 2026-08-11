@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2000-2026 TeamDev Ltd. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
 
 /**
- * Client implementation of {@code Delivery} Bounded Context.
+ * Client implementation of the {@code Delivery} Bounded Context.
  */
 @CheckReturnValue
 @NullMarked

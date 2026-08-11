@@ -12,7 +12,7 @@ import io.spine.environment.Tests;
 /**
  * Declares a “production” environment.
  *
- * <p>When this environment is used the system is meant to run and work as it should run
+ * <p>When this environment is used, the system is meant to run and work as it should run
  * in production.
  */
 public final class Production extends CustomEnvironmentType<Production> {
@@ -32,8 +32,8 @@ public final class Production extends CustomEnvironmentType<Production> {
 
     @Override
     protected boolean enabled() {
-        boolean isTests = Tests.type()
-                               .enabled();
+        var isTests = Tests.type()
+                           .enabled();
         return !isTests;
     }
 

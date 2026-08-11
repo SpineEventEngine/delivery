@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadFactory;
 import static java.lang.Boolean.parseBoolean;
 
 /**
- * An entrypoint for launching Delivery server.
+ * An entrypoint for launching the Delivery server.
  */
 public final class Launcher implements WithLogging {
 
@@ -39,7 +39,7 @@ public final class Launcher implements WithLogging {
     }
 
     /**
-     * Launches the Delivery server, also launches the Admin Server if configured.
+     * Launches the Delivery server; also launches the Admin Server if configured.
      *
      * <p>Blocks execution until the Delivery server stops.
      *
@@ -48,8 +48,8 @@ public final class Launcher implements WithLogging {
      *         be passed to both Delivery and Admin server as is.
      */
     private void launch(String[] args) throws InterruptedException {
-        ThreadFactory threadFactory = Executors.defaultThreadFactory();
-        Thread delivery = delivery(threadFactory, args);
+        var threadFactory = Executors.defaultThreadFactory();
+        var delivery = delivery(threadFactory, args);
         delivery.start();
         if (useAdminServer()) {
             logger().atInfo().log(() -> "Starting Admin Server.");
@@ -70,13 +70,13 @@ public final class Launcher implements WithLogging {
      */
     @VisibleForTesting
     static Thread delivery(ThreadFactory threads, String[] args) {
-        Thread delivery = threads.newThread(() -> SimpleApp.main(args));
+        var delivery = threads.newThread(() -> SimpleApp.main(args));
         delivery.setName("delivery");
         return delivery;
     }
 
     /**
-     * Creates new daemon {@code Thread} that starts and executes the Admin Server code.
+     * Creates a new daemon {@code Thread} that starts and executes the Admin Server code.
      *
      * <p>The thread is a daemon one so that it never keeps the container alive after
      * the Delivery server, which the launcher waits for, has stopped.
@@ -88,7 +88,7 @@ public final class Launcher implements WithLogging {
      */
     @VisibleForTesting
     static Thread admin(ThreadFactory threads, String[] args) {
-        Thread adminServer = threads.newThread(() -> AdminServer.main(args));
+        var adminServer = threads.newThread(() -> AdminServer.main(args));
         adminServer.setDaemon(true);
         adminServer.setName("admin");
         return adminServer;

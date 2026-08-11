@@ -33,7 +33,7 @@ final class RetryImmediatelyTest {
     @Test
     @DisplayName("do not allow `null`s")
     void beNpeSafe() {
-        NullPointerTester tester = new NullPointerTester();
+        var tester = new NullPointerTester();
         tester.testAllPublicInstanceMethods(strategy);
         tester.testAllPublicConstructors(strategy.getClass());
         tester.testAllPublicStaticMethods(strategy.getClass());
@@ -42,7 +42,7 @@ final class RetryImmediatelyTest {
     @Test
     @DisplayName("execute `VoidRequest`")
     void executeVoidRequest() {
-        RunCountingVoidRequest operation = newRunCountingVoidRequest();
+        var operation = newRunCountingVoidRequest();
         strategy.execute(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
@@ -51,7 +51,7 @@ final class RetryImmediatelyTest {
     @Test
     @DisplayName("execute `RequestWithResult`")
     void executeRequestWithResult() {
-        RunCountingRequestWithResult operation = newRunCountingRequestWithResult();
+        var operation = newRunCountingRequestWithResult();
         strategy.evaluate(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);
@@ -60,7 +60,7 @@ final class RetryImmediatelyTest {
     @Test
     @DisplayName("retry `VoidRequest` on failure.")
     void retryVoidRequestOnFailure() {
-        RunCountingVoidRequest operation = throwUntil(2);
+        var operation = throwUntil(2);
         strategy.execute(operation);
 
         assertThat(operation.runCount()).isEqualTo(2);
@@ -69,7 +69,7 @@ final class RetryImmediatelyTest {
     @Test
     @DisplayName("retry `RequestWithResult` on failure.")
     void retryRequestWithResultOnFailure() {
-        RunCountingRequestWithResult operation = RunCountingRequestWithResult.throwUntil(2);
+        var operation = RunCountingRequestWithResult.throwUntil(2);
         strategy.evaluate(operation);
 
         assertThat(operation.runCount()).isEqualTo(2);

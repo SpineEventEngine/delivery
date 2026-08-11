@@ -1,9 +1,9 @@
 {
   "name": "web-client",
-  "version": "0.0.1",
-  "description": "A web client for the Admin Service of Delivery Server.",
+  "version": "0.15.0",
+  "description": "A web client for the Admin Service of the Delivery Server.",
   "productName": "spine-delivery-server-admin-web-client",
-  "author": "Nick Dolhii <mykola.dolhii@teamdev.com>",
+  "author": "developers@spine.io",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
@@ -13,7 +13,7 @@
     "@microsoft/fetch-event-source": "^2.0.1",
     "@quasar/extras": "^1.0.0",
     "@vue-composable/axios": "^1.0.0-beta.24",
-    "axios": "^1.3.2",
+    "axios": "^1.19.0",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0"

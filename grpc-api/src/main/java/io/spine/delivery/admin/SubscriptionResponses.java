@@ -23,8 +23,7 @@ public final class SubscriptionResponses {
      * Creates a new {@code SubscriptionResponse} with the acknowledgement of the subscription.
      */
     public static SubscriptionResponse ack() {
-        return SubscriptionResponse
-                .newBuilder()
+        return SubscriptionResponse.newBuilder()
                 .setCreated(true)
                 .build();
     }
@@ -34,8 +33,7 @@ public final class SubscriptionResponses {
      */
     public static SubscriptionResponse toResponse(ShardInfoUpdate update) {
         checkNotNull(update);
-        return SubscriptionResponse
-                .newBuilder()
+        return SubscriptionResponse.newBuilder()
                 .setUpdate(update)
                 .build();
     }

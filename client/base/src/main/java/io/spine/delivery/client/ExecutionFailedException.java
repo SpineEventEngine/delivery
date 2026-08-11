@@ -12,7 +12,7 @@ import static com.google.common.base.Throwables.getStackTraceAsString;
 import static java.lang.System.lineSeparator;
 
 /**
- * Occurs when a {@link RequestExecutionStrategy} failed to recover after exception
+ * Occurs when a {@link RequestExecutionStrategy} failed to recover after an exception
  * occurred during the request execution.
  */
 public final class ExecutionFailedException extends RuntimeException {
@@ -29,7 +29,7 @@ public final class ExecutionFailedException extends RuntimeException {
     }
 
     /**
-     * Returns exceptions occurred during request execution.
+     * Returns exceptions occurred during the request execution.
      *
      * <p>Each element of the list is an exception occurred during a single try of
      * the request execution. Depending on the implementation of
@@ -45,7 +45,7 @@ public final class ExecutionFailedException extends RuntimeException {
      * Creates an error message including messages from all {@code causes}.
      */
     private static String formatMessageFor(Iterable<RuntimeException> causes) {
-        StringBuilder builder = new StringBuilder(
+        var builder = new StringBuilder(
                 "Error sending the request to the Delivery server, errors during the request execution could not be handled."
         );
         causes.forEach(cause -> builder.append(lineSeparator())

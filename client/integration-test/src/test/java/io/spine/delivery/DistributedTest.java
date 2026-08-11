@@ -56,13 +56,13 @@ abstract class DistributedTest {
             newDeliveryContainer("=[3]=")
     );
 
-    @SuppressWarnings("UnsecureRandomNumberGeneration") // Used for a non security purpose.
+    @SuppressWarnings("UnsecureRandomNumberGeneration") // Used for a non-security purpose.
     private static final Random random = new Random();
 
     /**
      * Creates and configures a new {@code GenericContainer}.
      */
-    @SuppressWarnings("resource") // Container is closed in the `@AfterAll` hook.
+    @SuppressWarnings("resource") // The container is closed in the `@AfterAll` hook.
     private static GenericContainer<?> newDeliveryContainer(String logOutputPrefix) {
         return new GenericContainer<>(IMAGE_NAME)
                 .withExposedPorts(8484)
@@ -70,8 +70,8 @@ abstract class DistributedTest {
                 .withNetwork(network)
                 .withEnv("USE_HAZELCAST", "true")
                 .withCreateContainerCmdModifier(m -> {
-                    HostConfig config = m.getHostConfig()
-                                         .withCapAdd(Capability.NET_ADMIN);
+                    var config = m.getHostConfig()
+                                  .withCapAdd(Capability.NET_ADMIN);
                     m.withHostConfig(config);
                 });
     }
@@ -96,7 +96,7 @@ abstract class DistributedTest {
 
     /**
      * Uses the {@code tc} command to configure delay and loss on the side of the container
-     * to emulate unstable network.
+     * to emulate an unstable network.
      */
     private static void addDelay(GenericContainer<?> deliveryContainer) {
         executeInContainer(deliveryContainer, "tc qdisc add dev eth0 root netem delay 100ms 100ms");
@@ -110,7 +110,7 @@ abstract class DistributedTest {
      * Executes the given {@code command} on the given {@code deliveryContainer} and prints
      * the result.
      *
-     * <p>Container have to be started before calling this method.
+     * <p>The container has to be started before calling this method.
      */
     private static void executeInContainer(GenericContainer<?> deliveryContainer, String command) {
         Container.ExecResult execResult;
@@ -137,9 +137,9 @@ abstract class DistributedTest {
     }
 
     /**
-     * Obtains a {@code SimpleDeliveryClient} connected to a one of the created servers.
+     * Obtains a {@code SimpleDeliveryClient} connected to one of the created servers.
      *
-     * <p>This method doesn't create a new connection, it uses one of already created clients,
+     * <p>This method doesn't create a new connection; it uses one of the already created clients,
      * and randomly chooses the client to use.
      */
     private static SimpleDeliveryClient randomClient() {

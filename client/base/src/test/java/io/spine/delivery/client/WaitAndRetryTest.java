@@ -37,7 +37,7 @@ final class WaitAndRetryTest {
     @Test
     @DisplayName("do not allow `null`s")
     void beNpeSafe() {
-        NullPointerTester tester = new NullPointerTester();
+        var tester = new NullPointerTester();
         tester.testAllPublicInstanceMethods(strategy);
         tester.testAllPublicConstructors(strategy.getClass());
         tester.testAllPublicStaticMethods(strategy.getClass());
@@ -46,7 +46,7 @@ final class WaitAndRetryTest {
     @Test
     @DisplayName("execute `VoidRequest` without waiting")
     void executeVoidRequest() {
-        RunCountingVoidRequest operation = newRunCountingVoidRequest();
+        var operation = newRunCountingVoidRequest();
 
         assertTimeout(ofSeconds(1), () -> strategy.execute(operation));
         assertThat(operation.runCount()).isEqualTo(1);
@@ -55,7 +55,7 @@ final class WaitAndRetryTest {
     @Test
     @DisplayName("execute `RequestWithResult` without waiting")
     void executeRequestWithResult() {
-        RunCountingRequestWithResult operation = newRunCountingRequestWithResult();
+        var operation = newRunCountingRequestWithResult();
 
         assertTimeout(ofSeconds(1), () -> strategy.evaluate(operation));
         assertThat(operation.runCount()).isEqualTo(1);
@@ -64,11 +64,11 @@ final class WaitAndRetryTest {
     @Test
     @DisplayName("retry `VoidRequest` on failure with waiting")
     void retryVoidRequestOnFailure() {
-        RunCountingVoidRequest operation = throwUntil(2);
+        var operation = throwUntil(2);
 
-        long before = currentTimeMillis();
+        var before = currentTimeMillis();
         strategy.execute(operation);
-        long after = currentTimeMillis();
+        var after = currentTimeMillis();
 
         assertThat(after - before).isAtLeast(2000);
         assertThat(operation.runCount()).isEqualTo(2);
@@ -77,11 +77,11 @@ final class WaitAndRetryTest {
     @Test
     @DisplayName("retry `RequestWithResult` on failure with waiting")
     void retryRequestWithResultOnFailure() {
-        RunCountingRequestWithResult operation = RunCountingRequestWithResult.throwUntil(2);
+        var operation = RunCountingRequestWithResult.throwUntil(2);
 
-        long before = currentTimeMillis();
+        var before = currentTimeMillis();
         strategy.evaluate(operation);
-        long after = currentTimeMillis();
+        var after = currentTimeMillis();
 
         assertThat(after - before).isAtLeast(2000);
         assertThat(operation.runCount()).isEqualTo(2);

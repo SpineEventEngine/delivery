@@ -12,25 +12,10 @@ import io.spine.server.aggregate.AggregateRepository;
 import io.spine.server.route.CommandRouting;
 import io.spine.server.route.EventRouting;
 
-import java.util.Optional;
-import java.util.Random;
-
-import static com.google.common.base.Preconditions.checkNotNull;
-
 /**
  * Manages {@link GreatGreeter} aggregates.
  */
-final class GreeterRepo extends AggregateRepository<String, GreatGreeter> {
-
-    private final Random random;
-
-    /**
-     * Creates a new repository with the {@code random} to be used by the {@link GreatGreeter}.
-     */
-    GreeterRepo(Random random) {
-        super();
-        this.random = checkNotNull(random);
-    }
+final class GreeterRepo extends AggregateRepository<String, GreatGreeter, Greeter> {
 
     @Override
     protected void setupCommandRouting(CommandRouting<String> routing) {
@@ -40,19 +25,5 @@ final class GreeterRepo extends AggregateRepository<String, GreatGreeter> {
     @Override
     protected void setupEventRouting(EventRouting<String> routing) {
         routing.unicast(SaidHello.class, SaidHello::getName);
-    }
-
-    @Override
-    public Optional<GreatGreeter> find(String id) throws IllegalStateException {
-        Optional<GreatGreeter> result = super.find(id);
-        result.ifPresent(greeter -> greeter.setRandom(random));
-        return result;
-    }
-
-    @Override
-    public GreatGreeter create(String id) {
-        GreatGreeter result = super.create(id);
-        result.setRandom(random);
-        return result;
     }
 }

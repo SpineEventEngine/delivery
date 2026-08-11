@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2023 TeamDev. All rights reserved.
+ * Copyright (c) 2000-2026 TeamDev. All rights reserved.
  * TeamDev PROPRIETARY and CONFIDENTIAL.
  * Use is subject to license terms.
  */
@@ -9,10 +9,10 @@ import { ref } from 'vue';
 import { useEndpoints } from 'src/services/endpoints';
 
 /**
- * Performs a user authentication with HTTP Basic Auth strategy.
+ * Performs a user authentication with an HTTP Basic Auth strategy.
  *
  * User credentials are stored in local storage openly and not encrypted. Stored credentials
- * never expire, it means that the user stays authenticated until the `logout()`
+ * never expire; it means that the user stays authenticated until the `logout()`
  * method will be called.
  */
 export class AuthService {
@@ -54,7 +54,7 @@ export class AuthService {
   }
 
   /**
-   * Removes login and password form the local storage.
+   * Removes login and password from the local storage.
    */
   static logout() {
     localStorage.removeItem('login');
@@ -77,7 +77,7 @@ export class AuthService {
   }
 
   /**
-   * Returns user's login or `null` if there is no authenticated user.
+   * Returns the user's login or `null` if there is no authenticated user.
    * @private
    */
   static username(): string {
@@ -85,7 +85,7 @@ export class AuthService {
   }
 
   /**
-   * Returns user's password or `null` if there is no authenticated user.
+   * Returns the user's password or `null` if there is no authenticated user.
    * @private
    */
   static password(): string {

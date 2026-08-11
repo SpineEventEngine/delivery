@@ -22,7 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * A single page of the messages read from the {@link InboxStorage}.
  *
  * <p>Provides the navigation to the next page basing on the time of the last message read in the
- * scope of current page.
+ * scope of the current page.
  */
 final class InboxPage implements Page<InboxMessage> {
 
@@ -54,23 +54,23 @@ final class InboxPage implements Page<InboxMessage> {
     }
 
     /**
-     * Loads a content for the next page and returns an new instance of the {@code InboxPage}.
+     * Loads the content for the next page and returns a new instance of the {@code InboxPage}.
      *
      * <p>In case there were no messages loaded, this page is considered to be the last one,
      * and {@code Optional.empty()} is returned.
      */
     @Override
     public Optional<Page<InboxMessage>> next() {
-        ImmutableList<InboxMessage> moreContent = readNext();
+        var moreContent = readNext();
         if (moreContent.isEmpty()) {
             return Optional.empty();
         }
-        InboxPage nextPage = new InboxPage(this, moreContent);
+        var nextPage = new InboxPage(this, moreContent);
         return Optional.of(nextPage);
     }
 
     private ImmutableList<InboxMessage> readNext() {
-        ImmutableList<InboxMessage> contents = lookup.readAll(whenLastRead);
+        var contents = lookup.readAll(whenLastRead);
         if (!contents.isEmpty()) {
             this.whenLastRead = contents.get(contents.size() - 1)
                                         .getWhenReceived();
@@ -95,7 +95,7 @@ final class InboxPage implements Page<InboxMessage> {
     interface Lookup {
 
         /**
-         * Reads the messages which were received strictly later than the specified
+         * Reads the messages that were received strictly later than the specified
          * {@code sinceWhen} value.
          *
          * <p>If the passed value is {@code null}, the time filtering is not applied.

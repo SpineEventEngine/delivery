@@ -84,19 +84,18 @@ final class ShardServiceTest {
         @Test
         @DisplayName("not picking up already picked up shard")
         void notPickSame() {
-            Timestamp frozen = Time.currentTime();
+            var frozen = Time.currentTime();
             Time.setProvider(new FrozenMadHatterParty(frozen));
             var shardService = syncShardService();
             var request = pickUpShard();
-            DeliveryPickUpOutcome firstAttempt = shardService.pickShard(request);
+            var firstAttempt = shardService.pickShard(request);
             assertThat(firstAttempt.hasPickedUp())
                     .isTrue();
-            DeliveryPickUpOutcome secondAttempt = shardService.pickShard(request);
+            var secondAttempt = shardService.pickShard(request);
             assertThat(secondAttempt.hasAlreadyPickedUp())
                     .isTrue();
 
-            Rejections.ShardAlreadyPickedUp expected = Rejections.ShardAlreadyPickedUp
-                    .newBuilder()
+            var expected = Rejections.ShardAlreadyPickedUp.newBuilder()
                     .setShard(request.getShard())
                     .setWorker(request.getWorker())
                     .setWhenPicked(frozen)

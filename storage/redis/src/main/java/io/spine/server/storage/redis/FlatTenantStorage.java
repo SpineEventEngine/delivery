@@ -82,7 +82,7 @@ final class FlatTenantStorage<I, R extends Message> extends MultitenantStorage<T
 
     @Override
     TenantRecords<I, R> createSlice(TenantId tenant) {
-        String tenantRecords = tenantRecords(tenant);
+        var tenantRecords = tenantRecords(tenant);
         return new TenantRecords<>(client.getMap(tenantRecords), recordSpec);
     }
 

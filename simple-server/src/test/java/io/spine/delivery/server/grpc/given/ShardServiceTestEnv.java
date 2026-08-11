@@ -51,7 +51,7 @@ public final class ShardServiceTestEnv implements Closeable {
     private final Collection<Server> runningServers = new ArrayList<>();
 
     /**
-     * Returns blocking {@link ShardService} with the given {@code processingTimeout} specified.
+     * Returns a blocking {@link ShardService} with the given {@code processingTimeout} specified.
      *
      * <p>This method differs from {@code WithApp.syncShardService()} in that it assembles
      * its own instance of {@link ShardService}, which can be customized with the passed timeout.

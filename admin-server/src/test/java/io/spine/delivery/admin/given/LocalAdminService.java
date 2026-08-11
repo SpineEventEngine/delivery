@@ -61,7 +61,7 @@ public final class LocalAdminService extends AdminServiceGrpc.AdminServiceImplBa
     }
 
     /**
-     * Returns predefined result.
+     * Returns a predefined result.
      */
     @Override
     public void getShardInfo(Empty request, StreamObserver<ShardInfoList> responseObserver) {

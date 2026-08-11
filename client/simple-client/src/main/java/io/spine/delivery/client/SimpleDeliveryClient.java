@@ -7,12 +7,11 @@
 package io.spine.delivery.client;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.flogger.FluentLogger;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.delivery.client.strategy.Propagate;
 import io.spine.delivery.command.PickUpShard;
 import io.spine.delivery.command.ReleaseExpiredSessions;
@@ -53,9 +52,10 @@ import static io.spine.server.delivery.PickUpOutcomeMixin.pickedUp;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
 import static io.spine.util.Preconditions2.checkNotEmptyOrBlank;
 import static io.spine.util.Preconditions2.checkPositive;
+import static java.lang.String.format;
 
 /**
- * A delivery client which performs all of its operation through {@code Inbox} and {@code Shard}
+ * A delivery client that performs all of its operation through {@code Inbox} and {@code Shard}
  * gRPC services.
  *
  * @see InboxServiceGrpc
@@ -63,9 +63,7 @@ import static io.spine.util.Preconditions2.checkPositive;
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored", "OverlyCoupledClass", "FutureReturnValueIgnored"})
 public final class SimpleDeliveryClient
-        implements InboxClient, SessionRegistryClient, Logging {
-
-    private static final FluentLogger logger = Logging.loggerFor(SimpleDeliveryClient.class);
+        implements InboxClient, SessionRegistryClient, WithLogging {
 
     private final ShardServiceBlockingStub shardService;
     private final InboxServiceBlockingStub inboxService;
@@ -73,13 +71,17 @@ public final class SimpleDeliveryClient
     private final RequestExecutionStrategy requestExecutionStrategy;
 
     private SimpleDeliveryClient(ManagedChannel channel, RequestExecutionStrategy strategy) {
+        logger().atDebug()
+                .log(() -> format(
+                        "Creating a `SimpleDeliveryClient` for the channel `%s`.", channel
+                ));
         shardService = ShardServiceGrpc.newBlockingStub(channel);
         inboxService = InboxServiceGrpc.newBlockingStub(channel);
         requestExecutionStrategy = strategy;
     }
 
     /**
-     * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
+     * Creates a new delivery client that connects to a gRPC server on the specified {@code host}
      * and {@code port} and uses the {@link Propagate} {@code RequestExecutionStrategy}.
      */
     public static SimpleDeliveryClient create(String host, int port) {
@@ -87,13 +89,13 @@ public final class SimpleDeliveryClient
     }
 
     /**
-     * Creates a new delivery client which connects to a gRPC server on the specified {@code host}
+     * Creates a new delivery client that connects to a gRPC server on the specified {@code host}
      * and {@code port}, and with the given {@code RequestExecutionStrategy}.
      */
     public static SimpleDeliveryClient create(String host, int port, RequestExecutionStrategy strategy) {
         checkNotEmptyOrBlank(host);
         checkPositive(port);
-        ManagedChannel channel = ManagedChannelBuilder
+        var channel = ManagedChannelBuilder
                 .forAddress(host, port)
                 .usePlaintext()
                 .build();
@@ -101,22 +103,20 @@ public final class SimpleDeliveryClient
     }
 
     /**
-     * Creates a new delivery client which connects to a gRPC server
-     * using specified {@code channel} and {@link Propagate} {@code RequestExecutionStrategy}.
+     * Creates a new delivery client that connects to a gRPC server
+     * using the specified {@code channel} and {@link Propagate} {@code RequestExecutionStrategy}.
      */
     public static SimpleDeliveryClient create(ManagedChannel channel) {
         return create(channel, new Propagate());
     }
 
     /**
-     * Creates a new delivery client which connects to a gRPC server
-     * using specified {@code channel}, and with the given {@code RequestExecutionStrategy}.
+     * Creates a new delivery client that connects to a gRPC server
+     * using the specified {@code channel}, and with the given {@code RequestExecutionStrategy}.
      */
     public static SimpleDeliveryClient create(ManagedChannel channel,
                                               RequestExecutionStrategy strategy) {
         checkNotNull(channel);
-        logger.atConfig()
-              .log("Creating a `SimpleDeliveryClient` for the channel `%s`.", channel);
         return new SimpleDeliveryClient(channel, strategy);
     }
 
@@ -126,15 +126,15 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
     public void writeMessage(InboxMessage message) throws ExecutionFailedException {
         checkNotDefaultArg(message);
-        WriteMessage writeMessage = WriteMessage.newBuilder()
+        var writeMessage = WriteMessage.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
         requestExecutionStrategy.evaluate(() -> inboxService.writeOne(writeMessage));
     }
 
@@ -144,7 +144,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -152,10 +152,10 @@ public final class SimpleDeliveryClient
             throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotNull(messages);
-        WriteMessages writeMessages = WriteMessages.newBuilder()
+        var writeMessages = WriteMessages.newBuilder()
                 .setShard(shard)
                 .addAllMessage(messages)
-                .vBuild();
+                .build();
         requestExecutionStrategy.evaluate(() -> inboxService.writeMany(writeMessages));
     }
 
@@ -165,15 +165,15 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
     public void removeMessage(InboxMessage message) throws ExecutionFailedException {
         checkNotDefaultArg(message);
-        RemoveMessage removeMessage = RemoveMessage.newBuilder()
+        var removeMessage = RemoveMessage.newBuilder()
                 .setMessage(message)
-                .vBuild();
+                .build();
         requestExecutionStrategy.evaluate(() -> inboxService.removeOne(removeMessage));
     }
 
@@ -183,7 +183,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -191,10 +191,10 @@ public final class SimpleDeliveryClient
             throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotNull(messages);
-        RemoveMessages removeMessages = RemoveMessages.newBuilder()
+        var removeMessages = RemoveMessages.newBuilder()
                 .setShard(shard)
                 .addAllMessage(messages)
-                .vBuild();
+                .build();
         requestExecutionStrategy.evaluate(() -> inboxService.removeMany(removeMessages));
     }
 
@@ -204,7 +204,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -212,24 +212,25 @@ public final class SimpleDeliveryClient
             throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
-        PickUpShard pickUpShard = PickUpShard.newBuilder()
+        var pickUpShard = PickUpShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
         try {
-            DeliveryPickUpOutcome outcome = requestExecutionStrategy
+            var outcome = requestExecutionStrategy
                     .evaluate(() -> shardService.pickShard(pickUpShard));
             if (outcome.hasPickedUp()) {
                 return pickedUp(fromEvent(outcome.getPickedUp()));
             } else {
-                Rejections.ShardAlreadyPickedUp rejection = outcome.getAlreadyPickedUp();
+                var rejection = outcome.getAlreadyPickedUp();
                 return alreadyPicked(rejection.getWorker(), rejection.getWhenPicked());
             }
         } catch (ExecutionFailedException e) {
-            ImmutableList<RuntimeException> occurredExceptions = e.causes();
+            var occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
-            _trace().log("[SimpleClient] Unable to pick up shard `%s`: %s.",
-                         shard, getStackTraceAsString(last));
+            logger().atTrace()
+                    .log(() -> format("[SimpleClient] Unable to pick up shard `%s`: %s.",
+                                      shard, getStackTraceAsString(last)));
             throw e;
         }
     }
@@ -240,17 +241,17 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
     public void releaseShard(ShardIndex shard, WorkerId worker) throws ExecutionFailedException {
         checkNotDefaultArg(shard);
         checkNotDefaultArg(worker);
-        ReleaseShard releaseShard = ReleaseShard.newBuilder()
+        var releaseShard = ReleaseShard.newBuilder()
                 .setShard(shard)
                 .setWorker(worker)
-                .vBuild();
+                .build();
         requestExecutionStrategy.evaluate(() -> shardService.releaseSession(releaseShard));
     }
 
@@ -260,21 +261,21 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
     public ExpiredSessionsReleased releaseExpiredSessions(Duration inactivityPeriod)
             throws ExecutionFailedException {
         checkNotDefaultArg(inactivityPeriod);
-        ReleaseExpiredSessions command = ReleaseExpiredSessions.newBuilder()
+        var command = ReleaseExpiredSessions.newBuilder()
                 .setInactivityPeriod(inactivityPeriod)
-                .vBuild();
-        _trace().log(
-                "[SimpleClient] Posting `ReleaseExpiredSessions` command" +
+                .build();
+        logger().atTrace().log(
+                () -> "[SimpleClient] Posting `ReleaseExpiredSessions` command" +
                         " and waiting for a response event `ExpiredSessionsReleased`."
         );
-        ExpiredSessionsReleased sessionsReleased =
+        var sessionsReleased =
                 requestExecutionStrategy.evaluate(() -> shardService.releaseSessions(command));
         return sessionsReleased;
     }
@@ -285,21 +286,21 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
     public Optional<InboxMessage> find(InboxMessageId messageId) throws ExecutionFailedException {
         checkNotDefaultArg(messageId);
 
-        OptionalInboxMessage result =
+        var result =
                 requestExecutionStrategy.evaluate(() -> inboxService.findOne(messageId));
         return asOptional(result);
     }
 
     @NonNull
     private static Optional<InboxMessage> asOptional(OptionalInboxMessage result) {
-        InboxMessage message = result.getMessage();
+        var message = result.getMessage();
         if (isDefault(message)) {
             return Optional.empty();
         } else {
@@ -313,7 +314,7 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
@@ -325,19 +326,32 @@ public final class SimpleDeliveryClient
         return page;
     }
 
-    private ImmutableList<InboxMessage>
-    readAll(ShardIndex shard, @Nullable Timestamp sinceWhen, int pageSize) {
-        ReadMessagesSinceTime.Builder queryBuilder = ReadMessagesSinceTime.newBuilder()
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
+     *
+     * @throws ExecutionFailedException
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
+     *         could not handle
+     */
+    @Override
+    public ImmutableList<InboxMessage>
+    readAll(ShardIndex shard, @Nullable Timestamp sinceWhen, int pageSize)
+            throws ExecutionFailedException {
+        checkNotDefaultArg(shard);
+        checkPositive(pageSize);
+        var queryBuilder = ReadMessagesSinceTime.newBuilder()
                 .setShard(shard)
                 .setPageSize(pageSize);
         if (sinceWhen != null) {
             queryBuilder.setSinceWhen(sinceWhen);
         }
-        ReadMessagesSinceTime query = queryBuilder.vBuild();
+        var query = queryBuilder.build();
 
-        PageOfMessages page =
+        var page =
                 requestExecutionStrategy.evaluate(() -> inboxService.findManyInShard(query));
-        ImmutableList<InboxMessage> result =
+        var result =
                 page.getMessageList()
                     .stream()
                     .sorted(InboxMessageComparator.chronologically)
@@ -351,13 +365,13 @@ public final class SimpleDeliveryClient
      * <p>Uses the {@link RequestExecutionStrategy} to execute this request.
      *
      * @throws ExecutionFailedException
-     *         if there were some issues that chosen {@code RequestExecutionStrategy}
+     *         if there were some issues that the chosen {@code RequestExecutionStrategy}
      *         could not handle
      */
     @Override
     public Optional<InboxMessage> newestMessageToDeliver(ShardIndex shard)
             throws ExecutionFailedException {
-        OptionalInboxMessage message = requestExecutionStrategy
+        var message = requestExecutionStrategy
                 .evaluate(() -> inboxService.newestMessageToDeliver(shard));
         return asOptional(message);
     }

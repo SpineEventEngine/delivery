@@ -19,11 +19,11 @@ option java_generate_equals_and_hash = true;
 import "spine/delivery/events.proto";
 import "spine/delivery/rejections.proto";
 
-// An outcome of the shard pick up attempt.
+// An outcome of the shard pick-up attempt.
 //
-// This is a Delivery-internal type that is created as counterpart of `PickUpOutcome` introduced in
+// This is a Delivery-internal type that is created as a counterpart of `PickUpOutcome` introduced in
 // `spine-core` in version `1.9.x`. Delivery servers are already using the core library `2.0.x`
-// which doesn't have this type yet. That's why this counterpart helps to connect Delivery servers
+// that doesn't have this type yet. That's why this counterpart helps to connect Delivery servers
 // that use core `2.0.x` and Delivery clients that are on core `1.9.x`.
 //
 message DeliveryPickUpOutcome {
@@ -32,7 +32,7 @@ message DeliveryPickUpOutcome {
 
         option (choice).required = true;
 
-        // Signals that he shard is successfully picked up.
+        // Signals that the shard is successfully picked up.
         ShardPickedUp picked_up = 1;
 
         // Signals that the shard could not be picked up as it's already picked by another worker.

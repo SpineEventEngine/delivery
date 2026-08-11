@@ -8,27 +8,30 @@ package io.spine.delivery.demo;
 
 import com.google.common.collect.ImmutableList;
 import io.spine.base.Identifier;
-import io.spine.logging.Logging;
+import io.spine.logging.WithLogging;
 import io.spine.delivery.demo.command.GreetAnArmy;
 import io.spine.delivery.demo.command.SayHello;
 import io.spine.server.command.AbstractCommander;
 import io.spine.server.command.Command;
+
+import static java.lang.String.format;
 
 /**
  * A policy determining how one greets an army.
  *
  * <p>Splits the incoming command into a number of {@link SayHello} commands, one for each soldier.
  */
-final class ArmyGreetPolicy extends AbstractCommander implements Logging {
+final class ArmyGreetPolicy extends AbstractCommander implements WithLogging {
 
     @Command
     Iterable<SayHello> handle(GreetAnArmy command) {
-        int howManySoldiers = command.getHowManySoldiers();
-        String armyId = Identifier.newUuid();
-        _info().log("Greeting %d soldiers of the army `%s`", howManySoldiers, armyId);
+        var howManySoldiers = command.getHowManySoldiers();
+        var armyId = Identifier.newUuid();
+        logger().atInfo().log(() -> format(
+                "Greeting %d soldiers of the army `%s`", howManySoldiers, armyId));
         ImmutableList.Builder<SayHello> builder = ImmutableList.builder();
-        for (int soldierIndex = 0; soldierIndex < howManySoldiers; soldierIndex++) {
-            SayHello sayHello = newCommand(armyId, soldierIndex);
+        for (var soldierIndex = 0; soldierIndex < howManySoldiers; soldierIndex++) {
+            var sayHello = newCommand(armyId, soldierIndex);
             builder.add(sayHello);
         }
         return builder.build();
@@ -37,7 +40,7 @@ final class ArmyGreetPolicy extends AbstractCommander implements Logging {
     private static SayHello newCommand(String armyId, int soliderIndex) {
         return SayHello.newBuilder()
                 .setName(soliderName(armyId, soliderIndex))
-                .vBuild();
+                .build();
     }
 
     private static String soliderName(String armyId, int soldierIndex) {

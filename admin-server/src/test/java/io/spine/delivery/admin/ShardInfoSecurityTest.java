@@ -73,12 +73,12 @@ class ShardInfoSecurityTest {
     @Test
     @DisplayName("allow access with correct credentials")
     void allowCorrectCredentials() {
-        MutableHttpRequest<Object> request = HttpRequest
+        var request = HttpRequest
                 .GET("/")
                 .accept(TEXT_JSON)
                 .basicAuth(username, password);
-        @SuppressWarnings("resource") // Client should not be closed in test method.
-        HttpResponse<String> response = blockingClient().exchange(request, String.class);
+        @SuppressWarnings("resource") // The client should not be closed in the test method.
+        var response = blockingClient().exchange(request, String.class);
 
         assertEquals(OK, response.getStatus());
     }
@@ -86,14 +86,14 @@ class ShardInfoSecurityTest {
     @Test
     @DisplayName("reject access with invalid credentials")
     void rejectInvalidCredential() {
-        String invalid = "invalid";
-        MutableHttpRequest<Object> request = HttpRequest
+        var invalid = "invalid";
+        var request = HttpRequest
                 .GET("/")
                 .accept(TEXT_JSON)
                 .basicAuth(invalid, invalid);
 
-        @SuppressWarnings("resource") // Client should not be closed in test method.
-        HttpClientResponseException thrown =
+        @SuppressWarnings("resource") // The client should not be closed in the test method.
+        var thrown =
                 assertThrows(HttpClientResponseException.class,
                              () -> blockingClient().exchange(request));
         assertEquals(UNAUTHORIZED, thrown.getStatus());
@@ -102,12 +102,12 @@ class ShardInfoSecurityTest {
     @Test
     @DisplayName("reject access without authentication")
     void rejectNoCredentials() {
-        MutableHttpRequest<Object> request = HttpRequest
+        var request = HttpRequest
                 .GET("/")
                 .accept(TEXT_JSON);
 
-        @SuppressWarnings("resource") // Client should not be closed in test method.
-        HttpClientResponseException thrown =
+        @SuppressWarnings("resource") // The client should not be closed in the test method.
+        var thrown =
                 assertThrows(HttpClientResponseException.class,
                              () -> blockingClient().exchange(request));
         assertEquals(UNAUTHORIZED, thrown.getStatus());
@@ -123,7 +123,7 @@ class ShardInfoSecurityTest {
     }
 
     /**
-     * Returns {@code BlockingHttpClient} for performing test requests.
+     * Returns a {@code BlockingHttpClient} for performing test requests.
      */
     private BlockingHttpClient blockingClient() {
         return this.client.toBlocking();

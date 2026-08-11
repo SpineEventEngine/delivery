@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import static com.google.common.base.Preconditions.checkState;
 
 /**
- * An abstract base for tests which rely on the running {@linkplain SimpleApp app}.
+ * An abstract base for tests that rely on the running {@linkplain SimpleApp app}.
  */
 public abstract class WithApp {
 
@@ -85,11 +85,20 @@ public abstract class WithApp {
      * <p>The channel is a client-side object with a lifecycle of its own: shutting down
      * the server does not close it. It is closed first — before the server — so that it
      * does not attempt to reconnect to an already stopped server.
+     *
+     * <p>The shutdown is graceful: by this point the test has cancelled its streaming
+     * calls (see e.g. {@code AdminServiceTest.cancelSubscriptions()}), so the channel
+     * terminates cleanly. Forceful termination remains only as a timeout fallback.
+     * The app then awaits the termination of its server, so that no released-resource
+     * races are left behind for the next test.
      */
     @AfterEach
     void shutdownApp() throws InterruptedException {
-        serverChannel.shutdownNow();
-        serverChannel.awaitTermination(5, TimeUnit.SECONDS);
+        serverChannel.shutdown();
+        if (!serverChannel.awaitTermination(5, TimeUnit.SECONDS)) {
+            serverChannel.shutdownNow();
+            serverChannel.awaitTermination(5, TimeUnit.SECONDS);
+        }
         app.shutdown();
     }
 
@@ -113,14 +122,14 @@ public abstract class WithApp {
     }
 
     /**
-     * Returns blocking {@code ShardService} connected to the app.
+     * Returns the blocking {@code ShardService} connected to the app.
      */
     protected final ShardServiceGrpc.ShardServiceBlockingStub syncShardService() {
         return ShardServiceGrpc.newBlockingStub(serverChannel());
     }
 
     /**
-     * Returns blocking {@code AdminService} connected to the app.
+     * Returns the blocking {@code AdminService} connected to the app.
      */
     protected final AdminServiceBlockingStub syncAdminService() {
         return adminServiceBlocking;
@@ -134,7 +143,7 @@ public abstract class WithApp {
     }
 
     /**
-     * Returns blocking {@code InboxService} connected to the app.
+     * Returns the blocking {@code InboxService} connected to the app.
      */
     protected final InboxServiceGrpc.InboxServiceBlockingStub syncInboxService() {
         return InboxServiceGrpc.newBlockingStub(serverChannel());

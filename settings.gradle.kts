@@ -4,6 +4,22 @@
  * Use is subject to license terms.
  */
 
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+    resolutionStrategy {
+        eachPlugin {
+            // The App Engine Gradle plugin publishes no plugin markers,
+            // so its IDs are mapped to the plugin artifact on Maven Central.
+            if (requested.id.id.startsWith("com.google.cloud.tools.appengine")) {
+                useModule("com.google.cloud.tools:appengine-gradle-plugin:${requested.version}")
+            }
+        }
+    }
+}
+
 rootProject.name = "delivery-server"
 include("model")
 include("grpc-api")
@@ -15,15 +31,36 @@ include("storage:hazelcast")
 include("storage:redis")
 include("storage:base")
 
-// The `client` build stays on Spine 1.x / Gradle 6 (see `client/README.md`), which is
-// incompatible with this build's Gradle 9 toolchain. It is therefore NOT composed here as
-// `includeBuild("client")`; build it standalone via `client/gradlew`. It consumes the servers'
-// published Protobuf artifacts rather than being wired in as a source dependency.
+// The published client modules carry project names distinct from their directories,
+// so that their Maven artifacts get the desired IDs:
+//   `client/simple-client` -> `:client:delivery-client`      -> `spine-delivery-client`
+//   `client/base`          -> `:client:delivery-client-base` -> `spine-delivery-client-base`
+clientModule("delivery-client", inDirectory = "simple-client")
+clientModule("delivery-client-base", inDirectory = "base")
+include("client:testutil-client")
+include("client:demo")
+include("client:integration-test")
 
 deployment("simple-server-cloud-run")
+clientDeployment("demo-appengine-11")
 
 fun deployment(name: String) {
     val path = ":${name}"
     include(path)
     project(path).projectDir = file("./deployment/${name}")
+}
+
+fun clientDeployment(name: String) {
+    val path = ":${name}"
+    include(path)
+    project(path).projectDir = file("./client/deployment/${name}")
+}
+
+fun clientModule(name: String, inDirectory: String) {
+    val path = ":client:${inDirectory}"
+    include(path)
+    with(project(path)) {
+        this.name = name
+        projectDir = file("./client/${inDirectory}")
+    }
 }
