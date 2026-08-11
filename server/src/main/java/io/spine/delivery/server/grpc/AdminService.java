@@ -86,7 +86,8 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     public void
     subscribeToShardUpdates(Empty request, StreamObserver<SubscriptionResponse> observer) {
         var serverCallObserver = new FilteringObserver(toServerCall(observer));
-        var mappingToResponse = new TransformingStreamObserver<>(serverCallObserver, SubscriptionResponses::toResponse);
+        var mappingToResponse = new TransformingStreamObserver<>(
+                serverCallObserver, SubscriptionResponses::toResponse);
         subscribers.addSubscriber(mappingToResponse);
         serverCallObserver.onNext(ack());
     }

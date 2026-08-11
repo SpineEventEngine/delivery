@@ -38,7 +38,8 @@ public final class HealthService extends HealthGrpc.HealthImplBase
      * Creates a new instance of the service.
      */
     @SuppressWarnings(
-            "ThisEscapedInObjectConstruction" /* We do want to check the health of this service as well. */
+            "ThisEscapedInObjectConstruction" /*
+                We do want to check the health of this service as well. */
     )
     public HealthService() {
         super();

@@ -131,7 +131,9 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     }
 
     private void log(ShardIndex shard, ImmutableList<InboxMessage> messages) {
-        logger().atInfo().log(() -> format("`findManyInShard(%d)` -> %d.", shard.getIndex(), messages.size()));
+        logger().atInfo()
+                .log(() -> format("`findManyInShard(%d)` -> %d.",
+                                  shard.getIndex(), messages.size()));
     }
 
     @Override

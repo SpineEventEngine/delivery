@@ -139,8 +139,8 @@ public abstract class RecordStorageContractTest {
             var someRecord = Project.newBuilder()
                     .setId(someId)
                     .buildPartial();
-            assertDoesNotThrow(() ->
-                    storage.writeAllRecords(ImmutableList.of(RecordWithColumns.of(someId, someRecord))));
+            assertDoesNotThrow(() -> storage.writeAllRecords(
+                    ImmutableList.of(RecordWithColumns.of(someId, someRecord))));
         }
     }
 

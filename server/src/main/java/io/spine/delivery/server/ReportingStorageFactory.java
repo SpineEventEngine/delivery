@@ -37,14 +37,16 @@ public final class ReportingStorageFactory implements StorageFactory, WithLoggin
      *
      * <p>This is done to add new subscriptions to already created storages.
      */
-    private final Map<TypeSpec<?, ?>, Set<ReportingRecordStorage<?, ?>>> storages = new ConcurrentHashMap<>();
+    private final Map<TypeSpec<?, ?>, Set<ReportingRecordStorage<?, ?>>> storages =
+            new ConcurrentHashMap<>();
 
     /**
      * The field preserves subscriptions that are passed to the factory.
      *
      * <p>This is done to add already existent subscriptions to newly created storages.
      */
-    private final Map<String, CompositeSubscription<?, ?>> subscriptions = new ConcurrentHashMap<>();
+    private final Map<String, CompositeSubscription<?, ?>> subscriptions =
+            new ConcurrentHashMap<>();
 
     public ReportingStorageFactory(StorageFactory delegate) {
         this.delegate = delegate;

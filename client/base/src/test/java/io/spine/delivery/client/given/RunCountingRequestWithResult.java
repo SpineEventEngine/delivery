@@ -24,9 +24,9 @@ public final class RunCountingRequestWithResult implements RequestWithResult<Str
     private final int throwUntil;
 
     /**
-     * Creates a new {@code RunCountingRequestWithResult} that doesn't throw any exceptions.
+     * Creates a new instance that never throws, complementing {@link #throwUntil(int)}.
      */
-    public static RunCountingRequestWithResult newRunCountingRequestWithResult() {
+    public static RunCountingRequestWithResult neverThrowing() {
         return new RunCountingRequestWithResult();
     }
 

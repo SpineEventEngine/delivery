@@ -22,7 +22,8 @@ import com.google.protobuf.Message;
 public interface StorageSubscriber<I, R extends Message> {
 
     /**
-     * Handles the notification about the “write” operation that this subscriber is notified about.
+     * Handles the notification about the “write” operation that this subscriber
+     * is notified about.
      *
      * @param id
      *         ID of the written record
@@ -32,7 +33,8 @@ public interface StorageSubscriber<I, R extends Message> {
     void onWrite(I id, R message);
 
     /**
-     * Handles the notification about the “delete” operation that this subscriber is notified about.
+     * Handles the notification about the “delete” operation that this subscriber
+     * is notified about.
      *
      * @param id
      *         ID of the deleted message

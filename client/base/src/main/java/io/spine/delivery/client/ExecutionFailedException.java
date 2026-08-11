@@ -46,7 +46,8 @@ public final class ExecutionFailedException extends RuntimeException {
      */
     private static String formatMessageFor(Iterable<RuntimeException> causes) {
         var builder = new StringBuilder(
-                "Error sending the request to the Delivery server, errors during the request execution could not be handled."
+                "Error sending the request to the Delivery server, errors during "
+                        + "the request execution could not be handled."
         );
         causes.forEach(cause -> builder.append(lineSeparator())
                                        .append("- Caused by: ")

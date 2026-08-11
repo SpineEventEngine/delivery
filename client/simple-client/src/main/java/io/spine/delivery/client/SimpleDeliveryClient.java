@@ -92,7 +92,9 @@ public final class SimpleDeliveryClient
      * Creates a new delivery client that connects to a gRPC server on the specified {@code host}
      * and {@code port}, and with the given {@code RequestExecutionStrategy}.
      */
-    public static SimpleDeliveryClient create(String host, int port, RequestExecutionStrategy strategy) {
+    public static SimpleDeliveryClient create(String host,
+                                              int port,
+                                              RequestExecutionStrategy strategy) {
         checkNotEmptyOrBlank(host);
         checkPositive(port);
         var channel = ManagedChannelBuilder

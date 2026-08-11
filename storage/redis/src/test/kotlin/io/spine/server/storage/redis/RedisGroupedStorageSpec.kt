@@ -55,8 +55,9 @@ internal class RedisGroupedStorageSpec {
     @Test
     fun `separate a grouped storage from the ungrouped one over the same record spec`() {
         val ungrouped = factory.createRecordStorage(context, projectRecordSpec(), null)
-        val grouped =
-            factory.createRecordStorage(context, projectRecordSpec(), StorageGroup("example.Journal"))
+        val grouped = factory.createRecordStorage(
+            context, projectRecordSpec(), StorageGroup("example.Journal")
+        )
         val id = newProjectId()
         ungrouped.write(id, newProject(id))
 
@@ -66,10 +67,12 @@ internal class RedisGroupedStorageSpec {
 
     @Test
     fun `separate the storages of different groups over the same record spec`() {
-        val journal =
-            factory.createRecordStorage(context, projectRecordSpec(), StorageGroup("example.Journal"))
-        val history =
-            factory.createRecordStorage(context, projectRecordSpec(), StorageGroup("example.History"))
+        val journal = factory.createRecordStorage(
+            context, projectRecordSpec(), StorageGroup("example.Journal")
+        )
+        val history = factory.createRecordStorage(
+            context, projectRecordSpec(), StorageGroup("example.History")
+        )
         val id = newProjectId()
         journal.write(id, newProject(id))
 
