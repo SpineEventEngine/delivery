@@ -20,15 +20,16 @@ and a set of runnable applications.
 Role: **application + published libraries** — a multi-module Gradle build
 targeting the current Spine SDK (`2.0.0-SNAPSHOT`). The published Maven
 artifacts live under the `io.spine.delivery` group with the standard `spine-`
-prefix: `spine-model`, `spine-simple-server`, `spine-delivery-client`, and
-`spine-delivery-client-base`. The deployment modules produce runnable Docker
+prefix: `spine-delivery-model`, `spine-simple-server`, `spine-delivery-client`,
+and `spine-delivery-client-base`. The deployment modules produce runnable Docker
 images and an App Engine application.
 
 ### Main build
 
-- `model` — the Protobuf domain model shared by the servers and the clients:
-  commands, events, rejections, the shard-session registry types, and the
-  `DeliveryPickUpOutcome` type carrying shard pick-up results to clients.
+- `model` (the `:delivery-model` project) — the Protobuf domain model shared by
+  the servers and the clients: commands, events, rejections, the shard-session
+  registry types, and the `DeliveryPickUpOutcome` type carrying shard pick-up
+  results to clients.
 - `grpc-api` — the gRPC service contract (`message_delivery.proto`,
   `admin/admin_service.proto`, plus a vendored `grpc.health.v1` service) and the
   supporting stream-observer/admin helper classes.

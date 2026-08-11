@@ -21,7 +21,18 @@ pluginManagement {
 }
 
 rootProject.name = "delivery-server"
+
+// The published `model` module carries a project name distinct from its directory,
+// so that its Maven artifact gets the desired ID:
+//   `model` -> `:delivery-model` -> `spine-delivery-model`
+// The directory is pinned explicitly because Gradle otherwise derives it from
+// the project name, which no longer matches.
 include("model")
+with(project(":model")) {
+    name = "delivery-model"
+    projectDir = file("./model")
+}
+
 include("grpc-api")
 include("simple-server")
 include("testutil-server")

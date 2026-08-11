@@ -123,7 +123,9 @@ repositories.standardToSpineSdk()
 spinePublishing {
     modules = setOf(
         "simple-server",
-        "model",
+        // The `model` module; its project name differs from its directory
+        // (see `settings.gradle.kts`), producing the `spine-delivery-model` artifact.
+        "delivery-model",
         // The client modules; their project names differ from their directories
         // (see `settings.gradle.kts`), producing the `spine-delivery-client` and
         // `spine-delivery-client-base` artifacts.

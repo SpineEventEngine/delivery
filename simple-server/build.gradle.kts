@@ -12,7 +12,7 @@ import io.spine.dependency.test.Kotest
 
 dependencies {
     implementation(Log4j2.core)
-    implementation(project(":model"))
+    implementation(project(":delivery-model"))
     implementation(project(":grpc-api"))
     implementation(project(":storage:redis"))
     implementation(project(":storage:hazelcast"))

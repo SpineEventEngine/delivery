@@ -7,6 +7,6 @@
 import io.spine.dependency.local.CoreJvm
 
 dependencies {
-    api(project(":model"))
+    api(project(":delivery-model"))
     api(CoreJvm.serverTestLib)
 }
