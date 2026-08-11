@@ -59,7 +59,7 @@ directories, so that their Maven artifacts get the desired IDs (see
 
 - `client/base` → `:client:delivery-client-base` — the grounding interfaces of
   the Delivery Server client, published as `spine-delivery-client-base`.
-- `client/simple-client` → `:client:delivery-client` — the client
+- `client/client` → `:client:delivery-client` — the client
   implementation talking plain gRPC to the `server`, published as
   `spine-delivery-client`.
 - `client/testutil-client` — test fixtures and Protobuf test types for the

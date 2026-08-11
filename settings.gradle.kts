@@ -50,9 +50,9 @@ include("storage:base")
 
 // The published client modules carry project names distinct from their directories,
 // so that their Maven artifacts get the desired IDs:
-//   `client/simple-client` -> `:client:delivery-client`      -> `spine-delivery-client`
+//   `client/client`       -> `:client:delivery-client`      -> `spine-delivery-client`
 //   `client/base`          -> `:client:delivery-client-base` -> `spine-delivery-client-base`
-clientModule("delivery-client", inDirectory = "simple-client")
+clientModule("delivery-client", inDirectory = "client")
 clientModule("delivery-client-base", inDirectory = "base")
 include("client:testutil-client")
 include("client:demo")

@@ -11,7 +11,7 @@ artifacts get the desired IDs (see the root `settings.gradle.kts`):
 | Directory | Project | Published artifact |
 |---|---|---|
 | [`base`](base) | `:client:delivery-client-base` | `io.spine.delivery:spine-delivery-client-base` |
-| [`simple-client`](simple-client) | `:client:delivery-client` | `io.spine.delivery:spine-delivery-client` |
+| [`client`](client) | `:client:delivery-client` | `io.spine.delivery:spine-delivery-client` |
 
 The remaining modules are not published:
 
