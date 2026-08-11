@@ -1,4 +1,7 @@
-runtime: java11
+# The module now builds within the root project, whose toolchain targets Java 17
+# (`BuildSettings.javaVersion`), so the staged JAR carries Java 17 bytecode and
+# cannot start on the `java11` runtime this used to declare.
+runtime: java17
 env: standard
 service: 'simple-message-delivery-client-j11'
 entrypoint: >

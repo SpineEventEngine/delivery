@@ -273,7 +273,11 @@ public final class SimpleApp implements WithLogging {
         try {
             var terminated = server.awaitTermination(SHUTDOWN_TIMEOUT_SECONDS, SECONDS);
             if (!terminated) {
+                // A forceful shutdown is asynchronous too, so it is awaited as well.
+                // Otherwise this method could return while `runServer()` is still
+                // blocked and its storage factory still open.
                 server.shutdownNow();
+                server.awaitTermination(SHUTDOWN_TIMEOUT_SECONDS, SECONDS);
             }
         } catch (InterruptedException e) {
             server.shutdownNow();
