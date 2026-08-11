@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>io.spine.delivery.client.strategy</title>
+    <link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
+        <script>var pathToRoot = "../../";</script>
+    <script>document.documentElement.classList.replace("no-js", "js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+      if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      } else {
+        const savedDarkMode = JSON.parse(storage)
+        if (savedDarkMode === true) {
+          document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+      }
+    </script>
+<script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../styles/style.css" rel="Stylesheet">
+<link href="../../styles/main.css" rel="Stylesheet">
+<link href="../../styles/prism.css" rel="Stylesheet">
+<link href="../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../ui-kit/ui-kit.min.css" rel="Stylesheet">
+<script type="text/javascript" src="../../scripts/safe-local-storage_blocking.js"></script>
+<script type="text/javascript" src="../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../ui-kit/ui-kit.min.js" defer="defer"></script>
+<link href="../../images/logo-icon.svg">
+<link href="../../styles/custom-styles.css" rel="Stylesheet">
+</head>
+<body>
+<div class="root">
+    <header class="navigation theme-dark" id="navigation-wrapper" role="banner">
+            <a class="library-name--link" href="../../index.html" tabindex="1">
+                    delivery-client-base
+            </a>
+        <button class="navigation-controls--btn navigation-controls--btn_toc ui-kit_mobile-only" id="toc-toggle"
+                type="button">Toggle table of contents
+        </button>
+        <div class="navigation-controls--break ui-kit_mobile-only"></div>
+        <div class="library-version" id="library-version">
+0.15.0        </div>
+        <div class="navigation-controls">
+        <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
+                <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
+                        data-filter=":client:delivery-client-base/main">jvm</button>
+            <div class="dropdown filter-section--dropdown" data-role="dropdown" id="filter-section-dropdown">
+                <button class="button button_dropdown filter-section--dropdown-toggle" role="combobox"
+                        data-role="dropdown-toggle"
+                        aria-controls="platform-tags-listbox"
+                        aria-haspopup="listbox"
+                        aria-expanded="false"
+                        aria-label="Toggle source sets"
+                ></button>
+                <ul role="listbox" id="platform-tags-listbox" class="dropdown--list" data-role="dropdown-listbox" aria-label="Target filter">
+                    <div class="dropdown--header"><span>Target filter</span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close target filter">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                        <li role="option" class="dropdown--option platform-selector-option jvm-like" tabindex="0">
+                            <label class="checkbox">
+                                <input type="checkbox" class="checkbox--input" id=":client:delivery-client-base/main"
+                                       data-filter=":client:delivery-client-base/main"/>
+                                <span class="checkbox--icon"></span>
+                                jvm
+                            </label>
+                        </li>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </ul>
+            <button class="navigation-controls--btn navigation-controls--btn_theme" id="theme-toggle-button"
+                    type="button">Switch theme
+            </button>
+            <div class="navigation-controls--btn navigation-controls--btn_search" id="searchBar" role="button">Search in
+                API
+            </div>
+        </div>
+    </header>
+    <div id="container">
+        <nav id="leftColumn" class="sidebar" data-item-type="SECTION" data-item-config='{"defaultSize": 280, "minSize": 200, "maxSize": 400}'>
+            <a class="toc--skip-link" href="#main">Skip to content</a>
+            <div class="dropdown theme-dark_mobile" data-role="dropdown" id="toc-dropdown">
+                <ul role="listbox" id="toc-listbox" class="dropdown--list dropdown--list_toc-list"
+                    data-role="dropdown-listbox" aria-label="Table of contents">
+                    <div class="dropdown--header">
+                            <span>
+                                    delivery-client-base
+                            </span>
+                        <button class="button" data-role="dropdown-toggle" aria-label="Close table of contents">
+                            <i class="ui-kit-icon ui-kit-icon_cross"></i>
+                        </button>
+                    </div>
+                    <div class="sidebar--inner" id="sideMenu"></div>
+                </ul>
+                <div class="dropdown--overlay"></div>
+            </div>
+        </nav>
+        <div id="resizer" class="resizer" data-item-type="BAR"></div>
+        <div id="main" data-item-type="SECTION" role="main">
+<div class="main-content" data-page-type="package" id="content" pageIds="delivery-client-base::io.spine.delivery.client.strategy////PointingToDeclaration//317375031">
+  <div class="breadcrumbs"><a href="../../index.html">delivery-client-base</a><span class="delimiter">/</span><span class="current">io.spine.delivery.client.strategy</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
+    <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":client:delivery-client-base/main"><p class="paragraph">Contains implementations of <a href="../io.spine.delivery.client/-request-execution-strategy/index.html">io.spine.delivery.client.RequestExecutionStrategy</a>.</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="TYPE">Types</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="TYPE">
+        <h2 class="tableheader">Types</h2>
+        <div class="table"><a data-name="-1477341016%2FClasslikes%2F317375031" anchor-label="AbstractExecutionStrategy" id="-1477341016%2FClasslikes%2F317375031" data-filterable-set=":client:delivery-client-base/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":client:delivery-client-base/main" data-filterable-set=":client:delivery-client-base/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-abstract-execution-strategy/index.html"><span>Abstract</span><wbr></wbr><span>Execution</span><wbr></wbr><span><span>Strategy</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1477341016%2FClasslikes%2F317375031"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":client:delivery-client-base/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-abstract-execution-strategy/index.html">AbstractExecutionStrategy</a> : <a href="../io.spine.delivery.client/-request-execution-strategy/index.html">RequestExecutionStrategy</a></div><div class="brief ">A basic implementation of the <code class="lang-java">RequestExecutionStrategy</code> that executes requests and delegates error handling, if any, to subclasses.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1439110817%2FClasslikes%2F317375031" anchor-label="AbstractFailedRequest" id="1439110817%2FClasslikes%2F317375031" data-filterable-set=":client:delivery-client-base/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":client:delivery-client-base/main" data-filterable-set=":client:delivery-client-base/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-abstract-failed-request/index.html"><span>Abstract</span><wbr></wbr><span>Failed</span><wbr></wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1439110817%2FClasslikes%2F317375031"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":client:delivery-client-base/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-abstract-failed-request/index.html">AbstractFailedRequest</a><span class="token operator">&lt;</span><a href="-abstract-failed-request/index.html">A</a><span class="token operator">&gt;</span></div><div class="brief ">A summary of a failed request.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1116165051%2FClasslikes%2F317375031" anchor-label="Action" id="1116165051%2FClasslikes%2F317375031" data-filterable-set=":client:delivery-client-base/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":client:delivery-client-base/main" data-filterable-set=":client:delivery-client-base/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-action/index.html"><span><span>Action</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1116165051%2FClasslikes%2F317375031"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":client:delivery-client-base/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-action/index.html">Action</a></div><div class="brief ">An operation that is applied when <code class="lang-java">VoidRequest</code> failed.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1884014584%2FClasslikes%2F317375031" anchor-label="ActionWithResult" id="1884014584%2FClasslikes%2F317375031" data-filterable-set=":client:delivery-client-base/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":client:delivery-client-base/main" data-filterable-set=":client:delivery-client-base/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-action-with-result/index.html"><span>Action</span><wbr></wbr><span>With</span><wbr></wbr><span><span>Result</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1884014584%2FClasslikes%2F317375031"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":client:delivery-client-base/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-action-with-result/index.html">ActionWithResult</a><span class="token operator">&lt;</span><a href="-action-with-result/index.html">R</a><span class="token operator">&gt;</span></div><div class="brief ">An operation that is applied when <code class="lang-java">RequestWithResult</code> failed.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1331749855%2FClasslikes%2F317375031" anchor-label="FailedRequest" id="1331749855%2FClasslikes%2F317375031" data-filterable-set=":client:delivery-client-base/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":client:delivery-client-base/main" data-filterable-set=":client:delivery-client-base/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-failed-request/index.html"><span>Failed</span><wbr></wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1331749855%2FClasslikes%2F317375031"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":client:delivery-client-base/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-failed-request/index.html">FailedRequest</a><span class="token operator">&lt;</span><a href="-failed-request/index.html">R</a><span class="token operator">&gt;</span> : <a href="-abstract-failed-request/index.html">AbstractFailedRequest</a><span class="token operator">&lt;</span><a href="-action-with-result/index.html">ActionWithResult</a><span class="token operator">&lt;</span><a href="-failed-request/index.html">R</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span></div><div class="brief ">Summary of the <code class="lang-java">RequestWithResult</code> failure.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="965931795%2FClasslikes%2F317375031" anchor-label="FailedVoidRequest" id="965931795%2FClasslikes%2F317375031" data-filterable-set=":client:delivery-client-base/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":client:delivery-client-base/main" data-filterable-set=":client:delivery-client-base/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-failed-void-request/index.html"><span>Failed</span><wbr></wbr><span>Void</span><wbr></wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="965931795%2FClasslikes%2F317375031"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":client:delivery-client-base/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-failed-void-request/index.html">FailedVoidRequest</a> : <a href="-abstract-failed-request/index.html">AbstractFailedRequest</a><span class="token operator">&lt;</span><a href="-action/index.html">Action</a><span class="token operator">&gt; </span></div><div class="brief ">Summary of the <code class="lang-java">VoidRequest</code> failure.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="621296680%2FClasslikes%2F317375031" anchor-label="Propagate" id="621296680%2FClasslikes%2F317375031" data-filterable-set=":client:delivery-client-base/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":client:delivery-client-base/main" data-filterable-set=":client:delivery-client-base/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-propagate/index.html"><span><span>Propagate</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="621296680%2FClasslikes%2F317375031"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":client:delivery-client-base/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-propagate/index.html">Propagate</a> : <a href="-abstract-execution-strategy/index.html">AbstractExecutionStrategy</a></div><div class="brief ">A strategy that doesn't handle errors but propagates them if the request failed.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="653068475%2FClasslikes%2F317375031" anchor-label="RetryImmediately" id="653068475%2FClasslikes%2F317375031" data-filterable-set=":client:delivery-client-base/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":client:delivery-client-base/main" data-filterable-set=":client:delivery-client-base/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-retry-immediately/index.html"><span>Retry</span><wbr></wbr><span><span>Immediately</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="653068475%2FClasslikes%2F317375031"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":client:delivery-client-base/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-retry-immediately/index.html">RetryImmediately</a> : <a href="-abstract-execution-strategy/index.html">AbstractExecutionStrategy</a></div><div class="brief ">A strategy that will be immediately retrying requests in case of failures.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-30589981%2FClasslikes%2F317375031" anchor-label="StrategyChain" id="-30589981%2FClasslikes%2F317375031" data-filterable-set=":client:delivery-client-base/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":client:delivery-client-base/main" data-filterable-set=":client:delivery-client-base/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-strategy-chain/index.html"><span>Strategy</span><wbr></wbr><span><span>Chain</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-30589981%2FClasslikes%2F317375031"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":client:delivery-client-base/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-strategy-chain/index.html">StrategyChain</a> : <a href="../io.spine.delivery.client/-request-execution-strategy/index.html">RequestExecutionStrategy</a></div><div class="brief ">A chain of execution strategies.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-38528949%2FClasslikes%2F317375031" anchor-label="WaitAndRetry" id="-38528949%2FClasslikes%2F317375031" data-filterable-set=":client:delivery-client-base/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":client:delivery-client-base/main" data-filterable-set=":client:delivery-client-base/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-wait-and-retry/index.html"><span>Wait</span><wbr></wbr><span>And</span><wbr></wbr><span><span>Retry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-38528949%2FClasslikes%2F317375031"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":client:delivery-client-base/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-wait-and-retry/index.html">WaitAndRetry</a> : <a href="-abstract-execution-strategy/index.html">AbstractExecutionStrategy</a></div><div class="brief ">An error-handling strategy that will be waiting a certain amount of time before retrying a failed request.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="footer">
+        <div class="footer--container">
+            <a href="#content" id="go-to-top-link" class="footer--button footer--button_go-to-top"></a>
+            <div class="footer--content">
+                <div>
+                    <span>Generated by </span>
+                    <a class="footer--link footer--link_external" href="https://github.com/Kotlin/dokka">
+                        Dokka
+                    </a>
+                    <div>Copyright 2026, TeamDev</div>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
