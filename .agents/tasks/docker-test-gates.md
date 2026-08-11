@@ -27,16 +27,26 @@ since most developers have no registry access.
 - `excludeTags("integration")` removed; the suites carry `@RequiresDeliveryImage`
   and skip themselves visibly when the image is absent.
 
-## Known blocker
+## Jib blocker — fixed
 
-`./gradlew :delivery-server-cloud-run:jibDockerBuild` currently fails with
-`TarArchiveOutputStream.putArchiveEntry(TarArchiveEntry)` — a `commons-compress`
-signature clash on the Jib plugin classpath. Verified pre-existing at `7119cd10`,
-unrelated to this change. Until it is fixed, the image cannot be built locally,
-so the integration suites skip everywhere.
+`jibDockerBuild` failed with `NoSuchMethodError` on
+`TarArchiveOutputStream.putArchiveEntry(TarArchiveEntry)`, so the image could not be
+built and the integration suites skipped everywhere.
 
-Fixing it means forcing a `commons-compress` version for the Jib plugin, which
-`AGENTS.md` reserves for a dedicated dependency-update task.
+Root cause: `io.spine.tools:intellij-platform` (reached via
+`compiler-gradle-plugin` -> `psi-java` -> `psi`) is a 28 MB uber JAR that bundles
+`org.apache.commons.compress.**` *without relocating* it, at a version predating
+1.26. Its copy shadowed the real `commons-compress:1.26.0` that Jib 3.4.4 compiles
+against. Confirmed by loading the class from the buildscript classloader and printing
+its code source — not by inference from `buildEnvironment`, which shows a clean 1.26.0.
+
+Fix: declare `CommonsCompress.lib` first on the root buildscript classpath, so the
+genuine JAR precedes the uber JAR. Version forcing cannot help here — the offending
+classes are not a resolvable dependency, they are inside another artifact.
+
+**Upstream follow-up:** `intellij-platform` should relocate its bundled dependencies.
+Until it does, any tool on this classpath needing a post-1.26 commons-compress API
+will hit the same wall. Remove the workaround once that lands.
 
 ## Status
 
