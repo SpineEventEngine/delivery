@@ -16,7 +16,7 @@ import io.spine.server.delivery.PickUpOutcome;
 import io.spine.server.delivery.ShardAlreadyPickedUp;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
-import io.spine.test.delivery.client.Something;
+import io.spine.test.delivery.Something;
 import io.spine.type.TypeUrl;
 import com.google.common.collect.ImmutableList;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
@@ -39,7 +39,7 @@ import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.delivery.client.given.TestInboxMessages.toDeliver;
+import static io.spine.delivery.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**

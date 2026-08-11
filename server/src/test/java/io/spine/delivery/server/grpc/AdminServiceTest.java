@@ -12,7 +12,7 @@ import io.spine.delivery.admin.given.WithAckObserver;
 import io.spine.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.delivery.server.WithApp;
 import io.spine.logging.WithLogging;
-import io.spine.test.delivery.server.Something;
+import io.spine.test.delivery.Something;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,7 +30,7 @@ import static io.spine.delivery.admin.given.SubscriptionAssertions.assertHasNoEr
 import static io.spine.delivery.admin.given.SubscriptionAssertions.assertUpdatesIn;
 import static io.spine.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.delivery.admin.grpc.ShardStatus.PICKED;
-import static io.spine.delivery.server.given.TestInboxMessages.toDeliver;
+import static io.spine.delivery.given.TestInboxMessages.toDeliver;
 import static io.spine.delivery.server.grpc.given.AdminServiceTestEnv.copyWithNewShard;
 import static io.spine.delivery.server.grpc.given.AdminServiceTestEnv.pickUpShard;
 import static io.spine.delivery.server.grpc.given.AdminServiceTestEnv.releaseShard;

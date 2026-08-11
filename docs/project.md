@@ -37,9 +37,9 @@ modules produce runnable Docker images and an App Engine application.
   that does not embed Spine, built for throughput. Exposes the delivery gRPC API
   on port `8484` with in-memory, Redis, or Hazelcast storage (the last for
   running several clustered instances sharing a single memory space).
-- The `server` test fixtures — `TestInboxMessages` and the `spine.test.delivery`
-  Protobuf types — live in that module's `testFixtures` source set, exposed
-  via Gradle's `java-test-fixtures` plugin.
+- `fixtures` — test fixtures shared by the client and server suites:
+  `TestInboxMessages`, `NoOpChannel`, and the `spine.test.delivery` Protobuf
+  types. Depends on neither side, so both can use it. Not published.
 - `admin-server` — a gRPC client that connects to a running Delivery Server and
   re-exposes shard status over HTTP for maintenance and administration.
 - `admin-ui` — a Quasar/Vue (TypeScript) web client for the Admin Service; talks
@@ -62,8 +62,6 @@ directories, so that their Maven artifacts get the desired IDs (see
 - `client/client` → `:client:delivery-client` — the client
   implementation talking plain gRPC to the `server`, published as
   `spine-delivery-client`.
-- `client/testutil-client` — test fixtures and Protobuf test types for the
-  client modules (not published).
 - `client/demo` — a demo "Greeter" Spine application exercising the client.
 - `client/integration-test` — Testcontainers-based tests running several server
   instances; tagged `integration` and excluded from the default build.

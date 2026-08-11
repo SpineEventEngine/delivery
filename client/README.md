@@ -15,7 +15,6 @@ artifacts get the desired IDs (see the root `settings.gradle.kts`):
 
 The remaining modules are not published:
 
-- [`testutil-client`](testutil-client) — test fixtures for the client modules.
 - [`demo`](demo) — a demo "Greeter" Spine application exercising the client.
 - [`integration-test`](integration-test) — Testcontainers-based distributed
   tests; tagged `integration` and excluded from the default build.

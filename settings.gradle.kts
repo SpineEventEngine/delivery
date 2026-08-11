@@ -34,6 +34,7 @@ with(project(":model")) {
 }
 
 include("grpc-api")
+include("fixtures")
 // The published `server` module likewise carries a distinct project name:
 //   `server` -> `:delivery-server` -> `spine-delivery-server`
 include("server")
@@ -54,7 +55,6 @@ include("storage:base")
 //   `client/base`          -> `:client:delivery-client-base` -> `spine-delivery-client-base`
 clientModule("delivery-client", inDirectory = "client")
 clientModule("delivery-client-base", inDirectory = "base")
-include("client:testutil-client")
 include("client:demo")
 include("client:integration-test")
 

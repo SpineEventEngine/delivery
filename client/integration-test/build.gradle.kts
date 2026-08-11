@@ -9,7 +9,7 @@ import io.spine.dependency.test.Testcontainers
 
 dependencies {
     implementation(project(":client:delivery-client"))
-    testImplementation(project(":client:testutil-client"))
+    testImplementation(project(":fixtures"))
     testImplementation(project(path = ":client:delivery-client-base",
                                configuration = "testArtifacts"))
     testImplementation(Testcontainers.lib)

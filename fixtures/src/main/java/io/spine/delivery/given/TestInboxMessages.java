@@ -4,7 +4,7 @@
  * Use is subject to license terms.
  */
 
-package io.spine.delivery.server.given;
+package io.spine.delivery.given;
 
 import com.google.protobuf.Timestamp;
 import io.spine.base.Identifier;
@@ -20,8 +20,8 @@ import io.spine.server.delivery.InboxMessageMixin;
 import io.spine.server.delivery.InboxMessageStatus;
 import io.spine.server.delivery.InboxSignalId;
 import io.spine.server.delivery.ShardIndex;
-import io.spine.test.delivery.server.DoSmth;
-import io.spine.test.delivery.server.Something;
+import io.spine.test.delivery.DoSmth;
+import io.spine.test.delivery.Something;
 import io.spine.testing.client.TestActorRequestFactory;
 import io.spine.type.TypeUrl;
 
