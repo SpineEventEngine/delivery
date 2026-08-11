@@ -34,7 +34,14 @@ with(project(":model")) {
 }
 
 include("grpc-api")
-include("simple-server")
+// The published `server` module likewise carries a distinct project name:
+//   `server` -> `:delivery-server` -> `spine-delivery-server`
+include("server")
+with(project(":server")) {
+    name = "delivery-server"
+    projectDir = file("./server")
+}
+
 include("testutil-server")
 include("admin-server")
 include("admin-ui")

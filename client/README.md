@@ -2,7 +2,7 @@ Delivery Server client
 --------------
 
 This directory hosts the client-side modules of the Delivery Server, backed by
-the plain-gRPC [`simple-server`](../simple-server).
+the plain-gRPC [`server`](../server).
 
 The modules are ordinary subprojects of the root Gradle build. The two published
 ones carry project names distinct from their directories, so that their Maven

@@ -23,7 +23,7 @@ plugins {
 // See the KDoc of `alignMicronautPlatform()` in `buildSrc`.
 alignMicronautPlatform()
 
-// The fat-JAR classpath is the first place where the graph of `simple-server`
+// The fat-JAR classpath is the first place where the graph of `server`
 // (Redisson, Hazelcast, Log4j2) meets the Micronaut platform of `admin-server`.
 // Under `failOnVersionConflict()` each cross-graph disagreement is settled
 // explicitly below, taking the newest version requested in the merged graph.
@@ -60,7 +60,7 @@ dependencies {
     // Routes the SLF4J calls of Micronaut to the Log4j2 backend above.
     runtimeOnly(Log4j2.slf4j2Bridge)
     runtimeOnly(Logging.log4j2Backend)
-    implementation(project(":simple-server"))
+    implementation(project(":delivery-server"))
     implementation(project(":admin-server"))
     implementation(project(":admin-ui"))
 }

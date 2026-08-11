@@ -20,9 +20,9 @@ and a set of runnable applications.
 Role: **application + published libraries** — a multi-module Gradle build
 targeting the current Spine SDK (`2.0.0-SNAPSHOT`). The published Maven
 artifacts live under the `io.spine.delivery` group with the standard `spine-`
-prefix: `spine-delivery-model`, `spine-simple-server`, `spine-delivery-client`,
-and `spine-delivery-client-base`. The deployment modules produce runnable Docker
-images and an App Engine application.
+prefix: `spine-delivery-model`, `spine-delivery-server`,
+`spine-delivery-client`, and `spine-delivery-client-base`. The deployment
+modules produce runnable Docker images and an App Engine application.
 
 ### Main build
 
@@ -33,11 +33,11 @@ images and an App Engine application.
 - `grpc-api` — the gRPC service contract (`message_delivery.proto`,
   `admin/admin_service.proto`, plus a vendored `grpc.health.v1` service) and the
   supporting stream-observer/admin helper classes.
-- `simple-server` — a **plain gRPC** Delivery Server that does not embed Spine,
-  built for throughput. Exposes the delivery gRPC API on port `8484` with
-  in-memory, Redis, or Hazelcast storage (the last for running several clustered
-  instances sharing a single memory space).
-- `testutil-server` — test fixtures and Protobuf test types for `simple-server`.
+- `server` (the `:delivery-server` project) — a **plain gRPC** Delivery Server
+  that does not embed Spine, built for throughput. Exposes the delivery gRPC API
+  on port `8484` with in-memory, Redis, or Hazelcast storage (the last for
+  running several clustered instances sharing a single memory space).
+- `testutil-server` — test fixtures and Protobuf test types for `server`.
 - `admin-server` — a gRPC client that connects to a running Delivery Server and
   re-exposes shard status over HTTP for maintenance and administration.
 - `admin-ui` — a Quasar/Vue (TypeScript) web client for the Admin Service; talks
@@ -46,7 +46,7 @@ images and an App Engine application.
 - `storage:base`, `storage:redis`, `storage:hazelcast` — the storage SPI and its
   Redis and Hazelcast implementations.
 - `deployment/simple-server-cloud-run` — a Cloud Run launcher that starts
-  `simple-server` inside one Docker container (built with the Jib and Shadow
+  the `server` inside one Docker container (built with the Jib and Shadow
   plugins).
 
 ### Client modules (the `client` directory)
@@ -58,7 +58,7 @@ directories, so that their Maven artifacts get the desired IDs (see
 - `client/base` → `:client:delivery-client-base` — the grounding interfaces of
   the Delivery Server client, published as `spine-delivery-client-base`.
 - `client/simple-client` → `:client:delivery-client` — the client
-  implementation talking plain gRPC to the `simple-server`, published as
+  implementation talking plain gRPC to the `server`, published as
   `spine-delivery-client`.
 - `client/testutil-client` — test fixtures and Protobuf test types for the
   client modules (not published).
@@ -72,14 +72,14 @@ directories, so that their Maven artifacts get the desired IDs (see
 
 - **Public API stability**: consumer applications pin to versions published from
   here, so removals and signature changes to `model`, `grpc-api`, and
-  `simple-server` are breaking. Renaming a Protobuf `package` also changes the
+  `server` are breaking. Renaming a Protobuf `package` also changes the
   wire-level type URL, so proto, Java, and the `admin-ui` generated code must
   move together.
 - **Single Spine generation**: since `0.15.0` the client modules are part of
   the main Spine 2.x build. Applications still on Spine 1.x must pin the client
   artifacts of the `0.14.x` line (published as `io.spine.delivery:base` and
   `io.spine.delivery:simple-client`).
-- **Distribution**: `simple-server` ships as a Docker container on the Google
+- **Distribution**: the `server` ships as a Docker container on the Google
   Container Registry and is deployed via a Terraform module. All server
   configuration is available through environment variables (`PORT`, `USE_REDIS`,
   `REDIS_HOST`, `USE_HAZELCAST`, `MAX_INBOUND_MESSAGE_SIZE`,

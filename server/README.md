@@ -1,4 +1,4 @@
-Simple Delivery Server
+Delivery Server
 ---------------
 
 This module holds the server component of Delivery Server that is written as a plain gRPC application.
