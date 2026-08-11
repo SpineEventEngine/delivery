@@ -1,0 +1,18 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.server.storage.redis////PointingToDeclaration/redis/io.spine.server.storage.redis/index.html
+$dokka.location:io.spine.server.storage.redis/RedisRecordStorage///PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-record-storage/index.html
+$dokka.location:io.spine.server.storage.redis/RedisRecordStorage/deleteRecord/#I/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-record-storage/delete-record.html
+$dokka.location:io.spine.server.storage.redis/RedisRecordStorage/index/#/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-record-storage/--index--.html
+$dokka.location:io.spine.server.storage.redis/RedisRecordStorage/index/#io.spine.query.RecordQuery<I,R>/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-record-storage/--index--.html
+$dokka.location:io.spine.server.storage.redis/RedisRecordStorage/readAllRecords/#io.spine.query.RecordQuery<I,R>/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-record-storage/read-all-records.html
+$dokka.location:io.spine.server.storage.redis/RedisRecordStorage/write/#I#R/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-record-storage/write.html
+$dokka.location:io.spine.server.storage.redis/RedisRecordStorage/writeAllRecords/#java.lang.Iterable<? extends io.spine.server.storage.RecordWithColumns<I,R>>/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-record-storage/write-all-records.html
+$dokka.location:io.spine.server.storage.redis/RedisRecordStorage/writeRecord/#io.spine.server.storage.RecordWithColumns<I,R>/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-record-storage/write-record.html
+$dokka.location:io.spine.server.storage.redis/RedisStorageFactory///PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-storage-factory/index.html
+$dokka.location:io.spine.server.storage.redis/RedisStorageFactory/close/#/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-storage-factory/close.html
+$dokka.location:io.spine.server.storage.redis/RedisStorageFactory/createRecordStorage/#io.spine.server.ContextSpec#io.spine.server.storage.RecordSpec<I,M>#io.spine.server.storage.StorageGroup/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-storage-factory/create-record-storage.html
+$dokka.location:io.spine.server.storage.redis/RedisStorageFactory/isOpen/#/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-storage-factory/is-open.html
+$dokka.location:io.spine.server.storage.redis/RedisStorageFactory/newInstance/#/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-storage-factory/new-instance.html
+$dokka.location:io.spine.server.storage.redis/RedisStorageFactory/newInstance/#org.redisson.api.RedissonClient/PointingToDeclaration/redis/io.spine.server.storage.redis/-redis-storage-factory/new-instance.html
+io.spine.server.storage.redis
