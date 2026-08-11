@@ -21,7 +21,7 @@ import static java.lang.String.format;
  *
  * <p>Splits the incoming command into a number of {@link SayHello} commands, one for each soldier.
  */
-final class ArmyGreetPolicy extends AbstractCommander implements WithLogging {
+final class ArmyGreetPolicy extends AbstractCommander {
 
     @Command
     Iterable<SayHello> handle(GreetAnArmy command) {
