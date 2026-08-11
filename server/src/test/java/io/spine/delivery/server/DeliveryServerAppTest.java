@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Isolated
 @DisplayName("`DeliveryServerApp` should")
-final class SimpleAppTest extends WithApp {
+final class DeliveryServerAppTest extends WithApp {
 
     @Nested
     @DisplayName("expose")
