@@ -1,0 +1,1 @@
+var typeSearchIndex = [{"p":"io.spine.server.storage.query","l":"RecordQueryMatcher","url":"io/spine/server/storage/query/RecordQueryMatcher.html"}, {"p":"io.spine.server.storage.query","l":"InMemoryRecordComparator","url":"io/spine/server/storage/query/InMemoryRecordComparator.html"}, {"l":"All classes","url":"allclasses.html"}]
