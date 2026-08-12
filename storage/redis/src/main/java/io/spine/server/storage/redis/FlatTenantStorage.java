@@ -42,7 +42,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * @param <R>
  *         the type of the stored records
  */
-final class FlatTenantStorage<I, R extends Message> extends MultitenantStorage<TenantRecords<I, R>> {
+final class FlatTenantStorage<I, R extends Message>
+        extends MultitenantStorage<TenantRecords<I, R>> {
 
     /**
      * Separates the group name from the record type name in the key of a map serving

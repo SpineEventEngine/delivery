@@ -45,7 +45,8 @@ final class AdminServiceFactory {
     }
 
     /**
-     * Returns the port from the {@code PORT} environment variable or the default {@code 8484} if not set.
+     * Returns the port from the {@code PORT} environment variable, or the default
+     * {@code 8484} if the variable is not set.
      */
     private static int port() {
         @SuppressWarnings("CallToSystemGetenv")

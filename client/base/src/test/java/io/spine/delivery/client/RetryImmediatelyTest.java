@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.google.common.truth.Truth.assertThat;
-import static io.spine.delivery.client.given.RunCountingRequestWithResult.newRunCountingRequestWithResult;
+import static io.spine.delivery.client.given.RunCountingRequestWithResult.neverThrowing;
 import static io.spine.delivery.client.given.RunCountingVoidRequest.newRunCountingVoidRequest;
 import static io.spine.delivery.client.given.RunCountingVoidRequest.throwUntil;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -51,7 +51,7 @@ final class RetryImmediatelyTest {
     @Test
     @DisplayName("execute `RequestWithResult`")
     void executeRequestWithResult() {
-        var operation = newRunCountingRequestWithResult();
+        var operation = neverThrowing();
         strategy.evaluate(operation);
 
         assertThat(operation.runCount()).isEqualTo(1);

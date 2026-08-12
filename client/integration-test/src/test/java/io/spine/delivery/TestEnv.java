@@ -12,14 +12,14 @@ import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
-import io.spine.test.delivery.client.Something;
+import io.spine.test.delivery.Something;
 import io.spine.type.TypeUrl;
 
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static io.spine.base.Identifier.newUuid;
-import static io.spine.delivery.client.given.TestInboxMessages.toDeliver;
+import static io.spine.delivery.given.TestInboxMessages.toDeliver;
 import static java.util.stream.Collectors.toList;
 
 /**

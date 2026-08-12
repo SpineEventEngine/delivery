@@ -44,9 +44,9 @@ public final class StrategyChain implements RequestExecutionStrategy {
     }
 
     /**
-     * Executes the given {@code request} applying one strategy after another in case if the previous
-     * strategy could not handle the occurred exception (the {@code StrategyFailedException} was
-     * thrown by the strategy).
+     * Executes the given {@code request} applying one strategy after another in case if
+     * the previous strategy could not handle the occurred exception (the
+     * {@code StrategyFailedException} was thrown by the strategy).
      *
      * @throws ExecutionFailedException
      *         if none of the strategies could handle the occurred exception
@@ -67,9 +67,9 @@ public final class StrategyChain implements RequestExecutionStrategy {
     }
 
     /**
-     * Executes the given {@code request} applying one strategy after another in case if the previous
-     * strategy could not handle the occurred exception (the {@code StrategyFailedException} was
-     * thrown by the strategy).
+     * Executes the given {@code request} applying one strategy after another in case if
+     * the previous strategy could not handle the occurred exception (the
+     * {@code StrategyFailedException} was thrown by the strategy).
      *
      * @throws ExecutionFailedException
      *         if none of the strategies could handle the occurred exception

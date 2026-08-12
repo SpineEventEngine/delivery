@@ -40,8 +40,8 @@ final class AdminController {
     /**
      * Empty request that is used to invoke gRPC methods of {@code AdminService}.
      *
-     * <p>Requests don't need any parameters right now but the {@code .proto} gRPC definition requires
-     * some input parameters anyway.
+     * <p>Requests don't need any parameters right now but the {@code .proto} gRPC definition
+     * requires some input parameters anyway.
      */
     private static final Empty REQUEST = Empty.getDefaultInstance();
 
@@ -99,7 +99,7 @@ final class AdminController {
      */
     private static <T> T
     withGrpcContext(Function<Context.CancellableContext, T> call) throws Exception {
-        @SuppressWarnings("resource") // Cannot close the context before the call will be completed.
+        @SuppressWarnings("resource") // Cannot close the context before the call is completed.
         var context = Context
                 .current()
                 .withCancellation();

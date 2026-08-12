@@ -12,7 +12,7 @@ dependencies {
     api(Grpc.core)
     // Command, event, and rejection types of the Delivery server appear in
     // the public API of the client contracts.
-    api(project(":model"))
+    api(project(":delivery-model"))
     testImplementation(Kotest.assertions)
 }
 

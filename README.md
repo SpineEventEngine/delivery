@@ -11,30 +11,34 @@ Delivery Server is an application that is deployed on a separate from the main
 application server, and serves as a remote `ShardedWorkRegistry` and `Inbox` storage.
 Delivery Server communicates with the main application nodes through the gRPC protocol.
 
-This functionality is provided by the [`simple-server`](simple-server) application.
+This functionality is provided by the [`server`](server) application.
 
 For more detailed information about the server's implementation please refer to the
-[simple-server readme][simple-server-readme] file.
+[server readme][server-readme] file.
 
-[simple-server-readme]: simple-server/README.md
+[server-readme]: server/README.md
 
 Applications
 --------------
 
 This repository contains several runnable applications:
 
-[simple-server](simple-server) — Simple gRPC Delivery Server that doesn't use Spine inside.
+ 1. [server](server) — the Delivery Server application itself. It serves the shard
+registry and the `Inbox` storage to the nodes of a Spine-based application.
+Implemented as a plain gRPC server — without Spine inside — with in-memory, Redis,
+or Hazelcast storage. See the [module documentation][server-readme] for the exposed
+ports, storage modes, and other configuration options.
 
-[admin-server](admin-server) — gRPC client that works in pair with listed above Delivery Server
-instances. It connects to the Delivery Server and provides information about shard status over HTTP
-for maintenance and administration purposes.
+ 2. [admin-server](admin-server) — the maintenance and administration tool for running
+Delivery Server instances, showing the status of their shards. It obtains the status
+information by connecting to a Delivery Server as a gRPC client, and serves it over HTTP.
 
-[deployment / simple-server-cloud-run](deployment/simple-server-cloud-run) — the application that
-starts [simple-server](simple-server) inside a Docker container. The
-[Launcher][simple-server-launcher] is responsible for starting the Delivery Server.
+ 3. [deployment / cloud-run](deployment/cloud-run) — the application that
+starts the [server](server) inside a Docker container. The
+[Launcher][server-launcher] is responsible for starting the Delivery Server.
 
 
-[simple-server-launcher]: deployment/simple-server-cloud-run/src/main/java/io/spine/delivery/launcher/Launcher.java
+[server-launcher]: deployment/cloud-run/src/main/java/io/spine/delivery/launcher/Launcher.java
 
 Compatibility
 --------------
@@ -47,7 +51,7 @@ For `Spine` `1.9.0` and above use `delivery-server:0.9.0` and above.
 Distribution
 -------------
 
-[`simple-server`](simple-server) is distributed as a Docker container
+The [`server`](server) is distributed as a Docker container
 hosted on the Google Container Registry. There is a Terraform module 
 [spine-delivery-server][terraform-module] that automates the deployment of the containers to the
 GCE instance. All the configuration parameters that are available for the servers also may be set

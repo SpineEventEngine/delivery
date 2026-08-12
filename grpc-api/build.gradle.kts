@@ -11,7 +11,7 @@ dependencies {
     api(Grpc.stub)
     api(Grpc.protobuf)
     implementation(CoreJvm.server)
-    implementation(project(":model"))
+    implementation(project(":delivery-model"))
 }
 
 apply {

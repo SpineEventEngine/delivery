@@ -45,8 +45,9 @@ public final class ShardUpdateSubscribersHolder implements WithLogging {
         var uuid = UUID.randomUUID()
                        .toString();
         subscribers.put(uuid, subscriber);
-        logger().atDebug().log(() -> format("Added new subscriber [%s], current number of subscribers = %d",
-                     uuid, subscribers.size()));
+        logger().atDebug()
+                .log(() -> format("Added new subscriber [%s], current number of subscribers = %d",
+                                  uuid, subscribers.size()));
         subscriber.setOnCancelHandler(() -> {
             logger().atDebug().log(() -> format("Subscriber [%s] closed. Removing...", uuid));
             removeVerbose(uuid);
@@ -60,7 +61,9 @@ public final class ShardUpdateSubscribersHolder implements WithLogging {
      * from the subscribers list.
      */
     public void notifySubs(ShardInfoUpdate update) {
-        logger().atDebug().log(() -> format("Notifying %d subscribers about update.", subscribers.size()));
+        logger().atDebug()
+                .log(() -> format("Notifying %d subscribers about update.",
+                                  subscribers.size()));
         var invalidSubIds = new ArrayList<String>();
         for (var entry : subscribers.entrySet()) {
             try {
@@ -68,8 +71,9 @@ public final class ShardUpdateSubscribersHolder implements WithLogging {
                      .onNext(update);
             } catch (RuntimeException e) {
                 logger().atDebug().withCause(e)
-                        .log(() -> format("Error notifying the subscriber [%s]; it will be removed.",
-                             entry.getKey()));
+                        .log(() -> format("Error notifying the subscriber [%s];"
+                                                  + " it will be removed.",
+                                          entry.getKey()));
                 invalidSubIds.add(entry.getKey());
                 entry.getValue()
                      .onError(e);
@@ -84,8 +88,10 @@ public final class ShardUpdateSubscribersHolder implements WithLogging {
     private void removeVerbose(String uuid) {
         Optional.ofNullable(subscribers.remove(uuid))
                 .ifPresentOrElse(
-                        (r) -> logger().atDebug().log(() -> format("Subscriber [%s] removed.", uuid)),
-                        () -> logger().atDebug().log(() -> format("Subscriber [%s] not found.", uuid))
+                        (r) -> logger().atDebug()
+                                       .log(() -> format("Subscriber [%s] removed.", uuid)),
+                        () -> logger().atDebug()
+                                      .log(() -> format("Subscriber [%s] not found.", uuid))
                 );
     }
 }

@@ -13,7 +13,7 @@ import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.Page;
 import io.spine.server.delivery.PickUpOutcome;
 import io.spine.server.delivery.ShardIndex;
-import io.spine.test.delivery.client.Something;
+import io.spine.test.delivery.Something;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -29,7 +29,7 @@ import static io.spine.delivery.TestEnv.SHARD;
 import static io.spine.delivery.TestEnv.WORKER;
 import static io.spine.delivery.TestEnv.generate;
 import static io.spine.delivery.TestEnv.newMessage;
-import static io.spine.delivery.client.given.TestInboxMessages.toDeliver;
+import static io.spine.delivery.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @Tag("integration")

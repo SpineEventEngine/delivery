@@ -11,6 +11,8 @@ import com.github.dockerjava.api.model.HostConfig;
 import com.google.common.collect.ImmutableList;
 import io.spine.delivery.client.SimpleDeliveryClient;
 import io.spine.delivery.client.given.ExecutionCountingStrategy;
+import io.spine.delivery.given.DeliveryImage;
+import io.spine.delivery.given.RequiresDeliveryImage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,7 @@ import java.util.stream.Stream;
  * An abstract base for tests that utilize the distribution feature of the Hazelcast-based
  * Delivery storage.
  */
+@RequiresDeliveryImage
 abstract class DistributedTest {
 
     /**
@@ -47,8 +50,8 @@ abstract class DistributedTest {
     /**
      * Docker image name of the Delivery server.
      */
-    private static final DockerImageName IMAGE_NAME = DockerImageName
-            .parse("gcr.io/spine-dev/simple-message-delivery-server:latest");
+    private static final DockerImageName IMAGE_NAME =
+            DeliveryImage.dockerImageName();
 
     private static final ImmutableList<GenericContainer<?>> servers = ImmutableList.of(
             newDeliveryContainer("=[1]="),

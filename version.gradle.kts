@@ -7,4 +7,4 @@
 /**
  * The version of the application.
  */
-extra.set("versionToPublish", "0.15.0")
+extra.set("versionToPublish", "0.16.0")

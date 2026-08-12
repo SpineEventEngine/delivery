@@ -37,7 +37,8 @@ public final class HazelcastStorageFactory implements StorageFactory, WithLoggin
     private final HazelcastInstance hazelcast = newHazelcastInstance();
 
     /**
-     * Creates a new {@code HazelcastStorageFactory} and starts a new {@linkplain HazelcastInstance}.
+     * Creates a new {@code HazelcastStorageFactory} and starts a new
+     * {@linkplain HazelcastInstance}.
      */
     public static HazelcastStorageFactory newInstance() {
         return new HazelcastStorageFactory();

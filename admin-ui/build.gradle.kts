@@ -12,7 +12,7 @@ plugins {
 }
 
 dependencies {
-  implementation(project(":model"))
+  implementation(project(":delivery-model"))
   implementation(project(":grpc-api"))
 }
 
