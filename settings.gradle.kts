@@ -20,7 +20,12 @@ pluginManagement {
     }
 }
 
-rootProject.name = "delivery-server"
+// Deliberately NOT `delivery-server`: that is the name of the `:delivery-server`
+// subproject below, and two projects sharing a `group:name` collide on Gradle
+// module identity. The root applies Kover and also aggregates every subproject
+// into its `kover` configuration, so the collision made conflict resolution drop
+// the subproject and silently discard the server module's coverage.
+rootProject.name = "delivery"
 
 // The published `model` module carries a project name distinct from its directory,
 // so that its Maven artifact gets the desired ID:
