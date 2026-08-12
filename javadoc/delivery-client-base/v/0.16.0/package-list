@@ -1,0 +1,7 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.delivery.client.strategy/StrategyChain.Builder///PointingToDeclaration/io/spine/delivery/client/strategy/StrategyChain.Builder.html
+$dokka.location:io.spine.delivery.client.strategy/WaitAndRetry.Builder///PointingToDeclaration/io/spine/delivery/client/strategy/WaitAndRetry.Builder.html
+io.spine.delivery
+io.spine.delivery.client
+io.spine.delivery.client.strategy
