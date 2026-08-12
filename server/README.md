@@ -36,7 +36,7 @@ Hazelcast storage one must set the `USE_HAZELCAST` environment variable to any v
 the presence of the variable and ignore its value).
 
 Hazelcast starts an embedded server and automatically discovers other Delivery Server instances in
-Hazelcast mode in the same network, so no additional effort required.
+Hazelcast mode in the same network, so no additional effort is required.
 
 # Inbound message size
 

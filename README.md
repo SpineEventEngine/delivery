@@ -23,13 +23,17 @@ Applications
 
 This repository contains several runnable applications:
 
-[server](server) — the gRPC Delivery Server that doesn't use Spine inside.
+ 1. [server](server) — the Delivery Server application itself. It serves the shard
+registry and the `Inbox` storage to the nodes of a Spine-based application.
+Implemented as a plain gRPC server — without Spine inside — with in-memory, Redis,
+or Hazelcast storage. See the [module documentation][server-readme] for the exposed
+ports, storage modes, and other configuration options.
 
-[admin-server](admin-server) — gRPC client that works in pair with listed above Delivery Server
-instances. It connects to the Delivery Server and provides information about shard status over HTTP
-for maintenance and administration purposes.
+ 2. [admin-server](admin-server) — the maintenance and administration tool for running
+Delivery Server instances, showing the status of their shards. It obtains the status
+information by connecting to a Delivery Server as a gRPC client, and serves it over HTTP.
 
-[deployment / cloud-run](deployment/cloud-run) — the application that
+ 3. [deployment / cloud-run](deployment/cloud-run) — the application that
 starts the [server](server) inside a Docker container. The
 [Launcher][server-launcher] is responsible for starting the Delivery Server.
 
