@@ -25,6 +25,8 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -77,6 +79,15 @@ abstract class DistributedTest {
             newDeliveryContainer("=[3]=")
     );
 
+    /**
+     * The clients created for the current test, closed by {@link #stopServer()}.
+     *
+     * <p>Each client owns a {@code ManagedChannel}; without closing them, every
+     * channel would leak, and gRPC would report each one collected by the GC
+     * as an orphan.
+     */
+    private static final List<SimpleDeliveryClient> clients = new ArrayList<>();
+
     @SuppressWarnings("UnsecureRandomNumberGeneration") // Used for a non-security purpose.
     private static final Random random = new Random();
 
@@ -107,6 +118,8 @@ abstract class DistributedTest {
 
     @AfterEach
     void stopServer() {
+        clients.forEach(SimpleDeliveryClient::close);
+        clients.clear();
         servers.forEach(GenericContainer::stop);
     }
 
@@ -185,11 +198,13 @@ abstract class DistributedTest {
      * started {@code container}.
      */
     private static SimpleDeliveryClient clientFor(GenericContainer<?> container) {
-        return SimpleDeliveryClient.create(
+        var client = SimpleDeliveryClient.create(
                 container.getHost(),
                 container.getFirstMappedPort(),
                 new ExecutionCountingStrategy()
         );
+        clients.add(client);
+        return client;
     }
 
     /**
