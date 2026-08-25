@@ -69,8 +69,6 @@ buildscript {
                 val cfg = this@all
                 val rs = this@resolutionStrategy
                 jackson.forceArtifacts(project, cfg, rs)
-                io.spine.dependency.lib.Jackson.DataType.forceArtifacts(project, cfg, rs)
-                io.spine.dependency.lib.Jackson.DataFormat.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.JacksonV2.Core.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.JacksonV2.DataType.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.JacksonV2.DataFormat.forceArtifacts(project, cfg, rs)
@@ -83,24 +81,14 @@ buildscript {
                     io.spine.dependency.lib.Caffeine.lib,
                     io.spine.dependency.lib.CommonsIo.lib,
                     io.spine.dependency.lib.CommonsCompress.lib,
-                    io.spine.dependency.lib.Grpc.bom,
-                    io.spine.dependency.lib.Guava.lib,
                     io.spine.dependency.lib.Kotlin.bom,
                     io.spine.dependency.local.Base.annotations,
                     io.spine.dependency.local.Base.lib,
                     io.spine.dependency.local.Base.environment,
                     io.spine.dependency.local.Base.format,
-                    io.spine.dependency.local.Reflect.lib,
                     io.spine.dependency.local.Time.lib,
-                    io.spine.dependency.local.Time.javaExtensions,
-                    io.spine.dependency.local.Compiler.api,
                     io.spine.dependency.local.Compiler.pluginLib,
-                    io.spine.dependency.local.Compiler.gradleApi,
-                    io.spine.dependency.local.Compiler.params,
-                    io.spine.dependency.local.CoreJvm.server,
                     logging.lib,
-                    logging.libJvm,
-                    logging.grpcContext,
                     io.spine.dependency.local.Validation.runtime,
                 )
             }
@@ -571,9 +559,6 @@ fun Project.forceConfigurations() {
                    gRPC BOM. We force the whole set via `forceArtifacts()` and pin the BOM
                    to keep a single gRPC version across modules and the compiler plugins. */
                 Grpc.forceArtifacts(project, cfg, rs)
-                Jackson.forceArtifacts(project, cfg, rs)
-                Jackson.DataType.forceArtifacts(project, cfg, rs)
-                Jackson.DataFormat.forceArtifacts(project, cfg, rs)
                 JacksonV2.Core.forceArtifacts(project, cfg, rs)
                 JacksonV2.DataType.forceArtifacts(project, cfg, rs)
                 JacksonV2.DataFormat.forceArtifacts(project, cfg, rs)
@@ -595,16 +580,11 @@ fun Project.forceConfigurations() {
                     Coroutines.bom,
                     JUnit.bom,
                     Jackson.annotations,
-                    Jackson.bom,
                     JacksonV2.bom,
                     Grpc.ProtocPlugin.artifact,
                     Grpc.bom,
                     Guava.lib,
                     Guava.testLib,
-                    // The `proto-google-cloud-*` libraries bring an older `failureaccess`
-                    // than the one used by the forced Guava version above.
-                    "com.google.guava:failureaccess:1.0.3",
-                    JUnit.legacy,
 
                     Base.lib,
                     Base.annotations,
