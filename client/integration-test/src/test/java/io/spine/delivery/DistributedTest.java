@@ -7,7 +7,6 @@
 package io.spine.delivery;
 
 import com.github.dockerjava.api.model.Capability;
-import com.github.dockerjava.api.model.HostConfig;
 import com.google.common.collect.ImmutableList;
 import io.spine.delivery.client.SimpleDeliveryClient;
 import io.spine.delivery.client.given.ExecutionCountingStrategy;
@@ -23,12 +22,14 @@ import org.testcontainers.containers.Container;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import java.io.IOException;
 import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * An abstract base for tests that utilize the distribution feature of the Hazelcast-based
@@ -48,10 +49,27 @@ abstract class DistributedTest {
     private static final Network network = Network.newNetwork();
 
     /**
-     * Docker image name of the Delivery server.
+     * The image the containers of this test actually run.
+     *
+     * <p>It adds the {@code iproute2} package on top of the Delivery server image.
+     * That package provides {@code tc}, which {@link #addDelay(GenericContainer)} needs
+     * to emulate an unstable network. The server image does not ship it: Jib builds that
+     * image on its default Temurin JRE base, which carries no network tooling.
+     *
+     * <p>The package is added here, rather than to the server image itself, so that
+     * the published image stays free of network administration tools.
      */
-    private static final DockerImageName IMAGE_NAME =
-            DeliveryImage.dockerImageName();
+    @SuppressWarnings("HardcodedLineSeparator") /* Dockerfile lines are LF-separated
+        whatever the host OS is. */
+    private static final ImageFromDockerfile TEST_IMAGE =
+            new ImageFromDockerfile("delivery-server-netem:test", false)
+                    .withFileFromString("Dockerfile", String.join(
+                            "\n",
+                            "FROM " + DeliveryImage.NAME,
+                            "RUN apt-get update"
+                                    + " && apt-get install -y --no-install-recommends iproute2"
+                                    + " && rm -rf /var/lib/apt/lists/*"
+                    ));
 
     private static final ImmutableList<GenericContainer<?>> servers = ImmutableList.of(
             newDeliveryContainer("=[1]="),
@@ -67,7 +85,7 @@ abstract class DistributedTest {
      */
     @SuppressWarnings("resource") // The container is closed in the `@AfterAll` hook.
     private static GenericContainer<?> newDeliveryContainer(String logOutputPrefix) {
-        return new GenericContainer<>(IMAGE_NAME)
+        return new GenericContainer<>(TEST_IMAGE)
                 .withExposedPorts(8484)
                 .withLogConsumer(new Slf4jLogConsumer(LOGGER).withPrefix(logOutputPrefix))
                 .withNetwork(network)
@@ -123,8 +141,43 @@ abstract class DistributedTest {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        LOGGER.info("= = = Exec finished with\n = code: `{}`\n, = stdout: \n{}\n, = stderr: \n{}\n",
-                    execResult.getExitCode(), execResult.getStdout(), execResult.getStderr());
+        if (LOGGER.isDebugEnabled()) {
+            var format = String.format(
+                    "= = = Exec finished with %n" +
+                            " = code: `{}`,%n" +
+                            " = stdout: %n" +
+                            "{},%n" +
+                            " = stderr: %n" +
+                            "{}%n"
+            );
+            LOGGER.debug(format,
+                         execResult.getExitCode(), execResult.getStdout(), execResult.getStderr());
+        }
+        if (execResult.getExitCode() != 0) {
+            onShapingFailure(command, execResult);
+        }
+    }
+
+    /**
+     * Fails the test because a traffic-shaping command did not succeed inside the container.
+     *
+     * <p>Without shaping, the containers talk over a healthy network, and the suite silently
+     * stops testing the very thing it exists to test — an unstable one. Failing here prevents
+     * such a run from passing under false pretences.
+     *
+     * <p>{@code @RequiresDeliveryImage} already skips this suite where the server image is
+     * absent, so reaching this method means the environment does have the image but cannot
+     * shape traffic. The likely causes are the image missing the {@code iproute2} package
+     * (see {@link #TEST_IMAGE}), the container not being granted the {@code NET_ADMIN}
+     * capability, or the kernel providing no {@code sch_netem} module.
+     */
+    private static void onShapingFailure(String command, Container.ExecResult result) {
+        throw newIllegalStateException(
+                "Unable to emulate an unstable network." +
+                        " The command `%s` finished with the code `%s`." +
+                        " Stdout: `%s`. Stderr: `%s`.",
+                command, result.getExitCode(), result.getStdout(), result.getStderr()
+        );
     }
 
     /**
