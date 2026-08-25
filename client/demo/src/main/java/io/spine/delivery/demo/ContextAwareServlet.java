@@ -51,7 +51,7 @@ abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
     private static final int NUMBER_OF_SHARDS = 50;
 
     @SuppressWarnings("unused")
-    private static final String GCE_SERVER = "simple-message-delivery-server.c.spine-dev.internal";
+    private static final String GCE_SERVER = "delivery-server.c.spine-dev.internal";
 
     private static final ExecutorService limitedCachingExecutor = Executors.newFixedThreadPool(250);
     private static final ExecutorService observerExecutor = Executors.newFixedThreadPool(50);

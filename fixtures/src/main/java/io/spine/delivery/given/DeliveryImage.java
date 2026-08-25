@@ -21,7 +21,7 @@ public final class DeliveryImage {
      * of the root {@code build.gradle.kts}, whose {@code checkDeliveryImageAvailable} gate
      * warns when the image is missing.
      */
-    public static final String NAME = "gcr.io/spine-dev/simple-message-delivery-server:latest";
+    public static final String NAME = "gcr.io/spine-dev/delivery-server:latest";
 
     /** Prevents instantiation of this utility class. */
     private DeliveryImage() {

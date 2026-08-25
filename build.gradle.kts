@@ -292,7 +292,7 @@ fun imageDependentModules() = setOf("delivery-client", "integration-test")
  *
  * Declared as a function for the same reason as [dockerDependentModules].
  */
-fun deliveryServerImage() = "gcr.io/spine-dev/simple-message-delivery-server:latest"
+fun deliveryServerImage() = "gcr.io/spine-dev/delivery-server:latest"
 
 /**
  * Common base of the Docker-related gates, holding the `docker` probe.
