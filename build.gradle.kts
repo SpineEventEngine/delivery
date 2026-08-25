@@ -96,14 +96,6 @@ buildscript {
     }
 
     dependencies {
-        // MUST be declared first. `io.spine.tools:intellij-platform`, pulled in
-        // transitively by the Compiler plugin below, is an uber JAR bundling an old
-        // `org.apache.commons.compress` without relocating it. That copy otherwise
-        // shadows the real artifact, and `jibDockerBuild` dies with a
-        // `NoSuchMethodError` on `TarArchiveOutputStream.putArchiveEntry`.
-        // Declaring the genuine JAR ahead of the uber JAR makes it win.
-        // Remove once `intellij-platform` relocates its bundled dependencies.
-        classpath(io.spine.dependency.lib.CommonsCompress.lib)
         classpath(enforcedPlatform(io.spine.dependency.lib.Grpc.bom))
         classpath(enforcedPlatform(io.spine.dependency.kotlinx.Coroutines.bom))
         classpath(io.spine.dependency.local.Compiler.pluginLib)
