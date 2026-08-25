@@ -20,7 +20,7 @@ import static io.spine.delivery.demo.GreeterContext.NAME;
 
 /**
  * Provides a GET HTTP request handler that releases a delivery shard
- * using the {@link io.spine.delivery.client.SimpleDeliveryClient DeliveryClient}.
+ * using the {@link io.spine.delivery.client.DeliveryClient DeliveryClient}.
  */
 @SuppressWarnings(
         "DuplicateStringLiteralInspection" /* `ReleaseShard` is also a Protobuf command type

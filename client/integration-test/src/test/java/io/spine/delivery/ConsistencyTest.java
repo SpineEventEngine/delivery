@@ -8,11 +8,7 @@ package io.spine.delivery;
 
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.util.Timestamps;
-import io.spine.delivery.client.SimpleDeliveryClient;
-import io.spine.server.delivery.InboxMessage;
-import io.spine.server.delivery.Page;
-import io.spine.server.delivery.PickUpOutcome;
-import io.spine.server.delivery.ShardIndex;
+import io.spine.delivery.client.DeliveryClient;
 import io.spine.test.delivery.Something;
 import io.spine.type.TypeUrl;
 import org.junit.jupiter.api.DisplayName;
@@ -20,8 +16,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.google.common.truth.Truth.assertThat;
@@ -39,8 +33,8 @@ public class ConsistencyTest extends DistributedTest {
     @ParameterizedTest
     @MethodSource("clients")
     @DisplayName("pick up on one node and release on another")
-    void pickUpAndRelease(Supplier<SimpleDeliveryClient> first,
-                          Supplier<SimpleDeliveryClient> second) {
+    void pickUpAndRelease(Supplier<DeliveryClient> first,
+                          Supplier<DeliveryClient> second) {
         var client1 = first.get();
         var client2 = second.get();
 
@@ -53,8 +47,8 @@ public class ConsistencyTest extends DistributedTest {
     @ParameterizedTest
     @MethodSource("clients")
     @DisplayName("do not pick up on another node if already picked up")
-    void doesNotPickUpShard(Supplier<SimpleDeliveryClient> first,
-                            Supplier<SimpleDeliveryClient> second) {
+    void doesNotPickUpShard(Supplier<DeliveryClient> first,
+                            Supplier<DeliveryClient> second) {
         var client1 = first.get();
         var client2 = second.get();
 
@@ -69,8 +63,8 @@ public class ConsistencyTest extends DistributedTest {
     @ParameterizedTest
     @MethodSource("clients")
     @DisplayName("pick up, release, and allow a new pick up")
-    void allowToPickUpReleasedShard(Supplier<SimpleDeliveryClient> first,
-                                    Supplier<SimpleDeliveryClient> second) {
+    void allowToPickUpReleasedShard(Supplier<DeliveryClient> first,
+                                    Supplier<DeliveryClient> second) {
         var client1 = first.get();
         var client2 = second.get();
 
@@ -89,8 +83,8 @@ public class ConsistencyTest extends DistributedTest {
     @ParameterizedTest
     @MethodSource("clients")
     @DisplayName("write a message to the Inbox")
-    void writeMessage(Supplier<SimpleDeliveryClient> first,
-                      Supplier<SimpleDeliveryClient> second) {
+    void writeMessage(Supplier<DeliveryClient> first,
+                      Supplier<DeliveryClient> second) {
         var client1 = first.get();
         var client2 = second.get();
 
@@ -105,8 +99,8 @@ public class ConsistencyTest extends DistributedTest {
     @ParameterizedTest
     @MethodSource("clients")
     @DisplayName("write messages to the Inbox in bulk")
-    void writeMessages(Supplier<SimpleDeliveryClient> first,
-                       Supplier<SimpleDeliveryClient> second) {
+    void writeMessages(Supplier<DeliveryClient> first,
+                       Supplier<DeliveryClient> second) {
         var client1 = first.get();
         var client2 = second.get();
 
@@ -124,8 +118,8 @@ public class ConsistencyTest extends DistributedTest {
     @ParameterizedTest
     @MethodSource("clients")
     @DisplayName("read messages in pages")
-    void readPages(Supplier<SimpleDeliveryClient> first,
-                   Supplier<SimpleDeliveryClient> second) {
+    void readPages(Supplier<DeliveryClient> first,
+                   Supplier<DeliveryClient> second) {
         var client1 = first.get();
         var client2 = second.get();
 
@@ -149,8 +143,8 @@ public class ConsistencyTest extends DistributedTest {
     @ParameterizedTest
     @MethodSource("clients")
     @DisplayName("read newest message to deliver")
-    void readNewest(Supplier<SimpleDeliveryClient> first,
-                    Supplier<SimpleDeliveryClient> second) {
+    void readNewest(Supplier<DeliveryClient> first,
+                    Supplier<DeliveryClient> second) {
         var client1 = first.get();
         var client2 = second.get();
 

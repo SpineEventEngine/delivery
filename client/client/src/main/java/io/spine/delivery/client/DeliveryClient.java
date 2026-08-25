@@ -59,7 +59,7 @@ import static java.lang.String.format;
  * @see ShardServiceGrpc
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored", "OverlyCoupledClass", "FutureReturnValueIgnored"})
-public final class SimpleDeliveryClient
+public final class DeliveryClient
         implements InboxClient, SessionRegistryClient, WithLogging, AutoCloseable {
 
     /**
@@ -83,12 +83,12 @@ public final class SimpleDeliveryClient
      */
     private final boolean ownsChannel;
 
-    private SimpleDeliveryClient(ManagedChannel channel,
+    private DeliveryClient(ManagedChannel channel,
                                  boolean ownsChannel,
                                  RequestExecutionStrategy strategy) {
         logger().atDebug()
                 .log(() -> format(
-                        "Creating a `SimpleDeliveryClient` for the channel `%s`.", channel
+                        "Creating a `DeliveryClient` for the channel `%s`.", channel
                 ));
         shardService = ShardServiceGrpc.newBlockingStub(channel);
         inboxService = InboxServiceGrpc.newBlockingStub(channel);
@@ -101,7 +101,7 @@ public final class SimpleDeliveryClient
      * Creates a new delivery client that connects to a gRPC server on the specified {@code host}
      * and {@code port} and uses the {@link Propagate} {@code RequestExecutionStrategy}.
      */
-    public static SimpleDeliveryClient create(String host, int port) {
+    public static DeliveryClient create(String host, int port) {
         return create(host, port, new Propagate());
     }
 
@@ -112,7 +112,7 @@ public final class SimpleDeliveryClient
      * <p>The returned client owns the channel it creates:
      * {@linkplain #close() closing} the client shuts the channel down.
      */
-    public static SimpleDeliveryClient create(String host,
+    public static DeliveryClient create(String host,
                                               int port,
                                               RequestExecutionStrategy strategy) {
         checkNotEmptyOrBlank(host);
@@ -121,14 +121,14 @@ public final class SimpleDeliveryClient
                 .forAddress(host, port)
                 .usePlaintext()
                 .build();
-        return new SimpleDeliveryClient(channel, true, strategy);
+        return new DeliveryClient(channel, true, strategy);
     }
 
     /**
      * Creates a new delivery client that connects to a gRPC server
      * using the specified {@code channel} and {@link Propagate} {@code RequestExecutionStrategy}.
      */
-    public static SimpleDeliveryClient create(ManagedChannel channel) {
+    public static DeliveryClient create(ManagedChannel channel) {
         return create(channel, new Propagate());
     }
 
@@ -140,10 +140,10 @@ public final class SimpleDeliveryClient
      * and is responsible for shutting it down once all of them are done.
      * {@linkplain #close() Closing} the returned client does not affect the channel.
      */
-    public static SimpleDeliveryClient create(ManagedChannel channel,
+    public static DeliveryClient create(ManagedChannel channel,
                                               RequestExecutionStrategy strategy) {
         checkNotNull(channel);
-        return new SimpleDeliveryClient(channel, false, strategy);
+        return new DeliveryClient(channel, false, strategy);
     }
 
     /**

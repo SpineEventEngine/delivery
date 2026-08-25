@@ -8,7 +8,7 @@ package io.spine.delivery;
 
 import com.github.dockerjava.api.model.Capability;
 import com.google.common.collect.ImmutableList;
-import io.spine.delivery.client.SimpleDeliveryClient;
+import io.spine.delivery.client.DeliveryClient;
 import io.spine.delivery.client.given.ExecutionCountingStrategy;
 import io.spine.delivery.given.DeliveryImage;
 import io.spine.delivery.given.RequiresDeliveryImage;
@@ -86,7 +86,7 @@ abstract class DistributedTest {
      * channel would leak, and gRPC would report each one collected by the GC
      * as an orphan.
      */
-    private static final List<SimpleDeliveryClient> clients = new ArrayList<>();
+    private static final List<DeliveryClient> clients = new ArrayList<>();
 
     @SuppressWarnings("UnsecureRandomNumberGeneration") // Used for a non-security purpose.
     private static final Random random = new Random();
@@ -118,7 +118,7 @@ abstract class DistributedTest {
 
     @AfterEach
     void stopServer() {
-        clients.forEach(SimpleDeliveryClient::close);
+        clients.forEach(DeliveryClient::close);
         clients.clear();
         servers.forEach(GenericContainer::stop);
     }
@@ -194,11 +194,11 @@ abstract class DistributedTest {
     }
 
     /**
-     * Creates a new {@code SimpleDeliveryClient} connecting to the given
+     * Creates a new {@code DeliveryClient} connecting to the given
      * started {@code container}.
      */
-    private static SimpleDeliveryClient clientFor(GenericContainer<?> container) {
-        var client = SimpleDeliveryClient.create(
+    private static DeliveryClient clientFor(GenericContainer<?> container) {
+        var client = DeliveryClient.create(
                 container.getHost(),
                 container.getFirstMappedPort(),
                 new ExecutionCountingStrategy()
@@ -208,18 +208,18 @@ abstract class DistributedTest {
     }
 
     /**
-     * Obtains a {@code SimpleDeliveryClient} connected to one of the created servers.
+     * Obtains a {@code DeliveryClient} connected to one of the created servers.
      *
      * <p>This method doesn't create a new connection; it uses one of the already created clients,
      * and randomly chooses the client to use.
      */
-    private static SimpleDeliveryClient randomClient() {
+    private static DeliveryClient randomClient() {
         return clientFor(servers.get(random.nextInt(servers.size())));
     }
 
     /**
      * Returns a {@code Stream} of {@code Arguments} that contains 2 randomly
-     * chosen {@code SimpleDeliveryClient}s.
+     * chosen {@code DeliveryClient}s.
      */
     protected static Stream<Arguments> clients() {
         return Stream.generate(() -> Arguments.of(randomClientSupplier(), randomClientSupplier()))
@@ -228,9 +228,9 @@ abstract class DistributedTest {
 
     /**
      * Returns a {@code Supplier} that will be returning a new randomly chosen
-     * {@code SimpleDeliveryClient} on each call.
+     * {@code DeliveryClient} on each call.
      */
-    private static Supplier<SimpleDeliveryClient> randomClientSupplier() {
+    private static Supplier<DeliveryClient> randomClientSupplier() {
         return DistributedTest::randomClient;
     }
 }
