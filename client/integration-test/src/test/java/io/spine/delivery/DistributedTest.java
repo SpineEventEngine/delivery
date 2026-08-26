@@ -83,8 +83,8 @@ abstract class DistributedTest {
      * The clients created for the current test, closed by {@link #stopServer()}.
      *
      * <p>Each client owns a {@code ManagedChannel}; without closing them, every
-     * channel would leak, and gRPC would report each one collected by the GC
-     * as an orphan.
+     * channel would leak, and gRPC logs each channel the GC collects as
+     * an orphan.
      */
     private static final List<DeliveryClient> clients = new ArrayList<>();
 
@@ -176,7 +176,7 @@ abstract class DistributedTest {
      *
      * <p>Without shaping, the containers talk over a healthy network, and the suite silently
      * stops testing the very thing it exists to test — an unstable one. Failing here prevents
-     * such a run from passing under false pretences.
+     * such a run from passing under false pretenses.
      *
      * <p>{@code @RequiresDeliveryImage} already skips this suite where the server image is
      * absent, so reaching this method means the environment does have the image but cannot

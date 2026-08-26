@@ -7,10 +7,10 @@
 package io.spine.delivery;
 
 import io.grpc.ManagedChannel;
+import io.spine.delivery.client.DeliveryClient;
 import io.spine.delivery.client.InboxClient;
 import io.spine.delivery.client.RequestExecutionStrategy;
 import io.spine.delivery.client.SessionRegistryClient;
-import io.spine.delivery.client.DeliveryClient;
 import io.spine.delivery.client.strategy.Propagate;
 import io.spine.server.delivery.Delivery;
 

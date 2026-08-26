@@ -18,6 +18,7 @@ import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.Jackson
 import io.spine.dependency.lib.JacksonV2
 import io.spine.dependency.lib.Kotlin
+import io.spine.dependency.lib.KotlinPoet
 import io.spine.dependency.lib.PerfMark
 import io.spine.dependency.lib.Slf4J
 import io.spine.dependency.local.Base
@@ -44,7 +45,6 @@ import io.spine.gradle.publish.PublishingRepos
 import io.spine.gradle.publish.spinePublishing
 import io.spine.gradle.report.coverage.KoverConfig
 import com.github.jk1.license.LicenseReportExtension
-import io.spine.dependency.lib.KotlinPoet
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
 import io.spine.gradle.repo.standardToSpineSdk
@@ -65,6 +65,7 @@ buildscript {
             exclude(group = "io.spine", module = "spine-logging-backend")
             resolutionStrategy {
                 val jackson = io.spine.dependency.lib.Jackson
+                val base = io.spine.dependency.local.Base
                 val logging = io.spine.dependency.local.Logging
                 val cfg = this@all
                 val rs = this@resolutionStrategy
@@ -82,10 +83,10 @@ buildscript {
                     io.spine.dependency.lib.CommonsIo.lib,
                     io.spine.dependency.lib.CommonsCompress.lib,
                     io.spine.dependency.lib.Kotlin.bom,
-                    io.spine.dependency.local.Base.annotations,
-                    io.spine.dependency.local.Base.lib,
-                    io.spine.dependency.local.Base.environment,
-                    io.spine.dependency.local.Base.format,
+                    base.annotations,
+                    base.lib,
+                    base.environment,
+                    base.format,
                     io.spine.dependency.local.Time.lib,
                     io.spine.dependency.local.Compiler.pluginLib,
                     logging.lib,

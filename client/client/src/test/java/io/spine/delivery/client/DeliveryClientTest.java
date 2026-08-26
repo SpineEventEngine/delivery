@@ -74,6 +74,7 @@ final class DeliveryClientTest {
 
     @AfterEach
     void stopServer() {
+        client.close();
         server.stop();
     }
 

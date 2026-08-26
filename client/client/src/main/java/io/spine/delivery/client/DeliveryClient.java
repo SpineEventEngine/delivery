@@ -6,6 +6,7 @@
 
 package io.spine.delivery.client;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
@@ -68,6 +69,12 @@ public final class DeliveryClient
      */
     private static final int CHANNEL_SHUTDOWN_TIMEOUT_SECONDS = 5;
 
+    /**
+     * The prefix of the log messages produced by this class.
+     */
+    private static final String LOG_PREFIX =
+            '[' + DeliveryClient.class.getSimpleName() + ']';
+
     private final ShardServiceBlockingStub shardService;
     private final InboxServiceBlockingStub inboxService;
 
@@ -84,11 +91,12 @@ public final class DeliveryClient
     private final boolean ownsChannel;
 
     private DeliveryClient(ManagedChannel channel,
-                                 boolean ownsChannel,
-                                 RequestExecutionStrategy strategy) {
+                           boolean ownsChannel,
+                           RequestExecutionStrategy strategy) {
         logger().atDebug()
                 .log(() -> format(
-                        "Creating a `DeliveryClient` for the channel `%s`.", channel
+                        "%s Creating a new instance for the channel `%s`.",
+                        LOG_PREFIX, channel
                 ));
         shardService = ShardServiceGrpc.newBlockingStub(channel);
         inboxService = InboxServiceGrpc.newBlockingStub(channel);
@@ -113,8 +121,8 @@ public final class DeliveryClient
      * {@linkplain #close() closing} the client shuts the channel down.
      */
     public static DeliveryClient create(String host,
-                                              int port,
-                                              RequestExecutionStrategy strategy) {
+                                        int port,
+                                        RequestExecutionStrategy strategy) {
         checkNotEmptyOrBlank(host);
         checkPositive(port);
         var channel = ManagedChannelBuilder
@@ -141,9 +149,17 @@ public final class DeliveryClient
      * {@linkplain #close() Closing} the returned client does not affect the channel.
      */
     public static DeliveryClient create(ManagedChannel channel,
-                                              RequestExecutionStrategy strategy) {
+                                        RequestExecutionStrategy strategy) {
         checkNotNull(channel);
         return new DeliveryClient(channel, false, strategy);
+    }
+
+    /**
+     * Obtains the channel this client communicates over.
+     */
+    @VisibleForTesting
+    ManagedChannel channel() {
+        return channel;
     }
 
     /**
@@ -283,8 +299,8 @@ public final class DeliveryClient
             var occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
             logger().atTrace()
-                    .log(() -> format("[SimpleClient] Unable to pick up shard `%s`: %s.",
-                                      shard, getStackTraceAsString(last)));
+                    .log(() -> format("%s Unable to pick up shard `%s`: %s.",
+                                      LOG_PREFIX, shard, getStackTraceAsString(last)));
             throw e;
         }
     }
@@ -326,7 +342,7 @@ public final class DeliveryClient
                 .setInactivityPeriod(inactivityPeriod)
                 .build();
         logger().atTrace().log(
-                () -> "[SimpleClient] Posting `ReleaseExpiredSessions` command" +
+                () -> LOG_PREFIX + " Posting `ReleaseExpiredSessions` command" +
                         " and waiting for a response event `ExpiredSessionsReleased`."
         );
         var sessionsReleased =
