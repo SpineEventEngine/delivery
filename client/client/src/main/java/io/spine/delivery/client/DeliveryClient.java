@@ -69,12 +69,6 @@ public final class DeliveryClient
      */
     private static final int CHANNEL_SHUTDOWN_TIMEOUT_SECONDS = 5;
 
-    /**
-     * The prefix of the log messages produced by this class.
-     */
-    private static final String LOG_PREFIX =
-            '[' + DeliveryClient.class.getSimpleName() + ']';
-
     private final ShardServiceBlockingStub shardService;
     private final InboxServiceBlockingStub inboxService;
 
@@ -95,8 +89,7 @@ public final class DeliveryClient
                            RequestExecutionStrategy strategy) {
         logger().atDebug()
                 .log(() -> format(
-                        "%s Creating a new instance for the channel `%s`.",
-                        LOG_PREFIX, channel
+                        "Creating a new instance for the channel `%s`.", channel
                 ));
         shardService = ShardServiceGrpc.newBlockingStub(channel);
         inboxService = InboxServiceGrpc.newBlockingStub(channel);
@@ -299,8 +292,8 @@ public final class DeliveryClient
             var occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
             logger().atTrace()
-                    .log(() -> format("%s Unable to pick up shard `%s`: %s.",
-                                      LOG_PREFIX, shard, getStackTraceAsString(last)));
+                    .log(() -> format("Unable to pick up shard `%s`: %s.",
+                                      shard, getStackTraceAsString(last)));
             throw e;
         }
     }
@@ -342,7 +335,7 @@ public final class DeliveryClient
                 .setInactivityPeriod(inactivityPeriod)
                 .build();
         logger().atTrace().log(
-                () -> LOG_PREFIX + " Posting `ReleaseExpiredSessions` command" +
+                () -> "Posting `ReleaseExpiredSessions` command" +
                         " and waiting for a response event `ExpiredSessionsReleased`."
         );
         var sessionsReleased =

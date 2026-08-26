@@ -5,12 +5,13 @@
  */
 
 /**
- * Client implementation of the {@code Delivery} Bounded Context.
+ * The client-side API for the Delivery server.
+ *
+ * <p>The logging domain declared here makes Spine Logging prepend
+ * {@code [Delivery Client]} to the log statements of all the classes
+ * of this package.
  */
-@CheckReturnValue
-@NullMarked
+@JvmLoggingDomain("Delivery Client")
 package io.spine.delivery.client;
 
-import com.google.errorprone.annotations.CheckReturnValue;
-
-import org.jspecify.annotations.NullMarked;
+import io.spine.logging.JvmLoggingDomain;

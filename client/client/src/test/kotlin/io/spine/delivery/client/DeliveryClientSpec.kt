@@ -26,11 +26,15 @@ internal class DeliveryClientSpec {
     fun `shut down the channel it created`() {
         val client = DeliveryClient.create("localhost", PORT)
         val channel = client.channel()
-        channel.isShutdown shouldBe false
+        try {
+            channel.isShutdown shouldBe false
 
-        client.close()
+            client.close()
 
-        channel.isShutdown shouldBe true
+            channel.isShutdown shouldBe true
+        } finally {
+            channel.shutdownNow()
+        }
     }
 
     @Test
