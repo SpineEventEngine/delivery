@@ -1,0 +1,10 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.delivery.admin.security////PointingToDeclaration/admin-server/io.spine.delivery.admin.security/index.html
+$dokka.location:io.spine.delivery.admin.security/HttpBasicAuthCredentials///PointingToDeclaration/admin-server/io.spine.delivery.admin.security/-http-basic-auth-credentials/index.html
+$dokka.location:io.spine.delivery.admin.security/HttpBasicAuthCredentials/HttpBasicAuthCredentials/#java.lang.String#java.lang.String/PointingToDeclaration/admin-server/io.spine.delivery.admin.security/-http-basic-auth-credentials/-http-basic-auth-credentials.html
+$dokka.location:io.spine.delivery.admin////PointingToDeclaration/admin-server/io.spine.delivery.admin/index.html
+$dokka.location:io.spine.delivery.admin/AdminServer///PointingToDeclaration/admin-server/io.spine.delivery.admin/-admin-server/index.html
+$dokka.location:io.spine.delivery.admin/AdminServer/main/#java.lang.String[]/PointingToDeclaration/admin-server/io.spine.delivery.admin/-admin-server/main.html
+io.spine.delivery.admin
+io.spine.delivery.admin.security
