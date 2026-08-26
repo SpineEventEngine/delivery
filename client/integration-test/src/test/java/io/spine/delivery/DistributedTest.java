@@ -151,7 +151,10 @@ abstract class DistributedTest {
         try {
             execResult = deliveryContainer
                     .execInContainer("/bin/bash", "-c", command);
-        } catch (IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
         if (LOGGER.isDebugEnabled()) {
