@@ -11,7 +11,7 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.spine.client.Client;
 import io.spine.delivery.DeliveryBootstrapper;
-import io.spine.delivery.client.SimpleDeliveryClient;
+import io.spine.delivery.client.DeliveryClient;
 import io.spine.logging.Logger;
 import io.spine.logging.LoggingFactory;
 import io.spine.logging.WithLogging;
@@ -51,13 +51,13 @@ abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
     private static final int NUMBER_OF_SHARDS = 50;
 
     @SuppressWarnings("unused")
-    private static final String GCE_SERVER = "simple-message-delivery-server.c.spine-dev.internal";
+    private static final String GCE_SERVER = "delivery-server.c.spine-dev.internal";
 
     private static final ExecutorService limitedCachingExecutor = Executors.newFixedThreadPool(250);
     private static final ExecutorService observerExecutor = Executors.newFixedThreadPool(50);
     private static final ManagedChannel channel;
 
-    protected static final Supplier<SimpleDeliveryClient> client;
+    protected static final Supplier<DeliveryClient> client;
     protected static final String SERVER_NAME = "DemoServer";
     protected static final Server server;
     protected static final Client spineClient;
@@ -71,8 +71,8 @@ abstract class ContextAwareServlet extends HttpServlet implements WithLogging {
         client = ContextAwareServlet::remoteDelivery;
     }
 
-    private static SimpleDeliveryClient remoteDelivery() {
-        return SimpleDeliveryClient.create(channel);
+    private static DeliveryClient remoteDelivery() {
+        return DeliveryClient.create(channel);
     }
 
     /**

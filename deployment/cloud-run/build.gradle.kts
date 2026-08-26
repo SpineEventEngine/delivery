@@ -120,7 +120,7 @@ val buildUi = tasks.getByPath(":admin-ui:qbuild")
 
 jib {
     to {
-        image = "gcr.io/$gcpProject/simple-message-delivery-server"
+        image = "gcr.io/$gcpProject/delivery-server"
         tags = setOf(
             "latest",
             git("log", "-1", "--pretty=%H"),

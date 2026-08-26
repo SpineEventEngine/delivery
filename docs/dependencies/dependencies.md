@@ -1,6 +1,6 @@
 
 
-# Dependencies of `io.spine.delivery:spine-admin-server:0.16.0`
+# Dependencies of `io.spine.delivery:spine-admin-server:0.17.0`
 
 ## Runtime
 1.  **Group** : com.amazonaws. **Name** : aws-java-sdk-bom. **Version** : 1.12.787.
@@ -973,11 +973,11 @@
      * **Project URL:** [https://coherence.community/](https://coherence.community/)
      * **License:** [Universal Permissive License v 1.0](https://oss.oracle.com/licenses/upl)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -993,11 +993,15 @@
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2158,14 +2162,14 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-admin-ui:0.16.0`
+# Dependencies of `io.spine.delivery:spine-admin-ui:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -2519,11 +2523,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -2539,11 +2543,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3074,14 +3082,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-client:0.16.0`
+# Dependencies of `io.spine.delivery:spine-client:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -3301,11 +3309,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -3321,11 +3329,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3755,14 +3767,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:15 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:41 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-model:0.16.0`
+# Dependencies of `io.spine.delivery:spine-delivery-model:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -4116,11 +4128,11 @@ This report was generated on **Wed Aug 12 16:10:15 WEST 2026** using
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -4136,11 +4148,15 @@ This report was generated on **Wed Aug 12 16:10:15 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4671,14 +4687,14 @@ This report was generated on **Wed Aug 12 16:10:15 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-server:0.16.0`
+# Dependencies of `io.spine.delivery:spine-delivery-server:0.17.0`
 
 ## Runtime
 1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.6.2.
@@ -5176,11 +5192,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [http://www.hazelcast.com/hazelcast/](http://www.hazelcast.com/hazelcast/)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -5196,11 +5212,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5874,14 +5894,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-server-cloud-run:0.16.0`
+# Dependencies of `io.spine.delivery:spine-delivery-server-cloud-run:0.17.0`
 
 ## Runtime
 1.  **Group** : com.amazonaws. **Name** : aws-java-sdk-bom. **Version** : 1.12.787.
@@ -6929,11 +6949,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://coherence.community/](https://coherence.community/)
      * **License:** [Universal Permissive License v 1.0](https://oss.oracle.com/licenses/upl)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -6949,11 +6969,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -8074,14 +8098,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-demo-appengine-11:0.16.0`
+# Dependencies of `io.spine.delivery:spine-demo-appengine-11:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -8548,11 +8572,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -8568,11 +8592,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -9197,14 +9225,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-fixtures:0.16.0`
+# Dependencies of `io.spine.delivery:spine-fixtures:0.17.0`
 
 ## Runtime
 1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.22.
@@ -9723,11 +9751,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -9743,11 +9771,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -10303,14 +10335,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-grpc-api:0.16.0`
+# Dependencies of `io.spine.delivery:spine-grpc-api:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -10664,11 +10696,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -10684,11 +10716,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -11219,14 +11255,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-storage:0.16.0`
+# Dependencies of `io.spine.delivery:spine-storage:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -11446,11 +11482,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -11466,11 +11502,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -11900,14 +11940,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:15 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:41 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-client:0.16.0`
+# Dependencies of `io.spine.delivery:spine-delivery-client:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -12273,11 +12313,11 @@ This report was generated on **Wed Aug 12 16:10:15 WEST 2026** using
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -12293,11 +12333,15 @@ This report was generated on **Wed Aug 12 16:10:15 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12865,14 +12909,14 @@ This report was generated on **Wed Aug 12 16:10:15 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-client-base:0.16.0`
+# Dependencies of `io.spine.delivery:spine-delivery-client-base:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -13226,11 +13270,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -13246,11 +13290,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -13781,14 +13829,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-demo:0.16.0`
+# Dependencies of `io.spine.delivery:spine-demo:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -14150,11 +14198,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -14170,11 +14218,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -14717,14 +14769,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-integration-test:0.16.0`
+# Dependencies of `io.spine.delivery:spine-integration-test:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -15090,11 +15142,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -15110,11 +15162,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -15682,14 +15738,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-base:0.16.0`
+# Dependencies of `io.spine.delivery:spine-base:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -16043,11 +16099,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -16063,11 +16119,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -16598,14 +16658,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-hazelcast:0.16.0`
+# Dependencies of `io.spine.delivery:spine-hazelcast:0.17.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -16967,11 +17027,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [http://www.hazelcast.com/hazelcast/](http://www.hazelcast.com/hazelcast/)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -16987,11 +17047,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -17522,14 +17586,14 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-redis:0.16.0`
+# Dependencies of `io.spine.delivery:spine-redis:0.17.0`
 
 ## Runtime
 1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.6.2.
@@ -18007,11 +18071,11 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 1.  **Group** : com.google.truth.extensions. **Name** : truth-proto-extension. **Version** : 1.4.5.
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.91.0.
+1.  **Group** : com.palantir.javaformat. **Name** : palantir-java-format-spi. **Version** : 2.97.0.
      * **Project URL:** [https://github.com/palantir/palantir-java-format](https://github.com/palantir/palantir-java-format)
      * **License:** [The Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -18027,11 +18091,15 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 1.17.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
+     * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
+     * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : com.squareup. **Name** : kotlinpoet-ksp. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -18673,6 +18741,6 @@ This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Aug 12 16:10:16 WEST 2026** using 
+This report was generated on **Wed Aug 26 01:34:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

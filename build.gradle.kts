@@ -18,6 +18,7 @@ import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.Jackson
 import io.spine.dependency.lib.JacksonV2
 import io.spine.dependency.lib.Kotlin
+import io.spine.dependency.lib.KotlinPoet
 import io.spine.dependency.lib.PerfMark
 import io.spine.dependency.lib.Slf4J
 import io.spine.dependency.local.Base
@@ -64,39 +65,31 @@ buildscript {
             exclude(group = "io.spine", module = "spine-logging-backend")
             resolutionStrategy {
                 val jackson = io.spine.dependency.lib.Jackson
+                val base = io.spine.dependency.local.Base
                 val logging = io.spine.dependency.local.Logging
                 val cfg = this@all
                 val rs = this@resolutionStrategy
                 jackson.forceArtifacts(project, cfg, rs)
-                io.spine.dependency.lib.Jackson.DataType.forceArtifacts(project, cfg, rs)
-                io.spine.dependency.lib.Jackson.DataFormat.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.JacksonV2.Core.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.JacksonV2.DataType.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.JacksonV2.DataFormat.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.JacksonV2.Module.forceArtifacts(project, cfg, rs)
+                io.spine.dependency.lib.JacksonV2.Junior.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.Grpc.forceArtifacts(project, cfg, rs)
                 force(
                     jackson.annotations,
                     jackson.bom,
-                    io.spine.dependency.lib.Grpc.bom,
-                    io.spine.dependency.lib.Guava.lib,
+                    io.spine.dependency.lib.Caffeine.lib,
+                    io.spine.dependency.lib.CommonsIo.lib,
+                    io.spine.dependency.lib.CommonsCompress.lib,
                     io.spine.dependency.lib.Kotlin.bom,
-                    io.spine.dependency.local.Base.annotations,
-                    io.spine.dependency.local.Base.lib,
-                    io.spine.dependency.local.Base.environment,
-                    io.spine.dependency.local.Base.format,
-                    io.spine.dependency.local.Reflect.lib,
+                    base.annotations,
+                    base.lib,
+                    base.environment,
+                    base.format,
                     io.spine.dependency.local.Time.lib,
-                    io.spine.dependency.local.Time.javaExtensions,
-                    io.spine.dependency.local.Compiler.api,
                     io.spine.dependency.local.Compiler.pluginLib,
-                    io.spine.dependency.local.Compiler.gradleApi,
-                    io.spine.dependency.local.Compiler.params,
-                    io.spine.dependency.local.ToolBase.lib,
-                    io.spine.dependency.local.CoreJvm.server,
                     logging.lib,
-                    logging.libJvm,
-                    logging.grpcContext,
                     io.spine.dependency.local.Validation.runtime,
                 )
             }
@@ -104,18 +97,10 @@ buildscript {
     }
 
     dependencies {
-        // MUST be declared first. `io.spine.tools:intellij-platform`, pulled in
-        // transitively by the Compiler plugin below, is an uber JAR bundling an old
-        // `org.apache.commons.compress` without relocating it. That copy otherwise
-        // shadows the real artifact, and `jibDockerBuild` dies with a
-        // `NoSuchMethodError` on `TarArchiveOutputStream.putArchiveEntry`.
-        // Declaring the genuine JAR ahead of the uber JAR makes it win.
-        // Remove once `intellij-platform` relocates its bundled dependencies.
-        classpath(io.spine.dependency.lib.CommonsCompress.lib)
         classpath(enforcedPlatform(io.spine.dependency.lib.Grpc.bom))
         classpath(enforcedPlatform(io.spine.dependency.kotlinx.Coroutines.bom))
         classpath(io.spine.dependency.local.Compiler.pluginLib)
-        classpath(io.spine.dependency.local.CoreJvmCompiler.pluginLib)
+        classpath(io.spine.dependency.local.CoreJvmCompiler.gradlePlugin)
     }
 }
 
@@ -308,7 +293,7 @@ fun imageDependentModules() = setOf("delivery-client", "integration-test")
  *
  * Declared as a function for the same reason as [dockerDependentModules].
  */
-fun deliveryServerImage() = "gcr.io/spine-dev/simple-message-delivery-server:latest"
+fun deliveryServerImage() = "gcr.io/spine-dev/delivery-server:latest"
 
 /**
  * Common base of the Docker-related gates, holding the `docker` probe.
@@ -567,9 +552,6 @@ fun Project.forceConfigurations() {
                    gRPC BOM. We force the whole set via `forceArtifacts()` and pin the BOM
                    to keep a single gRPC version across modules and the compiler plugins. */
                 Grpc.forceArtifacts(project, cfg, rs)
-                Jackson.forceArtifacts(project, cfg, rs)
-                Jackson.DataType.forceArtifacts(project, cfg, rs)
-                Jackson.DataFormat.forceArtifacts(project, cfg, rs)
                 JacksonV2.Core.forceArtifacts(project, cfg, rs)
                 JacksonV2.DataType.forceArtifacts(project, cfg, rs)
                 JacksonV2.DataFormat.forceArtifacts(project, cfg, rs)
@@ -587,19 +569,15 @@ fun Project.forceConfigurations() {
                 exclude("io.spine", "spine-validate")
                 force(
                     Kotlin.bom,
+                    KotlinPoet.lib,
                     Coroutines.bom,
                     JUnit.bom,
                     Jackson.annotations,
-                    Jackson.bom,
                     JacksonV2.bom,
                     Grpc.ProtocPlugin.artifact,
                     Grpc.bom,
                     Guava.lib,
                     Guava.testLib,
-                    // The `proto-google-cloud-*` libraries bring an older `failureaccess`
-                    // than the one used by the forced Guava version above.
-                    "com.google.guava:failureaccess:1.0.3",
-                    JUnit.legacy,
 
                     Base.lib,
                     Base.annotations,
@@ -617,7 +595,6 @@ fun Project.forceConfigurations() {
                     BaseTypes.lib,
                     Change.lib,
                     TestLib.lib,
-                    ToolBase.lib,
                     ToolBase.pluginBase,
                     CoreJvm.server,
                     Compiler.api,

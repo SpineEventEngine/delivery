@@ -17,7 +17,7 @@ dependencies {
 }
 
 node {
-  version.set("19.6.0")
+  version.set("22.23.2")
   download.set(true)
 }
 

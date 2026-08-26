@@ -19,7 +19,7 @@ import static io.spine.delivery.demo.GreeterContext.NAME;
 
 /**
  * Provides a GET HTTP request handler that picks up a delivery shard
- * using the {@link io.spine.delivery.client.SimpleDeliveryClient SimpleDeliveryClient}.
+ * using the {@link io.spine.delivery.client.DeliveryClient DeliveryClient}.
  */
 @SuppressWarnings("serial")
 @WebServlet(name = "LockShard", value = "/work-registry/pickUp")

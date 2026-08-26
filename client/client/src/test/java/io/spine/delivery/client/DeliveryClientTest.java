@@ -44,7 +44,7 @@ import static io.spine.delivery.given.TestInboxMessages.toDeliver;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 /**
- * Tests the {@link SimpleDeliveryClient} against the Delivery server running in
+ * Tests the {@link DeliveryClient} against the Delivery server running in
  * a Docker container.
  *
  * <p>Tagged as {@code integration}: the suite requires a Docker environment and
@@ -53,14 +53,14 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
  */
 @Tag("integration")
 @RequiresDeliveryImage
-@DisplayName("`SimpleDeliveryClient` should")
+@DisplayName("`DeliveryClient` should")
 final class DeliveryClientTest {
 
     private final GenericContainer<?> server = new GenericContainer<>(
             DeliveryImage.dockerImageName()
     ).withExposedPorts(8484);
 
-    private @MonotonicNonNull SimpleDeliveryClient client;
+    private @MonotonicNonNull DeliveryClient client;
 
     private @MonotonicNonNull ExecutionCountingStrategy strategy;
 
@@ -68,12 +68,13 @@ final class DeliveryClientTest {
     void connectClient() {
         server.start();
         strategy = new ExecutionCountingStrategy();
-        client = SimpleDeliveryClient
+        client = DeliveryClient
                 .create(server.getHost(), server.getFirstMappedPort(), strategy);
     }
 
     @AfterEach
     void stopServer() {
+        client.close();
         server.stop();
     }
 
@@ -83,11 +84,11 @@ final class DeliveryClientTest {
 
         private final ShardIndex shard = DeliveryStrategy.newIndex(1, 2);
         private final NodeId node = NodeId.newBuilder()
-                .setValue(SimpleDeliveryClient.class.getName())
+                .setValue(DeliveryClient.class.getName())
                 .build();
         private final WorkerId worker = WorkerId.newBuilder()
                 .setNodeId(node)
-                .setValue(SimpleDeliveryClient.class.getName())
+                .setValue(DeliveryClient.class.getName())
                 .build();
 
         @Test

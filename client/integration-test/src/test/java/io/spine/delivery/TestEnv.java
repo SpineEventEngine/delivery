@@ -6,7 +6,7 @@
 
 package io.spine.delivery;
 
-import io.spine.delivery.client.SimpleDeliveryClient;
+import io.spine.delivery.client.DeliveryClient;
 import io.spine.server.NodeId;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.InboxMessage;
@@ -37,20 +37,20 @@ final class TestEnv {
     public static final ShardIndex SHARD = DeliveryStrategy.newIndex(1, 2);
 
     /**
-     * Predefined {@code NodeId} with the {@code SimpleDeliveryClient} full class name used
+     * Predefined {@code NodeId} with the {@code DeliveryClient} full class name used
      * as its value.
      */
     public static final NodeId NODE = NodeId.newBuilder()
-            .setValue(SimpleDeliveryClient.class.getName())
+            .setValue(DeliveryClient.class.getName())
             .build();
 
     /**
      * Predefined {@code WorkerId} that uses predefined {@code NODE} and
-     * {@code SimpleDeliveryClient} full class name as its values.
+     * {@code DeliveryClient} full class name as its values.
      */
     public static final WorkerId WORKER = WorkerId.newBuilder()
             .setNodeId(NODE)
-            .setValue(SimpleDeliveryClient.class.getName())
+            .setValue(DeliveryClient.class.getName())
             .build();
 
     /**

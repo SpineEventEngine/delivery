@@ -25,6 +25,6 @@ object Jib {
      */
     object GradlePlugin {
         const val id = "com.google.cloud.tools.jib"
-        const val version = "3.4.4"
+        const val version = "3.5.4"
     }
 }

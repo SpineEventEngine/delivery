@@ -6,7 +6,7 @@
 
 package io.spine.dependency.lib
 
-// https://commons.apache.org/proper/commons-compress/changes-report.html
+// https://commons.apache.org/proper/commons-compress/
 /**
  * Used only on the *buildscript* classpath of the root project, to keep the Jib Gradle
  * plugin working.

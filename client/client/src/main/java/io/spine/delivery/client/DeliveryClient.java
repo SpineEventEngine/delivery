@@ -6,12 +6,18 @@
 
 package io.spine.delivery.client;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
-import io.spine.logging.WithLogging;
+import io.spine.delivery.InboxServiceGrpc;
+import io.spine.delivery.InboxServiceGrpc.InboxServiceBlockingStub;
+import io.spine.delivery.OptionalInboxMessage;
+import io.spine.delivery.ReadMessagesSinceTime;
+import io.spine.delivery.ShardServiceGrpc;
+import io.spine.delivery.ShardServiceGrpc.ShardServiceBlockingStub;
 import io.spine.delivery.client.strategy.Propagate;
 import io.spine.delivery.command.PickUpShard;
 import io.spine.delivery.command.ReleaseExpiredSessions;
@@ -21,15 +27,7 @@ import io.spine.delivery.command.RemoveMessages;
 import io.spine.delivery.command.WriteMessage;
 import io.spine.delivery.command.WriteMessages;
 import io.spine.delivery.event.ExpiredSessionsReleased;
-import io.spine.delivery.InboxServiceGrpc;
-import io.spine.delivery.InboxServiceGrpc.InboxServiceBlockingStub;
-import io.spine.delivery.DeliveryPickUpOutcome;
-import io.spine.delivery.OptionalInboxMessage;
-import io.spine.delivery.PageOfMessages;
-import io.spine.delivery.ReadMessagesSinceTime;
-import io.spine.delivery.ShardServiceGrpc;
-import io.spine.delivery.ShardServiceGrpc.ShardServiceBlockingStub;
-import io.spine.delivery.rejection.Rejections;
+import io.spine.logging.WithLogging;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageComparator;
 import io.spine.server.delivery.InboxMessageId;
@@ -37,10 +35,10 @@ import io.spine.server.delivery.Page;
 import io.spine.server.delivery.PickUpOutcome;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Throwables.getStackTraceAsString;
@@ -62,64 +60,127 @@ import static java.lang.String.format;
  * @see ShardServiceGrpc
  */
 @SuppressWarnings({"ResultOfMethodCallIgnored", "OverlyCoupledClass", "FutureReturnValueIgnored"})
-public final class SimpleDeliveryClient
-        implements InboxClient, SessionRegistryClient, WithLogging {
+public final class DeliveryClient
+        implements InboxClient, SessionRegistryClient, WithLogging, AutoCloseable {
+
+    /**
+     * The number of seconds to wait for the graceful termination of the channel
+     * when {@linkplain #close() closing} a client that owns it.
+     */
+    private static final int CHANNEL_SHUTDOWN_TIMEOUT_SECONDS = 5;
 
     private final ShardServiceBlockingStub shardService;
     private final InboxServiceBlockingStub inboxService;
 
     private final RequestExecutionStrategy requestExecutionStrategy;
 
-    private SimpleDeliveryClient(ManagedChannel channel, RequestExecutionStrategy strategy) {
+    private final ManagedChannel channel;
+
+    /**
+     * Tells whether {@link #channel} was created by this client, and therefore
+     * must be shut down by it.
+     *
+     * <p>A channel supplied by the caller is owned — and shut down — by the caller.
+     */
+    private final boolean ownsChannel;
+
+    private DeliveryClient(ManagedChannel channel,
+                           boolean ownsChannel,
+                           RequestExecutionStrategy strategy) {
         logger().atDebug()
                 .log(() -> format(
-                        "Creating a `SimpleDeliveryClient` for the channel `%s`.", channel
+                        "Creating a new instance for the channel `%s`.", channel
                 ));
         shardService = ShardServiceGrpc.newBlockingStub(channel);
         inboxService = InboxServiceGrpc.newBlockingStub(channel);
         requestExecutionStrategy = strategy;
+        this.channel = channel;
+        this.ownsChannel = ownsChannel;
     }
 
     /**
      * Creates a new delivery client that connects to a gRPC server on the specified {@code host}
      * and {@code port} and uses the {@link Propagate} {@code RequestExecutionStrategy}.
      */
-    public static SimpleDeliveryClient create(String host, int port) {
+    public static DeliveryClient create(String host, int port) {
         return create(host, port, new Propagate());
     }
 
     /**
      * Creates a new delivery client that connects to a gRPC server on the specified {@code host}
      * and {@code port}, and with the given {@code RequestExecutionStrategy}.
+     *
+     * <p>The returned client owns the channel it creates:
+     * {@linkplain #close() closing} the client shuts the channel down.
      */
-    public static SimpleDeliveryClient create(String host,
-                                              int port,
-                                              RequestExecutionStrategy strategy) {
+    public static DeliveryClient create(String host,
+                                        int port,
+                                        RequestExecutionStrategy strategy) {
         checkNotEmptyOrBlank(host);
         checkPositive(port);
         var channel = ManagedChannelBuilder
                 .forAddress(host, port)
                 .usePlaintext()
                 .build();
-        return new SimpleDeliveryClient(channel, strategy);
+        return new DeliveryClient(channel, true, strategy);
     }
 
     /**
      * Creates a new delivery client that connects to a gRPC server
      * using the specified {@code channel} and {@link Propagate} {@code RequestExecutionStrategy}.
      */
-    public static SimpleDeliveryClient create(ManagedChannel channel) {
+    public static DeliveryClient create(ManagedChannel channel) {
         return create(channel, new Propagate());
     }
 
     /**
      * Creates a new delivery client that connects to a gRPC server
      * using the specified {@code channel}, and with the given {@code RequestExecutionStrategy}.
+     *
+     * <p>The caller retains ownership of the {@code channel} — several clients may share it —
+     * and is responsible for shutting it down once all of them are done.
+     * {@linkplain #close() Closing} the returned client does not affect the channel.
      */
-    public static SimpleDeliveryClient create(ManagedChannel channel,
-                                              RequestExecutionStrategy strategy) {
+    public static DeliveryClient create(ManagedChannel channel,
+                                        RequestExecutionStrategy strategy) {
         checkNotNull(channel);
-        return new SimpleDeliveryClient(channel, strategy);
+        return new DeliveryClient(channel, false, strategy);
+    }
+
+    /**
+     * Obtains the channel this client communicates over.
+     */
+    @VisibleForTesting
+    ManagedChannel channel() {
+        return channel;
+    }
+
+    /**
+     * Closes this client, shutting down the channel if this client
+     * {@linkplain #ownsChannel owns} it.
+     *
+     * <p>The shutdown is graceful: in-flight calls are given
+     * {@value #CHANNEL_SHUTDOWN_TIMEOUT_SECONDS} seconds to complete before
+     * the channel is terminated forcefully.
+     *
+     * <p>Closing a client created over a caller-supplied channel is a no-op:
+     * such a channel may be shared with other clients, and only its owner
+     * knows when all of them are done with it.
+     */
+    @Override
+    public void close() {
+        if (!ownsChannel) {
+            return;
+        }
+        channel.shutdown();
+        try {
+            if (!channel.awaitTermination(CHANNEL_SHUTDOWN_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+                channel.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            channel.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**
@@ -231,7 +292,7 @@ public final class SimpleDeliveryClient
             var occurredExceptions = e.causes();
             Exception last = occurredExceptions.get(occurredExceptions.size() - 1);
             logger().atTrace()
-                    .log(() -> format("[SimpleClient] Unable to pick up shard `%s`: %s.",
+                    .log(() -> format("Unable to pick up shard `%s`: %s.",
                                       shard, getStackTraceAsString(last)));
             throw e;
         }
@@ -274,7 +335,7 @@ public final class SimpleDeliveryClient
                 .setInactivityPeriod(inactivityPeriod)
                 .build();
         logger().atTrace().log(
-                () -> "[SimpleClient] Posting `ReleaseExpiredSessions` command" +
+                () -> "Posting `ReleaseExpiredSessions` command" +
                         " and waiting for a response event `ExpiredSessionsReleased`."
         );
         var sessionsReleased =
@@ -300,7 +361,6 @@ public final class SimpleDeliveryClient
         return asOptional(result);
     }
 
-    @NonNull
     private static Optional<InboxMessage> asOptional(OptionalInboxMessage result) {
         var message = result.getMessage();
         if (isDefault(message)) {

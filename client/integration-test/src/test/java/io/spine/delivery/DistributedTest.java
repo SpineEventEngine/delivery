@@ -7,9 +7,8 @@
 package io.spine.delivery;
 
 import com.github.dockerjava.api.model.Capability;
-import com.github.dockerjava.api.model.HostConfig;
 import com.google.common.collect.ImmutableList;
-import io.spine.delivery.client.SimpleDeliveryClient;
+import io.spine.delivery.client.DeliveryClient;
 import io.spine.delivery.client.given.ExecutionCountingStrategy;
 import io.spine.delivery.given.DeliveryImage;
 import io.spine.delivery.given.RequiresDeliveryImage;
@@ -23,12 +22,16 @@ import org.testcontainers.containers.Container;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
-import org.testcontainers.utility.DockerImageName;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import static io.spine.util.Exceptions.newIllegalStateException;
 
 /**
  * An abstract base for tests that utilize the distribution feature of the Hazelcast-based
@@ -48,16 +51,42 @@ abstract class DistributedTest {
     private static final Network network = Network.newNetwork();
 
     /**
-     * Docker image name of the Delivery server.
+     * The image the containers of this test actually run.
+     *
+     * <p>It adds the {@code iproute2} package on top of the Delivery server image.
+     * That package provides {@code tc}, which {@link #addDelay(GenericContainer)} needs
+     * to emulate an unstable network. The server image does not ship it: Jib builds that
+     * image on its default Temurin JRE base, which carries no network tooling.
+     *
+     * <p>The package is added here, rather than to the server image itself, so that
+     * the published image stays free of network administration tools.
      */
-    private static final DockerImageName IMAGE_NAME =
-            DeliveryImage.dockerImageName();
+    @SuppressWarnings("HardcodedLineSeparator") /* Dockerfile lines are LF-separated
+        whatever the host OS is. */
+    private static final ImageFromDockerfile TEST_IMAGE =
+            new ImageFromDockerfile("delivery-server-netem:test", false)
+                    .withFileFromString("Dockerfile", String.join(
+                            "\n",
+                            "FROM " + DeliveryImage.NAME,
+                            "RUN apt-get update"
+                                    + " && apt-get install -y --no-install-recommends iproute2"
+                                    + " && rm -rf /var/lib/apt/lists/*"
+                    ));
 
     private static final ImmutableList<GenericContainer<?>> servers = ImmutableList.of(
             newDeliveryContainer("=[1]="),
             newDeliveryContainer("=[2]="),
             newDeliveryContainer("=[3]=")
     );
+
+    /**
+     * The clients created for the current test, closed by {@link #stopServer()}.
+     *
+     * <p>Each client owns a {@code ManagedChannel}; without closing them, every
+     * channel would leak, and gRPC logs each channel the GC collects as
+     * an orphan.
+     */
+    private static final List<DeliveryClient> clients = new ArrayList<>();
 
     @SuppressWarnings("UnsecureRandomNumberGeneration") // Used for a non-security purpose.
     private static final Random random = new Random();
@@ -67,7 +96,7 @@ abstract class DistributedTest {
      */
     @SuppressWarnings("resource") // The container is closed in the `@AfterAll` hook.
     private static GenericContainer<?> newDeliveryContainer(String logOutputPrefix) {
-        return new GenericContainer<>(IMAGE_NAME)
+        return new GenericContainer<>(TEST_IMAGE)
                 .withExposedPorts(8484)
                 .withLogConsumer(new Slf4jLogConsumer(LOGGER).withPrefix(logOutputPrefix))
                 .withNetwork(network)
@@ -89,6 +118,8 @@ abstract class DistributedTest {
 
     @AfterEach
     void stopServer() {
+        clients.forEach(DeliveryClient::close);
+        clients.clear();
         servers.forEach(GenericContainer::stop);
     }
 
@@ -120,38 +151,78 @@ abstract class DistributedTest {
         try {
             execResult = deliveryContainer
                     .execInContainer("/bin/bash", "-c", command);
-        } catch (IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        LOGGER.info("= = = Exec finished with\n = code: `{}`\n, = stdout: \n{}\n, = stderr: \n{}\n",
-                    execResult.getExitCode(), execResult.getStdout(), execResult.getStderr());
+        if (LOGGER.isDebugEnabled()) {
+            var format = String.format(
+                    "= = = Exec finished with %n" +
+                            " = code: `{}`,%n" +
+                            " = stdout: %n" +
+                            "{},%n" +
+                            " = stderr: %n" +
+                            "{}%n"
+            );
+            LOGGER.debug(format,
+                         execResult.getExitCode(), execResult.getStdout(), execResult.getStderr());
+        }
+        if (execResult.getExitCode() != 0) {
+            onShapingFailure(command, execResult);
+        }
     }
 
     /**
-     * Creates a new {@code SimpleDeliveryClient} connecting to the given
-     * started {@code container}.
+     * Fails the test because a traffic-shaping command did not succeed inside the container.
+     *
+     * <p>Without shaping, the containers talk over a healthy network, and the suite silently
+     * stops testing the very thing it exists to test — an unstable one. Failing here prevents
+     * such a run from passing under false pretenses.
+     *
+     * <p>{@code @RequiresDeliveryImage} already skips this suite where the server image is
+     * absent, so reaching this method means the environment does have the image but cannot
+     * shape traffic. The likely causes are the image missing the {@code iproute2} package
+     * (see {@link #TEST_IMAGE}), the container not being granted the {@code NET_ADMIN}
+     * capability, or the kernel providing no {@code sch_netem} module.
      */
-    private static SimpleDeliveryClient clientFor(GenericContainer<?> container) {
-        return SimpleDeliveryClient.create(
-                container.getHost(),
-                container.getFirstMappedPort(),
-                new ExecutionCountingStrategy()
+    private static void onShapingFailure(String command, Container.ExecResult result) {
+        throw newIllegalStateException(
+                "Unable to emulate an unstable network." +
+                        " The command `%s` finished with the code `%s`." +
+                        " Stdout: `%s`. Stderr: `%s`.",
+                command, result.getExitCode(), result.getStdout(), result.getStderr()
         );
     }
 
     /**
-     * Obtains a {@code SimpleDeliveryClient} connected to one of the created servers.
+     * Creates a new {@code DeliveryClient} connecting to the given
+     * started {@code container}.
+     */
+    private static DeliveryClient clientFor(GenericContainer<?> container) {
+        var client = DeliveryClient.create(
+                container.getHost(),
+                container.getFirstMappedPort(),
+                new ExecutionCountingStrategy()
+        );
+        clients.add(client);
+        return client;
+    }
+
+    /**
+     * Obtains a {@code DeliveryClient} connected to one of the created servers.
      *
      * <p>This method doesn't create a new connection; it uses one of the already created clients,
      * and randomly chooses the client to use.
      */
-    private static SimpleDeliveryClient randomClient() {
+    private static DeliveryClient randomClient() {
         return clientFor(servers.get(random.nextInt(servers.size())));
     }
 
     /**
      * Returns a {@code Stream} of {@code Arguments} that contains 2 randomly
-     * chosen {@code SimpleDeliveryClient}s.
+     * chosen {@code DeliveryClient}s.
      */
     protected static Stream<Arguments> clients() {
         return Stream.generate(() -> Arguments.of(randomClientSupplier(), randomClientSupplier()))
@@ -160,9 +231,9 @@ abstract class DistributedTest {
 
     /**
      * Returns a {@code Supplier} that will be returning a new randomly chosen
-     * {@code SimpleDeliveryClient} on each call.
+     * {@code DeliveryClient} on each call.
      */
-    private static Supplier<SimpleDeliveryClient> randomClientSupplier() {
+    private static Supplier<DeliveryClient> randomClientSupplier() {
         return DistributedTest::randomClient;
     }
 }
