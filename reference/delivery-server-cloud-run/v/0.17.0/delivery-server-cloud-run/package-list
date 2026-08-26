@@ -1,0 +1,6 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.delivery.launcher////PointingToDeclaration/delivery-server-cloud-run/io.spine.delivery.launcher/index.html
+$dokka.location:io.spine.delivery.launcher/Launcher///PointingToDeclaration/delivery-server-cloud-run/io.spine.delivery.launcher/-launcher/index.html
+$dokka.location:io.spine.delivery.launcher/Launcher/main/#java.lang.String[]/PointingToDeclaration/delivery-server-cloud-run/io.spine.delivery.launcher/-launcher/main.html
+io.spine.delivery.launcher
