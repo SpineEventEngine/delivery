@@ -17,6 +17,9 @@ import io.spine.dependency.lib.Grpc
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.Jackson
 import io.spine.dependency.lib.JacksonV2
+import io.spine.dependency.kotlinx.AtomicFu
+import io.spine.dependency.lib.Caffeine
+import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.lib.KotlinPoet
 import io.spine.dependency.lib.PerfMark
@@ -79,7 +82,14 @@ buildscript {
                 force(
                     jackson.annotations,
                     jackson.bom,
+                    io.spine.dependency.lib.JacksonV2.bom,
                     io.spine.dependency.lib.Caffeine.lib,
+                    // Floor artifacts request the pre-refresh versions;
+                    // the Protobuf runtime must never be older than the
+                    // refreshed gencode.
+                    io.spine.dependency.kotlinx.Coroutines.bom,
+                    io.spine.dependency.kotlinx.AtomicFu.lib,
+                    io.spine.dependency.lib.Protobuf.javaLib,
                     io.spine.dependency.lib.CommonsIo.lib,
                     io.spine.dependency.lib.CommonsCompress.lib,
                     io.spine.dependency.lib.Kotlin.bom,
@@ -571,6 +581,9 @@ fun Project.forceConfigurations() {
                     Kotlin.bom,
                     KotlinPoet.lib,
                     Coroutines.bom,
+                    AtomicFu.lib,
+                    Protobuf.javaLib,
+                    Caffeine.lib,
                     JUnit.bom,
                     Jackson.annotations,
                     JacksonV2.bom,
