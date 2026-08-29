@@ -89,6 +89,10 @@ buildscript {
                     // refreshed gencode.
                     io.spine.dependency.kotlinx.Coroutines.bom,
                     io.spine.dependency.kotlinx.AtomicFu.lib,
+                    // The refreshed compiler pins the current Time while
+                    // floor artifacts still request the previous one.
+                    io.spine.dependency.local.Time.lib,
+                    io.spine.dependency.local.Time.javaExtensions,
                     io.spine.dependency.lib.Protobuf.javaLib,
                     io.spine.dependency.lib.CommonsIo.lib,
                     io.spine.dependency.lib.CommonsCompress.lib,
