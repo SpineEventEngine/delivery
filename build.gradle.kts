@@ -84,15 +84,15 @@ buildscript {
                     jackson.bom,
                     io.spine.dependency.lib.JacksonV2.bom,
                     io.spine.dependency.lib.Caffeine.lib,
-                    // Floor artifacts request the pre-refresh versions;
-                    // the Protobuf runtime must never be older than the
-                    // refreshed gencode.
+                    // Floor artifacts request the pre-refresh versions.
                     io.spine.dependency.kotlinx.Coroutines.bom,
                     io.spine.dependency.kotlinx.AtomicFu.lib,
                     // The refreshed compiler pins the current Time while
                     // floor artifacts still request the previous one.
                     io.spine.dependency.local.Time.lib,
                     io.spine.dependency.local.Time.javaExtensions,
+                    // The Protobuf runtime must never be older than the
+                    // refreshed gencode.
                     io.spine.dependency.lib.Protobuf.javaLib,
                     io.spine.dependency.lib.CommonsIo.lib,
                     io.spine.dependency.lib.CommonsCompress.lib,
@@ -101,7 +101,6 @@ buildscript {
                     base.lib,
                     base.environment,
                     base.format,
-                    io.spine.dependency.local.Time.lib,
                     io.spine.dependency.local.Compiler.pluginLib,
                     logging.lib,
                     io.spine.dependency.local.Validation.runtime,
@@ -587,8 +586,6 @@ fun Project.forceConfigurations() {
                     Coroutines.bom,
                     AtomicFu.lib,
                     Jackson.bom,
-                    Time.lib,
-                    Time.javaExtensions,
                     Protobuf.javaLib,
                     Caffeine.lib,
                     JUnit.bom,
