@@ -17,6 +17,9 @@ import io.spine.dependency.lib.Grpc
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.Jackson
 import io.spine.dependency.lib.JacksonV2
+import io.spine.dependency.kotlinx.AtomicFu
+import io.spine.dependency.lib.Caffeine
+import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.lib.KotlinPoet
 import io.spine.dependency.lib.PerfMark
@@ -79,7 +82,18 @@ buildscript {
                 force(
                     jackson.annotations,
                     jackson.bom,
+                    io.spine.dependency.lib.JacksonV2.bom,
                     io.spine.dependency.lib.Caffeine.lib,
+                    // Floor artifacts request the pre-refresh versions.
+                    io.spine.dependency.kotlinx.Coroutines.bom,
+                    io.spine.dependency.kotlinx.AtomicFu.lib,
+                    // The refreshed compiler pins the current Time while
+                    // floor artifacts still request the previous one.
+                    io.spine.dependency.local.Time.lib,
+                    io.spine.dependency.local.Time.javaExtensions,
+                    // The Protobuf runtime must never be older than the
+                    // refreshed gencode.
+                    io.spine.dependency.lib.Protobuf.javaLib,
                     io.spine.dependency.lib.CommonsIo.lib,
                     io.spine.dependency.lib.CommonsCompress.lib,
                     io.spine.dependency.lib.Kotlin.bom,
@@ -87,7 +101,6 @@ buildscript {
                     base.lib,
                     base.environment,
                     base.format,
-                    io.spine.dependency.local.Time.lib,
                     io.spine.dependency.local.Compiler.pluginLib,
                     logging.lib,
                     io.spine.dependency.local.Validation.runtime,
@@ -571,6 +584,10 @@ fun Project.forceConfigurations() {
                     Kotlin.bom,
                     KotlinPoet.lib,
                     Coroutines.bom,
+                    AtomicFu.lib,
+                    Jackson.bom,
+                    Protobuf.javaLib,
+                    Caffeine.lib,
                     JUnit.bom,
                     Jackson.annotations,
                     JacksonV2.bom,

@@ -46,12 +46,12 @@ object CoreJvmCompiler {
     /**
      * The version used in the build classpath.
      */
-    const val dogfoodingVersion = "2.0.0-SNAPSHOT.091"
+    const val dogfoodingVersion = "2.0.0-SNAPSHOT.092"
 
     /**
      * The version to be used for integration tests.
      */
-    const val version = "2.0.0-SNAPSHOT.091"
+    const val version = "2.0.0-SNAPSHOT.092"
 
     /**
      * The ID of the Gradle plugin.
@@ -90,40 +90,4 @@ object CoreJvmCompiler {
      * The library with the CoreJvm Compiler plugins with the given [version].
      */
     fun compilerPlugins(version: String): String = "$group:$compilerPluginsArtifact:$version"
-
-    /**
-     * The CoreJvm Gradle Plugin library with the [dogfoodingVersion].
-     */
-    @Deprecated(
-        "Use `gradlePlugin` instead.",
-        ReplaceWith("gradlePlugin")
-    )
-    val pluginLib: String = gradlePlugin
-
-    /**
-     * The CoreJvm Gradle Plugin library with the given [version].
-     */
-    @Deprecated(
-        "Use `gradlePlugin(version)` instead.",
-        ReplaceWith("gradlePlugin(version)")
-    )
-    fun pluginLib(version: String): String = gradlePlugin(version)
-
-    /**
-     * The name of the published artifact with the CoreJvm Compiler plugins.
-     */
-    @Deprecated(
-        "Use `compilerPluginsArtifact` instead.",
-        ReplaceWith("compilerPluginsArtifact")
-    )
-    const val fatJarArtifact = compilerPluginsArtifact
-
-    /**
-     * The library with the CoreJvm Compiler plugins with the [version].
-     */
-    @Deprecated(
-        "Use `compilerPlugins` instead.",
-        ReplaceWith("compilerPlugins")
-    )
-    val pluginsArtifact: String = compilerPlugins
 }
