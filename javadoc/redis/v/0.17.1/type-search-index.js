@@ -1,0 +1,1 @@
+var typeSearchIndex = [{"p":"io.spine.server.storage.redis","l":"RedisStorageFactory","url":"io/spine/server/storage/redis/RedisStorageFactory.html"}, {"p":"io.spine.server.storage.redis","l":"RedisRecordStorage","url":"io/spine/server/storage/redis/RedisRecordStorage.html"}, {"l":"All classes","url":"allclasses.html"}]
