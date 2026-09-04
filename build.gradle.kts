@@ -14,23 +14,24 @@
 
 @file:Suppress("RemoveRedundantQualifierName")
 
+import com.github.jk1.license.LicenseReportExtension
 import com.google.protobuf.gradle.id
 import io.spine.dependency.boms.BomsPlugin
 import io.spine.dependency.build.ErrorProne
+import io.spine.dependency.kotlinx.AtomicFu
 import io.spine.dependency.kotlinx.Coroutines
 import io.spine.dependency.lib.ApacheHttp
+import io.spine.dependency.lib.Caffeine
 import io.spine.dependency.lib.CommonsCodec
 import io.spine.dependency.lib.GoogleApis
 import io.spine.dependency.lib.Grpc
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.Jackson
 import io.spine.dependency.lib.JacksonV2
-import io.spine.dependency.kotlinx.AtomicFu
-import io.spine.dependency.lib.Caffeine
-import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.lib.Kotlin
 import io.spine.dependency.lib.KotlinPoet
 import io.spine.dependency.lib.PerfMark
+import io.spine.dependency.lib.Protobuf
 import io.spine.dependency.lib.Slf4J
 import io.spine.dependency.local.Base
 import io.spine.dependency.local.BaseTypes
@@ -54,17 +55,14 @@ import io.spine.gradle.kotlin.setFreeCompilerArgs
 import io.spine.gradle.publish.IncrementGuard
 import io.spine.gradle.publish.PublishingRepos
 import io.spine.gradle.publish.spinePublishing
+import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.report.coverage.KoverConfig
-import com.github.jk1.license.LicenseReportExtension
 import io.spine.gradle.report.license.LicenseReporter
 import io.spine.gradle.report.pom.PomGenerator
-import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.testing.configureLogging
 import io.spine.gradle.testing.registerTestTasks
-import org.gradle.jvm.tasks.Jar
-import org.gradle.process.ExecOperations
 import java.io.ByteArrayOutputStream
-import javax.inject.Inject
+import org.gradle.jvm.tasks.Jar
 
 buildscript {
     standardSpineSdkRepositories()
@@ -152,16 +150,14 @@ spinePublishing {
     )
     destinations = with(PublishingRepos) {
         setOf(
-            // We publish only to GitHub because this project is proprietary and
-            // is distributed via paid subscription.
-            gitHub("delivery")
+            gitHub("delivery"),
+            cloudArtifactRegistry
         )
     }
 }
 
 allprojects {
     apply {
-        plugin("idea")
         plugin("project-report")
     }
 
@@ -404,7 +400,7 @@ abstract class CheckDockerAvailable : DockerGate() {
         if (windowsCiWithoutDocker()) {
             logger.lifecycle(
                 "Skipping the Docker requirement for `:$module`: `$WINDOWS_CI_NO_DOCKER` " +
-                    "is set, so the Testcontainers tests are skipped on this runner."
+                        "is set, so the Testcontainers tests are skipped on this runner."
             )
             return
         }
