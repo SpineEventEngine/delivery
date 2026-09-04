@@ -146,7 +146,7 @@ spinePublishing {
         setOf(
             // We publish only to GitHub because this project is proprietary and
             // is distributed via paid subscription.
-            gitHub("delivery-server")
+            gitHub("delivery")
         )
     }
 }
