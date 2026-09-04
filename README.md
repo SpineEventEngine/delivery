@@ -1,4 +1,4 @@
-delivery-server
+Spine Delivery Server
 --------------
 
 This repository provides a reusable gRPC-based Inbox delivery service and configuration client and a
@@ -40,21 +40,37 @@ starts the [server](server) inside a Docker container. The
 
 [server-launcher]: deployment/cloud-run/src/main/java/io/spine/delivery/launcher/Launcher.java
 
-Compatibility
---------------
-For the `Spine` versions below `1.8.0` use `delivery-server:0.7.2`.
-
-For `Spine` `1.8.0` and above use `delivery-server:0.8.0` and above.
-
-For `Spine` `1.9.0` and above use `delivery-server:0.9.0` and above.
-
 Distribution
 -------------
 
-The [`server`](server) is distributed as a Docker container
-hosted on the Google Container Registry. There is a Terraform module 
-[spine-delivery-server][terraform-module] that automates the deployment of the containers to the
-GCE instance. All the configuration parameters that are available for the servers also may be set
-through the Terraform module configuration.
+The [`server`](server) is distributed as a Docker container hosted on the Google Container
+Registry. There is a Terraform module [spine-delivery-server][terraform-module] that automates
+the deployment of the containers to the GCE instance. All the configuration parameters that are
+available for the servers also may be set through the Terraform module configuration.
+
+The libraries are published as Maven artifacts under the `io.spine.delivery` group. They are
+served from the Spine Maven repository, which needs no credentials to read:
+
+```kotlin
+repositories {
+    maven("https://europe-maven.pkg.dev/spine-event-engine/releases")
+}
+
+dependencies {
+    // The client talking to a running Delivery Server over gRPC.
+    implementation("io.spine.delivery:spine-delivery-client:$version")
+
+    // The interfaces the client is built upon.
+    implementation("io.spine.delivery:spine-delivery-client-base:$version")
+
+    // The Protobuf domain model shared by the server and the clients.
+    implementation("io.spine.delivery:spine-delivery-model:$version")
+
+    // The Delivery Server itself, for launching it from an application.
+    implementation("io.spine.delivery:spine-delivery-server:$version")
+}
+```
+
+The exact version to use is the one listed in `version.gradle.kts`.
 
 [terraform-module]: https://registry.terraform.io/modules/SpineEventEngine/spine-delivery-server/google/latest
