@@ -15,6 +15,10 @@
 import io.spine.dependency.lib.Grpc
 import io.spine.dependency.lib.JavaX
 
+plugins {
+    module
+}
+
 dependencies {
     implementation(project(":client:delivery-client"))
     // The in-process transport hosting the demo server.

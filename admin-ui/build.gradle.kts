@@ -16,6 +16,7 @@ import com.github.gradle.node.npm.task.NpmInstallTask
 import com.github.gradle.node.npm.task.NpxTask
 
 plugins {
+  module
   id("com.github.node-gradle.node") version "3.5.1"
 }
 

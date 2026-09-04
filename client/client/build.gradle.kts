@@ -15,6 +15,10 @@
 import io.spine.dependency.lib.Grpc
 import io.spine.dependency.test.Testcontainers
 
+plugins {
+    module
+}
+
 dependencies {
     api(project(":client:delivery-client-base"))
     // The gRPC stubs of the `Inbox` and `Shard` services.

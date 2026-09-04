@@ -15,6 +15,10 @@
 import io.spine.dependency.lib.Grpc
 import io.spine.dependency.test.Kotest
 
+plugins {
+    module
+}
+
 dependencies {
     // `ManagedChannel` appears in the public API of `AbstractDeliveryBootstrapper`.
     api(Grpc.core)

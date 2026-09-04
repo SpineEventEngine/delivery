@@ -21,6 +21,7 @@ import io.spine.dependency.storage.Hazelcast
 import io.spine.dependency.storage.Redisson
 
 plugins {
+    module
     application
     jib
     id("com.gradleup.shadow")

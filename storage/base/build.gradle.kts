@@ -1,5 +1,9 @@
 import io.spine.dependency.local.CoreJvm
 
+plugins {
+    module
+}
+
 dependencies {
     api(CoreJvm.server)
 }

@@ -16,6 +16,7 @@ import io.spine.dependency.lib.Grpc
 import io.spine.dependency.lib.Micronaut
 
 plugins {
+    module
     `micronaut-application`
 }
 

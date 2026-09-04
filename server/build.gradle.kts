@@ -18,6 +18,10 @@ import io.spine.dependency.local.CoreJvm
 import io.spine.dependency.local.Time
 import io.spine.dependency.test.Kotest
 
+plugins {
+    module
+}
+
 dependencies {
     implementation(Log4j2.core)
     implementation(project(":delivery-model"))

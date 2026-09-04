@@ -17,6 +17,10 @@ import io.spine.dependency.local.CoreJvm
 import io.spine.dependency.test.JUnit
 import io.spine.dependency.test.Testcontainers
 
+plugins {
+    module
+}
+
 /**
  * Test fixtures shared by the client and the server test suites.
  *

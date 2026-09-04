@@ -12,6 +12,11 @@
  * the License.
  */
 
-// Conventions (Java toolchain, CoreJvm codegen, dependency management, publishing) are
-// applied to every subproject by the root `build.gradle.kts`. This container project needs
-// no local build configuration.
+// Conventions (Java toolchain, CoreJvm codegen, dependency management, publishing) come
+// from the `module` script plugin. This container project has no sources of its own — it
+// only aggregates `base`, `redis`, and `hazelcast` — but it applies `module` because the
+// conventions reached it when they lived in the root `subprojects {}` block, and
+// `defineDependencies()` skips projects without a `src` directory anyway.
+plugins {
+    module
+}

@@ -15,6 +15,10 @@
 import io.spine.dependency.lib.Grpc
 import io.spine.dependency.local.CoreJvm
 
+plugins {
+    module
+}
+
 dependencies {
     api(Grpc.stub)
     api(Grpc.protobuf)

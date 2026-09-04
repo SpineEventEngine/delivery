@@ -18,6 +18,7 @@ import io.spine.dependency.local.Logging
 import io.spine.dependency.web.Jetty
 
 plugins {
+    module
     application
     id("com.gradleup.shadow")
     `appengine-appyaml`

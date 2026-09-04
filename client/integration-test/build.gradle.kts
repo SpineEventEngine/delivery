@@ -15,6 +15,10 @@
 import io.spine.dependency.lib.Grpc
 import io.spine.dependency.test.Testcontainers
 
+plugins {
+    module
+}
+
 dependencies {
     implementation(project(":client:delivery-client"))
     testImplementation(project(":fixtures"))
