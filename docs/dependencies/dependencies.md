@@ -1068,10 +1068,6 @@
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -2138,7 +2134,7 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:29 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -2579,10 +2575,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
 1.  **Group** : io.grpc. **Name** : grpc-stub. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
@@ -3030,7 +3022,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:28 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -3334,10 +3326,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
 1.  **Group** : io.grpc. **Name** : grpc-stub. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
@@ -3688,7 +3676,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:28 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -4136,6 +4124,10 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
+1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-kotlin. **Version** : 1.5.0.
+     * **Project URL:** [https://github.com/grpc/grpc-kotlin](https://github.com/grpc/grpc-kotlin)
+     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
+
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -4580,7 +4572,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:29 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -5180,10 +5172,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -5759,7 +5747,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:29 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -6909,10 +6897,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -7939,7 +7923,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:29 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -8504,10 +8488,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -9038,7 +9018,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:28 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -9651,10 +9631,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -10120,7 +10096,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:28 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -10568,6 +10544,10 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
+1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-kotlin. **Version** : 1.5.0.
+     * **Project URL:** [https://github.com/grpc/grpc-kotlin](https://github.com/grpc/grpc-kotlin)
+     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
+
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -11012,7 +10992,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:29 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -11316,10 +11296,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
 1.  **Group** : io.grpc. **Name** : grpc-stub. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
@@ -11670,7 +11646,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:28 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -12138,10 +12114,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -12611,7 +12583,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:29 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -13052,10 +13024,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
 1.  **Group** : io.grpc. **Name** : grpc-stub. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
@@ -13503,7 +13471,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:28 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -13963,10 +13931,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -14415,7 +14379,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:28 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -14883,10 +14847,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -15356,7 +15316,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:28 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -15797,10 +15757,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
 1.  **Group** : io.grpc. **Name** : grpc-stub. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
@@ -16248,7 +16204,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:28 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -16700,10 +16656,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -17148,7 +17100,7 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:28 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -17720,10 +17672,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
      * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
      * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
 
-1.  **Group** : io.grpc. **Name** : protoc-gen-grpc-java. **Version** : 1.83.1.
-     * **Project URL:** [https://github.com/grpc/grpc-java](https://github.com/grpc/grpc-java)
-     * **License:** [Apache 2.0](https://opensource.org/licenses/Apache-2.0)
-
 1.  **Group** : io.kotest. **Name** : kotest-assertions-core. **Version** : 6.2.4.
      * **Project URL:** [https://github.com/kotest/kotest](https://github.com/kotest/kotest)
      * **License:** [Apache-2.0](https://opensource.org/licenses/Apache-2.0)
@@ -18275,6 +18223,6 @@ This report was generated on **Fri Sep 04 21:20:26 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Fri Sep 04 21:20:27 WEST 2026** using 
+This report was generated on **Sat Sep 05 00:27:29 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

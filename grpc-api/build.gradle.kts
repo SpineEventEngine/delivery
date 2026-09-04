@@ -19,6 +19,16 @@ plugins {
     module
 }
 
+// This module declares the gRPC services of the Delivery server, so it needs
+// the `*Grpc` stubs generated alongside the message types.
+spine {
+    coreJvm {
+        grpc {
+            enabled.set(true)
+        }
+    }
+}
+
 dependencies {
     api(Grpc.stub)
     api(Grpc.protobuf)

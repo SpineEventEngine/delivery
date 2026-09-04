@@ -19,6 +19,16 @@ plugins {
     module
 }
 
+// `shard_session_registry_service.proto` declares a gRPC service, so this module
+// needs the `*Grpc` stubs generated alongside the message types.
+spine {
+    coreJvm {
+        grpc {
+            enabled.set(true)
+        }
+    }
+}
+
 dependencies {
     api(Grpc.stub)
     api(Grpc.protobuf)

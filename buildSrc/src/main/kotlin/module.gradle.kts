@@ -15,7 +15,6 @@
 @file:Suppress("AvoidApplyPluginMethod") // Some plugins are applied by ID at runtime.
 
 import com.github.jk1.license.LicenseReportExtension
-import com.google.protobuf.gradle.id
 import io.spine.dependency.boms.BomsPlugin
 import io.spine.dependency.build.ErrorProne
 import io.spine.dependency.kotlinx.AtomicFu
@@ -25,6 +24,7 @@ import io.spine.dependency.lib.Caffeine
 import io.spine.dependency.lib.CommonsCodec
 import io.spine.dependency.lib.GoogleApis
 import io.spine.dependency.lib.Grpc
+import io.spine.dependency.lib.GrpcKotlin
 import io.spine.dependency.lib.Guava
 import io.spine.dependency.lib.Jackson
 import io.spine.dependency.lib.JacksonV2
@@ -73,8 +73,12 @@ plugins {
     id("dokka-setup")
 }
 
-// The CoreJvm compiler plugin comes from the root `buildscript` classpath rather than
-// from `buildSrc`, so it cannot be requested in the `plugins` block above.
+// `buildSrc` is compiled before, and independently of, the root project, so when Gradle
+// resolves the `plugins` block above it looks only at the core plugins, included builds,
+// and the plugin repositories — never at the root `buildscript` classpath that carries
+// this plugin. Requesting `io.spine.core-jvm` there fails with "Plugin [id:
+// 'io.spine.core-jvm'] was not found". Applying it by ID resolves at execution time,
+// against the plugin classpath the consuming project actually has.
 apply(plugin = "io.spine.core-jvm")
 
 apply<IncrementGuard>()
@@ -96,7 +100,6 @@ typealias Module = Project
 
 project.run {
     forceConfigurations()
-    setupProtobuf()
 
     val javaVersion = BuildSettings.javaVersion
     setupJava(javaVersion)
@@ -107,33 +110,6 @@ project.run {
     setupTestTasks()
     setupPublishing()
     configureTaskDependencies()
-}
-
-/**
- * Configures the `grpc` protoc plugin for this module.
- *
- * The CoreJvm compiler/ProtoData generates the Java message types and wires the
- * generated sources into the source sets, but not the gRPC service stubs. Configure the
- * `grpc` protoc plugin so the `*Grpc` classes are generated for the modules that declare
- * gRPC services (`grpc-api`, `server`).
- * `Grpc.ProtocPlugin.artifact` is the Java stub; `GrpcKotlin` is for Kotlin.
- */
-@Suppress("DEPRECATION")
-fun Module.setupProtobuf() {
-    configure<com.google.protobuf.gradle.ProtobufExtension> {
-        plugins {
-            id("grpc") {
-                artifact = Grpc.ProtocPlugin.artifact
-            }
-        }
-        generateProtoTasks {
-            all().configureEach {
-                plugins {
-                    id("grpc")
-                }
-            }
-        }
-    }
 }
 
 /**
@@ -276,11 +252,20 @@ fun Module.forceConfigurations() {
                 // The `google-cloud-*` libraries pull additional gRPC artifacts
                 // (`grpc-alts`, `grpc-xds`, `grpc-grpclb`, `grpc-services`, etc.) at an
                 // older version. Align the `io.grpc` group with the version defined by the
-                // gRPC BOM forced above. The `grpc-kotlin-*` artifacts are versioned
-                // independently (see `GrpcKotlin`), so they are left untouched.
+                // gRPC BOM forced above.
+                //
+                // The `grpc-kotlin-*` artifacts are versioned independently, and the
+                // CoreJvm Compiler brings them in itself — `GrpcSettings` adds
+                // `protoc-gen-grpc-kotlin` and `grpc-kotlin-stub` at the version pinned
+                // inside the plugin when `grpc { enabled }` is on. Pin them to
+                // `GrpcKotlin` so that this repository's declared version governs,
+                // rather than whichever one the plugin happens to ship.
                 eachDependency {
-                    if (requested.group == "io.grpc" && !requested.name.contains("kotlin")) {
-                        useVersion(Grpc.version)
+                    if (requested.group == "io.grpc") {
+                        useVersion(
+                            if (requested.name.contains("kotlin")) GrpcKotlin.version
+                            else Grpc.version
+                        )
                     }
                 }
                 exclude("io.spine", "spine-validate")
