@@ -122,11 +122,6 @@ allprojects {
     apply(from = "$rootDir/version.gradle.kts")
     group = "io.spine.delivery"
     version = extra["versionToPublish"]!!
-    // Declared here rather than in the `module` plugin so that the repositories exist
-    // before any module-level plugin is applied. `BomsPlugin` in particular needs them
-    // to resolve its BOM platforms; applying it against a repository-less project
-    // silently drops the version alignment it provides.
-    repositories.standardToSpineSdk()
 }
 
 // Per-module configuration lives in the `module` script plugin

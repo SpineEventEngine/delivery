@@ -55,6 +55,7 @@ import io.spine.gradle.kotlin.applyJvmToolchain
 import io.spine.gradle.kotlin.setFreeCompilerArgs
 import io.spine.gradle.publish.IncrementGuard
 import io.spine.gradle.report.license.LicenseReporter
+import io.spine.gradle.repo.standardToSpineSdk
 import io.spine.gradle.testing.configureLogging
 import io.spine.gradle.testing.registerTestTasks
 import org.gradle.jvm.tasks.Jar
@@ -72,6 +73,10 @@ plugins {
     id("pmd-settings")
     id("dokka-setup")
 }
+
+// Must precede the plugins applied below: declared after them, the version alignment
+// of the Kotlin and coroutines artifacts is silently lost.
+repositories.standardToSpineSdk()
 
 // `buildSrc` is compiled before, and independently of, the root project, so when Gradle
 // resolves the `plugins` block above it looks only at the core plugins, included builds,
