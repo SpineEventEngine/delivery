@@ -26,8 +26,9 @@ public final class DeliveryImage {
      *
      * <p>Kept in sync with the {@code jib} configuration of
      * {@code deployment/cloud-run/build.gradle.kts} and with {@code DELIVERY_SERVER_IMAGE}
-     * of the root {@code build.gradle.kts}, whose {@code checkDeliveryImageAvailable} gate
-     * warns when the image is missing.
+     * of {@code buildSrc/src/main/kotlin/DockerGates.kt}, which the {@code module}
+     * script plugin passes to the {@code checkDeliveryImageAvailable} gate that warns
+     * when the image is missing.
      */
     public static final String NAME = "gcr.io/spine-dev/delivery-server:latest";
 
