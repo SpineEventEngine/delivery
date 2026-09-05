@@ -81,14 +81,6 @@ buildscript {
     }
 }
 
-plugins {
-    `java-library`
-    kotlin("jvm")
-    idea
-    protobuf
-    errorprone
-    //`gradle-doctor`
-}
 apply<BomsPlugin>()
 
 repositories.standardToSpineSdk()
