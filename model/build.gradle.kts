@@ -13,6 +13,7 @@
  */
 
 import io.spine.dependency.lib.Grpc
+import io.spine.dependency.lib.GrpcKotlin
 import io.spine.dependency.local.CoreJvm
 
 plugins {
@@ -32,6 +33,9 @@ spine {
 dependencies {
     api(Grpc.stub)
     api(Grpc.protobuf)
+    // The generated `*GrpcKt` stubs extend types from this library, so consumers need
+    // it at compile time; the CoreJvm gRPC DSL adds it only as `implementation`.
+    api(GrpcKotlin.stub)
     implementation(CoreJvm.server)
 }
 
