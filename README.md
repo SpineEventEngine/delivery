@@ -1,8 +1,8 @@
-Spine Delivery Server
+Spine Delivery
 --------------
 
-This repository provides a reusable gRPC-based Inbox delivery service and configuration client and a
-complementary application for Spine-based apps.
+This repository provides a reusable gRPC-based Inbox delivery service and configuration client and
+a complementary application for Spine-based apps.
 
 What is this project about?
 --------------
