@@ -157,20 +157,27 @@ fun Module.setupKotlin(javaVersion: JavaLanguageVersion) {
  * Delivery server image is required but missing.
  */
 fun Module.setupTestTasks() {
-    val dockerGate = name.takeIf { it in dockerDependentModules }?.let { module ->
+    // The lists key on the project name, but the gates report the project path, which
+    // is what a reader can run: `:redis` is not a project, `:storage:redis` is.
+    val projectPath = path
+    val dockerGate = if (name in dockerDependentModules) {
         tasks.register<CheckDockerAvailable>("checkDockerAvailable") {
             group = SpineTaskGroup.name
             description = "Fails the build unless a Docker environment is available."
-            moduleName.set(module)
+            modulePath.set(projectPath)
         }
+    } else {
+        null
     }
-    val imageGate = name.takeIf { it in imageDependentModules }?.let { module ->
+    val imageGate = if (name in imageDependentModules) {
         tasks.register<CheckDeliveryImageAvailable>("checkDeliveryImageAvailable") {
             group = SpineTaskGroup.name
             description = "Warns unless the Delivery server image is in the local daemon."
-            moduleName.set(module)
+            modulePath.set(projectPath)
             image.set(DELIVERY_SERVER_IMAGE)
         }
+    } else {
+        null
     }
     tasks {
         registerTestTasks()

@@ -143,16 +143,16 @@ abstract class DockerGate : DefaultTask() {
  */
 abstract class CheckDockerAvailable : DockerGate() {
 
-    /** The name of the gated module, used in the failure message. */
+    /** The path of the gated module, used in the failure message. */
     @get:Input
-    abstract val moduleName: Property<String>
+    abstract val modulePath: Property<String>
 
     @TaskAction
     fun check() {
-        val module = moduleName.get()
+        val module = modulePath.get()
         if (windowsCiWithoutDocker()) {
             logger.lifecycle(
-                "Skipping the Docker requirement for `:$module`: `$WINDOWS_CI_NO_DOCKER` " +
+                "Skipping the Docker requirement for `$module`: `$WINDOWS_CI_NO_DOCKER` " +
                         "is set, so the Testcontainers tests are skipped on this runner."
             )
             return
@@ -162,7 +162,7 @@ abstract class CheckDockerAvailable : DockerGate() {
         }
         throw GradleException(
             """
-            No Docker environment is available, but the tests of `:$module` require one.
+            No Docker environment is available, but the tests of `$module` require one.
 
             These tests exercise services running inside Docker containers
             (Testcontainers). Without Docker they verify nothing, so the build fails here
@@ -189,9 +189,9 @@ abstract class CheckDockerAvailable : DockerGate() {
  */
 abstract class CheckDeliveryImageAvailable : DockerGate() {
 
-    /** The name of the module whose integration suites use the image. */
+    /** The path of the module whose integration suites use the image. */
     @get:Input
-    abstract val moduleName: Property<String>
+    abstract val modulePath: Property<String>
 
     /** The image the suites run against. */
     @get:Input
@@ -211,7 +211,7 @@ abstract class CheckDeliveryImageAvailable : DockerGate() {
 
             WARNING: the Delivery server image `$image` is not in the local Docker daemon.
 
-            The `integration`-tagged tests of `:${moduleName.get()}` run the server from
+            The `integration`-tagged tests of `${modulePath.get()}` run the server from
             this image. Without it they are skipped, so the build can pass while verifying
             less than it appears to.
 
