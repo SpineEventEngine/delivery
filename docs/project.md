@@ -1,8 +1,8 @@
-# Project: delivery-server
+# Project: delivery
 
 ## Overview
 
-`delivery-server` (product name **Delivery Server**, formerly codenamed *Liquor*)
+`delivery` (product name **Spine Delivery**, formerly codenamed *Liquor*)
 is a standalone gRPC service that offloads sharded message delivery for
 Spine-based applications. It is deployed on a host separate from the main
 application server and acts as a remote `ShardedWorkRegistry` and `Inbox`
