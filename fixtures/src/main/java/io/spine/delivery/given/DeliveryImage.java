@@ -1,7 +1,15 @@
 /*
- * Copyright (c) 2000-2026 TeamDev. All rights reserved.
- * TeamDev PROPRIETARY and CONFIDENTIAL.
- * Use is subject to license terms.
+ * Copyright 2026 CodeMatters, Lda.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package io.spine.delivery.given;
@@ -18,8 +26,9 @@ public final class DeliveryImage {
      *
      * <p>Kept in sync with the {@code jib} configuration of
      * {@code deployment/cloud-run/build.gradle.kts} and with {@code DELIVERY_SERVER_IMAGE}
-     * of the root {@code build.gradle.kts}, whose {@code checkDeliveryImageAvailable} gate
-     * warns when the image is missing.
+     * of {@code buildSrc/src/main/kotlin/DockerGates.kt}, which the {@code module}
+     * script plugin passes to the {@code checkDeliveryImageAvailable} gate that warns
+     * when the image is missing.
      */
     public static final String NAME = "gcr.io/spine-dev/delivery-server:latest";
 

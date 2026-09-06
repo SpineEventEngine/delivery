@@ -1,15 +1,41 @@
 /*
- * Copyright (c) 2000-2026 TeamDev. All rights reserved.
- * TeamDev PROPRIETARY and CONFIDENTIAL.
- * Use is subject to license terms.
+ * Copyright 2026 CodeMatters, Lda.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 import io.spine.dependency.lib.Grpc
+import io.spine.dependency.lib.GrpcKotlin
 import io.spine.dependency.local.CoreJvm
+
+plugins {
+    module
+}
+
+// This module declares the gRPC services of the Delivery server, so it needs
+// the `*Grpc` stubs generated alongside the message types.
+spine {
+    coreJvm {
+        grpc {
+            enabled.set(true)
+        }
+    }
+}
 
 dependencies {
     api(Grpc.stub)
     api(Grpc.protobuf)
+    // The generated `*GrpcKt` stubs extend types from this library, so consumers need
+    // it at compile time; the CoreJvm gRPC DSL adds it only as `implementation`.
+    api(GrpcKotlin.stub)
     implementation(CoreJvm.server)
     implementation(project(":delivery-model"))
 }
