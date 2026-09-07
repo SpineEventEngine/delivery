@@ -3,6 +3,10 @@ import io.spine.dependency.storage.Redisson
 import io.spine.dependency.test.Kotest
 import io.spine.dependency.test.Testcontainers
 
+plugins {
+    module
+}
+
 dependencies {
     api(CoreJvm.server)
     implementation(project(":storage:base"))
@@ -14,5 +18,5 @@ dependencies {
 
 // The Testcontainers-based suites here (`RedisRecordStorageTest`, `MultitenantStorageTest`,
 // `RedisGroupedStorageSpec`) start a `redis:6-alpine` container. Docker is enforced by the
-// `checkDockerAvailable` gate wired from the root build, which lists this module in
-// `dockerDependentModules()`.
+// `checkDockerAvailable` gate the `module` plugin adds, because `DockerGates.kt` lists this
+// module in `dockerDependentModules`.
