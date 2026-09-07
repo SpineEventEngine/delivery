@@ -12,14 +12,12 @@
  * the License.
  */
 
-import java.io.ByteArrayOutputStream
-import javax.inject.Inject
+import java.util.concurrent.TimeUnit
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
-import org.gradle.process.ExecOperations
 import org.gradle.work.DisableCachingByDefault
 
 /**
@@ -52,10 +50,10 @@ val dockerDependentModules = setOf("redis", "delivery-client", "integration-test
  * Names of the modules whose tests additionally need the Delivery server *image*.
  *
  * Unlike [dockerDependentModules], a missing image is reported as a warning rather than
- * a build failure: the gate pulls the published image when the local daemon lacks it,
- * but the pull can fail — offline, or before the first publication — and the suites
- * needing the image then skip themselves (see
- * `RequiresDeliveryImage`). See [CheckDeliveryImageAvailable].
+ * a build failure: the gate pulls the published image when the local Docker daemon lacks
+ * it, but the pull can fail — offline, or before the first publication — and the suites
+ * needing the image then skip themselves (see `RequiresDeliveryImage`).
+ * See [CheckDeliveryImageAvailable].
  */
 val imageDependentModules = setOf("delivery-client", "integration-test")
 
@@ -71,8 +69,7 @@ const val DELIVERY_SERVER_IMAGE_NAME =
 /**
  * The Delivery server image the `integration`-tagged suites run against.
  *
- * Kept in sync with `DeliveryImage` of the `:fixtures` module, which probes for
- * the same name.
+ * Kept in sync with `DeliveryImage` of the `:fixtures` module, which probes for the same name.
  */
 const val DELIVERY_SERVER_IMAGE = "$DELIVERY_SERVER_IMAGE_NAME:latest"
 
@@ -84,9 +81,6 @@ const val DELIVERY_SERVER_IMAGE = "$DELIVERY_SERVER_IMAGE_NAME:latest"
 @DisableCachingByDefault(because = "Probes the local Docker daemon, which is not an input.")
 abstract class DockerGate : DefaultTask() {
 
-    @get:Inject
-    abstract val execOperations: ExecOperations
-
     protected companion object {
 
         /**
@@ -97,6 +91,16 @@ abstract class DockerGate : DefaultTask() {
          * which read the same variable to skip the affected tests there.
          */
         const val WINDOWS_CI_NO_DOCKER = "WINDOWS_CI_NO_DOCKER"
+
+        /** How long to wait for a local probe such as `docker info` or `docker image inspect`. */
+        const val PROBE_TIMEOUT_SECONDS = 30L
+
+        /**
+         * How long to wait for `docker pull` of the server image.
+         *
+         * Kept in sync with `RequiresDeliveryImageCondition`, which bounds its pull the same way.
+         */
+        const val PULL_TIMEOUT_SECONDS = 300L
     }
 
     /** Tells whether this runner declared itself unable to launch Docker containers. */
@@ -109,41 +113,58 @@ abstract class DockerGate : DefaultTask() {
      * Any failure to even start the `docker` executable (for example, it is not installed)
      * is treated as "no Docker available".
      */
-    protected fun dockerAvailable(): Boolean = dockerSucceeds("info")
+    protected fun dockerAvailable(): Boolean = dockerSucceeds(PROBE_TIMEOUT_SECONDS, "info")
 
     /** Tells whether the given image is present in the local Docker daemon. */
     protected fun imagePresent(image: String): Boolean =
-        dockerSucceeds("image", "inspect", image)
+        dockerSucceeds(PROBE_TIMEOUT_SECONDS, "image", "inspect", image)
 
     /**
      * Pulls the given image into the local Docker daemon, reporting whether it succeeded.
      *
-     * Fails, for example, when the runner is offline or the image was never published.
+     * Reports `false` when, for example, the runner is offline, the image was never
+     * published, or the pull did not finish within [PULL_TIMEOUT_SECONDS].
      */
-    protected fun pullImage(image: String): Boolean = dockerSucceeds("pull", image)
+    protected fun pullImage(image: String): Boolean =
+        dockerSucceeds(PULL_TIMEOUT_SECONDS, "pull", image)
 
     /**
-     * Runs `docker` with the given arguments, reporting whether it exited successfully.
+     * Runs `docker` with the given arguments, reporting whether it exited successfully
+     * within the timeout.
+     *
+     * The output is discarded: the gates tell the user which command to rerun by hand to
+     * see it. Any failure to even start the `docker` executable, and a timeout, count as
+     * "unsuccessful"; a timed-out process is killed.
+     */
+    private fun dockerSucceeds(timeoutSeconds: Long, vararg args: String): Boolean = try {
+        val process = ProcessBuilder(dockerCommand(*args))
+            .redirectErrorStream(true)
+            .redirectOutput(ProcessBuilder.Redirect.DISCARD)
+            .start()
+        if (process.waitFor(timeoutSeconds, TimeUnit.SECONDS)) {
+            process.exitValue() == 0
+        } else {
+            process.destroyForcibly()
+            false
+        }
+    } catch (e: InterruptedException) {
+        Thread.currentThread().interrupt()
+        false
+    } catch (_: Exception) {
+        false
+    }
+
+    /**
+     * The `docker` command with the given arguments, resolved for the current OS.
      *
      * On Windows the call is routed through `cmd /c` so that the `docker` executable is
      * resolved via `PATH`/`PATHEXT` (i.e. `docker.exe` from Docker Desktop); a bare program
      * name is not reliably resolved otherwise. Elsewhere `docker` is invoked directly.
      */
-    private fun dockerSucceeds(vararg args: String): Boolean = try {
+    private fun dockerCommand(vararg args: String): List<String> {
         val onWindows = System.getProperty("os.name").startsWith("Windows", ignoreCase = true)
-        val command =
-            if (onWindows) listOf("cmd", "/c", "docker") + args
-            else listOf("docker") + args
-        val sink = ByteArrayOutputStream()
-        val result = execOperations.exec {
-            commandLine(command)
-            standardOutput = sink
-            errorOutput = sink
-            isIgnoreExitValue = true
-        }
-        result.exitValue == 0
-    } catch (_: Exception) {
-        false
+        val prefix = if (onWindows) listOf("cmd", "/c") else emptyList()
+        return prefix + "docker" + args
     }
 }
 
@@ -202,8 +223,8 @@ abstract class CheckDockerAvailable : DockerGate() {
  * run the server from that image. Without it they skip themselves, so the build can pass
  * while verifying less than it appears to; this gate restores a visible signal.
  *
- * When the local daemon lacks the image, the gate pulls the published one first: a local
- * image — typically built from the working tree by `jibDockerBuild` — is never replaced.
+ * The pull happens only when the local Docker daemon lacks the image: a local image —
+ * typically built from the working tree by `jibDockerBuild` — is never replaced.
  *
  * It only warns — see [imageDependentModules] for why a missing image is not a build
  * failure. Mirrors `CheckCredentialsAvailable` in the `gcloud-jvm` repository.
