@@ -33,7 +33,7 @@
             <div v-else>Not Picked</div>
           </q-td>
           <q-td key="lastPicked" :props="props">
-            {{ props.row.lastPicked ? props.row.lastPicked.toDate().toLocaleString() : 'Never' }}
+            {{ lastPicked(props.row.lastPicked) }}
           </q-td>
         </q-tr>
       </template>
@@ -48,11 +48,22 @@
 </template>
 
 <script lang="ts" setup>
+import { timestampDate, type Timestamp } from '@bufbuild/protobuf/wkt';
 import { useShards } from 'src/services/shards';
 import type { ShardIndex } from 'src/gen/spine/server/delivery/delivery_pb';
 import { ShardStatus } from 'src/gen/spine/delivery/admin/admin_service_pb';
 
 const { shards } = useShards();
+
+/**
+ * Formats the moment the shard was last picked, or says it never was.
+ *
+ * protobuf-es 2.x messages are plain objects, so a `Timestamp` has no `toDate()`;
+ * the well-known-type helper converts it.
+ */
+function lastPicked(when?: Timestamp): string {
+  return when ? timestampDate(when).toLocaleString() : 'Never';
+}
 
 const columns = [
   {
