@@ -52,8 +52,9 @@ val dockerDependentModules = setOf("redis", "delivery-client", "integration-test
  * Names of the modules whose tests additionally need the Delivery server *image*.
  *
  * Unlike [dockerDependentModules], a missing image is reported as a warning rather than
- * a build failure: the image is not pulled automatically, so a fresh checkout has none,
- * and the suites needing it skip themselves when it is absent (see
+ * a build failure: the gate pulls the published image when the local daemon lacks it,
+ * but the pull can fail — offline, or before the first publication — and the suites
+ * needing the image then skip themselves (see
  * `RequiresDeliveryImage`). See [CheckDeliveryImageAvailable].
  */
 val imageDependentModules = setOf("delivery-client", "integration-test")
@@ -113,6 +114,13 @@ abstract class DockerGate : DefaultTask() {
     /** Tells whether the given image is present in the local Docker daemon. */
     protected fun imagePresent(image: String): Boolean =
         dockerSucceeds("image", "inspect", image)
+
+    /**
+     * Pulls the given image into the local Docker daemon, reporting whether it succeeded.
+     *
+     * Fails, for example, when the runner is offline or the image was never published.
+     */
+    protected fun pullImage(image: String): Boolean = dockerSucceeds("pull", image)
 
     /**
      * Runs `docker` with the given arguments, reporting whether it exited successfully.
@@ -187,11 +195,15 @@ abstract class CheckDockerAvailable : DockerGate() {
 }
 
 /**
- * Warns when the Delivery server image is missing from the local Docker daemon.
+ * Pulls the published Delivery server image when the local Docker daemon lacks it, and
+ * warns when that fails.
  *
  * The `integration`-tagged suites of the [image-dependent modules][imageDependentModules]
  * run the server from that image. Without it they skip themselves, so the build can pass
  * while verifying less than it appears to; this gate restores a visible signal.
+ *
+ * When the local daemon lacks the image, the gate pulls the published one first: a local
+ * image — typically built from the working tree by `jibDockerBuild` — is never replaced.
  *
  * It only warns — see [imageDependentModules] for why a missing image is not a build
  * failure. Mirrors `CheckCredentialsAvailable` in the `gcloud-jvm` repository.
@@ -215,10 +227,15 @@ abstract class CheckDeliveryImageAvailable : DockerGate() {
         if (imagePresent(image)) {
             return
         }
+        logger.lifecycle("Pulling the Delivery server image `$image`...")
+        if (pullImage(image)) {
+            return
+        }
         logger.warn(
             """
 
-            WARNING: the Delivery server image `$image` is not in the local Docker daemon.
+            WARNING: the Delivery server image `$image` is not in the local Docker daemon,
+            and pulling it from Artifact Registry failed.
 
             The `integration`-tagged tests of `${modulePath.get()}` run the server from
             this image. Without it they are skipped, so the build can pass while verifying
@@ -228,7 +245,7 @@ abstract class CheckDeliveryImageAvailable : DockerGate() {
 
                 ./gradlew :delivery-server-cloud-run:jibDockerBuild
 
-            Or pull the last published image from the public Artifact Registry:
+            Or retry the pull once the registry is reachable:
 
                 docker pull $image
             """.trimIndent()

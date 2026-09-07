@@ -56,9 +56,10 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
  * a Docker container.
  *
  * <p>Tagged as {@code integration}: the suite requires a Docker environment and
- * the server image in the local daemon, either built by
- * {@code :delivery-server-cloud-run:jibDockerBuild} or pulled from the public
- * {@code europe-docker.pkg.dev/spine-event-engine/containers} repository.
+ * the server image, pulled from the public
+ * {@code europe-docker.pkg.dev/spine-event-engine/containers} repository when the
+ * local daemon lacks it, or built from the working tree by
+ * {@code :delivery-server-cloud-run:jibDockerBuild}.
  */
 @Tag("integration")
 @RequiresDeliveryImage

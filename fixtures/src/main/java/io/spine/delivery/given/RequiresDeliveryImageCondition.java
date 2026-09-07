@@ -32,7 +32,9 @@ import java.util.concurrent.TimeUnit;
  *     <li>a CI runner that cannot launch Docker containers at all, signalled by the
  *         {@code WINDOWS_CI_NO_DOCKER} environment variable;
  *     <li>the {@linkplain DeliveryImage#NAME server image} being absent from the local
- *         Docker daemon.
+ *         Docker daemon and not pullable from Artifact Registry — offline, or before
+ *         the first publication. A local image, typically built from the working tree
+ *         by {@code jibDockerBuild}, is never replaced by a pull.
  * </ol>
  *
  * <p>Docker's own presence is not probed here — the {@code checkDockerAvailable} Gradle
@@ -50,6 +52,9 @@ final class RequiresDeliveryImageCondition implements ExecutionCondition {
     /** How long to wait for the {@code docker image inspect} probe. */
     private static final int PROBE_TIMEOUT_SECONDS = 30;
 
+    /** How long to wait for {@code docker pull} of the server image. */
+    private static final int PULL_TIMEOUT_SECONDS = 300;
+
     @Override
     public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
         var noDocker = Boolean.parseBoolean(System.getenv(WINDOWS_CI_NO_DOCKER));
@@ -59,28 +64,41 @@ final class RequiresDeliveryImageCondition implements ExecutionCondition {
                             + "Docker container hosting the Delivery server.");
         }
         var image = "The `" + DeliveryImage.NAME + "` image ";
-        if (!imagePresent()) {
+        if (!imagePresent() && !pullImage()) {
             return ConditionEvaluationResult.disabled(
-                    image + "is not in the local Docker daemon. Build it with "
+                    image + "is not in the local Docker daemon, and pulling it from "
+                            + "Artifact Registry failed. Build it with "
                             + "`./gradlew :delivery-server-cloud-run:jibDockerBuild` "
-                            + "or pull it with `docker pull " + DeliveryImage.NAME + "`.");
+                            + "or retry `docker pull " + DeliveryImage.NAME + "`.");
         }
         return ConditionEvaluationResult.enabled(image + "is available.");
     }
 
+    /** Tells whether the server image is present in the local Docker daemon. */
+    private static boolean imagePresent() {
+        return dockerSucceeds(PROBE_TIMEOUT_SECONDS, "image", "inspect", DeliveryImage.NAME);
+    }
+
+    /** Pulls the server image into the local Docker daemon, telling whether it succeeded. */
+    private static boolean pullImage() {
+        return dockerSucceeds(PULL_TIMEOUT_SECONDS, "pull", DeliveryImage.NAME);
+    }
+
     /**
-     * Tells whether the server image is present in the local Docker daemon.
+     * Runs {@code docker} with the given arguments, telling whether it exited successfully
+     * within the timeout.
      *
      * <p>Any failure to even start the {@code docker} executable is treated as
-     * "image unavailable", which disables the test rather than failing it.
+     * "unsuccessful", which disables the test rather than failing it.
      */
     @SuppressWarnings("OverlyBroadCatchBlock" /* Any probe failure means "unavailable". */)
-    private static boolean imagePresent() {
+    private static boolean dockerSucceeds(int timeoutSeconds, String... args) {
         try {
-            var process = new ProcessBuilder(dockerInspectCommand())
+            var process = new ProcessBuilder(dockerCommand(args))
                     .redirectErrorStream(true)
+                    .redirectOutput(ProcessBuilder.Redirect.DISCARD)
                     .start();
-            if (!process.waitFor(PROBE_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+            if (!process.waitFor(timeoutSeconds, TimeUnit.SECONDS)) {
                 process.destroyForcibly();
                 return false;
             }
@@ -94,19 +112,20 @@ final class RequiresDeliveryImageCondition implements ExecutionCondition {
     }
 
     /**
-     * The {@code docker image inspect} probe, resolved for the current OS.
+     * The {@code docker} command with the given arguments, resolved for the current OS.
      *
      * <p>On Windows the call is routed through {@code cmd /c} so that the {@code docker}
      * executable is resolved via {@code PATH}/{@code PATHEXT} (i.e. {@code docker.exe} from
      * Docker Desktop); elsewhere {@code docker} is invoked directly.
      */
-    private static List<String> dockerInspectCommand() {
+    private static List<String> dockerCommand(String... args) {
         var windows = "Windows";
         var onWindows = System.getProperty("os.name")
                               .regionMatches(true, 0, windows, 0, windows.length());
-        var probe = List.of("docker", "image", "inspect", DeliveryImage.NAME);
-        return onWindows
-               ? ImmutableList.<String>builder().add("cmd", "/c").addAll(probe).build()
-               : probe;
+        var command = ImmutableList.<String>builder();
+        if (onWindows) {
+            command.add("cmd", "/c");
+        }
+        return command.add("docker").add(args).build();
     }
 }
