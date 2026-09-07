@@ -43,8 +43,14 @@ starts the [server](server) inside a Docker container. The
 Distribution
 -------------
 
-The [`server`](server) is distributed as a Docker container hosted on the Google Container
-Registry. There is a Terraform module [spine-delivery-server][terraform-module] that automates
+The [`server`](server) is distributed as a Docker image hosted on the public Google Artifact
+Registry:
+
+```bash
+docker pull europe-docker.pkg.dev/spine-event-engine/containers/delivery-server:latest
+```
+
+There is a Terraform module [spine-delivery-server][terraform-module] that automates
 the deployment of the containers to the GCE instance. All the configuration parameters that are
 available for the servers also may be set through the Terraform module configuration.
 

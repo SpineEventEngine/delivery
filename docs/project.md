@@ -80,10 +80,12 @@ keep a Docker-less environment from reporting a misleading "tests passed":
   `integration-test`). The sole exemption is a CI runner setting
   `WINDOWS_CI_NO_DOCKER`, which cannot launch Linux containers.
 - `checkDeliveryImageAvailable` only **warns** when the Delivery server image is
-  absent, because it lives in the private `gcr.io/spine-dev` registry. The
+  absent from the local daemon, because it is not pulled automatically. The
   `integration`-tagged suites are annotated `@RequiresDeliveryImage` and skip
-  themselves visibly. Build the image locally with
-  `./gradlew :delivery-server-cloud-run:jibDockerBuild`.
+  themselves visibly. Build the image from the working tree with
+  `./gradlew :delivery-server-cloud-run:jibDockerBuild`, or pull the last
+  published one from the public Artifact Registry repository
+  `europe-docker.pkg.dev/spine-event-engine/containers`.
 
 ### Key constraints
 
@@ -96,8 +98,9 @@ keep a Docker-less environment from reporting a misleading "tests passed":
   the main Spine 2.x build. Applications still on Spine 1.x must pin the client
   artifacts of the `0.14.x` line (published as `io.spine.delivery:base` and
   `io.spine.delivery:simple-client`).
-- **Distribution**: the `server` ships as a Docker container on the Google
-  Container Registry and is deployed via a Terraform module. All server
+- **Distribution**: the `server` ships as the Docker image
+  `europe-docker.pkg.dev/spine-event-engine/containers/delivery-server` on the
+  public Google Artifact Registry and is deployed via a Terraform module. All server
   configuration is available through environment variables (`PORT`, `USE_REDIS`,
   `REDIS_HOST`, `USE_HAZELCAST`, `MAX_INBOUND_MESSAGE_SIZE`,
   `SHARD_PROCESSING_TIMEOUT`, …).

@@ -24,13 +24,13 @@ public final class DeliveryImage {
     /**
      * The name of the image.
      *
-     * <p>Kept in sync with the {@code jib} configuration of
-     * {@code deployment/cloud-run/build.gradle.kts} and with {@code DELIVERY_SERVER_IMAGE}
-     * of {@code buildSrc/src/main/kotlin/DockerGates.kt}, which the {@code module}
-     * script plugin passes to the {@code checkDeliveryImageAvailable} gate that warns
-     * when the image is missing.
+     * <p>Kept in sync with {@code DELIVERY_SERVER_IMAGE} of the build logic: the
+     * {@code jib} configuration of the {@code :delivery-server-cloud-run} module publishes
+     * that name, and the {@code module} script plugin passes it to the
+     * {@code checkDeliveryImageAvailable} gate that warns when the image is missing.
      */
-    public static final String NAME = "gcr.io/spine-dev/delivery-server:latest";
+    public static final String NAME =
+            "europe-docker.pkg.dev/spine-event-engine/containers/delivery-server:latest";
 
     /** Prevents instantiation of this utility class. */
     private DeliveryImage() {

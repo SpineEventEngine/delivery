@@ -52,19 +52,28 @@ val dockerDependentModules = setOf("redis", "delivery-client", "integration-test
  * Names of the modules whose tests additionally need the Delivery server *image*.
  *
  * Unlike [dockerDependentModules], a missing image is reported as a warning rather than
- * a build failure: the image lives in a private registry most developers cannot reach,
+ * a build failure: the image is not pulled automatically, so a fresh checkout has none,
  * and the suites needing it skip themselves when it is absent (see
  * `RequiresDeliveryImage`). See [CheckDeliveryImageAvailable].
  */
 val imageDependentModules = setOf("delivery-client", "integration-test")
 
 /**
+ * The Delivery server image, without a tag, as published to Google Artifact Registry.
+ *
+ * The `jib` configuration of `deployment/cloud-run/build.gradle.kts` pushes to this name.
+ * The `containers` repository is public: anyone can `docker pull` from it.
+ */
+const val DELIVERY_SERVER_IMAGE_NAME =
+    "europe-docker.pkg.dev/spine-event-engine/containers/delivery-server"
+
+/**
  * The Delivery server image the `integration`-tagged suites run against.
  *
- * Kept in sync with the `jib` configuration of `deployment/cloud-run/build.gradle.kts`
- * and with `DeliveryImage` of the `:fixtures` module, which probes for the same name.
+ * Kept in sync with `DeliveryImage` of the `:fixtures` module, which probes for
+ * the same name.
  */
-const val DELIVERY_SERVER_IMAGE = "gcr.io/spine-dev/delivery-server:latest"
+const val DELIVERY_SERVER_IMAGE = "$DELIVERY_SERVER_IMAGE_NAME:latest"
 
 /**
  * Common base of the Docker-related gates, holding the `docker` probe.
@@ -215,11 +224,13 @@ abstract class CheckDeliveryImageAvailable : DockerGate() {
             this image. Without it they are skipped, so the build can pass while verifying
             less than it appears to.
 
-            Build the image locally to run them:
+            Build the image from this working tree to run them:
 
                 ./gradlew :delivery-server-cloud-run:jibDockerBuild
 
-            The image is otherwise hosted in the private `gcr.io/spine-dev` registry.
+            Or pull the last published image from the public Artifact Registry:
+
+                docker pull $image
             """.trimIndent()
         )
     }

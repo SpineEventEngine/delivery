@@ -62,7 +62,8 @@ final class RequiresDeliveryImageCondition implements ExecutionCondition {
         if (!imagePresent()) {
             return ConditionEvaluationResult.disabled(
                     image + "is not in the local Docker daemon. Build it with "
-                            + "`./gradlew :delivery-server-cloud-run:jibDockerBuild`.");
+                            + "`./gradlew :delivery-server-cloud-run:jibDockerBuild` "
+                            + "or pull it with `docker pull " + DeliveryImage.NAME + "`.");
         }
         return ConditionEvaluationResult.enabled(image + "is available.");
     }
