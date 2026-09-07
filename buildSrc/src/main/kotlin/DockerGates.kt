@@ -129,12 +129,12 @@ abstract class DockerGate : DefaultTask() {
         dockerSucceeds(PULL_TIMEOUT_SECONDS, "pull", image)
 
     /**
-     * Runs `docker` with the given arguments, reporting whether it exited successfully
-     * within the timeout.
+     * Runs `docker` with the given arguments, reporting
+     * whether it exited successfully within the timeout.
      *
-     * The output is discarded: the gates tell the user which command to rerun by hand to
-     * see it. Any failure to even start the `docker` executable, and a timeout, count as
-     * "unsuccessful"; a timed-out process is killed.
+     * The output is discarded: the gates need only the exit status, and their messages
+     * tell the user what to do by hand. Any failure to even start the `docker` executable,
+     * and a timeout, count as "unsuccessful"; a timed-out process is killed.
      */
     private fun dockerSucceeds(timeoutSeconds: Long, vararg args: String): Boolean = try {
         val process = ProcessBuilder(dockerCommand(*args))
@@ -147,7 +147,7 @@ abstract class DockerGate : DefaultTask() {
             process.destroyForcibly()
             false
         }
-    } catch (e: InterruptedException) {
+    } catch (_: InterruptedException) {
         Thread.currentThread().interrupt()
         false
     } catch (_: Exception) {
