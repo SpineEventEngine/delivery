@@ -43,6 +43,11 @@ abstract class Serve : NpxTask() {
 
 /**
  * A task that runs `npx quasar build` command.
+ *
+ * The files the build reads are declared as [sources], so that Gradle reruns the task
+ * when any of them changes and skips it otherwise. A task with an output directory but
+ * no inputs counts as up to date whenever that directory exists, which let a stale
+ * bundle go into the server image.
  */
 abstract class Build : NpxTask() {
   init {
@@ -51,8 +56,14 @@ abstract class Build : NpxTask() {
     args.set(listOf("build"))
   }
 
-  @OutputDirectory
-  fun getOutputDir(): File = File(project.projectDir, "dist/spa")
+  /** The sources and configuration files `quasar build` reads. */
+  @get:InputFiles
+  @get:PathSensitive(PathSensitivity.RELATIVE)
+  abstract val sources: ConfigurableFileCollection
+
+  /** The directory `quasar build` writes the SPA bundle to. */
+  @get:OutputDirectory
+  abstract val outputDir: DirectoryProperty
 }
 
 /**
@@ -112,6 +123,20 @@ tasks.register<Serve>("qserve") {
 tasks.register<Build>("qbuild") {
   dependsOn.add(npmInstall)
   dependsOn.add(generateProto)
+  // `src` includes the TypeScript that `bbgen` generates into `src/gen`.
+  sources.from(
+    fileTree("src"),
+    fileTree("public"),
+    "index.html",
+    "quasar.config.js",
+    "postcss.config.js",
+    "tsconfig.json",
+    ".eslintrc.js",
+    ".eslintignore",
+    "package.json",
+    "package-lock.json",
+  )
+  outputDir.set(layout.projectDirectory.dir("dist/spa"))
 }
 
 /**
