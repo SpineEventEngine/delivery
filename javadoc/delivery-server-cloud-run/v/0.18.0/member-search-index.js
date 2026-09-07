@@ -1,0 +1,1 @@
+var memberSearchIndex = [{"p":"io.spine.delivery.launcher","c":"Launcher","l":"main(Array<String>)","url":"io/spine/delivery/launcher/Launcher.html#main(kotlin.Array)"}]
