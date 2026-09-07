@@ -83,7 +83,15 @@ out at edition 2023). The user chose the full migration over excluding the two f
   the image build cannot break unnoticed again. Both are repo-owned; `Ubuntu CI`
   is shared across repositories and was deliberately left alone.
 
-## Follow-ups
+## Follow-ups, pulled in (user decision 2026-09-07)
 
-- Issue: pull the published image when none is present locally.
-- Issue: bump the admin UI's TypeScript to ≥ 5.7 (protobuf-es 2.x typings).
+- **Pull on absence.** `CheckDeliveryImageAvailable` and `RequiresDeliveryImageCondition`
+  now run `docker pull` when the local daemon lacks the image, and warn / skip only
+  when the pull fails (offline, or before the first publication). A local image —
+  typically `jibDockerBuild` of the working tree — is never replaced. Once the image
+  is published, CI's Ubuntu build will pull it and run the `integration`-tagged suites
+  (94 tests) instead of skipping them; expect longer CI runs.
+- **TypeScript toolchain.** `typescript` 5.9.3 (protobuf-es 2.x typings need ≥ 5.7),
+  `@typescript-eslint/*` 8.69 (needs `eslint` ≥ 8.57), `@types/node` 22 to match the
+  Gradle-managed Node, and `skipLibCheck` in `tsconfig.json`. `tsc --noEmit` and
+  `eslint` are clean on `src/`.
