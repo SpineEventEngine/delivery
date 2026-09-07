@@ -39,7 +39,7 @@ import {
 } from 'src/gen/spine/server/delivery/delivery_pb';
 
 /**
- * Returns the key under which the info of the shard with the given index is stored.
+ * Returns the storage key of the shard info for the given index.
  */
 function keyOf(index: ShardIndex): string {
   return toJsonString(ShardIndexSchema, index);

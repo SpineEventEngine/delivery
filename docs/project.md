@@ -80,13 +80,12 @@ keep a Docker-less environment from reporting a misleading "tests passed":
   `integration-test`). The sole exemption is a CI runner setting
   `WINDOWS_CI_NO_DOCKER`, which cannot launch Linux containers.
 - `checkDeliveryImageAvailable` pulls the published Delivery server image from the
-  public Artifact Registry repository when the local daemon lacks it, and only
+  public Artifact Registry repository when the local Docker daemon lacks it, and only
   **warns** when the pull fails (offline, or before the first publication). The
   `integration`-tagged suites are annotated `@RequiresDeliveryImage`, pull the same
-  way, and skip themselves visibly when the image cannot be had. To test the
+  way, and skip themselves visibly when the image is unavailable. To test the
   working tree's server instead, build the image locally with
-  `./gradlew :delivery-server-cloud-run:jibDockerBuild`; a local image is never
-  replaced by a pull.
+  `./gradlew :delivery-server-cloud-run:jibDockerBuild`; a local image is never replaced by a pull.
 
 ### Key constraints
 
