@@ -98,7 +98,26 @@ fun git(vararg args: String): String = providers.exec {
 
 val buildUi = tasks.getByPath(":admin-ui:qbuild")
 
+/**
+ * The CPU architecture of this machine, in the terms Jib and Docker use.
+ *
+ * The image is built for the host by default, so that `jibDockerBuild` gives the tests
+ * a native image: an `amd64` image on an Apple silicon Mac runs under emulation, several
+ * times slower. The `Publish containers` workflow overrides this with
+ * `-Djib.from.platforms=linux/amd64,linux/arm64` to push a multi-architecture image.
+ */
+val hostArchitecture: String =
+    if (System.getProperty("os.arch") in setOf("aarch64", "arm64")) "arm64" else "amd64"
+
 jib {
+    from {
+        platforms {
+            platform {
+                architecture = hostArchitecture
+                os = "linux"
+            }
+        }
+    }
     to {
         // Declared in `buildSrc` so that the test gates and the `jib` push agree on
         // the name. `jib` authenticates to `*.pkg.dev` via Application Default

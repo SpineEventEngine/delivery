@@ -71,6 +71,16 @@ out at edition 2023). The user chose the full migration over excluding the two f
   including `node_modules` reports lib errors — as it already did before (`@babel`,
   `@quasar` types). Follow-up: bump TypeScript.
 
+## Native image architecture (user decision 2026-09-07)
+
+Testcontainers warned that the `amd64` image runs under emulation on the `arm64` daemon;
+the two image-dependent suites took ~20 of a 21-minute build. `jib.from.platforms` now
+defaults to the host architecture (`os.arch` → `arm64`/`amd64`), so `jibDockerBuild`
+gives the tests a native image. `publish-containers.yml` passes
+`-Djib.from.platforms=linux/amd64,linux/arm64` to push one multi-architecture manifest;
+Cloud Run/GCE/CI pull `amd64`, Macs pull `arm64`. The `build-containers.yml` PR check
+stays host-only (Jib builds multi-platform images only when pushing to a registry).
+
 ## Verification
 
 - `./gradlew build`

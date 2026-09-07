@@ -1,9 +1,9 @@
 name: Publish containers
 
 # Publishes the Delivery server image to Google Artifact Registry on every push
-# to `master`, tagged `latest`, the commit SHA (full and short), and
-# `v<version>`. See the `jib` block of `deployment/cloud-run/build.gradle.kts`
-# for the image name and the tags.
+# to `master`, for `linux/amd64` and `linux/arm64`, tagged `latest`, the commit
+# SHA (full and short), and `v<version>`. See the `jib` block of
+# `deployment/cloud-run/build.gradle.kts` for the image name and the tags.
 #
 # Kept apart from `publish.yml`, which publishes the Maven artifacts: the two
 # fail for different reasons (a Maven version is immutable, an image tag is
@@ -44,8 +44,14 @@ jobs:
       # Jib pushes straight to the registry, without a Docker daemon, and picks
       # the credentials up through Google Application Default Credentials.
       # Tests already ran on the pull request, as in `publish.yml`.
+      #
+      # The build script targets the host architecture, so that local builds are
+      # native; the published image covers both `amd64` (Cloud Run, GCE, CI) and
+      # `arm64` (Apple silicon developers), as one multi-architecture manifest.
       - name: Publish the image
         shell: bash
-        run: ./gradlew :delivery-server-cloud-run:jib -x test --stacktrace
+        run: >-
+          ./gradlew :delivery-server-cloud-run:jib -x test --stacktrace
+          -Djib.from.platforms=linux/amd64,linux/arm64
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ./maven-publisher.json

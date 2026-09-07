@@ -50,11 +50,11 @@ Registry:
 docker pull europe-docker.pkg.dev/spine-event-engine/containers/delivery-server:latest
 ```
 
-Every push to `master` publishes a new image, tagged `latest`, `v<version>`, and the commit SHA,
-full and short.
-There is a Terraform module [spine-delivery-server][terraform-module] that automates
-the deployment of the containers to the GCE instance. All the configuration parameters that are
-available for the servers also may be set through the Terraform module configuration.
+Every push to `master` publishes a new image for `amd64` and `arm64`, tagged `latest`, `v<version>`,
+and the commit SHA, full and short. There is a Terraform module
+[spine-delivery-server][terraform-module] that automates the deployment of the containers to the GCE
+instance. All the configuration parameters that are available for the servers also may be set
+through the Terraform module configuration.
 
 The libraries are published as Maven artifacts under the `io.spine.delivery` group. They are
 served from the Spine Maven repository, which needs no credentials to read:
