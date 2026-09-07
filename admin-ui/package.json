@@ -19,9 +19,9 @@
     "vue-router": "^4.0.0"
   },
   "devDependencies": {
-    "@bufbuild/buf": "^1.15.0",
-    "@bufbuild/protobuf": "^1.1.0",
-    "@bufbuild/protoc-gen-es": "^1.1.0",
+    "@bufbuild/buf": "^1.72.0",
+    "@bufbuild/protobuf": "^2.14.1",
+    "@bufbuild/protoc-gen-es": "^2.14.1",
     "@quasar/app-vite": "^1.0.0",
     "@types/node": "^12.20.21",
     "@typescript-eslint/eslint-plugin": "^5.10.0",
