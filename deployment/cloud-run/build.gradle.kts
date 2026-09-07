@@ -144,5 +144,9 @@ jib {
         }
     }
 }
-tasks.named("jib") { dependsOn(buildUi) }
-tasks.named("jibDockerBuild") { dependsOn(buildUi) }
+// `extraDirectories` takes the UI build's output as a plain path, which carries no task
+// dependency, so every Jib task must depend on that build explicitly. A clean checkout has
+// no `admin-ui/dist/spa` until it runs.
+listOf("jib", "jibDockerBuild", "jibBuildTar").forEach { jibTask ->
+    tasks.named(jibTask) { dependsOn(buildUi) }
+}
