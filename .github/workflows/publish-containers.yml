@@ -1,8 +1,8 @@
 name: Publish containers
 
-# Publishes the Delivery server image to Google Artifact Registry on every push
-# to `master`, for `linux/amd64` and `linux/arm64`, tagged `latest`, the commit
-# SHA (full and short), and `v<version>`. See the `jib` block of
+# Publishes the Delivery server image for `linux/amd64` and `linux/arm64` to
+# Google Artifact Registry on every push to `master`, tagged `latest`, the
+# commit SHA (full and short), and `v<version>`. See the `jib` block of
 # `deployment/cloud-run/build.gradle.kts` for the image name and the tags.
 #
 # Kept apart from `publish.yml`, which publishes the Maven artifacts: the two
