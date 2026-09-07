@@ -1,0 +1,51 @@
+name: Publish containers
+
+# Publishes the Delivery server image to Google Artifact Registry on every push
+# to `master`, tagged `latest`, the commit SHA (full and short), and
+# `v<version>`. See the `jib` block of `deployment/cloud-run/build.gradle.kts`
+# for the image name and the tags.
+#
+# Kept apart from `publish.yml`, which publishes the Maven artifacts: the two
+# fail for different reasons (a Maven version is immutable, an image tag is
+# not), need different toolchains, and are re-run independently.
+# `workflow_dispatch` re-pushes the image without republishing to Maven.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Publish the Delivery server image
+    runs-on: ubuntu-latest
+    concurrency:  # Pushes to `master` publish one after another.
+      group: publish-containers
+      cancel-in-progress: false
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: 'true'
+
+      - uses: actions/setup-java@v5
+        with:
+          java-version: 17
+          distribution: zulu
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      # The same service account `publish.yml` uses for Maven. Its project-level
+      # Artifact Registry Writer role covers the `containers` repository too.
+      - name: Decrypt GCAR credentials
+        run: ./config/scripts/decrypt.sh "$MAVEN_PUBLISHER_KEY" ./.github/keys/maven-publisher.json.gpg ./maven-publisher.json
+        env:
+          MAVEN_PUBLISHER_KEY: ${{ secrets.MAVEN_PUBLISHER_KEY }}
+
+      # Jib pushes straight to the registry, without a Docker daemon, and picks
+      # the credentials up through Google Application Default Credentials.
+      # Tests already ran on the pull request, as in `publish.yml`.
+      - name: Publish the image
+        shell: bash
+        run: ./gradlew :delivery-server-cloud-run:jib -x test --stacktrace
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ./maven-publisher.json

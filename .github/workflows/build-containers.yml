@@ -1,0 +1,39 @@
+name: Build containers
+
+# Verifies on every pull request that the Delivery server image can still be
+# built, so that a change cannot break image publishing unnoticed:
+# `Publish containers` runs only after a merge to `master`, and `Ubuntu CI`,
+# which is shared across the repositories, does not build the image. A Protobuf
+# upgrade once broke the admin UI's proto-to-TypeScript step the image depends
+# on, and nothing caught it until the next manual image build.
+#
+# `jibBuildTar` assembles the image into a tarball: no Docker daemon and no
+# push, but the same admin UI build and the same Jib configuration that
+# `Publish containers` uses.
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build the Delivery server image
+    runs-on: ubuntu-latest
+    concurrency:  # A newer commit supersedes the check of the older one.
+      group: build-containers-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: 'true'
+
+      - uses: actions/setup-java@v5
+        with:
+          java-version: 17
+          distribution: zulu
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Build the image to a tarball
+        shell: bash
+        run: ./gradlew :delivery-server-cloud-run:jibBuildTar --stacktrace

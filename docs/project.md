@@ -100,7 +100,9 @@ keep a Docker-less environment from reporting a misleading "tests passed":
   `io.spine.delivery:simple-client`).
 - **Distribution**: the `server` ships as the Docker image
   `europe-docker.pkg.dev/spine-event-engine/containers/delivery-server` on the
-  public Google Artifact Registry and is deployed via a Terraform module. All server
+  public Google Artifact Registry and is deployed via a Terraform module. The
+  `Publish containers` workflow pushes the image on every push to `master`;
+  `Build containers` checks on every pull request that it still builds. All server
   configuration is available through environment variables (`PORT`, `USE_REDIS`,
   `REDIS_HOST`, `USE_HAZELCAST`, `MAX_INBOUND_MESSAGE_SIZE`,
   `SHARD_PROCESSING_TIMEOUT`, …).
