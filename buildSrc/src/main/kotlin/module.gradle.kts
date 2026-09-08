@@ -191,7 +191,7 @@ fun Module.setupTestTasks() {
             }
         }
     }
-    if (imageGate != null) {
+    if (imageGate != null && !windowsCiWithoutDocker()) {
         useImageBuiltFromWorkingTree(imageGate)
     }
 }
@@ -211,9 +211,12 @@ fun Module.setupTestTasks() {
  * certainty that the suites test the tree they belong to.
  *
  * The [image gate][CheckDeliveryImageAvailable] runs after the image build: with the image
- * in the daemon it has nothing to pull, and it still warns on a runner where the build
- * was skipped. Without Docker, either the image build or [CheckDockerAvailable] fails
- * first; both messages point at Docker.
+ * in the daemon it has nothing to pull. Without Docker, either the image build or
+ * [CheckDockerAvailable] fails first; both messages point at Docker.
+ *
+ * A runner that sets [WINDOWS_CI_NO_DOCKER] gets none of this wiring: it cannot load a
+ * Linux image, its suites skip themselves, and the image build would only drag the admin
+ * UI build onto a platform where nothing needs it.
  *
  * The deployment project is addressed directly, which project isolation would forbid;
  * this build does not enable it.
@@ -229,8 +232,6 @@ fun Module.useImageBuiltFromWorkingTree(imageGate: TaskProvider<CheckDeliveryIma
             .withPropertyName("deliveryServerImageId")
             // Only the content matters: the path is not part of the cache key.
             .withPathSensitivity(PathSensitivity.NONE)
-            // Absent where the image build is skipped (see the deployment project).
-            .optional()
     }
 }
 

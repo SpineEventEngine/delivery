@@ -84,8 +84,8 @@ keep a Docker-less environment from reporting a misleading "tests passed":
 - The `Test` tasks of the image-dependent modules (`delivery-client`,
   `integration-test`) depend on `:delivery-server-cloud-run:jibDockerBuild`, so the
   `integration`-tagged suites always run the server built from the working tree,
-  locally and on CI alike (the `WINDOWS_CI_NO_DOCKER` runner skips the image
-  build, and the suites skip themselves there). The image ID which Jib records
+  locally and on CI alike (a runner setting `WINDOWS_CI_NO_DOCKER` gets no image
+  build wired in, and its suites skip themselves). The image ID which Jib records
   is an input of those tasks, so a server change re-runs them even when their
   own classpath is unchanged.
 - `checkDeliveryImageAvailable` is the fallback for a daemon that lacks the image:

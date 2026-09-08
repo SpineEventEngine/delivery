@@ -51,3 +51,5 @@ discovery instead.
 - 2026-09-08 19:19 — PR #68 CI failed: the suites pulled the published `:latest` (built from
   master, no `hazelcast.yaml`), so the change was invisible to them; wired `jibDockerBuild`
   into the image-dependent test tasks, verified locally, pushing
+- 2026-09-08 19:53 — Windows CI: the Jib dependency dragged `:admin-ui:qbuild` onto the no-Docker runner,
+  where it fails; the wiring is now left out there entirely

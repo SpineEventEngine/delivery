@@ -155,11 +155,3 @@ jib {
 listOf("jib", "jibDockerBuild", "jibBuildTar").forEach { jibTask ->
     tasks.named(jibTask) { dependsOn(buildUi) }
 }
-
-// The image-dependent test tasks depend on `jibDockerBuild` (see `module.gradle.kts`),
-// which needs a Docker daemon able to load a Linux image. A runner that declares itself
-// unable to launch Linux containers skips the build; its tests skip themselves for the
-// same reason.
-tasks.named("jibDockerBuild") {
-    onlyIf("`$WINDOWS_CI_NO_DOCKER` is not set") { !windowsCiWithoutDocker() }
-}
