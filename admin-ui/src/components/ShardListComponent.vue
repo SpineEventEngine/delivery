@@ -1,15 +1,15 @@
 <!--
   ~ Copyright 2026 CodeMatters, Lda.
   ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
-  ~ in compliance with the License. You may obtain a copy of the License at
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+  ~ except in compliance with the License. You may obtain a copy of the License at
   ~
   ~ https://www.apache.org/licenses/LICENSE-2.0
   ~
-  ~ Unless required by applicable law or agreed to in writing, software distributed under the License
-  ~ is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
-  ~ or implied. See the License for the specific language governing permissions and limitations under
-  ~ the License.
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the
+  ~ License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+  ~ either express or implied. See the License for the specific language governing permissions
+  ~ and limitations under the License.
   -->
 
 <template>
@@ -33,7 +33,7 @@
             <div v-else>Not Picked</div>
           </q-td>
           <q-td key="lastPicked" :props="props">
-            {{ props.row.lastPicked ? props.row.lastPicked.toDate().toLocaleString() : 'Never' }}
+            {{ lastPicked(props.row.lastPicked) }}
           </q-td>
         </q-tr>
       </template>
@@ -48,11 +48,22 @@
 </template>
 
 <script lang="ts" setup>
+import { timestampDate, type Timestamp } from '@bufbuild/protobuf/wkt';
 import { useShards } from 'src/services/shards';
-import { ShardIndex } from 'src/gen/spine/server/delivery/delivery_pb';
+import type { ShardIndex } from 'src/gen/spine/server/delivery/delivery_pb';
 import { ShardStatus } from 'src/gen/spine/delivery/admin/admin_service_pb';
 
 const { shards } = useShards();
+
+/**
+ * Formats the moment the shard was last picked, or says it never was.
+ *
+ * protobuf-es 2.x messages are plain objects, so a `Timestamp` has no `toDate()`;
+ * the well-known-type helper converts it.
+ */
+function lastPicked(when?: Timestamp): string {
+  return when ? timestampDate(when).toLocaleString() : 'Never';
+}
 
 const columns = [
   {

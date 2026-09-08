@@ -79,11 +79,13 @@ keep a Docker-less environment from reporting a misleading "tests passed":
   listed in `dockerDependentModules()` (`redis`, `delivery-client`,
   `integration-test`). The sole exemption is a CI runner setting
   `WINDOWS_CI_NO_DOCKER`, which cannot launch Linux containers.
-- `checkDeliveryImageAvailable` only **warns** when the Delivery server image is
-  absent, because it lives in the private `gcr.io/spine-dev` registry. The
-  `integration`-tagged suites are annotated `@RequiresDeliveryImage` and skip
-  themselves visibly. Build the image locally with
-  `./gradlew :delivery-server-cloud-run:jibDockerBuild`.
+- `checkDeliveryImageAvailable` pulls the published Delivery server image from the
+  public Artifact Registry repository when the local Docker daemon lacks it, and only
+  **warns** when the pull fails (offline, or before the first publication). The
+  `integration`-tagged suites are annotated `@RequiresDeliveryImage`, pull the same
+  way, and skip themselves visibly when the image is unavailable. To test the
+  working tree's server instead, build the image locally with
+  `./gradlew :delivery-server-cloud-run:jibDockerBuild`; a local image is never replaced by a pull.
 
 ### Key constraints
 
@@ -96,8 +98,11 @@ keep a Docker-less environment from reporting a misleading "tests passed":
   the main Spine 2.x build. Applications still on Spine 1.x must pin the client
   artifacts of the `0.14.x` line (published as `io.spine.delivery:base` and
   `io.spine.delivery:simple-client`).
-- **Distribution**: the `server` ships as a Docker container on the Google
-  Container Registry and is deployed via a Terraform module. All server
+- **Distribution**: the `server` ships as the Docker image
+  `europe-docker.pkg.dev/spine-event-engine/containers/delivery-server` on the
+  public Google Artifact Registry and is deployed via a Terraform module. The
+  `Publish containers` workflow pushes the image on every push to `master`;
+  `Build containers` checks on every pull request that it still builds. All server
   configuration is available through environment variables (`PORT`, `USE_REDIS`,
   `REDIS_HOST`, `USE_HAZELCAST`, `MAX_INBOUND_MESSAGE_SIZE`,
   `SHARD_PROCESSING_TIMEOUT`, …).

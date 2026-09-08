@@ -19,12 +19,31 @@ import { useEndpoints } from 'src/services/endpoints';
 import { useAxios } from '@vue-composable/axios';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import {
-  ShardInfo,
-  ShardInfoList,
-  ShardInfoUpdate,
+  create,
+  fromJson,
+  fromJsonString,
+  toJsonString,
+} from '@bufbuild/protobuf';
+import {
+  type ShardInfo,
+  type ShardInfoList,
+  type ShardInfoUpdate,
+  ShardInfoListSchema,
+  ShardInfoSchema,
+  ShardInfoUpdateSchema,
   ShardStatus,
 } from 'src/gen/spine/delivery/admin/admin_service_pb';
-import { ShardIndex } from 'src/gen/spine/server/delivery/delivery_pb';
+import {
+  type ShardIndex,
+  ShardIndexSchema,
+} from 'src/gen/spine/server/delivery/delivery_pb';
+
+/**
+ * Returns the storage key of the shard info for the given index.
+ */
+function keyOf(index: ShardIndex): string {
+  return toJsonString(ShardIndexSchema, index);
+}
 
 /**
  * A composable that gives access to shard information from the server.
@@ -55,7 +74,7 @@ export function useShards() {
       };
       client.get(`${shardInfo}`, options)
         .then((response) => {
-          resolve(ShardInfoList.fromJson(response.data));
+          resolve(fromJson(ShardInfoListSchema, response.data));
         })
         .catch((e) => {
           if (e.code === 'ERR_BAD_REQUEST' && e.response.status === 401) {
@@ -72,14 +91,15 @@ export function useShards() {
    * with a default value.
    */
   function getShard(index: ShardIndex): ShardInfo {
-    const key = index.toJsonString();
+    const key = keyOf(index);
     if (shards.value.has(key)) {
       return shards.value.get(key);
     }
-    const info = new ShardInfo();
-    info.index = index;
-    info.messages = 0;
-    info.status = ShardStatus.NOT_PICKED;
+    const info = create(ShardInfoSchema, {
+      index,
+      messages: 0,
+      status: ShardStatus.NOT_PICKED,
+    });
     shards.value.set(key, info);
     return shards.value.get(key);
   }
@@ -110,7 +130,7 @@ export function useShards() {
     fetchEventSource(shardUpdates, {
       headers: authHeader,
       onmessage(event) {
-        const infoUpdate = ShardInfoUpdate.fromJsonString(event.data);
+        const infoUpdate = fromJsonString(ShardInfoUpdateSchema, event.data);
         applyUpdate(infoUpdate);
       },
     });
@@ -118,7 +138,7 @@ export function useShards() {
 
   synchronizeShardInfo().then((shardInfoList) => {
     shardInfoList.shards?.forEach((info) => {
-      shards.value.set((info.index as ShardIndex).toJsonString(), info);
+      shards.value.set(keyOf(info.index as ShardIndex), info);
     });
     isLoaded.value = true;
     subscribeOnShards();

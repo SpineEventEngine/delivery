@@ -72,8 +72,8 @@ tasks.withType<ShadowJar> {
 /**
  * The name under which the target GCP project is passed to the build.
  *
- * Kept spelled the same way as in `deployment/cloud-run`, so that
- * one `-PGCP_PROJECT=<id>` selects the target for both deployment modules.
+ * Shared by the three lookups of [gcpProject], so that a Gradle project property,
+ * a system property, and an environment variable are all spelled the same way.
  */
 val gcpProjectKey = "GCP_PROJECT"
 

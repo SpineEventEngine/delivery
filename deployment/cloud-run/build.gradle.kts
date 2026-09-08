@@ -92,44 +92,37 @@ tasks.withType<ShadowJar> {
     }
 }
 
-/**
- * The name under which the target GCP project is passed to the build.
- *
- * Shared by all three lookups below, so that a Gradle project property, a system
- * property, and an environment variable are all spelled the same way.
- */
-val gcpProjectKey = "GCP_PROJECT"
-
-/**
- * The GCP project to publish the container image to, when no project is given.
- */
-val defaultGcpProject = "spine-dev"
-
-/**
- * The GCP project hosting the container registry.
- *
- * Looked up under [gcpProjectKey] as a Gradle project property first, so that
- * `./gradlew jib -PGCP_PROJECT=<id>` selects the target project, then as a system
- * property, and finally as an environment variable.
- *
- * The order and the [default][defaultGcpProject] reproduce those of the `prepareExtras`
- * helper this replaced: pushing to the wrong registry is worse than failing to deploy,
- * so a deployment command must not silently fall back to the default.
- */
-val gcpProject: String = providers.gradleProperty(gcpProjectKey)
-    .orElse(providers.systemProperty(gcpProjectKey))
-    .orElse(providers.environmentVariable(gcpProjectKey))
-    .getOrElse(defaultGcpProject)
-
 fun git(vararg args: String): String = providers.exec {
     commandLine("git", *args)
 }.standardOutput.asText.get().trim()
 
 val buildUi = tasks.getByPath(":admin-ui:qbuild")
 
+/**
+ * The CPU architecture of this machine, in the terms Jib and Docker use.
+ *
+ * The image is built for the host by default, so that `jibDockerBuild` gives the tests
+ * a native image: an `amd64` image on an Apple silicon Mac runs under emulation, much slower.
+ * The `Publish containers` workflow overrides this with
+ * `-Djib.from.platforms=linux/amd64,linux/arm64` to push a multi-architecture manifest.
+ */
+val hostArchitecture: String =
+    if (System.getProperty("os.arch") in setOf("aarch64", "arm64")) "arm64" else "amd64"
+
 jib {
+    from {
+        platforms {
+            platform {
+                architecture = hostArchitecture
+                os = "linux"
+            }
+        }
+    }
     to {
-        image = "gcr.io/$gcpProject/delivery-server"
+        // Declared in `buildSrc` so that the test gates and the `jib` push agree on
+        // the name. `jib` authenticates to `*.pkg.dev` via Application Default
+        // Credentials, the same way `CloudArtifactRegistry` does for Maven.
+        image = DELIVERY_SERVER_IMAGE_NAME
         tags = setOf(
             "latest",
             git("log", "-1", "--pretty=%H"),
@@ -151,5 +144,9 @@ jib {
         }
     }
 }
-tasks.named("jib") { dependsOn(buildUi) }
-tasks.named("jibDockerBuild") { dependsOn(buildUi) }
+// `extraDirectories` takes the UI build's output as a plain path, which carries no task
+// dependency, so every Jib task must depend on that build explicitly. A clean checkout has
+// no `admin-ui/dist/spa` until it runs.
+listOf("jib", "jibDockerBuild", "jibBuildTar").forEach { jibTask ->
+    tasks.named(jibTask) { dependsOn(buildUi) }
+}

@@ -43,10 +43,17 @@ starts the [server](server) inside a Docker container. The
 Distribution
 -------------
 
-The [`server`](server) is distributed as a Docker container hosted on the Google Container
-Registry. There is a Terraform module [spine-delivery-server][terraform-module] that automates
-the deployment of the containers to the GCE instance. All the configuration parameters that are
-available for the servers also may be set through the Terraform module configuration.
+The [`server`](server) is distributed as a Docker image hosted on the public Google Artifact
+Registry:
+
+```bash
+docker pull europe-docker.pkg.dev/spine-event-engine/containers/delivery-server:latest
+```
+
+Every push to `master` publishes a new image for `amd64` and `arm64`, tagged `latest`, `v<version>`,
+and the commit SHA, full and short. There is a [Terraform module][terraform-module] that automates
+the deployment of the containers to the GCE instance. All the configuration parameters that
+are available for the servers also may be set through the Terraform module configuration.
 
 The libraries are published as Maven artifacts under the `io.spine.delivery` group. They are
 served from the Spine Maven repository, which needs no credentials to read:
@@ -73,4 +80,4 @@ dependencies {
 
 The exact version to use is the one listed in `version.gradle.kts`.
 
-[terraform-module]: https://registry.terraform.io/modules/SpineEventEngine/spine-delivery-server/google/latest
+[terraform-module]: https://registry.terraform.io/modules/SpineEventEngine/delivery/google/latest
