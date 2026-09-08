@@ -1,0 +1,4 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.delivery.demo/JettyStarter.Builder///PointingToDeclaration/io/spine/delivery/demo/JettyStarter.Builder.html
+io.spine.delivery.demo
