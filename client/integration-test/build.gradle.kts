@@ -29,6 +29,8 @@ dependencies {
     testRuntimeOnly(Grpc.nettyShaded)
 }
 
-// The `integration`-tagged suites run the Delivery server from a Docker image. They are
-// no longer excluded: `checkDockerAvailable` enforces Docker, and each suite is annotated
+// The `integration`-tagged suites run the Delivery server from the Docker image which
+// `:delivery-server-cloud-run:jibDockerBuild` builds from the working tree before them (the
+// test tasks depend on it, see `module.gradle.kts`). They are no longer excluded:
+// `checkDockerAvailable` enforces Docker, and each suite is annotated
 // `@RequiresDeliveryImage`, which skips it when the image is absent.

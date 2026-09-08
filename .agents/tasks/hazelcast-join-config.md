@@ -34,7 +34,10 @@ discovery instead.
 - [x] Verify: `:storage:hazelcast:test`, `dokkaGenerate`, `jibDockerBuild`, two-container
       experiment, `ConsistencyTest.doesNotPickUpShard*` smoke test
 - [x] Reviewers: `spine-code-review` and `review-docs`, both approve with changes; changes applied
-- [ ] PR: version bump via `pre-pr`; `Ubuntu CI` must pass `DistributedTest`
+- [x] PR #68 opened; version bumped to 0.19.1 via `pre-pr`
+- [x] CI: the image-dependent test tasks now depend on `jibDockerBuild` and take Jib's
+      image ID as an input, so PR runs test the tree's image instead of the published one
+- [ ] `Ubuntu CI` on PR #68 must pass `DistributedTest`
 
 ## Log
 
@@ -45,3 +48,6 @@ discovery instead.
   `HZ_*`; `ConsistencyTest.doesNotPickUpShard` 10/10 green with 3-member clusters
 - 2026-09-08 17:42 — review findings applied (README item 4 wording, link definition moved,
   terminology aligned, `guarantee` typo); version bump left to the `pre-pr` step
+- 2026-09-08 19:19 — PR #68 CI failed: the suites pulled the published `:latest` (built from
+  master, no `hazelcast.yaml`), so the change was invisible to them; wired `jibDockerBuild`
+  into the image-dependent test tasks, verified locally, pushing

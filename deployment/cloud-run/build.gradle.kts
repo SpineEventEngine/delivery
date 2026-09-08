@@ -143,10 +143,23 @@ jib {
             }
         }
     }
+    // `module.gradle.kts` feeds this file to the image-dependent test tasks as an input, so
+    // the path is pinned here rather than left to Jib's default.
+    outputPaths {
+        imageId = layout.buildDirectory.file(DELIVERY_IMAGE_ID_FILE).get().asFile.path
+    }
 }
 // `extraDirectories` takes the UI build's output as a plain path, which carries no task
 // dependency, so every Jib task must depend on that build explicitly. A clean checkout has
 // no `admin-ui/dist/spa` until it runs.
 listOf("jib", "jibDockerBuild", "jibBuildTar").forEach { jibTask ->
     tasks.named(jibTask) { dependsOn(buildUi) }
+}
+
+// The image-dependent test tasks depend on `jibDockerBuild` (see `module.gradle.kts`),
+// which needs a Docker daemon able to load a Linux image. A runner that declares itself
+// unable to launch Linux containers skips the build; its tests skip themselves for the
+// same reason.
+tasks.named("jibDockerBuild") {
+    onlyIf("`$WINDOWS_CI_NO_DOCKER` is not set") { !windowsCiWithoutDocker() }
 }

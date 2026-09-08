@@ -81,13 +81,19 @@ keep a Docker-less environment from reporting a misleading "tests passed":
   listed in `dockerDependentModules()` (`redis`, `delivery-client`,
   `integration-test`). The sole exemption is a CI runner setting
   `WINDOWS_CI_NO_DOCKER`, which cannot launch Linux containers.
-- `checkDeliveryImageAvailable` pulls the published Delivery server image from the
-  public Artifact Registry repository when the local Docker daemon lacks it, and only
+- The `Test` tasks of the image-dependent modules (`delivery-client`,
+  `integration-test`) depend on `:delivery-server-cloud-run:jibDockerBuild`, so the
+  `integration`-tagged suites always run the server built from the working tree,
+  locally and on CI alike (the `WINDOWS_CI_NO_DOCKER` runner skips the image
+  build, and the suites skip themselves there). The image ID which Jib records
+  is an input of those tasks, so a server change re-runs them even when their
+  own classpath is unchanged.
+- `checkDeliveryImageAvailable` is the fallback for a daemon that lacks the image:
+  it pulls the published one from the public Artifact Registry repository and only
   **warns** when the pull fails (offline, or before the first publication). The
-  `integration`-tagged suites are annotated `@RequiresDeliveryImage`, pull the same
-  way, and skip themselves visibly when the image is unavailable. To test the
-  working tree's server instead, build the image locally with
-  `./gradlew :delivery-server-cloud-run:jibDockerBuild`; a local image is never replaced by a pull.
+  suites are annotated `@RequiresDeliveryImage`, pull the same way, and skip
+  themselves visibly when the image is unavailable. A local image is never
+  replaced by a pull.
 
 ### Key constraints
 
