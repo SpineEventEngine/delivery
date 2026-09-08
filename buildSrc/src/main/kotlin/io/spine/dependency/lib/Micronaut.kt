@@ -80,13 +80,15 @@ object Micronaut {
      * the cross-stack conflicts on the `delivery-server-cloud-run` classpath, where
      * the Micronaut graph meets the Redisson one. Update together with [version].
      *
-     * [nettyVersion] is the platform's own pin, used to settle those conflicts. It is
-     * kept equal to the version of the [Netty] catalog object, so that a module
+     * [nettyVersion] settles the Netty conflicts. The platform pins `4.2.16.Final`,
+     * whose `netty-codec-http` carries CVE-2026-59903; the launcher takes the fixed
+     * `4.2.17.Final` instead, so that the published image stays clear of the finding.
+     * It is kept equal to the version of the [Netty] catalog object, so that a module
      * depending on Netty directly resolves what the launcher forces. The two remain
      * separate constants because a future platform may pin a Netty other than the
-     * catalog's; this one always follows the platform.
+     * catalog's.
      */
-    const val nettyVersion = "4.2.16.Final"
+    const val nettyVersion = "4.2.17.Final"
     const val reactorCoreVersion = "3.7.12"
     const val rxJavaVersion = "3.1.12"
 
