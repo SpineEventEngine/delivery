@@ -65,8 +65,8 @@ API instead. Implementing this requires:
    RBAC access to endpoints and pods on Kubernetes.
 3. Network rules that allow TCP traffic on port `5701` between the instances.
 4. Provider-specific settings, such as a resource group, zones, labels, or a headless service
-   name on Kubernetes. The `HZ_*` variables cover single-value switches like the ones above,
-   but neither lists nor provider keys that contain a dash. Put such settings into a complete
+   name on Kubernetes. The `HZ_*` variables suit single-value switches like the ones above.
+   For anything richer, such as a member list or provider-specific keys, use a complete
    Hazelcast configuration file and point the server at it with
    `JAVA_TOOL_OPTIONS=-Dhazelcast.config=/path/to/hazelcast.yaml`. The Jib-built image has a
    fixed entry point, so `JAVA_TOOL_OPTIONS` is the way to pass JVM options to it.
