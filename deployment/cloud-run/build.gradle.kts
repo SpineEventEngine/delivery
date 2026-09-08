@@ -143,6 +143,11 @@ jib {
             }
         }
     }
+    // `module.gradle.kts` feeds this file to the image-dependent test tasks as an input, so
+    // the path is pinned here rather than left to Jib's default.
+    outputPaths {
+        imageId = layout.buildDirectory.file(DELIVERY_IMAGE_ID_FILE).get().asFile.path
+    }
 }
 // `extraDirectories` takes the UI build's output as a plain path, which carries no task
 // dependency, so every Jib task must depend on that build explicitly. A clean checkout has

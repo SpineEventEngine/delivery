@@ -17,9 +17,9 @@ The remaining modules are not published:
 
 - [`demo`](demo) — a demo "Greeter" Spine application exercising the client.
 - [`integration-test`](integration-test) — Testcontainers-based distributed
-  tests; tagged `integration`. They run when the Delivery server image is in the
-  local Docker daemon, and are skipped with a warning otherwise. Build it with
-  `./gradlew :delivery-server-cloud-run:jibDockerBuild`.
+  tests; tagged `integration`. They run against the Delivery server image which
+  `./gradlew :delivery-server-cloud-run:jibDockerBuild` builds from the working
+  tree before them, and are skipped with a warning where the image is unavailable.
 - [`deployment/demo-appengine-11`](deployment/demo-appengine-11) — the App
   Engine deployment of the demo.
 

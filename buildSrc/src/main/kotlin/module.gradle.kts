@@ -191,6 +191,48 @@ fun Module.setupTestTasks() {
             }
         }
     }
+    if (imageGate != null && !windowsCiWithoutDocker()) {
+        useImageBuiltFromWorkingTree(imageGate)
+    }
+}
+
+/**
+ * Runs the image-dependent tests of this module against the Delivery server image built
+ * from the working tree.
+ *
+ * `jibDockerBuild` of the [deployment project][DELIVERY_IMAGE_PROJECT] refreshes the image
+ * in the local Docker daemon before the tests, so they never exercise a stale image pulled
+ * from the registry. The [image ID][DELIVERY_IMAGE_ID_FILE] which Jib records becomes an
+ * input of the test tasks, so that a server change re-runs them even when their own
+ * classpath is unchanged.
+ *
+ * The image build, and the admin UI build it needs, therefore precede every `Test` task of
+ * the module, `fastTest` included. This is deliberate: a few seconds per build buy the
+ * certainty that the suites test the tree they belong to.
+ *
+ * The [image gate][CheckDeliveryImageAvailable] runs after the image build: with the image
+ * in the daemon it has nothing to pull. Without Docker, either the image build or
+ * [CheckDockerAvailable] fails first; both messages point at Docker.
+ *
+ * A runner that sets [WINDOWS_CI_NO_DOCKER] gets none of this wiring: it cannot load a
+ * Linux image, its suites skip themselves, and the image build would only drag the admin
+ * UI build onto a platform where nothing needs it.
+ *
+ * The deployment project is addressed directly, which project isolation would forbid;
+ * this build does not enable it.
+ */
+fun Module.useImageBuiltFromWorkingTree(imageGate: TaskProvider<CheckDeliveryImageAvailable>) {
+    val buildImage = "$DELIVERY_IMAGE_PROJECT:jibDockerBuild"
+    val imageId = project(DELIVERY_IMAGE_PROJECT).layout.buildDirectory
+        .file(DELIVERY_IMAGE_ID_FILE)
+    imageGate.configure { mustRunAfter(buildImage) }
+    tasks.withType<Test>().configureEach {
+        dependsOn(buildImage)
+        inputs.files(imageId)
+            .withPropertyName("deliveryServerImageId")
+            // Only the content matters: the path is not part of the cache key.
+            .withPathSensitivity(PathSensitivity.NONE)
+    }
 }
 
 /**

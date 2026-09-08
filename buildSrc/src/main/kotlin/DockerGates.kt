@@ -49,6 +49,9 @@ val dockerDependentModules = setOf("redis", "delivery-client", "integration-test
 /**
  * Names of the modules whose tests additionally need the Delivery server *image*.
  *
+ * Their `Test` tasks depend on `jibDockerBuild` of [DELIVERY_IMAGE_PROJECT], so they run
+ * the image built from the working tree; the pull below is a fallback.
+ *
  * Unlike [dockerDependentModules], a missing image is reported as a warning rather than
  * a build failure: the gate pulls the published image when the local Docker daemon lacks
  * it, but the pull can fail — offline, or before the first publication — and the suites
@@ -74,6 +77,35 @@ const val DELIVERY_SERVER_IMAGE_NAME =
 const val DELIVERY_SERVER_IMAGE = "$DELIVERY_SERVER_IMAGE_NAME:latest"
 
 /**
+ * The path of the project which builds [DELIVERY_SERVER_IMAGE] with Jib.
+ *
+ * The `Test` tasks of the [image-dependent modules][imageDependentModules] depend on its
+ * `jibDockerBuild`, so that they always run the server built from the working tree.
+ */
+const val DELIVERY_IMAGE_PROJECT = ":delivery-server-cloud-run"
+
+/**
+ * The file, under the build directory of [DELIVERY_IMAGE_PROJECT], in which Jib records the
+ * ID of the image it built.
+ *
+ * `module.gradle.kts` feeds it to the image-dependent test tasks as an input, and
+ * `deployment/cloud-run/build.gradle.kts` pins Jib's output path to it.
+ */
+const val DELIVERY_IMAGE_ID_FILE = "jib-image.id"
+
+/**
+ * The environment variable a CI runner sets to mark itself unable to launch Docker
+ * containers.
+ *
+ * Kept in sync with `RequiresDockerCondition` and `RequiresDeliveryImageCondition`,
+ * which read the same variable to skip the affected tests there.
+ */
+const val WINDOWS_CI_NO_DOCKER = "WINDOWS_CI_NO_DOCKER"
+
+/** Tells whether this runner declared itself unable to launch Linux Docker containers. */
+fun windowsCiWithoutDocker(): Boolean = System.getenv(WINDOWS_CI_NO_DOCKER).toBoolean()
+
+/**
  * Common base of the Docker-related gates, holding the `docker` probe.
  *
  * `gcloud-jvm` duplicates this helper in each gate; a shared base keeps one copy.
@@ -82,15 +114,6 @@ const val DELIVERY_SERVER_IMAGE = "$DELIVERY_SERVER_IMAGE_NAME:latest"
 abstract class DockerGate : DefaultTask() {
 
     protected companion object {
-
-        /**
-         * The environment variable a CI runner sets to mark itself unable to launch Docker
-         * containers.
-         *
-         * Kept in sync with `RequiresDockerCondition` and `RequiresDeliveryImageCondition`,
-         * which read the same variable to skip the affected tests there.
-         */
-        const val WINDOWS_CI_NO_DOCKER = "WINDOWS_CI_NO_DOCKER"
 
         /** How long to wait for a local probe such as `docker info` or `docker image inspect`. */
         const val PROBE_TIMEOUT_SECONDS = 30L
@@ -102,10 +125,6 @@ abstract class DockerGate : DefaultTask() {
          */
         const val PULL_TIMEOUT_SECONDS = 300L
     }
-
-    /** Tells whether this runner declared itself unable to launch Docker containers. */
-    protected fun windowsCiWithoutDocker(): Boolean =
-        System.getenv(WINDOWS_CI_NO_DOCKER).toBoolean()
 
     /**
      * Tells whether `docker info` reports a reachable Docker daemon.
