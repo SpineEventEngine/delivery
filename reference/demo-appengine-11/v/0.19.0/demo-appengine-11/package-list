@@ -1,0 +1,14 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.delivery.demo////PointingToDeclaration/demo-appengine-11/io.spine.delivery.demo/index.html
+$dokka.location:io.spine.delivery.demo/JettyStarter.Builder///PointingToDeclaration/demo-appengine-11/io.spine.delivery.demo/-jetty-starter/-builder/index.html
+$dokka.location:io.spine.delivery.demo/JettyStarter.Builder/Builder/#/PointingToDeclaration/demo-appengine-11/io.spine.delivery.demo/-jetty-starter/-builder/-builder.html
+$dokka.location:io.spine.delivery.demo/JettyStarter.Builder/build/#/PointingToDeclaration/demo-appengine-11/io.spine.delivery.demo/-jetty-starter/-builder/build.html
+$dokka.location:io.spine.delivery.demo/JettyStarter.Builder/port/#int/PointingToDeclaration/demo-appengine-11/io.spine.delivery.demo/-jetty-starter/-builder/port.html
+$dokka.location:io.spine.delivery.demo/JettyStarter.Builder/withBean/#java.lang.Object/PointingToDeclaration/demo-appengine-11/io.spine.delivery.demo/-jetty-starter/-builder/with-bean.html
+$dokka.location:io.spine.delivery.demo/JettyStarter///PointingToDeclaration/demo-appengine-11/io.spine.delivery.demo/-jetty-starter/index.html
+$dokka.location:io.spine.delivery.demo/JettyStarter/main/#java.lang.String[]/PointingToDeclaration/demo-appengine-11/io.spine.delivery.demo/-jetty-starter/main.html
+$dokka.location:io.spine.delivery.demo/JettyStarter/newBuilder/#/PointingToDeclaration/demo-appengine-11/io.spine.delivery.demo/-jetty-starter/new-builder.html
+$dokka.location:io.spine.delivery.demo/JettyStarter/start/#/PointingToDeclaration/demo-appengine-11/io.spine.delivery.demo/-jetty-starter/start.html
+$dokka.location:io.spine.delivery.demo/JettyStarter/stop/#/PointingToDeclaration/demo-appengine-11/io.spine.delivery.demo/-jetty-starter/stop.html
+io.spine.delivery.demo
