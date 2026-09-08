@@ -2134,7 +2134,7 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:17 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -3022,7 +3022,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -3676,7 +3676,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -4572,7 +4572,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -5747,7 +5747,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -6300,67 +6300,67 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
      * **Project URL:** [https://micronaut.io](https://micronaut.io)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.netty. **Name** : netty-bom. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-bom. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-http. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-http. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-http2. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-http2. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -7313,67 +7313,67 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
      * **Project URL:** [https://micronaut.io](https://micronaut.io)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.netty. **Name** : netty-bom. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-bom. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-http. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-http. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-http2. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-http2. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.17.Final.
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.16.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -7923,7 +7923,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:50 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:17 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -9018,7 +9018,7 @@ This report was generated on **Tue Sep 08 17:52:50 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -10096,7 +10096,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -10992,7 +10992,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -11646,7 +11646,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -12583,7 +12583,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -13471,7 +13471,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -14379,7 +14379,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -15316,7 +15316,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -16204,7 +16204,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -17100,7 +17100,7 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
@@ -18223,6 +18223,6 @@ This report was generated on **Tue Sep 08 17:52:49 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:52:50 WEST 2026** using 
+This report was generated on **Tue Sep 08 17:58:17 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).

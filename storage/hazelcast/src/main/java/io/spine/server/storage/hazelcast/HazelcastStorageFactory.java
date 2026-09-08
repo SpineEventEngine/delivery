@@ -29,16 +29,23 @@ import static com.hazelcast.core.Hazelcast.newHazelcastInstance;
  * A factory for Hazelcast-based storages.
  *
  * <p>To get more info about what is Hazelcast in general please refer to the
- * <a href="https://hazelcast.com/">Hazelcast</a></p> official website.
+ * <a href="https://hazelcast.com/">Hazelcast</a> official website.
  *
  * <p>The main feature of the storages produced by this factory is replication support. When the
- * factory instance is obtained, a new embedded Hazelcast server is started. The server allows
- * discovering other servers running in the same network. Servers will automatically form a cluster
- * where each server is storing a copy of all the cluster data. This means that records stored on
- * one instance will be available for read and modification for all the Delivery instances
- * in the same network.
+ * factory instance is obtained, a new embedded Hazelcast member is started. Members discover
+ * each other by IP multicast under the cluster name {@code delivery}, so Delivery servers
+ * running in one network that carries multicast form a cluster with no further configuration.
+ * Each member stores a copy of the cluster data, so records stored on one instance are
+ * available for reading and modification on all the Delivery servers in the cluster.
  *
- * <p>Pay attention that each new factory instance creation will run a new Hazelcast server.
+ * <p>The member is configured by the {@code hazelcast.yaml} resource of this module, which
+ * replaces the defaults bundled with Hazelcast. Cloud auto-detection is switched off there,
+ * because on an Azure, GCP, AWS, or Kubernetes host it would take precedence over multicast
+ * and, lacking credentials, start the member standalone. Any setting can still be overridden
+ * the standard Hazelcast way: {@code HZ_*} environment variables, {@code hz.*} system
+ * properties, or a complete configuration file passed via {@code -Dhazelcast.config}.
+ *
+ * <p>Pay attention that each new factory instance creation will run a new Hazelcast member.
  */
 public final class HazelcastStorageFactory implements StorageFactory, WithLogging {
 
