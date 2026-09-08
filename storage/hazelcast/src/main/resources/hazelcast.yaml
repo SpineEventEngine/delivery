@@ -1,0 +1,26 @@
+# Hazelcast member configuration of the Delivery server.
+#
+# Hazelcast loads this file from the classpath instead of its bundled `hazelcast-default.xml`,
+# so every setting not listed here takes Hazelcast's Java default. The keys below are the only
+# ones that differ from the bundled file.
+#
+# Cloud auto-detection is off on purpose. When it is on, a member running on an Azure, GCP, AWS,
+# or Kubernetes host selects that platform's discovery, which needs credentials the server does
+# not have, and starts standalone instead of falling back to multicast. With multicast enabled
+# explicitly, Delivery servers on one network that carries multicast form a cluster with no
+# further effort.
+#
+# The cluster name keeps Delivery servers from joining an unrelated Hazelcast cluster on the same
+# network: `dev`, the Hazelcast default, is what every unconfigured member uses.
+#
+# Override any setting the standard Hazelcast way: `HZ_*` environment variables (for example
+# `HZ_NETWORK_JOIN_MULTICAST_ENABLED=false`), `hz.*` system properties, or a complete file given
+# via `-Dhazelcast.config=<path>`. See the "Cluster discovery" section of `server/README.md`.
+hazelcast:
+  cluster-name: delivery
+  network:
+    join:
+      auto-detection:
+        enabled: false
+      multicast:
+        enabled: true

@@ -46,7 +46,9 @@ modules produce runnable Docker images and an App Engine application.
   to the generated Protobuf types, so it is kept in lock-step with the proto
   packages.
 - `storage:base`, `storage:redis`, `storage:hazelcast` — the storage SPI and its
-  Redis and Hazelcast implementations.
+  Redis and Hazelcast implementations. `storage:hazelcast` ships the
+  `hazelcast.yaml` that makes the members of a Delivery cluster discover each
+  other by multicast; `server/README.md` describes the opt-in cloud discovery.
 - `deployment/cloud-run` (the `:delivery-server-cloud-run` project) — a Cloud Run
   launcher that starts the `server` inside one Docker container (built with the
   Jib and Shadow plugins). Not published to Maven.
