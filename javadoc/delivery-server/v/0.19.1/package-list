@@ -1,0 +1,5 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.delivery.server/DeliveryShardRegistry.DeliveryShardSession///PointingToDeclaration/io/spine/delivery/server/DeliveryShardRegistry.DeliveryShardSession.html
+io.spine.delivery.server
+io.spine.delivery.server.grpc
