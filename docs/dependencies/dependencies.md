@@ -1,6 +1,6 @@
 
 
-# Dependencies of `io.spine.delivery:spine-admin-server:0.19.1`
+# Dependencies of `io.spine.delivery:spine-admin-server:0.19.2`
 
 ## Runtime
 1.  **Group** : com.amazonaws. **Name** : aws-java-sdk-bom. **Version** : 1.12.787.
@@ -2134,14 +2134,14 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:17 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-admin-ui:0.19.1`
+# Dependencies of `io.spine.delivery:spine-admin-ui:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -3022,14 +3022,14 @@ This report was generated on **Tue Sep 08 17:58:17 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-client:0.19.1`
+# Dependencies of `io.spine.delivery:spine-client:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -3676,14 +3676,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:41 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-model:0.19.1`
+# Dependencies of `io.spine.delivery:spine-delivery-model:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -4572,14 +4572,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-server:0.19.1`
+# Dependencies of `io.spine.delivery:spine-delivery-server:0.19.2`
 
 ## Runtime
 1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.6.2.
@@ -5747,14 +5747,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-server-cloud-run:0.19.1`
+# Dependencies of `io.spine.delivery:spine-delivery-server-cloud-run:0.19.2`
 
 ## Runtime
 1.  **Group** : com.amazonaws. **Name** : aws-java-sdk-bom. **Version** : 1.12.787.
@@ -6300,67 +6300,67 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
      * **Project URL:** [https://micronaut.io](https://micronaut.io)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.netty. **Name** : netty-bom. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-bom. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-http. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-http. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-http2. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-http2. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -7313,67 +7313,67 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
      * **Project URL:** [https://micronaut.io](https://micronaut.io)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : io.netty. **Name** : netty-bom. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-bom. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-buffer. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-base. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-compression. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-dns. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-http. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-http. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-http2. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-http2. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-marshalling. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-codec-protobuf. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-common. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-handler. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-resolver-dns. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-transport. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
-1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.16.Final.
+1.  **Group** : io.netty. **Name** : netty-transport-native-unix-common. **Version** : 4.2.17.Final.
      * **Project URL:** [https://netty.io/](https://netty.io/)
      * **License:** [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
 
@@ -7923,14 +7923,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:17 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-demo-appengine-11:0.19.1`
+# Dependencies of `io.spine.delivery:spine-demo-appengine-11:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -9018,14 +9018,14 @@ This report was generated on **Tue Sep 08 17:58:17 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-fixtures:0.19.1`
+# Dependencies of `io.spine.delivery:spine-fixtures:0.19.2`
 
 ## Runtime
 1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.22.
@@ -10096,14 +10096,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-grpc-api:0.19.1`
+# Dependencies of `io.spine.delivery:spine-grpc-api:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -10992,14 +10992,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-storage:0.19.1`
+# Dependencies of `io.spine.delivery:spine-storage:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -11646,14 +11646,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:41 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-client:0.19.1`
+# Dependencies of `io.spine.delivery:spine-delivery-client:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -12583,14 +12583,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-client-base:0.19.1`
+# Dependencies of `io.spine.delivery:spine-delivery-client-base:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -13471,14 +13471,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-demo:0.19.1`
+# Dependencies of `io.spine.delivery:spine-demo:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -14379,14 +14379,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-integration-test:0.19.1`
+# Dependencies of `io.spine.delivery:spine-integration-test:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -15316,14 +15316,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-base:0.19.1`
+# Dependencies of `io.spine.delivery:spine-base:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -16204,14 +16204,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-hazelcast:0.19.1`
+# Dependencies of `io.spine.delivery:spine-hazelcast:0.19.2`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -17100,14 +17100,14 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-redis:0.19.1`
+# Dependencies of `io.spine.delivery:spine-redis:0.19.2`
 
 ## Runtime
 1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.6.2.
@@ -18223,6 +18223,6 @@ This report was generated on **Tue Sep 08 17:58:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Sep 08 17:58:17 WEST 2026** using 
+This report was generated on **Tue Sep 08 21:06:42 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
