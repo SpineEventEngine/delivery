@@ -1,0 +1,1 @@
+var moduleSearchIndex = [{"l":"delivery-model","url":"index.html"}]
