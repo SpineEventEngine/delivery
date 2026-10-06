@@ -1,0 +1,18 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.server.storage.hazelcast////PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/index.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastRecordStorage///PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-record-storage/index.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastRecordStorage/deleteRecord/#I/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-record-storage/delete-record.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastRecordStorage/index/#/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-record-storage/--index--.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastRecordStorage/index/#io.spine.query.RecordQuery<I,R>/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-record-storage/--index--.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastRecordStorage/readAllRecords/#io.spine.query.RecordQuery<I,R>/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-record-storage/read-all-records.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastRecordStorage/write/#I#R/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-record-storage/write.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastRecordStorage/writeAllRecords/#java.lang.Iterable<? extends io.spine.server.storage.RecordWithColumns<I,R>>/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-record-storage/write-all-records.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastRecordStorage/writeRecord/#io.spine.server.storage.RecordWithColumns<I,R>/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-record-storage/write-record.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastStorageFactory///PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-storage-factory/index.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastStorageFactory/HazelcastStorageFactory/#/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-storage-factory/-hazelcast-storage-factory.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastStorageFactory/close/#/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-storage-factory/close.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastStorageFactory/createRecordStorage/#io.spine.server.ContextSpec#io.spine.server.storage.RecordSpec<I,R>#io.spine.server.storage.StorageGroup/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-storage-factory/create-record-storage.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastStorageFactory/isOpen/#/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-storage-factory/is-open.html
+$dokka.location:io.spine.server.storage.hazelcast/HazelcastStorageFactory/newInstance/#/PointingToDeclaration/hazelcast/io.spine.server.storage.hazelcast/-hazelcast-storage-factory/new-instance.html
+io.spine.server.storage.hazelcast
