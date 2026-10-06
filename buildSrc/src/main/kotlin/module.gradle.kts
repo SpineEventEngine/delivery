@@ -1,15 +1,15 @@
 /*
  * Copyright 2026 CodeMatters, Lda.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 
 @file:Suppress("AvoidApplyPluginMethod") // Some plugins are applied by ID at runtime.
@@ -299,6 +299,10 @@ fun Module.forceConfigurations() {
                    gRPC BOM. We force the whole set via `forceArtifacts()` and pin the BOM
                    to keep a single gRPC version across modules and the compiler plugins. */
                 Grpc.forceArtifacts(project, cfg, rs)
+                Jackson.forceArtifacts(project, cfg, rs)
+                Jackson.DataFormat.forceArtifacts(project, cfg, rs)
+                Jackson.DataType.forceArtifacts(project, cfg, rs)
+                Jackson.Junior.forceArtifacts(project, cfg, rs)
                 JacksonV2.Core.forceArtifacts(project, cfg, rs)
                 JacksonV2.DataType.forceArtifacts(project, cfg, rs)
                 JacksonV2.DataFormat.forceArtifacts(project, cfg, rs)

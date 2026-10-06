@@ -1,15 +1,15 @@
 /*
  * Copyright 2026 CodeMatters, Lda.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 
 package io.spine.gradle.report.license
@@ -125,18 +125,15 @@ private fun ModuleData.projectUrl(): String? {
 private fun ModuleData.licenses(): Set<License> {
     val result = mutableSetOf<License>()
 
-    val manifestLicense: License? = manifests.firstOrNull()?.let { manifest ->
-        val value = manifest.license
-        if (!value.isNullOrBlank()) {
-            if (value.startsWith("http")) {
-                License(value, value)
-            } else {
-                License(value, manifest.url)
-            }
+    manifests.firstOrNull()?.licenses?.mapNotNullTo(result) { license ->
+        val name: String? = license.name
+        val url: String? = license.url
+        when {
+            name.isNullOrBlank() -> url?.takeIf { it.isNotBlank() }?.let { License(it, it) }
+            name.startsWith("http") -> License(name, url ?: name)
+            else -> License(name, url)
         }
-        null
     }
-    manifestLicense?.let { result.add(it) }
 
     val pomLicenses = poms.firstOrNull()?.licenses?.map { license ->
         License(license.name, license.url)
