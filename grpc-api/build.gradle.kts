@@ -15,6 +15,7 @@
 import io.spine.dependency.lib.Grpc
 import io.spine.dependency.lib.GrpcKotlin
 import io.spine.dependency.local.CoreJvm
+import io.spine.dependency.test.Kotest
 
 plugins {
     module
@@ -38,6 +39,7 @@ dependencies {
     api(GrpcKotlin.stub)
     implementation(CoreJvm.server)
     implementation(project(":delivery-model"))
+    testImplementation(Kotest.assertions)
 }
 
 apply {

@@ -14,70 +14,128 @@
 
 package io.spine.delivery.admin;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import io.spine.logging.WithLogging;
+import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Maps a {@code ShardIndex} to the number of messages currently available in the shard.
  *
- * <p>Accumulating the number is faster than fetching it on demand, because storage doesn't
- * support {@code count} queries, so fetching basically means read all the shards and then read
- * all the messages in each shard to count the number.
+ * <p>The number is derived from the identifiers of the messages known to be in the shard,
+ * rather than accumulated from a running counter. This makes the accounting idempotent:
+ * the storage reports an overwrite of a stored message as an ordinary write, and a repeated
+ * removal of the same message as an ordinary delete, but neither changes the count.
+ * See {@link #messageWritten(InboxMessageId)} and {@link #messageRemoved(InboxMessageId)}.
  *
- * <p>The {@code ConcurrentHashMap} is chosen because we want to protect write operations and
- * do not block read operations.
+ * <p>Keeping the identifiers is faster than fetching the counts on demand, because the storage
+ * does not support {@code count} queries, so fetching basically means reading all the messages
+ * and counting them. The memory cost is proportional to the number of messages currently
+ * stored in the inbox.
+ *
+ * <p>Each shard is updated under its own lock, so the count returned by an update reflects
+ * exactly the messages in the shard at the moment of the update. Updates of different shards
+ * do not block each other.
+ *
+ * <p>The updates of one message are expected in the order of the storage operations:
+ * a removal recorded before the write of the same message is ignored, and the message stays
+ * counted until the server restarts. The storage reports an operation on the thread
+ * performing it, so this requires a concurrent write and removal of the same message.
  */
 @ThreadSafe
 public final class ShardMessagesCountHolder implements WithLogging {
 
-    private final ConcurrentHashMap<ShardIndex, Integer> messagesInShards;
+    private final ConcurrentMap<ShardIndex, ShardMessages> messagesInShards =
+            new ConcurrentHashMap<>();
 
     /**
-     * Creates a new {@code ShardMessagesHolder}.
+     * Records that the message with the given {@code id} is stored in its shard, and returns
+     * the resulting number of messages in the shard.
+     *
+     * <p>Recording a message that is already known — as happens when a stored message
+     * is overwritten — leaves the count unchanged.
      */
-    public ShardMessagesCountHolder() {
-        this(new ConcurrentHashMap<>());
+    @CanIgnoreReturnValue
+    public int messageWritten(InboxMessageId id) {
+        checkNotNull(id);
+        var messages =
+                messagesInShards.computeIfAbsent(id.getIndex(), index -> new ShardMessages());
+        return messages.add(id);
     }
 
     /**
-     * Creates a new {@code ShardMessagesHolder} and fills it with the given {@code initial}
-     * mapping.
+     * Records that the message with the given {@code id} is no longer stored in its shard,
+     * and returns the resulting number of messages in the shard.
+     *
+     * <p>Recording the removal of an unknown message — as happens when the same message
+     * is removed twice, e.g. by a client retrying the removal after a transport error —
+     * leaves the count unchanged, so it never becomes negative.
      */
-    public ShardMessagesCountHolder(Map<ShardIndex, Integer> initial) {
-        messagesInShards = new ConcurrentHashMap<>(initial);
+    @CanIgnoreReturnValue
+    public int messageRemoved(InboxMessageId id) {
+        checkNotNull(id);
+        var messages = messagesInShards.get(id.getIndex());
+        if (messages == null) {
+            return 0;
+        }
+        return messages.remove(id);
     }
 
     /**
-     * Updates the {@code messagesInShards} for the given {@code index} on the given {@code delta}.
+     * Creates and returns a new mutable map from each shard index to the number of messages
+     * in that shard.
      *
-     * <p>In the implementation we rely on the fact that the {@code merge()}
-     * operation is atomic in the {@code ConcurrentHashMap}. If one update of the map
-     * is in progress, other updates will be postponed by the time when
-     * the first update passes.
-     *
-     * <p>In some rare cases if the {@code delta} is {@code -1} (message removed) and the
-     * map doesn't contain any info about the shard with the {@code index}, the count will
-     * become {@code -1}. This means that we have events misordering and
-     * the “MessageRemoved” update arrived earlier than the “MessageWritten”.
-     * That's why we don't force the count to be always positive, hoping that
-     * the “MessageWritten” will arrive shortly and will make
-     * the state consistent — ({@code 0}).
-     */
-    public int updateCount(ShardIndex index, int delta) {
-        return messagesInShards.merge(index, delta, Integer::sum);
-    }
-
-    /**
-     * Creates and returns a new mutable copy of the underlying mapping.
-     *
-     * <p>Changes in the returned map don't affect the original mapping.
+     * <p>Changes in the returned map don't affect this holder.
      */
     public Map<ShardIndex, Integer> toMutableMap() {
-        return new HashMap<>(messagesInShards);
+        Map<ShardIndex, Integer> result = new HashMap<>();
+        messagesInShards.forEach((index, messages) -> result.put(index, messages.count()));
+        return result;
+    }
+
+    /**
+     * The identifiers of the messages known to be in one shard.
+     *
+     * <p>The methods are synchronized so that an update and the count it returns
+     * are atomic with respect to the other updates of the same shard.
+     */
+    private static final class ShardMessages {
+
+        private final Set<InboxMessageId> ids = new HashSet<>();
+
+        /**
+         * Adds the given {@code id} unless it is already known, and returns the resulting
+         * number of messages.
+         */
+        private synchronized int add(InboxMessageId id) {
+            ids.add(id);
+            return ids.size();
+        }
+
+        /**
+         * Removes the given {@code id} if it is known, and returns the resulting
+         * number of messages.
+         */
+        private synchronized int remove(InboxMessageId id) {
+            ids.remove(id);
+            return ids.size();
+        }
+
+        /**
+         * Returns the number of messages.
+         */
+        private synchronized int count() {
+            return ids.size();
+        }
     }
 }

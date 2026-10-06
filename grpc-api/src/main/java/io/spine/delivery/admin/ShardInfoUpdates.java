@@ -57,11 +57,9 @@ public final class ShardInfoUpdates {
      * Creates a new {@code ShardInfoUpdate} with the given shard {@code index} and
      * the new {@code count} of messages in the shard.
      *
-     * <p>We intentionally do not force the argument to be positive because in some cases it may
-     * be negative for a short period of time. For more info see the
-     * {@linkplain io.spine.delivery.admin.ShardMessagesCountHolder#updateCount(ShardIndex,
-     * int) ShardMessagesCountHolder.updateCount(ShardIndex, int)} method documentation,
-     * where the counter is updated.
+     * <p>The {@code count} is expected to be non-negative but is intentionally not validated:
+     * the update is created after the storage operation it reports has succeeded, and
+     * rejecting the value would turn a completed operation into a failed call.
      */
     public static ShardInfoUpdate messagesCountChangedTo(ShardIndex index, int count) {
         checkNotDefaultArg(index);

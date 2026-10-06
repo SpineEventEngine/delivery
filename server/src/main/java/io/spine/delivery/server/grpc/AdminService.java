@@ -36,9 +36,6 @@ import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardSessionRecord;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static io.spine.delivery.admin.ShardInfoUpdates.messagesCountChangedTo;
@@ -63,14 +60,14 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
 
     private final ShardUpdateSubscribersHolder subscribers = new ShardUpdateSubscribersHolder();
 
-    private final ShardMessagesCountHolder messagesCount;
+    private final ShardMessagesCountHolder messagesCount = new ShardMessagesCountHolder();
 
     public AdminService(ReportingStorageFactory factory) {
         super();
         inboxStorage = new ExtendedInboxStorage(factory, false);
         shardStorage = new ShardRegistryStorage(factory);
         setupSubscribers(factory);
-        messagesCount = new ShardMessagesCountHolder(messagesInShards());
+        countStoredMessages();
     }
 
     @SuppressWarnings("HandleMethodResult")
@@ -117,17 +114,17 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     }
 
     /**
-     * Reads all messages from the storage and counts the number of messages in each shard.
+     * Adds the messages already stored in the inbox to the per-shard message counts.
+     *
+     * <p>The service is constructed before the server starts serving, so no write or delete
+     * interleaves with the fill. The fill still runs after the
+     * {@linkplain #setupSubscribers(ReportingStorageFactory) subscriptions} are set up:
+     * the accounting is idempotent, so a message written in the meantime would be counted
+     * once rather than missed.
      */
-    private Map<ShardIndex, Integer> messagesInShards() {
-        Map<ShardIndex, Integer> messagesCount = new HashMap<>();
+    private void countStoredMessages() {
         var messages = inboxStorage.readAll();
-        messages.forEachRemaining(message -> {
-            var inboxMessageId = message.getId();
-            var shardIndex = inboxMessageId.getIndex();
-            messagesCount.put(shardIndex, messagesCount.getOrDefault(shardIndex, 0) + 1);
-        });
-        return messagesCount;
+        messages.forEachRemaining(message -> messagesCount.messageWritten(message.getId()));
     }
 
     /**
@@ -178,15 +175,15 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
 
         @Override
         public void onWrite(InboxMessageId id, InboxMessage message) {
-            var index = id.getIndex();
-            var update = messagesCountChangedTo(index, messagesCount.updateCount(index, 1));
+            var count = messagesCount.messageWritten(id);
+            var update = messagesCountChangedTo(id.getIndex(), count);
             subscribers.notifySubs(update);
         }
 
         @Override
         public void onDelete(InboxMessageId id) {
-            var index = id.getIndex();
-            var update = messagesCountChangedTo(index, messagesCount.updateCount(index, -1));
+            var count = messagesCount.messageRemoved(id);
+            var update = messagesCountChangedTo(id.getIndex(), count);
             subscribers.notifySubs(update);
         }
     }
