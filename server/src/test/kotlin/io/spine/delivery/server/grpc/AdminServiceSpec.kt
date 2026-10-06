@@ -14,8 +14,9 @@
 
 package io.spine.delivery.server.grpc
 
-import com.google.protobuf.Empty
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.shouldBe
 import io.spine.base.Identifier.newUuid
 import io.spine.delivery.admin.grpc.ShardInfoList
 import io.spine.delivery.given.TestInboxMessages.copyWithStatus
@@ -118,8 +119,10 @@ internal class AdminServiceSpec : WithApp() {
         storage.write(stored.id, copyWithStatus(stored, DELIVERED))
 
         val observer = memoizingObserver<ShardInfoList>()
-        service.getShardInfo(Empty.getDefaultInstance(), observer)
+        service.getShardInfo(request(), observer)
 
+        observer.error.shouldBeNull()
+        observer.isCompleted shouldBe true
         observer.firstResponse().messagesPerShard() shouldContainExactly listOf(shard to 2)
     }
 

@@ -22,10 +22,26 @@ import io.spine.server.delivery.DeliveryStrategy.newIndex
 import io.spine.server.delivery.InboxMessageId
 import io.spine.server.delivery.InboxMessageMixin.generateIdWith
 import io.spine.server.delivery.ShardIndex
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit.SECONDS
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+
+/**
+ * The number of messages the concurrency tests write or remove in total.
+ */
+private const val MESSAGES = 1_000
+
+/**
+ * The number of threads the concurrency tests run, each updating its own slice of messages.
+ */
+private const val THREADS = 8
+
+/**
+ * How long the concurrency tests wait for the threads to get ready or to finish.
+ */
+private const val TIMEOUT_SECONDS = 10L
 
 /**
  * Verifies that [ShardMessagesCountHolder] derives the number of messages in a shard
@@ -112,22 +128,59 @@ internal class ShardMessagesCountHolderSpec {
     }
 
     @Test
-    fun `count messages written and removed concurrently`() {
-        val ids = List(1_000) { messageIn(shard) }
-        val removed = ids.take(ids.size / 2)
-        val executor = Executors.newFixedThreadPool(8)
-        try {
-            ids.map { id -> executor.submit<Int> { holder.messageWritten(id) } }
-                .forEach { it.get(10, SECONDS) }
-            holder.toMutableMap() shouldContainExactly mapOf(shard to ids.size)
+    fun `return the exact count to each of concurrent writers`() {
+        val ids = List(MESSAGES) { messageIn(shard) }
+        val writers = ids.chunked(MESSAGES / THREADS).map { slice ->
+            { slice.map { holder.messageWritten(it) } }
+        }
 
-            removed.map { id -> executor.submit<Int> { holder.messageRemoved(id) } }
-                .forEach { it.get(10, SECONDS) }
-            holder.toMutableMap() shouldContainExactly mapOf(shard to ids.size - removed.size)
+        val counts = runConcurrently(writers).flatten()
+
+        counts.sorted() shouldBe (1..MESSAGES).toList()
+        holder.toMutableMap() shouldContainExactly mapOf(shard to MESSAGES)
+    }
+
+    @Test
+    fun `count messages while others are written and removed concurrently`() {
+        val removed = List(MESSAGES / 2) { messageIn(shard) }
+        val kept = List(MESSAGES / 2) { messageIn(shard) }
+        removed.forEach { holder.messageWritten(it) }
+        val sliceSize = MESSAGES / THREADS
+        val writers = kept.chunked(sliceSize).map { slice ->
+            { slice.forEach { holder.messageWritten(it) } }
+        }
+        val removers = removed.chunked(sliceSize).map { slice ->
+            { slice.forEach { holder.messageRemoved(it) } }
+        }
+
+        runConcurrently(writers + removers)
+
+        holder.toMutableMap() shouldContainExactly mapOf(shard to kept.size)
+    }
+
+    private fun messageIn(index: ShardIndex): InboxMessageId = generateIdWith(index)
+
+    /**
+     * Runs each of the given [tasks] on a thread of its own, releasing them all at once,
+     * and returns their results in the order of the tasks.
+     */
+    private fun <T> runConcurrently(tasks: List<() -> T>): List<T> {
+        val executor = Executors.newFixedThreadPool(tasks.size)
+        try {
+            val ready = CountDownLatch(tasks.size)
+            val start = CountDownLatch(1)
+            val futures = tasks.map { task ->
+                executor.submit<T> {
+                    ready.countDown()
+                    start.await()
+                    task()
+                }
+            }
+            ready.await(TIMEOUT_SECONDS, SECONDS) shouldBe true
+            start.countDown()
+            return futures.map { it.get(TIMEOUT_SECONDS, SECONDS) }
         } finally {
             executor.shutdownNow()
         }
     }
-
-    private fun messageIn(index: ShardIndex): InboxMessageId = generateIdWith(index)
 }
