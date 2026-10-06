@@ -19,6 +19,7 @@ import io.spine.logging.WithLogging;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
 
+import javax.annotation.concurrent.GuardedBy;
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -41,7 +42,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>Keeping the identifiers is faster than fetching the counts on demand, because the storage
  * does not support {@code count} queries, so fetching basically means reading all the messages
  * and counting them. The memory cost is proportional to the number of messages currently
- * stored in the inbox.
+ * stored in the inbox: once a shard is drained, the memory taken by its identifiers is released.
  *
  * <p>Each shard is updated under its own lock, so the count returned by an update reflects
  * exactly the messages in the shard at the moment of the update. Updates of different shards
@@ -111,7 +112,8 @@ public final class ShardMessagesCountHolder implements WithLogging {
      */
     private static final class ShardMessages {
 
-        private final Set<InboxMessageId> ids = new HashSet<>();
+        @GuardedBy("this")
+        private Set<InboxMessageId> ids = new HashSet<>();
 
         /**
          * Adds the given {@code id} unless it is already known, and returns the resulting
@@ -125,9 +127,15 @@ public final class ShardMessagesCountHolder implements WithLogging {
         /**
          * Removes the given {@code id} if it is known, and returns the resulting
          * number of messages.
+         *
+         * <p>A removal that empties the set replaces it with a new one. A {@code HashSet} never
+         * shrinks its backing table, so a drained shard would otherwise keep a table sized for
+         * its largest backlog for as long as the server runs.
          */
         private synchronized int remove(InboxMessageId id) {
-            ids.remove(id);
+            if (ids.remove(id) && ids.isEmpty()) {
+                ids = new HashSet<>();
+            }
             return ids.size();
         }
 

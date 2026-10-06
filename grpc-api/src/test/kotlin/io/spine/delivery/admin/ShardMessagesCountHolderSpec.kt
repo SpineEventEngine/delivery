@@ -90,6 +90,17 @@ internal class ShardMessagesCountHolderSpec {
     }
 
     @Test
+    fun `keep counting the messages of a drained shard`() {
+        val drained = List(MESSAGES) { messageIn(shard) }
+        drained.forEach { holder.messageWritten(it) }
+        drained.forEach { holder.messageRemoved(it) }
+
+        holder.messageWritten(messageIn(shard)) shouldBe 1
+        holder.messageRemoved(drained.first()) shouldBe 1
+        holder.toMutableMap() shouldContainExactly mapOf(shard to 1)
+    }
+
+    @Test
     fun `ignore a repeated removal of the same message`() {
         val removed = messageIn(shard)
         val kept = messageIn(shard)
