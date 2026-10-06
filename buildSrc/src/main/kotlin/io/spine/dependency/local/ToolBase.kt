@@ -1,15 +1,15 @@
 /*
  * Copyright 2026 CodeMatters, Lda.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 
 package io.spine.dependency.local
@@ -18,28 +18,19 @@ package io.spine.dependency.local
  * Artifacts of the `tool-base` repository.
  *
  * The repository no longer publishes a module of its own name. Its former
- * contents are split across the focused modules declared below.
+ * contents are split across the focused modules declared below. The all-in-one
+ * `tool-base` artifact is no longer published as of `2.0.0-SNAPSHOT.420`.
+ *
+ * `io.spine.tools.OsFamily`, which that module also carried, now lives in
+ * Base Libraries as `io.spine.environment.OsFamily`.
  *
  * @see <a href="https://github.com/SpineEventEngine/tool-base">tool-base</a>
  */
 @Suppress("ConstPropertyName", "unused")
 object ToolBase {
     const val group = Spine.toolsGroup
-    const val version = "2.0.0-SNAPSHOT.422"
-    const val dogfoodingVersion = "2.0.0-SNAPSHOT.422"
-
-    /**
-     * The former all-in-one module, split into the focused modules below.
-     *
-     * The artifact is no longer published as of `2.0.0-SNAPSHOT.420`. Replace it
-     * with the modules a project actually uses: [archive], [code], [fs],
-     * [javaCode], [kotlinCode], or [protoCode].
-     *
-     * `io.spine.tools.OsFamily`, which this module also carried, now lives in
-     * Base Libraries as `io.spine.environment.OsFamily`.
-     */
-    @Deprecated("The `tool-base` artifact is no longer published. Use the module you need.")
-    const val lib = "$group:tool-base:$version"
+    const val version = "2.0.0-SNAPSHOT.423"
+    const val dogfoodingVersion = "2.0.0-SNAPSHOT.423"
 
     const val archive = "$group:archive:$version"
     const val code = "$group:code:$version"

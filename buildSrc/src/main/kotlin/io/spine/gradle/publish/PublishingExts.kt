@@ -1,15 +1,15 @@
 /*
  * Copyright 2026 CodeMatters, Lda.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 
 package io.spine.gradle.publish
@@ -48,6 +48,26 @@ internal val Project.publishingExtension: PublishingExtension
  */
 internal val Project.publications: PublicationContainer
     get() = publishingExtension.publications
+
+/**
+ * Returns the Maven publications of this project, or an empty collection if
+ * the project does not publish.
+ */
+internal fun Project.mavenPublications(): Collection<MavenPublication> {
+    val publishing = extensions.findByType(PublishingExtension::class.java)
+        ?: return emptyList()
+    return publishing.publications.withType(MavenPublication::class.java)
+}
+
+/**
+ * Tells whether this publication is the marker of a Gradle plugin, which consists
+ * of a POM pointing at the publication of the plugin.
+ *
+ * Gradle's `java-gradle-plugin` creates a marker for each declared plugin, naming
+ * the publication after the plugin with the `PluginMarkerMaven` suffix.
+ */
+internal val MavenPublication.isPluginMarker: Boolean
+    get() = name.endsWith("PluginMarkerMaven")
 
 /**
  * Obtains an instance, if available, of [SpinePublishing] extension

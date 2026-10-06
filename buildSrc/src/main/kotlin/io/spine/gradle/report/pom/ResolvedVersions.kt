@@ -1,15 +1,15 @@
 /*
  * Copyright 2026 CodeMatters, Lda.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
  * https://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions
+ * and limitations under the License.
  */
 
 package io.spine.gradle.report.pom
@@ -73,7 +73,10 @@ internal object ResolvedVersions {
             group = SpineTaskGroup.name
             description = "Collects the versions of dependencies of " +
                     "the `${project.name}` project selected by dependency resolution"
-            mustRunAfter(project.tasks.matching { it.name == "clean" })
+            // Filtered by name rather than by task: `matching` tests a predicate
+            // against each task, so it has to instantiate every one registered in
+            // the project merely to read its name.
+            mustRunAfter(project.tasks.named { it == "clean" })
             doLast {
                 val file = outputFileIn(project)
                 file.parentFile.mkdirs()
