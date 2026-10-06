@@ -1,0 +1,11 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.server.storage.query////PointingToDeclaration/base/io.spine.server.storage.query/index.html
+$dokka.location:io.spine.server.storage.query/InMemoryRecordComparator///PointingToDeclaration/base/io.spine.server.storage.query/-in-memory-record-comparator/index.html
+$dokka.location:io.spine.server.storage.query/InMemoryRecordComparator/accordingTo/#java.util.List<io.spine.query.SortBy<?,R>>/PointingToDeclaration/base/io.spine.server.storage.query/-in-memory-record-comparator/according-to.html
+$dokka.location:io.spine.server.storage.query/InMemoryRecordComparator/compare/#io.spine.server.storage.RecordWithColumns<I,R>#io.spine.server.storage.RecordWithColumns<I,R>/PointingToDeclaration/base/io.spine.server.storage.query/-in-memory-record-comparator/compare.html
+$dokka.location:io.spine.server.storage.query/RecordQueryMatcher///PointingToDeclaration/base/io.spine.server.storage.query/-record-query-matcher/index.html
+$dokka.location:io.spine.server.storage.query/RecordQueryMatcher/RecordQueryMatcher/#io.spine.query.RecordQuery<I,R>/PointingToDeclaration/base/io.spine.server.storage.query/-record-query-matcher/-record-query-matcher.html
+$dokka.location:io.spine.server.storage.query/RecordQueryMatcher/RecordQueryMatcher/#io.spine.query.Subject<I,R>/PointingToDeclaration/base/io.spine.server.storage.query/-record-query-matcher/-record-query-matcher.html
+$dokka.location:io.spine.server.storage.query/RecordQueryMatcher/test/#io.spine.server.storage.RecordWithColumns<I,R>/PointingToDeclaration/base/io.spine.server.storage.query/-record-query-matcher/test.html
+io.spine.server.storage.query
