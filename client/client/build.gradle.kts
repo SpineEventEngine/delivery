@@ -22,7 +22,7 @@ plugins {
 dependencies {
     api(project(":client:delivery-client-base"))
     // The gRPC stubs of the `Inbox` and `Shard` services.
-    implementation(project(":grpc-api"))
+    implementation(project(":delivery-grpc-api"))
     testImplementation(project(":fixtures"))
     testImplementation(project(path = ":client:delivery-client-base",
                                configuration = "testArtifacts"))

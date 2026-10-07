@@ -9,11 +9,13 @@ plugins {
 
 dependencies {
     api(CoreJvm.server)
-    implementation(project(":storage:base"))
+    implementation(project(":storage:delivery-storage-base"))
     implementation(Redisson.lib)
     testImplementation(Kotest.assertions)
     testImplementation(Testcontainers.lib)
-    testImplementation(project(path = ":storage:base", configuration = "testArtifacts"))
+    testImplementation(
+        project(path = ":storage:delivery-storage-base", configuration = "testArtifacts")
+    )
 }
 
 // The Testcontainers-based suites here (`RedisRecordStorageTest`, `MultitenantStorageTest`,

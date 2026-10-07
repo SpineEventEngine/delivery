@@ -44,7 +44,7 @@ private const val ABOUT = ""
  * Their `Test` tasks depend on [CheckDockerAvailable], so that an environment without
  * Docker cannot produce a misleading "tests passed" result.
  */
-val dockerDependentModules = setOf("redis", "delivery-client", "integration-test")
+val dockerDependentModules = setOf("delivery-storage-redis", "delivery-client", "integration-test")
 
 /**
  * Names of the modules whose tests additionally need the Delivery server *image*.

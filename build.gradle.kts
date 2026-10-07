@@ -100,6 +100,13 @@ spinePublishing {
         // `spine-delivery-client-base` artifacts.
         "client:delivery-client",
         "client:delivery-client-base",
+        // The modules these artifacts depend on, directly or transitively. Their project
+        // names likewise differ from their directories (see `settings.gradle.kts`),
+        // producing `spine-delivery-grpc-api` and the `spine-delivery-storage-*` artifacts.
+        "delivery-grpc-api",
+        "storage:delivery-storage-base",
+        "storage:delivery-storage-redis",
+        "storage:delivery-storage-hazelcast",
     )
     destinations = with(PublishingRepos) {
         setOf(

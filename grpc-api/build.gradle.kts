@@ -37,8 +37,10 @@ dependencies {
     // The generated `*GrpcKt` stubs extend types from this library, so consumers need
     // it at compile time; the CoreJvm gRPC DSL adds it only as `implementation`.
     api(GrpcKotlin.stub)
-    implementation(CoreJvm.server)
-    implementation(project(":delivery-model"))
+    // The generated services and messages expose the inbox and shard types of the server
+    // library, and the delivery model types, so a consumer compiles against them too.
+    api(CoreJvm.server)
+    api(project(":delivery-model"))
     testImplementation(Kotest.assertions)
 }
 

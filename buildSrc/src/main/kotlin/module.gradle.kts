@@ -91,12 +91,12 @@ apply<BomsPlugin>()
 
 LicenseReporter.generateReportIn(project)
 // Scope each project's license report to itself. The jk1 plugin otherwise defaults to
-// `[project] + subprojects`, so the source-less `storage` grouping project would resolve
-// its subprojects' configurations (e.g. `:storage:base:checkstyle`) from its own task —
-// which Gradle 9 rejects under `org.gradle.parallel=true` ("Resolution of the configuration
-// ... was attempted without an exclusive lock"). `mergeAllLicenseReports` already aggregates
-// every subproject individually, so restricting each report to its own project keeps the
-// merged output identical while removing the cross-project resolution.
+// `[project] + subprojects`, so the source-less `storage` grouping project would resolve its
+// subprojects' configurations (e.g. `:storage:delivery-storage-base:checkstyle`) from its own task
+// — which Gradle 9 rejects under `org.gradle.parallel=true` ("Resolution of the configuration ...
+// was attempted without an exclusive lock"). `mergeAllLicenseReports` already aggregates every
+// subproject individually, so restricting each report to its own project keeps the merged output
+// identical while removing the cross-project resolution.
 project.the<LicenseReportExtension>().projects = arrayOf(project)
 JavadocConfig.applyTo(project)
 CheckStyleConfig.applyTo(project)
@@ -158,7 +158,8 @@ fun Module.setupKotlin(javaVersion: JavaLanguageVersion) {
  */
 fun Module.setupTestTasks() {
     // The lists key on the project name, but the gates report the project path, which
-    // is what a reader can run: `:redis` is not a project, `:storage:redis` is.
+    // is what a reader can run: `:delivery-storage-redis` is not a project,
+    // `:storage:delivery-storage-redis` is.
     val projectPath = path
     val dockerGate = if (name in dockerDependentModules) {
         tasks.register<CheckDockerAvailable>("checkDockerAvailable") {

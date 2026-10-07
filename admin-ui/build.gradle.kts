@@ -22,7 +22,7 @@ plugins {
 
 dependencies {
   implementation(project(":delivery-model"))
-  implementation(project(":grpc-api"))
+  implementation(project(":delivery-grpc-api"))
 }
 
 node {

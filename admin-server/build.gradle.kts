@@ -67,11 +67,11 @@ dependencies {
     implementation(Micronaut.jacksonDatabind)
     implementation(Micronaut.reactor)
     implementation(Micronaut.security)
-    // The gRPC stubs and Protobuf runtime come via `:grpc-api` (`api` dependencies).
+    // The gRPC stubs and Protobuf runtime come via `:delivery-grpc-api` (`api` dependencies).
     // The Netty transport is the shaded one: it keeps gRPC's Netty inside the
     // `io.grpc.netty.shaded` namespace, away from the Netty managed by Micronaut.
     implementation(Grpc.nettyShaded)
-    implementation(project(":grpc-api"))
+    implementation(project(":delivery-grpc-api"))
 
     // Micronaut 4 no longer ships YAML support by default, and this application
     // is configured by `application.yml`.

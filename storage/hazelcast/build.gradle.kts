@@ -8,8 +8,10 @@ plugins {
 
 dependencies {
     api(CoreJvm.server)
-    implementation(project(":storage:base"))
+    implementation(project(":storage:delivery-storage-base"))
     implementation(Hazelcast.lib)
     testImplementation(Kotest.assertions)
-    testImplementation(project(path = ":storage:base", configuration = "testArtifacts"))
+    testImplementation(
+        project(path = ":storage:delivery-storage-base", configuration = "testArtifacts")
+    )
 }

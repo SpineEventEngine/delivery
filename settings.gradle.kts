@@ -46,7 +46,14 @@ with(project(":model")) {
     projectDir = file("./model")
 }
 
+// The published gRPC API module likewise carries a distinct project name:
+//   `grpc-api` -> `:delivery-grpc-api` -> `spine-delivery-grpc-api`
 include("grpc-api")
+with(project(":grpc-api")) {
+    name = "delivery-grpc-api"
+    projectDir = file("./grpc-api")
+}
+
 include("fixtures")
 // The published `server` module likewise carries a distinct project name:
 //   `server` -> `:delivery-server` -> `spine-delivery-server`
@@ -58,9 +65,15 @@ with(project(":server")) {
 
 include("admin-server")
 include("admin-ui")
-include("storage:hazelcast")
-include("storage:redis")
-include("storage:base")
+// The published storage modules carry project names distinct from their directories,
+// so that their Maven artifacts get the desired IDs:
+//   `storage/base`      -> `:storage:delivery-storage-base`      -> `spine-delivery-storage-base`
+//   `storage/redis`     -> `:storage:delivery-storage-redis`     -> `spine-delivery-storage-redis`
+//   `storage/hazelcast` -> `:storage:delivery-storage-hazelcast`
+//                       -> `spine-delivery-storage-hazelcast`
+storageModule("delivery-storage-base", inDirectory = "base")
+storageModule("delivery-storage-redis", inDirectory = "redis")
+storageModule("delivery-storage-hazelcast", inDirectory = "hazelcast")
 
 // The published client modules carry project names distinct from their directories,
 // so that their Maven artifacts get the desired IDs:
@@ -92,11 +105,22 @@ fun clientDeployment(name: String) {
     project(path).projectDir = file("./client/deployment/${name}")
 }
 
-fun clientModule(name: String, inDirectory: String) {
-    val path = ":client:${inDirectory}"
+fun clientModule(name: String, inDirectory: String) =
+    nestedModule(parent = "client", name = name, inDirectory = inDirectory)
+
+fun storageModule(name: String, inDirectory: String) =
+    nestedModule(parent = "storage", name = name, inDirectory = inDirectory)
+
+/**
+ * Includes the module in the `<parent>/<inDirectory>` directory under the project path
+ * `:<parent>:<name>`.
+ */
+fun nestedModule(parent: String, name: String, inDirectory: String) {
+    val path = ":${parent}:${inDirectory}"
+    val directory = file("./${parent}/${inDirectory}")
     include(path)
     with(project(path)) {
         this.name = name
-        projectDir = file("./client/${inDirectory}")
+        projectDir = directory
     }
 }

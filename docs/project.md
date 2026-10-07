@@ -21,8 +21,9 @@ Role: **application + published libraries** — a multi-module Gradle build
 targeting the current Spine SDK (`2.0.0-SNAPSHOT`). The published Maven
 artifacts live under the `io.spine.delivery` group with the standard `spine-`
 prefix: `spine-delivery-model`, `spine-delivery-server`,
-`spine-delivery-client`, and `spine-delivery-client-base`. The deployment
-modules produce runnable Docker images and an App Engine application.
+`spine-delivery-client`, and `spine-delivery-client-base`, plus the modules they
+depend on: `spine-delivery-grpc-api` and the `spine-delivery-storage-*` modules.
+The deployment modules produce runnable Docker images and an App Engine application.
 
 ### Main build
 
@@ -30,13 +31,16 @@ modules produce runnable Docker images and an App Engine application.
   the servers and the clients: commands, events, rejections, the shard-session
   registry types, and the `DeliveryPickUpOutcome` type carrying shard pick-up
   results to clients.
-- `grpc-api` — the gRPC service contract (`message_delivery.proto`,
-  `admin/admin_service.proto`, plus a vendored `grpc.health.v1` service) and the
-  supporting stream-observer/admin helper classes.
+- `grpc-api` (the `:delivery-grpc-api` project) — the gRPC service contract
+  (`message_delivery.proto`, `admin/admin_service.proto`) and the supporting
+  stream-observer/admin helper classes. Published as `spine-delivery-grpc-api`, because the client and
+  the server depend on it.
 - `server` (the `:delivery-server` project) — a **plain gRPC** Delivery Server
   that does not embed Spine, built for throughput. Exposes the delivery gRPC API
   on port `8484` with in-memory, Redis, or Hazelcast storage (the last for
-  running several clustered instances sharing a single memory space).
+  running several clustered instances sharing a single memory space). Serves
+  the standard `grpc.health.v1` health service, using the messages and stubs
+  of `io.grpc:grpc-services`.
 - `fixtures` — test fixtures shared by the client and server suites:
   `TestInboxMessages`, `NoOpChannel`, and the `spine.test.delivery` Protobuf
   types. Depends on neither side, so both can use it. Not published.
@@ -45,8 +49,11 @@ modules produce runnable Docker images and an App Engine application.
 - `admin-ui` — a Quasar/Vue (TypeScript) web client for the Admin Service; talks
   to the generated Protobuf types, so it is kept in lock-step with the proto
   packages.
-- `storage:base`, `storage:redis`, `storage:hazelcast` — the storage SPI and its
-  Redis and Hazelcast implementations. `storage:hazelcast` ships the
+- `storage/base`, `storage/redis`, `storage/hazelcast` (the
+  `:storage:delivery-storage-*` projects) — the storage SPI and its Redis and
+  Hazelcast implementations. Published as the `spine-delivery-storage-*`
+  artifacts, because the server depends on the Redis and Hazelcast modules,
+  and they depend on the base one. `storage/hazelcast` ships the
   `hazelcast.yaml` that makes the members of a Delivery cluster discover each
   other by multicast; `server/README.md` describes the opt-in cloud discovery.
 - `deployment/cloud-run` (the `:delivery-server-cloud-run` project) — a Cloud Run
@@ -78,8 +85,8 @@ Gradle gates, wired from the root build and modeled on the `gcloud-jvm` reposito
 keep a Docker-less environment from reporting a misleading "tests passed":
 
 - `checkDockerAvailable` **fails** the build when Docker is missing for a module
-  listed in `dockerDependentModules()` (`redis`, `delivery-client`,
-  `integration-test`). The sole exemption is a CI runner setting
+  listed in `dockerDependentModules` (`delivery-storage-redis`,
+  `delivery-client`, `integration-test`). The sole exemption is a CI runner setting
   `WINDOWS_CI_NO_DOCKER`, which cannot launch Linux containers.
 - The `Test` tasks of the image-dependent modules (`delivery-client`,
   `integration-test`) depend on `:delivery-server-cloud-run:jibDockerBuild`, so the
@@ -98,8 +105,8 @@ keep a Docker-less environment from reporting a misleading "tests passed":
 ### Key constraints
 
 - **Public API stability**: consumer applications pin to versions published from
-  here, so removals and signature changes to `model`, `grpc-api`, and
-  `server` are breaking. Renaming a Protobuf `package` also changes the
+  here, so removals and signature changes to `model`, `grpc-api`, `server`, and
+  the client modules are breaking. Renaming a Protobuf `package` also changes the
   wire-level type URL, so proto, Java, and the `admin-ui` generated code must
   move together.
 - **Single Spine generation**: since `0.15.0` the client modules are part of

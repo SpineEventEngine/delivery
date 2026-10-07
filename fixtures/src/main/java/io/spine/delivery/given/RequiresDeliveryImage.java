@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
  * Gradle gate, which fails the build outright. A missing image only warns, via
  * {@code checkDeliveryImageAvailable}, because the image lives in a private registry.
  *
- * <p>Mirrors {@code RequiresDocker} of the {@code :storage:redis} module.
+ * <p>Mirrors {@code RequiresDocker} of the {@code :storage:delivery-storage-redis} module.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)

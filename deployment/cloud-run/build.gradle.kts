@@ -57,7 +57,7 @@ configurations.all {
             "org.yaml" -> useVersion(Redisson.snakeYamlVersion)
             // Redisson requests a newer Byte Buddy than the Micronaut test BOM pins.
             "net.bytebuddy" -> useVersion(Redisson.byteBuddyVersion)
-            // `storage:hazelcast` uses a newer Hazelcast than the platform's pin.
+            // `storage/hazelcast` uses a newer Hazelcast than the platform's pin.
             "com.hazelcast" -> useVersion(Hazelcast.version)
         }
     }

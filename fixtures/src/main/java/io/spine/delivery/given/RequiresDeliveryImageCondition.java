@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>Docker's own presence is not probed here — the {@code checkDockerAvailable} Gradle
  * gate fails the build when it is missing. Mirrors {@code RequiresDockerCondition} of
- * the {@code :storage:redis} module.
+ * the {@code :storage:delivery-storage-redis} module.
  */
 final class RequiresDeliveryImageCondition implements ExecutionCondition {
 
