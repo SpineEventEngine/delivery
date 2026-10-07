@@ -29,5 +29,5 @@ dependencies {
 }
 
 apply {
-    from(rootDir.toPath().resolve("test-artifacts.gradle"))
+    from(rootDir.toPath().resolve("test-artifacts.gradle.kts"))
 }
