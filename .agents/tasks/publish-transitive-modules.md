@@ -44,6 +44,28 @@ server's `HealthService` and its tests used it, and the admin UI generated
 TypeScript from it without using it. So the copy is removed, and the server
 depends on `io.grpc:grpc-services` for the same classes.
 
+## Hazelcast storage tests on CI
+
+After the renames, two `HazelcastRecordStorage` pre-filled storage tests failed
+on the Ubuntu runner, seeing 2 and 5 records instead of 1. They passed on macOS.
+
+- Root cause: each test starts an embedded member, which loads the shipped
+  `hazelcast.yaml` (cluster `delivery`, multicast discovery). The Delivery
+  server containers of `client/integration-test` use the same configuration.
+  On Linux the host sits on the Docker bridge network, so multicast reached the
+  containers, and the test members joined their cluster. Records written by
+  earlier tests stayed in that cluster. On macOS, Docker runs in a VM and
+  multicast does not cross into it.
+- Why now: the renames changed the order in which Gradle schedules the test
+  tasks, so the two suites started to overlap.
+- Fix: the module's `test` task sets `hz.clustername=delivery-storage-test` and
+  `hz.network.join.multicast.enabled=false`. `Config.load()` applies these
+  system properties over the shipped file, so the test members stay standalone.
+  No production code or shipped configuration changes, and `HazelcastConfigSpec`
+  still checks the shipped values, as it parses the file directly.
+- Lesson: a test that starts a Hazelcast member must not rely on the shipped
+  discovery settings.
+
 ## Plan
 
 - [x] Rename the projects in `settings.gradle.kts`.
@@ -54,6 +76,7 @@ depends on `io.grpc:grpc-services` for the same classes.
 - [x] Replace the vendored health proto with `io.grpc:grpc-services`.
 - [x] Verify the generated POMs reference only published coordinates.
 - [x] Run `./gradlew clean build dokkaGenerate` (a `.proto` changed).
+- [x] Keep the Hazelcast storage test members out of other clusters on CI.
 
 ## Status
 
