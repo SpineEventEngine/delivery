@@ -10,7 +10,7 @@ all modules and does not describe the project structure per-subproject.
  -->
 <groupId>io.spine.delivery</groupId>
 <artifactId>delivery</artifactId>
-<version>0.19.4</version>
+<version>0.20.0</version>
 
 <inceptionYear>2015</inceptionYear>
 
@@ -56,6 +56,12 @@ all modules and does not describe the project structure per-subproject.
   <dependency>
     <groupId>io.grpc</groupId>
     <artifactId>grpc-protobuf</artifactId>
+    <version>1.83.1</version>
+    <scope>compile</scope>
+  </dependency>
+  <dependency>
+    <groupId>io.grpc</groupId>
+    <artifactId>grpc-services</artifactId>
     <version>1.83.1</version>
     <scope>compile</scope>
   </dependency>
