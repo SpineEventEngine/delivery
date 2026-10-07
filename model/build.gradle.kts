@@ -38,7 +38,3 @@ dependencies {
     api(GrpcKotlin.stub)
     implementation(CoreJvm.server)
 }
-
-apply {
-    from(rootDir.toPath().resolve("test-artifacts.gradle.kts"))
-}
