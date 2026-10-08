@@ -77,6 +77,20 @@ internal class ShardUpdateSenderSpec {
         return observer
     }
 
+    /**
+     * Subscribes, and waits until the subscriber has joined the sweeps, which its initial
+     * state of the [sentinel] shard shows.
+     *
+     * Otherwise, the subscriber may join after the next change of a test, and receive it
+     * in its initial state rather than in the sweep that the test expects.
+     */
+    private fun ShardUpdateSender.joined(sentinel: ShardIndex = third): RecordingObserver {
+        write(sentinel)
+        val observer = subscribed()
+        observer.nextUpdate() shouldBe state(sentinel, 1)
+        return observer
+    }
+
     private fun write(shard: ShardIndex, count: Int = 1) =
         inbox.write((1..count).map { message(shard) })
 
@@ -139,7 +153,7 @@ internal class ShardUpdateSenderSpec {
         @Test
         fun `with a zero count of a shard that another subscriber last received with messages`() {
             val sender = sender(LONG_INTERVAL)
-            val earlier = sender.subscribed()
+            val earlier = sender.joined()
             val message = message(first)
             inbox.write(listOf(message))
             earlier.nextUpdate() shouldBe state(first, 1)
@@ -147,7 +161,8 @@ internal class ShardUpdateSenderSpec {
 
             val later = sender.subscribed()
 
-            later.nextUpdate() shouldBe state(first, 0)
+            later.nextUpdates(2) shouldContainExactlyInAnyOrder
+                    listOf(state(third, 1), state(first, 0))
         }
 
         @Test
@@ -200,7 +215,7 @@ internal class ShardUpdateSenderSpec {
 
         @Test
         fun `sending the first change at once, and merging the rest of the interval`() {
-            val observer = sender(LONG_INTERVAL).subscribed()
+            val observer = sender(LONG_INTERVAL).joined()
             val start = System.nanoTime()
 
             write(first)
@@ -214,7 +229,7 @@ internal class ShardUpdateSenderSpec {
 
         @Test
         fun `of each shard independently`() {
-            val observer = sender(LONG_INTERVAL).subscribed()
+            val observer = sender(LONG_INTERVAL).joined()
             write(first)
             observer.nextUpdate() shouldBe state(first, 1)
 
@@ -280,7 +295,7 @@ internal class ShardUpdateSenderSpec {
 
         @Test
         fun `nothing for a change back to the state that the subscriber received last`() {
-            val observer = sender(LONG_INTERVAL).subscribed()
+            val observer = sender(LONG_INTERVAL).joined()
             write(first)
             observer.nextUpdate() shouldBe state(first, 1)
             val reads = inbox.shardReads.get()
@@ -323,11 +338,7 @@ internal class ShardUpdateSenderSpec {
 
         @Test
         fun `an update after retrying a failed read`() {
-            // The initial state shows that the subscriber has joined, so the update below
-            // can only come from a sweep.
-            write(second)
-            val observer = sender().subscribed()
-            observer.nextUpdate() shouldBe state(second, 1)
+            val observer = sender().joined()
             inbox.failingShardReads.set(2)
 
             write(first)
