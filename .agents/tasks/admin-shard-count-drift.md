@@ -34,10 +34,10 @@ path:
 - `ShardMessagesCountHolder` keeps the set of message IDs per shard and derives
   the count from it: `messageWritten(id)` and `messageRemoved(id)` replace
   `updateCount(index, delta)`. A rewrite or a repeated removal is a no-op, and
-  the count can no longer be negative. Memory is proportional to the number of
-  messages currently in the inbox, whichever storage backs it: one identifier
-  per message, small next to the message itself, and transient, since the
-  delivery removes a message once it is processed.
+  the count can no longer be negative. Within a shard, a message is keyed by
+  its UUID string. Memory is proportional to the number of messages currently
+  in the inbox, whichever storage backs it, and transient, since the delivery
+  removes a message once it is processed.
 - `AdminService` fills the holder from storage *after* subscribing, so a
   message written during startup is neither missed nor double-counted.
 - The `ShardInfoUpdates.messagesCountChangedTo()` Javadoc no longer claims the
@@ -46,6 +46,35 @@ path:
   operations, as its tests assert.
 - Tests: `ShardMessagesCountHolderSpec` (unit) and `AdminServiceSpec`
   (the end-to-end cases the issue suggests).
+
+## Performance evaluation
+
+A review asked to confirm the choice for throughput: hundreds of shards with
+hundreds to thousands of messages each, at 100–200 messages per second. A
+throwaway probe (not committed) measured the options on a laptop, with fresh
+IDs parsed per operation as gRPC delivers them. 900,000 messages in 300 shards:
+
+| Accounting                      | Cost per operation | Memory per message |
+|---------------------------------|--------------------|--------------------|
+| Old counter (drifts)            | ~50 ns             | none               |
+| Set of `InboxMessageId` per shard | ~200 ns          | 199 B              |
+| Set of UUID strings per shard   | ~130 ns            | 118 B              |
+
+On the full in-memory write path, the admin accounting, notifications
+included, adds well under a microsecond to a microsecond per operation.
+
+The alternatives cost milliseconds per write, with 50,000 stored messages:
+
+- Option 1 needs an existence check before each write. `RecordStorage.read(id)`
+  is query-based, and every storage used here (in-memory, Redis, Hazelcast)
+  answers it by scanning all records: 3.7–8 ms per write in memory, growing
+  linearly with the inbox, and worse over the network.
+- Option 3, counting from storage: 15–22 ms for all shards per call, and
+  20–100 ms to recount one shard after a write, since a shard query scans
+  every record too.
+
+So option 2 stays, keyed by UUID strings, which takes 40% less memory than
+keeping the identifier messages.
 
 ## Status
 
