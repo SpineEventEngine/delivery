@@ -156,28 +156,32 @@ else is validated, as today.
 
 ### Two stores in place of the generic record storage
 
-`storage/base` defines two interfaces, implemented by each backend:
+`storage/base` defines two interfaces in Kotlin, implemented by each backend:
 
-```java
-interface InboxStore extends AutoCloseable {
-    void write(Iterable<InboxMessage> messages);
-    void delete(Iterable<InboxMessageId> ids);
-    Optional<InboxMessage> find(InboxMessageId id);
-    ImmutableList<InboxMessage> page(ShardIndex shard, @Nullable Timestamp since, int pageSize);
-    Optional<InboxMessage> newestToDeliver(ShardIndex shard);
-    int count(ShardIndex shard);
-    ImmutableMap<ShardIndex, Integer> counts();      // only shards holding messages
-    Subscription subscribe(Consumer<ShardIndex> onChange);
+```kotlin
+interface InboxStore : AutoCloseable {
+    fun write(messages: Iterable<InboxMessage>)
+    fun delete(ids: Iterable<InboxMessageId>)
+    fun find(id: InboxMessageId): InboxMessage?
+    fun page(shard: ShardIndex, since: Timestamp?, pageSize: Int): List<InboxMessage>
+    fun newestToDeliver(shard: ShardIndex): InboxMessage?
+    fun count(shard: ShardIndex): Int
+    fun count(shards: Collection<ShardIndex>): Map<ShardIndex, Int>  // includes zeros
+    fun counts(): Map<ShardIndex, Int>                                // only shards holding messages
+    fun subscribe(onChange: Consumer<ShardIndex>): Subscription
 }
 
-interface ShardSessionStore extends AutoCloseable {
-    Optional<Stored> read(ShardIndex shard);
-    ImmutableList<Stored> readAll();
-    CasOutcome compareAndSet(ShardIndex shard, @Nullable Stored expected,
-                             ShardSessionRecord replacement);
-    Subscription subscribe(Consumer<ShardIndex> onChange);
+interface ShardSessionStore : AutoCloseable {
+    fun read(shard: ShardIndex): Stored?
+    fun read(shards: Collection<ShardIndex>): Map<ShardIndex, Stored>
+    fun readAll(): List<Stored>
+    fun compareAndSet(shard: ShardIndex, expected: Stored?,
+                      replacement: ShardSessionRecord): CasOutcome
+    fun subscribe(onChange: Consumer<ShardIndex>): Subscription
 }
 ```
+
+The batched reads, `count(shards)` and `read(shards)`, serve the admin updates.
 
 - `write` and `delete` group their arguments by shard and handle each shard in
   one atomic step, or in a few atomic chunks for the Redis size limits. A batch
@@ -193,8 +197,10 @@ interface ShardSessionStore extends AutoCloseable {
   `expected`'s, or if there is no record and `expected` is `null`. It returns
   either `APPLIED`, or `CONFLICT` with the current `Stored`, if any.
 - `subscribe` reports the shard of every change made through any node, after the
-  change is applied. It carries only the shard: whoever reacts reads the current
-  state from the store. `close` releases the subscriptions and the resources of
+  change is applied. Every write counts as a change, even one that stores an equal
+  message, because telling them apart costs a comparison of whole messages; a
+  delete that removes nothing does not. It carries only the shard: whoever reacts
+  reads the current state from the store. `close` releases the subscriptions and the resources of
   the store.
 
 ### The shard registry on top of `compareAndSet`
@@ -568,8 +574,11 @@ The server logs, without adding metrics:
 - `server`: `ExtendedInboxStorage`, `ShardRegistryStorage`,
   `ReportingStorageFactory`, `ReportingRecordStorage`,
   `SingletonStorageFactory`, `StorageSubscriber`, `StorageSubscription`.
-- `grpc-api`: the running-count holder `ShardMessagesCountHolder`.
-  `ShardInfoUpdates` gets a factory method for an update with the full state.
+- `grpc-api`: the running-count holder `ShardMessagesCountHolder`, and
+  `ShardUpdateSubscribersHolder`, `FilteringObserver`, and
+  `TransformingStreamObserver`, which only the old `AdminService` used.
+  `ShardInfoUpdates` gets a factory method for an update with the full state,
+  which replaces its factories of partial updates.
 - `storage/redis`: `RedisRecordStorage`, `RedisStorageFactory`'s record-storage
   API, `MultitenantStorage`, `FlatTenantStorage`, `TenantRecords`,
   `TenantDataStorage`, and their tests. The lookup of `redisson-config.yaml` and
@@ -727,11 +736,17 @@ lose.
   - a new subscriber first receives the current state of every known shard,
     including a change made between its `GetShardInfo` and its subscription.
 - **Multi-node tests** with two stores on one Redis, and with two Hazelcast
-  members:
-  - concurrent picks of one shard let exactly one worker win;
-  - concurrent `ReleaseSessions` calls return disjoint sets;
-  - an admin subscriber on one node receives the changes made on the other;
-  - a Redis restart re-establishes the subscription and re-reads the state;
+  members, in the storage modules, which already run Docker-based suites:
+  - concurrent creations of one session record let exactly one win, which is
+    what makes concurrent picks, and concurrent `ReleaseSessions` calls,
+    exclusive; the registry's decisions on top of `compareAndSet` are tested
+    in the server against a store that injects conflicts and lost replies;
+  - a change made through one node is reported to the subscribers of the other;
+  - dropping Redis's publish/subscribe connections makes the stores report
+    missed changes once the subscription is established again, and
+    a Hazelcast member leaving does the same; the server tests that missed
+    changes make the admin sender re-read every known shard, including one
+    emptied in the meantime;
   - Hazelcast keeps all data after one member is terminated
     (`getLifecycleService().terminate()`, which skips the graceful migration).
 - **The existing gRPC-level suites** of the server, and the Docker-based
@@ -742,12 +757,14 @@ lose.
 
 ## Plan
 
-- [ ] Review this document.
-- [ ] Add the store interfaces, `ShardInbox`, the order-key codec, and the
-      contract suites to `storage/base`.
-- [ ] Implement the in-memory backend.
-- [ ] Move the server onto the stores, with the admin updates and their
+- [x] Review this document.
+- [x] Add the store interfaces, `ShardInbox`, and the contract suites to
+      `storage/base`. The order-key codec moves to the Redis step, its only user.
+- [x] Implement the in-memory backend.
+- [x] Move the server onto the stores, with the admin updates and their
       configuration; remove the classes listed above; fix the admin UI's zero.
+      Until the new backends exist, the Redis and Hazelcast modes fail at
+      startup.
 - [ ] Measure the in-memory mode against `master`; fix any loss.
 - [ ] Implement the Hazelcast backend.
 - [ ] Implement the Redis backend.

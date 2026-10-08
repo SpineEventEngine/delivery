@@ -32,11 +32,13 @@ modules produce runnable Docker images and an App Engine application.
   results to clients.
 - `grpc-api` — the gRPC service contract (`message_delivery.proto`,
   `admin/admin_service.proto`, plus a vendored `grpc.health.v1` service) and the
-  supporting stream-observer/admin helper classes.
+  supporting admin helper classes.
 - `server` (the `:delivery-server` project) — a **plain gRPC** Delivery Server
   that does not embed Spine, built for throughput. Exposes the delivery gRPC API
-  on port `8484` with in-memory, Redis, or Hazelcast storage (the last for
-  running several clustered instances sharing a single memory space).
+  on port `8484` with in-memory, Redis, or Hazelcast storage (the distributed
+  modes let several instances serve the same content, so that none of them is
+  a single point of failure). Sends the admin console one throttled, full-state
+  update per changed shard.
 - `fixtures` — test fixtures shared by the client and server suites:
   `TestInboxMessages`, `NoOpChannel`, and the `spine.test.delivery` Protobuf
   types. Depends on neither side, so both can use it. Not published.
@@ -45,9 +47,12 @@ modules produce runnable Docker images and an App Engine application.
 - `admin-ui` — a Quasar/Vue (TypeScript) web client for the Admin Service; talks
   to the generated Protobuf types, so it is kept in lock-step with the proto
   packages.
-- `storage:base`, `storage:redis`, `storage:hazelcast` — the storage SPI and its
-  Redis and Hazelcast implementations. `storage:hazelcast` ships the
-  `hazelcast.yaml` that makes the members of a Delivery cluster discover each
+- `storage:base`, `storage:redis`, `storage:hazelcast` — the shard-partitioned
+  stores of the server: `InboxStore` and `ShardSessionStore` (a compare-and-set
+  registry), their in-memory implementation and contract suites in `base`, and
+  their Redis (Lua scripts over per-shard keys) and Hazelcast (one map entry per
+  shard, changed by entry processors) implementations. `storage:hazelcast` ships
+  the `hazelcast.yaml` that makes the members of a Delivery cluster discover each
   other by multicast; `server/README.md` describes the opt-in cloud discovery.
 - `deployment/cloud-run` (the `:delivery-server-cloud-run` project) — a Cloud Run
   launcher that starts the `server` inside one Docker container (built with the
@@ -113,7 +118,8 @@ keep a Docker-less environment from reporting a misleading "tests passed":
   `Build containers` checks on every pull request that it still builds. All server
   configuration is available through environment variables (`PORT`, `USE_REDIS`,
   `REDIS_HOST`, `USE_HAZELCAST`, `MAX_INBOUND_MESSAGE_SIZE`,
-  `SHARD_PROCESSING_TIMEOUT`, …).
+  `SHARD_PROCESSING_TIMEOUT`, `SHARD_UPDATES_INTERVAL_MILLIS`, …). A new setting
+  must be optional, with a default that keeps the server working without it.
 - **Versioning** follows the Spine SDK policy; the published version lives in
   `version.gradle.kts` as `versionToPublish`.
 
