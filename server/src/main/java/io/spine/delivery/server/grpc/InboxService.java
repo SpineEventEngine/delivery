@@ -14,7 +14,6 @@
 
 package io.spine.delivery.server.grpc;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import io.grpc.stub.StreamObserver;
@@ -28,17 +27,17 @@ import io.spine.delivery.InboxServiceGrpc;
 import io.spine.delivery.OptionalInboxMessage;
 import io.spine.delivery.PageOfMessages;
 import io.spine.delivery.ReadMessagesSinceTime;
-import io.spine.delivery.server.ExtendedInboxStorage;
+import io.spine.delivery.storage.InboxStore;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
-import io.spine.server.storage.StorageFactory;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.delivery.server.grpc.Responses.completeCall;
@@ -46,44 +45,42 @@ import static io.spine.delivery.server.grpc.Responses.writeOptionalMessage;
 
 /**
  * Acts as a gRPC-wired backend for the {@link io.spine.server.delivery.InboxStorage}.
+ *
+ * <p>Each call checks its request, if needed, and then calls one operation of
+ * the {@link InboxStore}.
  */
 public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
         implements WithLogging, NamedHealthAwareService {
 
-    private final ExtendedInboxStorage inboxStorage;
+    private final InboxStore store;
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
-     * Creates an {@code InboxService} backed by an {@link ExtendedInboxStorage} created from
-     * the configured {@code factory}.
+     * Creates an {@code InboxService} backed by the given store.
      */
-    public InboxService(StorageFactory factory) {
+    public InboxService(InboxStore store) {
         super();
-        checkNotNull(factory);
-        inboxStorage = new ExtendedInboxStorage(factory, false);
+        this.store = checkNotNull(store);
     }
 
     @Override
     public void writeOne(WriteMessage request, StreamObserver<Empty> observer) {
         log("`writeOne()`");
-        var id = request.messageId();
-        var message = request.getMessage();
-        inboxStorage.write(id, message);
+        store.write(List.of(request.getMessage()));
         completeCall(observer);
     }
 
     @Override
     public void writeMany(WriteMessages request, StreamObserver<Empty> observer) {
         log("`writeMany()`");
-        var messages = request.getMessageList();
-        inboxStorage.writeBatch(messages);
+        store.write(request.getMessageList());
         completeCall(observer);
     }
 
     @Override
     public void removeOne(RemoveMessage request, StreamObserver<Empty> observer) {
         log("`removeOne()`");
-        inboxStorage.delete(request.messageId());
+        store.delete(List.of(request.messageId()));
         completeCall(observer);
     }
 
@@ -95,15 +92,15 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
                        .stream()
                        .map(InboxMessage::getId)
                        .collect(toImmutableList());
-        inboxStorage.deleteAll(ids);
+        store.delete(ids);
         completeCall(observer);
     }
 
     @Override
     public void findOne(InboxMessageId id, StreamObserver<OptionalInboxMessage> observer) {
         log("`findOne()`");
-        var result = inboxStorage.read(id);
-        writeOptionalMessage(observer, result);
+        var result = store.find(id);
+        writeOptionalMessage(observer, Optional.ofNullable(result));
     }
 
     @Override
@@ -115,9 +112,9 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
             sinceWhen = null;
         }
         var pageSize = request.getPageSize();
+        checkArgument(pageSize > 0, "The page size must be positive, but was %s.", pageSize);
         var shard = request.getShard();
-        var messages =
-                inboxStorage.readAll(shard, sinceWhen, pageSize);
+        var messages = store.page(shard, sinceWhen, pageSize);
         var responseBuilder =
                 PageOfMessages.newBuilder()
                         .addAllMessage(messages);
@@ -130,15 +127,15 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     @Override
     public void newestMessageToDeliver(ShardIndex request,
                                        StreamObserver<OptionalInboxMessage> observer) {
-        var message = inboxStorage.newestMessageToDeliver(request);
-        writeOptionalMessage(observer, message);
+        var message = store.newestToDeliver(request);
+        writeOptionalMessage(observer, Optional.ofNullable(message));
     }
 
     private void log(String s) {
         logger().atInfo().log(() -> format(s));
     }
 
-    private void log(ShardIndex shard, ImmutableList<InboxMessage> messages) {
+    private void log(ShardIndex shard, List<InboxMessage> messages) {
         logger().atInfo()
                 .log(() -> format("`findManyInShard(%d)` -> %d.",
                                   shard.getIndex(), messages.size()));

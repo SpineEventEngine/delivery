@@ -30,7 +30,7 @@ import io.spine.delivery.ShardServiceGrpc;
 import io.spine.delivery.rejection.ShardAlreadyPickedUp;
 import io.spine.delivery.server.DeliveryShardRegistry;
 import io.spine.server.delivery.ShardSessionRecord;
-import io.spine.server.storage.StorageFactory;
+import io.spine.delivery.storage.ShardSessionStore;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -52,16 +52,16 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     /**
      * Creates a new {@code ShardService} backed by a {@link DeliveryShardRegistry}.
      *
-     * @param factory
-     *         storage to be used to store registry's records
+     * @param store
+     *         the store of the registry's records
      * @param processingTimeout
      *         maximum span of time during which a worker can process a shard
      */
-    public ShardService(StorageFactory factory, Duration processingTimeout) {
+    public ShardService(ShardSessionStore store, Duration processingTimeout) {
         super();
-        checkNotNull(factory);
+        checkNotNull(store);
         checkNotNull(processingTimeout);
-        registry = new DeliveryShardRegistry(factory, processingTimeout);
+        registry = new DeliveryShardRegistry(store, processingTimeout);
     }
 
     @Override

@@ -14,10 +14,12 @@
 
 package io.spine.delivery.admin;
 
-import com.google.protobuf.Timestamp;
 import io.spine.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.server.delivery.ShardIndex;
+import io.spine.server.delivery.ShardSessionRecord;
+import org.jspecify.annotations.Nullable;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static io.spine.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.delivery.admin.grpc.ShardStatus.PICKED;
 import static io.spine.util.Preconditions2.checkNotDefaultArg;
@@ -31,51 +33,35 @@ public final class ShardInfoUpdates {
     }
 
     /**
-     * Creates a new {@code ShardInfoUpdate} with the given shard {@code index} and
-     * {@code lastPicked} time, and shard status changed to {@code PICKED}.
-     */
-    public static ShardInfoUpdate shardPicked(ShardIndex index, Timestamp lastPicked) {
-        checkNotDefaultArg(lastPicked);
-        return changesFor(index)
-                .setNewStatus(PICKED)
-                .setWhenLastPicked(lastPicked)
-                .build();
-    }
-
-    /**
-     * Creates a new {@code ShardInfoUpdate} with the given shard {@code index} and shard status
-     * changed to {@code NOT_PICKED}.
-     */
-    public static ShardInfoUpdate shardUnpicked(ShardIndex index) {
-        checkNotDefaultArg(index);
-        return changesFor(index)
-                .setNewStatus(NOT_PICKED)
-                .build();
-    }
-
-    /**
-     * Creates a new {@code ShardInfoUpdate} with the given shard {@code index} and
-     * the new {@code count} of messages in the shard.
+     * Creates a new {@code ShardInfoUpdate} with the full current state of the shard: its
+     * status, the time it was last picked, and the number of its messages.
      *
-     * <p>We intentionally do not force the argument to be positive because in some cases it may
-     * be negative for a short period of time. For more info see the
-     * {@linkplain io.spine.delivery.admin.ShardMessagesCountHolder#updateCount(ShardIndex,
-     * int) ShardMessagesCountHolder.updateCount(ShardIndex, int)} method documentation,
-     * where the counter is updated.
+     * <p>A shard without a session record has never been picked: its status is
+     * {@code NOT_PICKED}, and the time of the last pick is not set.
+     *
+     * @param index
+     *         the index of the shard
+     * @param session
+     *         the session record of the shard, or {@code null} if there is none
+     * @param messagesCount
+     *         the number of messages in the shard
      */
-    public static ShardInfoUpdate messagesCountChangedTo(ShardIndex index, int count) {
+    public static ShardInfoUpdate currentState(ShardIndex index,
+                                               @Nullable ShardSessionRecord session,
+                                               int messagesCount) {
         checkNotDefaultArg(index);
-        return changesFor(index)
-                .setNewMessagesCount(count)
-                .build();
-    }
-
-    /**
-     * Creates a new {@code ShardInfoUpdate.Builder} with the given shard {@code index} set.
-     */
-    private static ShardInfoUpdate.Builder changesFor(ShardIndex index) {
-        checkNotDefaultArg(index);
-        return ShardInfoUpdate.newBuilder()
-                .setIndex(index);
+        checkArgument(messagesCount >= 0,
+                      "The number of messages cannot be negative, but was %s.", messagesCount);
+        var update = ShardInfoUpdate.newBuilder()
+                .setIndex(index)
+                .setNewStatus(NOT_PICKED)
+                .setNewMessagesCount(messagesCount);
+        if (session != null) {
+            update.setNewStatus(session.hasWorker() ? PICKED : NOT_PICKED);
+            if (session.hasWhenLastPicked()) {
+                update.setWhenLastPicked(session.getWhenLastPicked());
+            }
+        }
+        return update.build();
     }
 }

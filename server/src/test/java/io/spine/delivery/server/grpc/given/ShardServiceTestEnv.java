@@ -28,12 +28,12 @@ import io.spine.delivery.event.ExpiredSessionsReleased;
 import io.spine.delivery.event.ShardPickedUp;
 import io.spine.delivery.ShardServiceGrpc;
 import io.spine.delivery.server.grpc.ShardService;
+import io.spine.delivery.storage.memory.InMemoryShardSessionStore;
 import io.spine.server.NodeId;
 import io.spine.server.ServerEnvironment;
 import io.spine.server.delivery.DeliveryStrategy;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.WorkerId;
-import io.spine.server.storage.memory.InMemoryStorageFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -65,8 +65,7 @@ public final class ShardServiceTestEnv implements Closeable {
      * its own instance of {@link ShardService}, which can be customized with the passed timeout.
      */
     public ShardServiceGrpc.ShardServiceBlockingStub syncShardService(Duration processingTimeout) {
-        var shardService = new ShardService(InMemoryStorageFactory.newInstance(),
-                                            processingTimeout);
+        var shardService = new ShardService(new InMemoryShardSessionStore(), processingTimeout);
         var channel = startServerWith(shardService);
         var service = ShardServiceGrpc.newBlockingStub(channel);
         return service;

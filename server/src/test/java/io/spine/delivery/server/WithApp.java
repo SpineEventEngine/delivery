@@ -45,7 +45,7 @@ public abstract class WithApp {
      * so that concurrently running servers — such as another module's app during a parallel
      * build — never clash, and no other process can take the port in between.
      */
-    private final DeliveryServerApp app = new DeliveryServerApp(0);
+    private final DeliveryServerApp app;
 
     /**
      * The port the {@link #app} listens on, known only once it has started.
@@ -57,6 +57,27 @@ public abstract class WithApp {
     private AdminServiceStub adminService;
 
     private ManagedChannel serverChannel;
+
+    /**
+     * Creates the base for tests of an app that throttles the shard updates by default.
+     */
+    protected WithApp() {
+        super();
+        this.app = new DeliveryServerApp(0);
+    }
+
+    /**
+     * Creates the base for tests of an app that throttles the shard updates with
+     * the given interval.
+     *
+     * @param shardUpdatesInterval
+     *         the shortest time between two updates of one shard; zero turns
+     *         the throttling off
+     */
+    protected WithApp(java.time.Duration shardUpdatesInterval) {
+        super();
+        this.app = new DeliveryServerApp(0, shardUpdatesInterval);
+    }
 
     /**
      * Eagerly initializes Spine's {@link KnownTypes} registry on a single thread before any

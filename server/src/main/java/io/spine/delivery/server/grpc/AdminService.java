@@ -16,68 +16,60 @@ package io.spine.delivery.server.grpc;
 
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
-import io.spine.logging.WithLogging;
-import io.spine.delivery.admin.FilteringObserver;
-import io.spine.delivery.admin.ShardMessagesCountHolder;
-import io.spine.delivery.admin.ShardUpdateSubscribersHolder;
-import io.spine.delivery.admin.SubscriptionResponses;
-import io.spine.delivery.admin.TransformingStreamObserver;
 import io.spine.delivery.admin.grpc.AdminServiceGrpc;
 import io.spine.delivery.admin.grpc.ShardInfo;
 import io.spine.delivery.admin.grpc.ShardInfoList;
-import io.spine.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.delivery.admin.grpc.SubscriptionResponse;
-import io.spine.delivery.server.ExtendedInboxStorage;
-import io.spine.delivery.server.ReportingStorageFactory;
-import io.spine.delivery.server.ShardRegistryStorage;
-import io.spine.delivery.server.StorageSubscriber;
-import io.spine.server.delivery.InboxMessage;
-import io.spine.server.delivery.InboxMessageId;
+import io.spine.delivery.storage.InboxStore;
+import io.spine.delivery.storage.ShardSessionStore;
+import io.spine.logging.WithLogging;
 import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardSessionRecord;
 
+import java.time.Duration;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static io.spine.delivery.admin.ShardInfoUpdates.messagesCountChangedTo;
-import static io.spine.delivery.admin.ShardInfoUpdates.shardPicked;
-import static io.spine.delivery.admin.ShardInfoUpdates.shardUnpicked;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.delivery.admin.StreamObservers.toServerCall;
-import static io.spine.delivery.admin.SubscriptionResponses.ack;
 import static io.spine.delivery.admin.grpc.ShardStatus.NOT_PICKED;
 import static io.spine.delivery.admin.grpc.ShardStatus.PICKED;
 
 /**
  * Allows getting information about the current state of the shards on the message delivery server.
+ *
+ * <p>{@code GetShardInfo} reads the stores directly. {@code SubscribeToShardUpdates} streams
+ * the updates that a {@link ShardUpdateSender} throttles per shard, each carrying the full
+ * current state of its shard.
  */
 public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
-        implements WithLogging, NamedHealthAwareService {
+        implements WithLogging, NamedHealthAwareService, AutoCloseable {
 
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
-    private final ExtendedInboxStorage inboxStorage;
+    private final InboxStore inbox;
 
-    private final ShardRegistryStorage shardStorage;
+    private final ShardSessionStore sessions;
 
-    private final ShardUpdateSubscribersHolder subscribers = new ShardUpdateSubscribersHolder();
+    private final ShardUpdateSender sender;
 
-    private final ShardMessagesCountHolder messagesCount;
-
-    public AdminService(ReportingStorageFactory factory) {
+    /**
+     * Creates a new {@code AdminService} on top of the given stores.
+     *
+     * @param inbox
+     *         the store of the messages
+     * @param sessions
+     *         the store of the shard sessions
+     * @param updatesInterval
+     *         the shortest time between two updates of one shard sent to a subscriber;
+     *         zero turns the throttling off
+     */
+    public AdminService(InboxStore inbox, ShardSessionStore sessions, Duration updatesInterval) {
         super();
-        inboxStorage = new ExtendedInboxStorage(factory, false);
-        shardStorage = new ShardRegistryStorage(factory);
-        setupSubscribers(factory);
-        messagesCount = new ShardMessagesCountHolder(messagesInShards());
-    }
-
-    @SuppressWarnings("HandleMethodResult")
-    // We do not need to unsubscribe until the server is off.
-    private void setupSubscribers(ReportingStorageFactory factory) {
-        factory.subscribe(ShardIndex.class, ShardSessionRecord.class, new ShardStorageSubscriber());
-        factory.subscribe(InboxMessageId.class, InboxMessage.class, new InboxStorageSubscriber());
+        this.inbox = checkNotNull(inbox);
+        this.sessions = checkNotNull(sessions);
+        checkNotNull(updatesInterval);
+        this.sender = new ShardUpdateSender(inbox, sessions, updatesInterval);
     }
 
     @Override
@@ -93,41 +85,30 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     @Override
     public void
     subscribeToShardUpdates(Empty request, StreamObserver<SubscriptionResponse> observer) {
-        var serverCallObserver = new FilteringObserver(toServerCall(observer));
-        var mappingToResponse = new TransformingStreamObserver<>(
-                serverCallObserver, SubscriptionResponses::toResponse);
-        subscribers.addSubscriber(mappingToResponse);
-        serverCallObserver.onNext(ack());
+        sender.subscribe(toServerCall(observer));
     }
 
     /**
-     * Fetches information about all shards.
+     * Stops sending the updates to the subscribers.
+     */
+    @Override
+    public void close() {
+        sender.close();
+    }
+
+    /**
+     * Fetches information about the shards that have a session record or hold messages.
      */
     private ShardInfoList fetch() {
-        var messagesCount = this.messagesCount.toMutableMap();
-        var shards = shardStorage.readAll();
+        var counts = new HashMap<>(inbox.counts());
         var shardListBuilder = ShardInfoList.newBuilder();
-        shards.forEachRemaining(shard -> {
-            var info = shardInfo(shard, messagesCount.getOrDefault(shard.getIndex(), 0));
-            shardListBuilder.addShards(info);
-            messagesCount.remove(shard.getIndex());
-        });
-        messagesCount.forEach((key, value) -> shardListBuilder.addShards(shardInfo(key, value)));
+        for (var stored : sessions.readAll()) {
+            var record = stored.getRecord();
+            var count = counts.remove(record.getIndex());
+            shardListBuilder.addShards(shardInfo(record, count == null ? 0 : count));
+        }
+        counts.forEach((index, count) -> shardListBuilder.addShards(shardInfo(index, count)));
         return shardListBuilder.build();
-    }
-
-    /**
-     * Reads all messages from the storage and counts the number of messages in each shard.
-     */
-    private Map<ShardIndex, Integer> messagesInShards() {
-        Map<ShardIndex, Integer> messagesCount = new HashMap<>();
-        var messages = inboxStorage.readAll();
-        messages.forEachRemaining(message -> {
-            var inboxMessageId = message.getId();
-            var shardIndex = inboxMessageId.getIndex();
-            messagesCount.put(shardIndex, messagesCount.getOrDefault(shardIndex, 0) + 1);
-        });
-        return messagesCount;
     }
 
     /**
@@ -167,48 +148,5 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
     @Override
     public String name() {
         return AdminServiceGrpc.SERVICE_NAME;
-    }
-
-    /**
-     * Subscriber that tracks the inbox changes and notifies subscribers of the service
-     * about these changes.
-     */
-    private final class InboxStorageSubscriber
-            implements StorageSubscriber<InboxMessageId, InboxMessage> {
-
-        @Override
-        public void onWrite(InboxMessageId id, InboxMessage message) {
-            var index = id.getIndex();
-            var update = messagesCountChangedTo(index, messagesCount.updateCount(index, 1));
-            subscribers.notifySubs(update);
-        }
-
-        @Override
-        public void onDelete(InboxMessageId id) {
-            var index = id.getIndex();
-            var update = messagesCountChangedTo(index, messagesCount.updateCount(index, -1));
-            subscribers.notifySubs(update);
-        }
-    }
-
-    /**
-     * Subscriber that tracks shard changes and notifies subscribers of the service
-     * about these changes.
-     */
-    private final class ShardStorageSubscriber
-            implements StorageSubscriber<ShardIndex, ShardSessionRecord> {
-
-        @Override
-        public void onWrite(ShardIndex id, ShardSessionRecord message) {
-            var update = message.hasWorker() ?
-                         shardPicked(id, message.getWhenLastPicked()) :
-                         shardUnpicked(id);
-            subscribers.notifySubs(update);
-        }
-
-        @Override
-        public void onDelete(ShardIndex id) {
-            // We don't delete shard records from storage.
-        }
     }
 }

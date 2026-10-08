@@ -106,12 +106,13 @@ export function useShards() {
 
   /**
    * Applies the given `update` to a stored shard info.
+   *
+   * Every update carries the full state of its shard, so its message count applies as
+   * it is, including a count of 0, which JSON omits.
    */
   function applyUpdate(update: ShardInfoUpdate) {
     const shard = getShard(update.index as ShardIndex);
-    if (update.newMessagesCount) {
-      shard.messages = update.newMessagesCount;
-    }
+    shard.messages = update.newMessagesCount;
     if (update.newStatus) {
       shard.status = update.newStatus;
     }
