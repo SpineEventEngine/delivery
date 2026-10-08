@@ -46,8 +46,9 @@ public const val SESSIONS_MAP: String = "delivery-sessions"
  * a share of the data, and a synchronous backup of another member's share, so that each
  * Delivery server of the cluster serves the same content.
  *
- * Notifications of changes that a member sent right before it crashed may be lost, so
- * the stores report missed changes when a member leaves the cluster, and after
+ * Notifications of changes that a member sent right before it crashed may be lost, and
+ * a lost partition loses its entries without notifications. So the stores report missed
+ * changes when a member leaves the cluster, when a partition is lost, and after
  * a split-brain merge.
  */
 public class HazelcastStores private constructor(
@@ -88,6 +89,7 @@ public class HazelcastStores private constructor(
                 "The Hazelcast partition ${it.partitionId} lost its data" +
                         " (the lost replica index is ${it.lostBackupCount})."
             }
+            missed.missed()
         }
     }
 

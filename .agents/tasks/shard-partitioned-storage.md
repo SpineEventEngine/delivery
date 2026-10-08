@@ -340,9 +340,10 @@ operation on that shard. `counts()` runs a read-only processor on all entries.
 without values, so that a `ShardInbox` is never serialized for an event. Each
 event reports the shard of its key. The registry map has a listener too, also
 without values. Events that a member published right before it crashed can be
-lost, so a node marks every known shard as changed when a member leaves the
-cluster and after a split-brain merge (a `MembershipListener`, and the
-`MERGED` lifecycle event).
+lost, and a lost partition loses its entries without events, so a node marks
+every known shard as changed when a member leaves the cluster, when a partition
+is lost, and after a split-brain merge (a `MembershipListener`,
+a `PartitionLostListener`, and the `MERGED` lifecycle event).
 
 **Shard registry.** `delivery-sessions` is an `IMap<String, byte[]>` of
 serialized `ShardSessionRecord`s keyed by the shard tag. `compareAndSet` maps to
@@ -494,11 +495,12 @@ The rest follows from these three rules:
   the last state that subscriber received. Admin subscribers are few. A
   subscriber's states go away with it.
 - **Missed changes** are covered by marking every known shard as changed when
-  a Redis subscription is re-established, when a Hazelcast member leaves, and
-  after a Hazelcast split-brain merge. The known shards are the shards of the
-  registry, the shards in `counts()`, and the shards that some subscriber last
-  received with a non-zero count. A shard emptied in the meantime is then
-  reported with 0.
+  a Redis subscription is re-established, when a Hazelcast member leaves or
+  a Hazelcast partition is lost, and after a Hazelcast split-brain merge.
+  The known shards are the shards of the registry, the shards in `counts()`,
+  and the shards that some subscriber last received with messages, picked, or
+  with the time of a pick. A shard emptied in the meantime is then reported with
+  0, and a shard whose session record vanished is reported as not picked.
 - **Failures are contained.** If a sweep's batched read fails, the sweep marks
   its shards as changed again, so a later sweep retries them; retries back off
   from the larger of 10 ms and the interval, doubling up to one second, while

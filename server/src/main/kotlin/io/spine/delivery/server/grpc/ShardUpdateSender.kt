@@ -19,6 +19,7 @@ import io.spine.delivery.admin.ShardInfoUpdates.currentState
 import io.spine.delivery.admin.SubscriptionResponses.ack
 import io.spine.delivery.admin.SubscriptionResponses.toResponse
 import io.spine.delivery.admin.grpc.ShardInfoUpdate
+import io.spine.delivery.admin.grpc.ShardStatus.PICKED
 import io.spine.delivery.admin.grpc.SubscriptionResponse
 import io.spine.delivery.storage.InboxStore
 import io.spine.delivery.storage.ShardSessionStore
@@ -79,7 +80,8 @@ private val MAX_RETRY_DELAY: Duration = Duration.ofSeconds(1)
  * A new subscriber gets the acknowledgment first. Then, on the sending thread, it gets
  * the current state of every known shard, and only after that does it join the sweeps.
  * The known shards are the shards with a session record, the shards with messages, and
- * the shards that a subscriber last received with messages.
+ * the shards that a subscriber last received in another state than that of a shard with
+ * neither, so that a shard whose data vanished is reported as such.
  *
  * When a store reports that changes may have been missed, every known shard is marked
  * as changed, so that a shard emptied in the meantime is reported with a count of 0.
@@ -329,7 +331,7 @@ internal class ShardUpdateSender(
         val counts = inbox.counts()
         val known = LinkedHashSet<ShardIndex>(records.keys)
         known.addAll(counts.keys)
-        subscribers.forEach { known.addAll(it.shardsWithMessages()) }
+        subscribers.forEach { known.addAll(it.shardsWithData()) }
         return known.mapNotNull { state(it, records[it], counts[it] ?: 0) }
     }
 
@@ -427,10 +429,17 @@ internal class ShardUpdateSender(
         }
 
         /**
-         * Returns the shards that the subscriber last received with messages.
+         * Returns the shards that the subscriber last received with messages, picked, or
+         * with the time of a pick: in another state than that of a shard with neither
+         * messages nor a session record.
          */
-        fun shardsWithMessages(): List<ShardIndex> =
-            lastReceived.values.filter { it.newMessagesCount > 0 }.map { it.index }
+        fun shardsWithData(): List<ShardIndex> =
+            lastReceived.values
+                .filter(::hasData)
+                .map { it.index }
+
+        private fun hasData(state: ShardInfoUpdate): Boolean =
+            state.newMessagesCount > 0 || state.newStatus == PICKED || state.hasWhenLastPicked()
     }
 }
 

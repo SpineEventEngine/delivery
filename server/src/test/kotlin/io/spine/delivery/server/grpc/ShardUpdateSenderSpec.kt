@@ -24,6 +24,7 @@ import io.spine.delivery.admin.ShardInfoUpdates.currentState
 import io.spine.delivery.admin.grpc.ShardStatus.NOT_PICKED
 import io.spine.delivery.server.given.ObservedInboxStore
 import io.spine.delivery.server.given.RecordingObserver
+import io.spine.delivery.server.given.VanishingShardSessionStore
 import io.spine.delivery.storage.given.message
 import io.spine.delivery.storage.given.session
 import io.spine.delivery.storage.given.shard
@@ -54,7 +55,7 @@ private const val WAIT_MILLIS = 10_000L
 internal class ShardUpdateSenderSpec {
 
     private val inbox = ObservedInboxStore(InMemoryInboxStore())
-    private val sessions = InMemoryShardSessionStore()
+    private val sessions = VanishingShardSessionStore(InMemoryShardSessionStore())
     private val senders = ArrayList<ShardUpdateSender>()
 
     private val first = shard(1)
@@ -373,6 +374,19 @@ internal class ShardUpdateSenderSpec {
             inbox.muted = true
             inbox.delete(listOf(message.id))
             inbox.muted = false
+
+            inbox.reportMissedChanges()
+
+            observer.nextUpdate() shouldBe state(first, 0)
+        }
+
+        @Test
+        fun `of a shard whose session record vanished`() {
+            val observer = sender().subscribed()
+            val picked = session(first, pickedAt = 3)
+            sessions.compareAndSet(first, null, picked)
+            observer.nextUpdate() shouldBe state(first, 0, picked)
+            sessions.vanish(first)
 
             inbox.reportMissedChanges()
 
