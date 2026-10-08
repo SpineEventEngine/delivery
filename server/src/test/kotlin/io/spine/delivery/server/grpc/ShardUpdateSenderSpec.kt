@@ -323,7 +323,11 @@ internal class ShardUpdateSenderSpec {
 
         @Test
         fun `an update after retrying a failed read`() {
+            // The initial state shows that the subscriber has joined, so the update below
+            // can only come from a sweep.
+            write(second)
             val observer = sender().subscribed()
+            observer.nextUpdate() shouldBe state(second, 1)
             inbox.failingShardReads.set(2)
 
             write(first)
