@@ -23,8 +23,8 @@ import java.util.function.Consumer
 /**
  * Stores the inbox messages of the Delivery server, partitioned by shard.
  *
- * Every operation costs in proportion to the shard it touches, or to the single
- * message it names, never to the whole inbox.
+ * Every operation on messages costs in proportion to the shard it touches, or to
+ * the single message it names, never to the whole inbox.
  *
  * Within a shard, the messages are ordered by their order key: `when_received`
  * (seconds, then nanos), then `version`, then the UUID of the message ID. The numbers
@@ -58,8 +58,8 @@ public interface InboxStore : AutoCloseable {
 
     /**
      * Returns at most [pageSize] messages of the shard, in the ascending order of their
-     * order keys, whose `when_received` is strictly after [since], or all of them,
-     * if [since] is `null`.
+     * order keys: those whose `when_received` is strictly after [since], or from the start
+     * of the shard, if [since] is `null`.
      *
      * @throws IllegalArgumentException if [pageSize] is not positive
      */
@@ -98,7 +98,8 @@ public interface InboxStore : AutoCloseable {
 
     /**
      * Calls [onMissed] whenever changes may have been made without being reported to
-     * [subscribe]rs, for example after a connection to the backend is established again.
+     * the listeners passed to [subscribe], for example after a connection to the backend
+     * is established again.
      *
      * A store that reports every change, such as one in memory, never calls it.
      * The listener must not block.

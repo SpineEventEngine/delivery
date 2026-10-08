@@ -14,6 +14,7 @@
 
 package io.spine.delivery.storage.redis
 
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.spine.delivery.storage.CasOutcome
 import io.spine.delivery.storage.ChangeRecorder
@@ -99,6 +100,18 @@ internal class RedisMultiNodeSpec {
         } finally {
             pool.shutdownNow()
         }
+    }
+
+    @Test
+    fun `load the scripts again after Redis drops them`() {
+        val earlier = message(shard(1), seconds = 1)
+        first.inbox.write(listOf(earlier))
+
+        redis.client.script.scriptFlush()
+        val later = message(shard(1), seconds = 2)
+        first.inbox.write(listOf(later))
+
+        second.inbox.page(shard(1), null, 10) shouldContainExactly listOf(earlier, later)
     }
 
     @Test

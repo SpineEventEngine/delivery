@@ -25,6 +25,7 @@ import io.spine.delivery.storage.ShardSessionStore
 import io.spine.delivery.storage.tag
 import io.spine.logging.WithLogging
 import io.spine.server.delivery.ShardIndex
+import io.spine.server.delivery.ShardSessionRecord
 import java.time.Duration
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
@@ -85,10 +86,10 @@ private val MAX_RETRY_DELAY: Duration = Duration.ofSeconds(1)
  *
  * While there are no subscribers, changes are not even marked.
  *
- * @param inbox the store of the messages
- * @param sessions the store of the shard sessions
- * @param interval the shortest time between two updates of one shard; zero turns
- *   the throttling off
+ * @param inbox The store of the messages.
+ * @param sessions The store of the shard sessions.
+ * @param interval The shortest time between two updates of one shard; zero turns
+ *   the throttling off.
  */
 internal class ShardUpdateSender(
     private val inbox: InboxStore,
@@ -115,16 +116,19 @@ internal class ShardUpdateSender(
     private val subscribers: MutableSet<Subscriber> = ConcurrentHashMap.newKeySet()
 
     /**
-     * When the reads may be tried again after a failure; accessed on the sending
-     * thread only.
+     * When the reads may be tried again after a failure, valid while [retryDelay] is not
+     * zero; accessed on the sending thread only.
      */
-    private var retryAt = Long.MIN_VALUE
+    private var retryAt = 0L
 
     /**
-     * The delay before the next retry; accessed on the sending thread only.
+     * The delay before the next retry, or zero if the last read succeeded; accessed on
+     * the sending thread only.
      */
     private var retryDelay = 0L
 
+    // The last property: it passes `this` to the stores, which may call it at once, so
+    // every other property must be initialized before.
     private val storeSubscriptions = listOf(
         inbox.subscribe { changed(it) },
         sessions.subscribe { changed(it) },
@@ -156,7 +160,14 @@ internal class ShardUpdateSender(
      * Stops the sending thread and releases the subscriptions to the stores.
      */
     override fun close() {
-        storeSubscriptions.forEach { it.cancel() }
+        try {
+            storeSubscriptions.forEach { it.cancel() }
+        } finally {
+            stopSending()
+        }
+    }
+
+    private fun stopSending() {
         executor.shutdownNow()
         try {
             if (!executor.awaitTermination(SHUTDOWN_TIMEOUT_SECONDS, SECONDS)) {
@@ -191,8 +202,9 @@ internal class ShardUpdateSender(
      */
     private fun markKnown() {
         val now = System.nanoTime()
-        if (now < retryAt) {
-            execute(retryAt - now) { markKnown() }
+        val wait = retryWait(now)
+        if (wait > 0) {
+            execute(wait) { markKnown() }
             return
         }
         val known = try {
@@ -226,8 +238,9 @@ internal class ShardUpdateSender(
 
     private fun sweep() {
         val now = System.nanoTime()
-        if (now < retryAt) {
-            schedule(retryAt - now)
+        val wait = retryWait(now)
+        if (wait > 0) {
+            schedule(wait)
             return
         }
         val due = ArrayList<ShardIndex>()
@@ -258,16 +271,38 @@ internal class ShardUpdateSender(
     private fun read(due: List<ShardIndex>): List<ShardInfoUpdate> {
         val counts = inbox.count(due)
         val records = sessions.read(due)
-        return due.map { currentState(it, records[it]?.record, counts[it] ?: 0) }
+        return due.mapNotNull { state(it, records[it]?.record, counts[it] ?: 0) }
     }
+
+    /**
+     * Returns the update with the given state of the shard, or `null` if a defective
+     * client made the state impossible to express, for example with a shard index that
+     * is not set.
+     *
+     * Such a shard is left out of the updates, so that it does not stop the others.
+     */
+    private fun state(
+        shard: ShardIndex,
+        record: ShardSessionRecord?,
+        count: Int
+    ): ShardInfoUpdate? =
+        try {
+            currentState(shard, record, count)
+        } catch (e: IllegalArgumentException) {
+            logger.atWarning().withCause(e).log {
+                "The state of the shard `${shard.tag()}` cannot be sent to admin subscribers."
+            }
+            null
+        }
 
     private fun join(subscriber: Subscriber) {
         if (subscriber !in subscribers) {
             return
         }
         val now = System.nanoTime()
-        if (now < retryAt) {
-            execute(retryAt - now) { join(subscriber) }
+        val wait = retryWait(now)
+        if (wait > 0) {
+            execute(wait) { join(subscriber) }
             return
         }
         val states = try {
@@ -281,7 +316,11 @@ internal class ShardUpdateSender(
             return
         }
         succeeded()
-        states.forEach(subscriber::send)
+        for (state in states) {
+            if (!subscriber.send(state)) {
+                return
+            }
+        }
         subscriber.joined = true
     }
 
@@ -291,8 +330,15 @@ internal class ShardUpdateSender(
         val known = LinkedHashSet<ShardIndex>(records.keys)
         known.addAll(counts.keys)
         subscribers.forEach { known.addAll(it.shardsWithMessages()) }
-        return known.map { currentState(it, records[it], counts[it] ?: 0) }
+        return known.mapNotNull { state(it, records[it], counts[it] ?: 0) }
     }
+
+    /**
+     * Returns how long the reads must still wait after a failure, or zero if they need
+     * not wait.
+     */
+    private fun retryWait(now: Long): Long =
+        if (retryDelay == 0L) 0L else max(retryAt - now, 0L)
 
     /**
      * Records a failed read, and returns the delay before the reads are tried again.
@@ -305,7 +351,6 @@ internal class ShardUpdateSender(
 
     private fun succeeded() {
         retryDelay = 0L
-        retryAt = Long.MIN_VALUE
     }
 
     @Suppress("TooGenericExceptionCaught") // Nothing must stop the sending thread.
@@ -337,25 +382,39 @@ internal class ShardUpdateSender(
         private val lastReceived = HashMap<ShardIndex, ShardInfoUpdate>()
 
         /**
+         * Whether sending to the subscriber failed, after which nothing is sent to it;
+         * accessed on the sending thread only.
+         */
+        private var failed = false
+
+        /**
          * Sends the update, unless it is the state the subscriber received last.
          *
-         * A subscriber that fails to receive it is removed.
+         * A subscriber that fails to receive it is removed, and its call is closed.
+         *
+         * @return `false` if the subscriber has failed, now or before
          */
-        fun send(update: ShardInfoUpdate) {
+        fun send(update: ShardInfoUpdate): Boolean {
+            if (failed) {
+                return false
+            }
             val shard = update.index
             if (lastReceived[shard] == update) {
-                return
+                return true
             }
             try {
                 observer.onNext(toResponse(update))
                 lastReceived[shard] = update
+                return true
             } catch (e: RuntimeException) {
+                failed = true
                 logger.atWarning().withCause(e).log {
                     "Sending the update of the shard `${shard.tag()}` failed." +
                             " The subscriber is removed."
                 }
                 subscribers.remove(this)
                 closeWithError(e)
+                return false
             }
         }
 

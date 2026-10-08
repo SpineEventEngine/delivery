@@ -35,9 +35,10 @@ import kotlin.math.min
  * This class is not thread-safe. Its users guard every instance, for example by
  * synchronizing on it.
  *
- * @param M the form in which a message is held
- * @property shard the shard of the messages
- * @property form the description of the held form
+ * @param M The form in which a message is held.
+ *
+ * @property shard The shard of the messages.
+ * @property form The description of the held form.
  */
 public class ShardInbox<M : Any>(
     public val shard: ShardIndex,
@@ -110,7 +111,7 @@ public class ShardInbox<M : Any>(
      * @throws IllegalArgumentException if [limit] is not positive
      */
     public fun page(since: Timestamp?, limit: Int): List<M> {
-        require(limit > 0) { "The page size must be positive, but was $limit." }
+        checkPageSize(limit)
         val source = if (since == null) {
             all.values
         } else {
@@ -137,7 +138,7 @@ public class ShardInbox<M : Any>(
 /**
  * Describes the form in which a [ShardInbox] holds a message.
  *
- * @param M the held form
+ * @param M The held form.
  */
 public abstract class MessageForm<M : Any> {
 

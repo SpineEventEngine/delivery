@@ -66,8 +66,8 @@ final class Stores implements AutoCloseable {
     }
 
     /**
-     * Connects to Redis as {@code redisson-config.yaml} tells, and creates the stores that
-     * keep the data in its database.
+     * Connects to Redis as configured by the bundled {@code redisson-config.yaml}, and creates
+     * the stores that keep the data in its database.
      */
     static Stores redis() {
         var stores = RedisStores.start();

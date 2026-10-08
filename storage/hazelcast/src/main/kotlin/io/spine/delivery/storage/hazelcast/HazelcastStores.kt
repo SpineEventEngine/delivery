@@ -41,13 +41,14 @@ public const val SESSIONS_MAP: String = "delivery-sessions"
 /**
  * The Delivery stores of one embedded Hazelcast member.
  *
- * Members discover each other as their configuration tells, by IP multicast under
+ * Members discover each other as their configuration specifies, by IP multicast under
  * the cluster name `delivery` with the `hazelcast.yaml` of this module. Every member holds
  * a share of the data, and a synchronous backup of another member's share, so that each
  * Delivery server of the cluster serves the same content.
  *
- * Changes that a member reported right before it crashed may be lost, so the stores
- * report missed changes when a member leaves the cluster, and after a split-brain merge.
+ * Notifications of changes that a member sent right before it crashed may be lost, so
+ * the stores report missed changes when a member leaves the cluster, and after
+ * a split-brain merge.
  */
 public class HazelcastStores private constructor(
     internal val instance: HazelcastInstance
@@ -67,42 +68,48 @@ public class HazelcastStores private constructor(
     public val sessions: ShardSessionStore =
         HazelcastShardSessionStore(instance.getMap(SESSIONS_MAP), missed)
 
-    private val membershipListenerId = instance.cluster.addMembershipListener(
-        object : MembershipListener {
+    init {
+        instance.cluster.addMembershipListener(object : MembershipListener {
             override fun memberAdded(event: MembershipEvent) = Unit
 
             override fun memberRemoved(event: MembershipEvent) {
                 logger.atWarning().log { "The Hazelcast member `${event.member}` left." }
                 missed.missed()
             }
+        })
+        instance.lifecycleService.addLifecycleListener { event ->
+            if (event.state == MERGED) {
+                logger.atWarning().log { "The Hazelcast member merged after a split-brain." }
+                missed.missed()
+            }
         }
-    )
-
-    private val lifecycleListenerId = instance.lifecycleService.addLifecycleListener { event ->
-        if (event.state == MERGED) {
-            logger.atWarning().log { "The Hazelcast member merged after a split-brain." }
-            missed.missed()
-        }
-    }
-
-    private val partitionLostListenerId = instance.partitionService.addPartitionLostListener {
-        logger.atError().log {
-            "The Hazelcast partition ${it.partitionId} lost its data" +
-                    " (the lost replica index is ${it.lostBackupCount})."
+        instance.partitionService.addPartitionLostListener {
+            logger.atError().log {
+                "The Hazelcast partition ${it.partitionId} lost its data" +
+                        " (the lost replica index is ${it.lostBackupCount})."
+            }
         }
     }
 
     /**
      * Closes the stores, and shuts the member down.
+     *
+     * The member is shut down even if closing a store fails, or if the member is no longer
+     * running.
      */
     override fun close() {
-        inbox.close()
-        sessions.close()
-        missed.clear()
-        instance.cluster.removeMembershipListener(membershipListenerId)
-        instance.lifecycleService.removeLifecycleListener(lifecycleListenerId)
-        instance.partitionService.removePartitionLostListener(partitionLostListenerId)
-        instance.shutdown()
+        try {
+            if (instance.lifecycleService.isRunning) {
+                try {
+                    inbox.close()
+                } finally {
+                    sessions.close()
+                }
+            }
+        } finally {
+            missed.clear()
+            instance.shutdown()
+        }
     }
 
     public companion object {
@@ -111,6 +118,12 @@ public class HazelcastStores private constructor(
          * Starts a member with the configuration that Hazelcast loads: the `hazelcast.yaml`
          * of this module, or the file passed in `-Dhazelcast.config`, with the overrides
          * of the `HZ_*` environment variables and the `hz.*` system properties.
+         *
+         * ```kotlin
+         * HazelcastStores.start().use { stores ->
+         *     stores.inbox.write(messages)
+         * }
+         * ```
          */
         @JvmStatic
         public fun start(): HazelcastStores = start(Config.load())
@@ -120,8 +133,15 @@ public class HazelcastStores private constructor(
          * the serialization of the Delivery stores to it.
          */
         @JvmStatic
-        public fun start(config: Config): HazelcastStores =
-            HazelcastStores(Hazelcast.newHazelcastInstance(configure(config)))
+        public fun start(config: Config): HazelcastStores {
+            val instance = Hazelcast.newHazelcastInstance(configure(config))
+            return try {
+                HazelcastStores(instance)
+            } catch (e: RuntimeException) {
+                instance.shutdown()
+                throw e
+            }
+        }
 
         /**
          * Adds the maps and the serialization of the Delivery stores to the configuration.

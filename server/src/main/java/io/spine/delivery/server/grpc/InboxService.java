@@ -44,7 +44,8 @@ import static io.spine.delivery.server.grpc.Responses.completeCall;
 import static io.spine.delivery.server.grpc.Responses.writeOptionalMessage;
 
 /**
- * Acts as a gRPC-wired backend for the {@link io.spine.server.delivery.InboxStorage}.
+ * Acts as a gRPC-wired backend for the {@link io.spine.server.delivery.InboxStorage} of
+ * the client applications, on top of an {@link InboxStore}.
  *
  * <p>Each call checks its request, if needed, and then calls one operation of
  * the {@link InboxStore}.

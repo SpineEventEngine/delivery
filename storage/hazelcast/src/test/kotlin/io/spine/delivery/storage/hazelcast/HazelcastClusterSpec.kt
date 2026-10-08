@@ -14,6 +14,7 @@
 
 package io.spine.delivery.storage.hazelcast
 
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.spine.delivery.storage.CasOutcome
@@ -21,6 +22,8 @@ import io.spine.delivery.storage.ChangeRecorder
 import io.spine.delivery.storage.given.message
 import io.spine.delivery.storage.given.session
 import io.spine.delivery.storage.given.shard
+import io.spine.server.delivery.InboxMessageStatus.DELIVERED
+import io.spine.server.delivery.InboxMessageStatus.TO_DELIVER
 import java.time.Duration
 import java.util.UUID
 import java.util.concurrent.Callable
@@ -49,9 +52,14 @@ internal class HazelcastClusterSpec {
         val cluster = "delivery-test-${UUID.randomUUID()}"
         first = HazelcastStores.start(testConfig(cluster))
         second = HazelcastStores.start(testConfig(cluster))
+        awaitSafeCluster(first)
+    }
+
+    private fun awaitSafeCluster(stores: HazelcastStores) {
         val deadline = System.nanoTime() + CLUSTER_TIMEOUT.toNanos()
-        while (first.instance.cluster.members.size < 2) {
-            check(System.nanoTime() < deadline) { "The members have not formed a cluster." }
+        while (stores.instance.cluster.members.size < 2 ||
+            !stores.instance.partitionService.isClusterSafe) {
+            check(System.nanoTime() < deadline) { "The cluster has not become safe." }
             Thread.sleep(100)
         }
     }
@@ -121,6 +129,38 @@ internal class HazelcastClusterSpec {
         messages.forEach { second.inbox.find(it.id) shouldBe it }
         second.inbox.counts().values.sum() shouldBe messages.size
         second.sessions.readAll() shouldHaveSize sessions.size
+    }
+
+    @Test
+    fun `hand all data over to a member that joins after the writes`() {
+        val cluster = "delivery-test-${UUID.randomUUID()}"
+        val alone = HazelcastStores.start(testConfig(cluster))
+        try {
+            val shards = (0 until 30).map { shard(it) }
+            val messages = (0 until 300).map {
+                // Each shard gets every 30th message, so that its statuses vary.
+                val status = if ((it / shards.size) % 3 == 0) DELIVERED else TO_DELIVER
+                message(shards[it % shards.size], seconds = it.toLong(), status = status)
+            }
+            alone.inbox.write(messages)
+            val joining = HazelcastStores.start(testConfig(cluster))
+            try {
+                awaitSafeCluster(joining)
+                alone.close()
+
+                for (shard in shards) {
+                    val ofShard = messages.filter { it.id.index == shard }
+                    joining.inbox.page(shard, null, ofShard.size) shouldContainExactly ofShard
+                    joining.inbox.newestToDeliver(shard) shouldBe
+                            ofShard.last { it.status == TO_DELIVER }
+                }
+                joining.inbox.counts() shouldBe shards.associateWith { 10 }
+            } finally {
+                joining.close()
+            }
+        } finally {
+            alone.close()
+        }
     }
 
     @Test

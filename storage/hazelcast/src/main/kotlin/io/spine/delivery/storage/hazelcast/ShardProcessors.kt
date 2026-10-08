@@ -33,7 +33,7 @@ internal typealias ShardEntry = MutableMap.MutableEntry<String, HazelcastShard?>
  * Processors check all of their input before they change anything, and are deterministic,
  * so that the backup replica, which runs the same processor, ends in the same state.
  *
- * @param R the type of the result
+ * @param R The type of the result.
  */
 internal abstract class ShardProcessor<R>(
     private val classId: Int
@@ -94,9 +94,7 @@ internal class WriteMessages() : ShardProcessor<Unit?>(ClassId.WRITE) {
  * Removes the messages with the given UUIDs from the shard.
  *
  * Changes the entry only if a message is removed, and removes the entry when the shard
- * becomes empty.
- *
- * @return whether any message was removed
+ * becomes empty. The result tells whether any message was removed.
  */
 internal class DeleteMessages() : ShardProcessor<Boolean>(ClassId.DELETE) {
 

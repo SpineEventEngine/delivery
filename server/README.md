@@ -16,9 +16,9 @@ The port may be additionally configured by setting the `PORT` environment variab
 
 The server supports 3 storage modes: in-memory, Redis-based, and Hazelcast-based.
 
-In every mode, the messages are stored per shard: each operation costs in proportion to the shard
-it touches, or to the single message it names, and never to the whole inbox. Picking a shard is
-exclusive across all the servers that share the storage.
+In every mode, the messages are stored per shard: each operation on messages costs in proportion to
+the shard it touches, or to the single message it names, and never to the whole inbox. Picking up
+a shard is exclusive across all the servers that share the storage.
 
 The in-memory storage provides the best-possible performance and is used by default.
 
@@ -39,11 +39,12 @@ one must set the `USE_HAZELCAST` environment variable to any value (we check onl
 the variable and ignore its value).
 
 Each shard is kept by one member of the cluster, which applies every operation on the shard
-atomically, and has a synchronous backup on another member. When a member leaves, the others keep
-serving all the data. A completed operation is lost only after two failures in a row: its backup
-is not acknowledged within Hazelcast's backup timeout (5 seconds by default), and then its member
-fails before the replicas synchronize. During a split-brain, the separated parts of the cluster
-may both pick one shard, and after the merge, Hazelcast keeps one part's version of each shard.
+atomically. The shard has a synchronous backup on another member. When a member leaves, the others
+keep serving all the data. A completed operation is lost only after two failures in a row: its
+backup is not acknowledged within Hazelcast's backup timeout (5 seconds by default), and then its
+member fails before the replicas synchronize. During a split-brain, the separated parts of the
+cluster may both pick up the same shard, and after the merge, Hazelcast keeps one part's version of
+each shard.
 
 # Cluster discovery
 
@@ -93,25 +94,28 @@ environment variable. Allowed values are in bounds from `1` to `Integer.MAX_VALU
 # Stale shards auto release
 
 `DeliveryShardRegistry` accepts `processingTimeout` upon which the registry can decide if a session
-is stale. The check is performed when a session is asked for picking up. If a gap between
-`session.whenLastPickedUp()` and `now()` is strictly more than processingTimeout, the session is
-considered stale and can be picked up again. The fact of a session
-"auto-release" is logged to `WARNING` level.
+is stale. The check is performed when a session is asked for picking up. If a gap between the
+session's last pick-up time and `now()` is strictly more than `processingTimeout`, the session is
+considered stale and can be picked up again. The fact of a session "auto-release" is logged to
+`WARNING` level.
 
 The processing timeout is read from the `SHARD_PROCESSING_TIMEOUT` env variable. The number of
 seconds is expected there. By default, it is 0, which means that the stale-check is not performed at
 all.
 
-# Shard updates for the admin console
+# Shard updates for the admin UI
 
-The admin service streams an update of a shard after the shard is picked or released, and after
-its messages change. Each update carries the full current state of its shard: the status, the time
-of the last pick, and the number of messages, including `0`.
+The Admin Service streams an update of a shard after the shard is picked up or released, and
+after its messages change. Each update carries the full current state of its shard: the status,
+the time of the last pick-up, and the number of messages, including `0`. Right after
+the acknowledgement of a subscription, the subscriber receives the current state of every known
+shard. When the storage reports that changes may have been missed, for example after a Redis
+connection is established again, every known shard is sent again.
 
-The updates are throttled per shard: at most one update of a shard is sent per interval, and
-the changes made during the interval are sent as one update with the final state. The interval is
-read from the `SHARD_UPDATES_INTERVAL_MILLIS` env variable, as a whole number of milliseconds.
-By default, it is `25`. The value `0` turns the throttling off. A value that is not a non-negative
-whole number stops the server at startup.
+The updates are throttled per shard: at most one update of a shard is sent per interval, and the
+changes made during the interval are sent as one update with the final state. The interval is read
+from the `SHARD_UPDATES_INTERVAL_MILLIS` env variable, as a whole number of milliseconds. By
+default, it is `25` milliseconds. The value `0` turns the throttling off. A value that is not a
+non-negative whole number stops the server at startup.
 
 [hz-discovery]: https://docs.hazelcast.com/hazelcast/latest/clusters/discovery-mechanisms

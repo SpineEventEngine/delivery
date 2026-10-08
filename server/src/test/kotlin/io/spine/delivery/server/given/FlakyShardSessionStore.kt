@@ -50,6 +50,12 @@ internal class FlakyShardSessionStore(
      */
     var failingReads = false
 
+    /**
+     * The number of the writes attempted through this store.
+     */
+    var writes = 0
+        private set
+
     private val pending = ArrayList<() -> Unit>()
 
     override fun read(shard: ShardIndex): Stored? {
@@ -62,6 +68,7 @@ internal class FlakyShardSessionStore(
         expected: Stored?,
         replacement: ShardSessionRecord
     ): CasOutcome {
+        writes++
         pending.forEach { it() }
         pending.clear()
         if (alwaysConflicting) {

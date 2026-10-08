@@ -19,6 +19,7 @@ import io.spine.delivery.storage.ChangeListeners
 import io.spine.delivery.storage.ShardSessionStore
 import io.spine.delivery.storage.Stored
 import io.spine.delivery.storage.Subscription
+import io.spine.delivery.storage.parseSession
 import io.spine.delivery.storage.shardOf
 import io.spine.delivery.storage.tag
 import io.spine.server.delivery.ShardIndex
@@ -80,7 +81,8 @@ public class RedisShardSessionStore internal constructor(
                 replacement.toByteArray()
             )
         )
-        if (result.first() == 1L) {
+        val applied = result.firstOrNull() ?: error("The compare-and-set script returned nothing.")
+        if (applied == 1L) {
             return CasOutcome.Applied
         }
         return CasOutcome.Conflict((result.getOrNull(1) as ByteArray?)?.let(::stored))
@@ -92,9 +94,12 @@ public class RedisShardSessionStore internal constructor(
         channel.subscribeToMissed(onMissed)
 
     override fun close() {
-        channel.close()
-        listeners.clear()
+        try {
+            channel.close()
+        } finally {
+            listeners.clear()
+        }
     }
 
-    private fun stored(bytes: ByteArray) = Stored(ShardSessionRecord.parseFrom(bytes), bytes)
+    private fun stored(bytes: ByteArray) = Stored(parseSession(bytes), bytes)
 }

@@ -22,7 +22,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.spine.delivery.storage.given.session
 import io.spine.delivery.storage.given.shard
-import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
 import java.time.Duration
 import org.junit.jupiter.api.AfterEach

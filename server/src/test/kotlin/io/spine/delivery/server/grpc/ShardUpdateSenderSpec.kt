@@ -332,6 +332,20 @@ internal class ShardUpdateSenderSpec {
         }
 
         @Test
+        fun `the states of the other shards when one shard cannot be expressed`() {
+            val sender = sender()
+            val observer = sender.subscribed()
+
+            inbox.write(listOf(message(ShardIndex.getDefaultInstance())))
+            write(first)
+            observer.awaitUpdate(state(first, 1))
+
+            val later = sender.subscribed()
+            later.nextUpdate() shouldBe state(first, 1)
+            later.expectNoUpdate()
+        }
+
+        @Test
         fun `to the other subscribers when sending to one fails`() {
             val sender = sender()
             val failing = sender.subscribed(RecordingObserver(failingUpdates = true))

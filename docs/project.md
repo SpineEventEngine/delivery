@@ -37,8 +37,8 @@ modules produce runnable Docker images and an App Engine application.
   that does not embed Spine, built for throughput. Exposes the delivery gRPC API
   on port `8484` with in-memory, Redis, or Hazelcast storage (the distributed
   modes let several instances serve the same content, so that none of them is
-  a single point of failure). Sends the admin console one throttled, full-state
-  update per changed shard.
+  a single point of failure). Sends admin subscribers throttled, full-state
+  updates of the changed shards.
 - `fixtures` — test fixtures shared by the client and server suites:
   `TestInboxMessages`, `NoOpChannel`, and the `spine.test.delivery` Protobuf
   types. Depends on neither side, so both can use it. Not published.

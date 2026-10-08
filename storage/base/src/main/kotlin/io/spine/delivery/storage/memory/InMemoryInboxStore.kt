@@ -20,6 +20,7 @@ import io.spine.delivery.storage.InboxStore
 import io.spine.delivery.storage.MessageForm
 import io.spine.delivery.storage.ShardInbox
 import io.spine.delivery.storage.Subscription
+import io.spine.delivery.storage.checkPageSize
 import io.spine.server.delivery.InboxMessage
 import io.spine.server.delivery.InboxMessageId
 import io.spine.server.delivery.InboxMessageStatus.TO_DELIVER
@@ -39,12 +40,12 @@ import java.util.function.Consumer
  */
 public class InMemoryInboxStore : InboxStore {
 
-    private val shards = ConcurrentHashMap<ShardIndex, ShardInbox<InboxMessage>>()
+    private val inboxes = ConcurrentHashMap<ShardIndex, ShardInbox<InboxMessage>>()
     private val listeners = ChangeListeners()
 
     override fun write(messages: Iterable<InboxMessage>) {
         for ((shard, batch) in messages.groupBy { it.id.index }) {
-            val inbox = shards.computeIfAbsent(shard) { ShardInbox(it, InboxMessageForm) }
+            val inbox = inboxes.computeIfAbsent(shard) { ShardInbox(it, InboxMessageForm) }
             synchronized(inbox) {
                 batch.forEach(inbox::put)
             }
@@ -54,7 +55,7 @@ public class InMemoryInboxStore : InboxStore {
 
     override fun delete(ids: Iterable<InboxMessageId>) {
         for ((shard, batch) in ids.groupBy { it.index }) {
-            val inbox = shards[shard] ?: continue
+            val inbox = inboxes[shard] ?: continue
             var removed = false
             synchronized(inbox) {
                 for (id in batch) {
@@ -68,23 +69,23 @@ public class InMemoryInboxStore : InboxStore {
     }
 
     override fun find(id: InboxMessageId): InboxMessage? {
-        val inbox = shards[id.index] ?: return null
+        val inbox = inboxes[id.index] ?: return null
         return synchronized(inbox) { inbox.find(id.uuid) }
     }
 
     override fun page(shard: ShardIndex, since: Timestamp?, pageSize: Int): List<InboxMessage> {
-        require(pageSize > 0) { "The page size must be positive, but was $pageSize." }
-        val inbox = shards[shard] ?: return emptyList()
+        checkPageSize(pageSize)
+        val inbox = inboxes[shard] ?: return emptyList()
         return synchronized(inbox) { inbox.page(since, pageSize) }
     }
 
     override fun newestToDeliver(shard: ShardIndex): InboxMessage? {
-        val inbox = shards[shard] ?: return null
+        val inbox = inboxes[shard] ?: return null
         return synchronized(inbox) { inbox.newestToDeliver() }
     }
 
     override fun count(shard: ShardIndex): Int {
-        val inbox = shards[shard] ?: return 0
+        val inbox = inboxes[shard] ?: return 0
         return synchronized(inbox) { inbox.size }
     }
 
@@ -93,7 +94,7 @@ public class InMemoryInboxStore : InboxStore {
 
     override fun counts(): Map<ShardIndex, Int> {
         val result = HashMap<ShardIndex, Int>()
-        for ((shard, inbox) in shards) {
+        for ((shard, inbox) in inboxes) {
             val size = synchronized(inbox) { inbox.size }
             if (size > 0) {
                 result[shard] = size

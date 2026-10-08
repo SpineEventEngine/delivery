@@ -39,7 +39,7 @@ import static io.spine.delivery.admin.grpc.ShardStatus.PICKED;
  * Allows getting information about the current state of the shards on the message delivery server.
  *
  * <p>{@code GetShardInfo} reads the stores directly. {@code SubscribeToShardUpdates} streams
- * the updates that a {@link ShardUpdateSender} throttles per shard, each carrying the full
+ * the updates that a {@code ShardUpdateSender} throttles per shard, each carrying the full
  * current state of its shard.
  */
 public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase

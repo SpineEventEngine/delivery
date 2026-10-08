@@ -44,10 +44,12 @@ service AdminService {
     // before the acknowledgement.
     //
     // Users should consider the subscription as created only after receiving the acknowledgement
-    // in the `SubscriptionResponse`. All changes in the system occurred before the subscription
-    // acknowledgement are not tracked by this call.
+    // in the `SubscriptionResponse`. Right after the acknowledgement, the subscriber receives
+    // the current state of every known shard, which reflects the changes made before.
     //
-    // Each update is sent as a single `ShardInfoUpdate`.
+    // Each update is sent as a single `ShardInfoUpdate`, which carries the full current state of
+    // its shard. The updates of each shard are throttled, so that the changes made within
+    // a short interval arrive as one update with their final state.
     //
     rpc SubscribeToShardUpdates(google.protobuf.Empty) returns (stream SubscriptionResponse);
 }

@@ -18,6 +18,8 @@ import com.google.protobuf.Timestamp
 import io.spine.delivery.storage.ChangeListeners
 import io.spine.delivery.storage.InboxStore
 import io.spine.delivery.storage.Subscription
+import io.spine.delivery.storage.checkPageSize
+import io.spine.delivery.storage.parseMessage
 import io.spine.delivery.storage.shardOf
 import io.spine.delivery.storage.tag
 import io.spine.logging.WithLogging
@@ -49,11 +51,11 @@ private const val SCAN_COUNT = 1_000
 /**
  * An [InboxStore] kept in Redis, in four keys per shard.
  *
- * Writes and deletes of each shard run as Lua scripts, in chunks of at most
- * [MAX_CHUNK_MESSAGES] messages and [MAX_CHUNK_BYTES] of message bytes, each of which is
- * atomic. Pages and the newest message to deliver are read by scripts too, each in one
- * round trip. Every argument is prepared before the first script call, because a script that
- * fails midway keeps its earlier writes.
+ * Writes and deletes of each shard run as Lua scripts, in chunks of at most 1,000
+ * messages and 8 MiB of message bytes, each of which is atomic. Pages and the newest
+ * message to deliver are read by scripts too, each in one round trip. Every argument is
+ * prepared before the first script call, because a script that fails midway keeps its
+ * earlier writes.
  */
 public class RedisInboxStore internal constructor(
     private val client: RedissonClient
@@ -71,7 +73,8 @@ public class RedisInboxStore internal constructor(
             .mapValues { (_, batch) -> batch.map(::prepare) }
         for ((tag, batch) in prepared) {
             for (chunk in chunks(batch)) {
-                val args = ArrayList<ByteArray>(2 + chunk.size * 4)
+                val args =
+                    ArrayList<ByteArray>(WRITE_HEADER_ARGS + chunk.size * WRITE_ARGS_PER_MESSAGE)
                 args.add(tag.toByteArray())
                 args.add(chunk.size.toString().toByteArray())
                 chunk.forEach { args.addAll(it) }
@@ -92,10 +95,10 @@ public class RedisInboxStore internal constructor(
 
     override fun find(id: InboxMessageId): InboxMessage? =
         client.getMap<String, ByteArray>(messagesKey(id.index.tag()), HASH_CODEC)[id.uuid]
-            ?.let(InboxMessage::parseFrom)
+            ?.let(::parseMessage)
 
     override fun page(shard: ShardIndex, since: Timestamp?, pageSize: Int): List<InboxMessage> {
-        require(pageSize > 0) { "The page size must be positive, but was $pageSize." }
+        checkPageSize(pageSize)
         val tag = shard.tag()
         val lowerBound = if (since == null) "-" else "[${encodeTime(since.seconds, since.nanos)};"
         val result = pageScript.run(
@@ -104,7 +107,7 @@ public class RedisInboxStore internal constructor(
             listOf(lowerBound.toByteArray(), pageSize.toString().toByteArray())
         )
         reportMissing(tag, result)
-        return result.drop(1).map { InboxMessage.parseFrom(it as ByteArray) }
+        return result.drop(1).map { parseMessage(it as ByteArray) }
     }
 
     override fun newestToDeliver(shard: ShardIndex): InboxMessage? {
@@ -113,7 +116,7 @@ public class RedisInboxStore internal constructor(
             READ_ONLY, listOf(messagesKey(tag), pendingKey(tag)), emptyList()
         )
         reportMissing(tag, result)
-        return (result.getOrNull(1) as ByteArray?)?.let(InboxMessage::parseFrom)
+        return (result.getOrNull(1) as ByteArray?)?.let(::parseMessage)
     }
 
     override fun count(shard: ShardIndex): Int =
@@ -156,8 +159,11 @@ public class RedisInboxStore internal constructor(
         channel.subscribeToMissed(onMissed)
 
     override fun close() {
-        channel.close()
-        listeners.clear()
+        try {
+            channel.close()
+        } finally {
+            listeners.clear()
+        }
     }
 
     private fun reportMissing(tag: String, result: List<Any?>) {
@@ -182,7 +188,11 @@ private fun shardKeys(tag: String): List<String> =
  */
 private fun prepare(message: InboxMessage): List<ByteArray> {
     val received = message.whenReceived
-    val key = encodeOrderKey(received.seconds, received.nanos, message.version)
+    val key = encodeOrderKey(
+        seconds = received.seconds,
+        nanos = received.nanos,
+        version = message.version
+    )
     val toDeliver = if (message.status == TO_DELIVER) "1" else "0"
     return listOf(
         message.id.uuid.toByteArray(),
@@ -193,8 +203,8 @@ private fun prepare(message: InboxMessage): List<ByteArray> {
 }
 
 /**
- * Cuts the prepared messages into chunks of at most [MAX_CHUNK_MESSAGES] messages and
- * [MAX_CHUNK_BYTES] of message bytes, with at least one message per chunk.
+ * Cuts the prepared messages into chunks of at most `MAX_CHUNK_MESSAGES` messages and
+ * `MAX_CHUNK_BYTES` of message bytes, with at least one message per chunk.
  */
 private fun chunks(messages: List<List<ByteArray>>): List<List<List<ByteArray>>> {
     val result = ArrayList<List<List<ByteArray>>>()

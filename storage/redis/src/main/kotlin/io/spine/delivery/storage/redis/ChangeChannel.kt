@@ -33,9 +33,9 @@ internal val HASH_CODEC = CompositeCodec(
 /**
  * A subscription of a store to the channel on which the changed shard tags are published.
  *
- * Redis delivers the published messages at most once. So whenever the subscription is
- * established, for the first time or again, the subscription reports that changes may
- * have been missed.
+ * Redis delivers the published messages at most once. Whenever the subscription is
+ * established, for the first time or again, it therefore reports that changes may have
+ * been missed.
  */
 internal class ChangeChannel(
     client: RedissonClient,
@@ -48,7 +48,7 @@ internal class ChangeChannel(
     /**
      * The listeners of the changes this subscription may have missed.
      */
-    val missed = MissedChangeListeners()
+    private val missed = MissedChangeListeners()
 
     // Added first, so that it hears the first subscription too. Adding a listener
     // returns once the channel is subscribed.
@@ -72,7 +72,10 @@ internal class ChangeChannel(
      * Stops listening to the channel.
      */
     fun close() {
-        topic.removeListener(messageListenerId, statusListenerId)
-        missed.clear()
+        try {
+            topic.removeListener(messageListenerId, statusListenerId)
+        } finally {
+            missed.clear()
+        }
     }
 }

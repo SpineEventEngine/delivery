@@ -334,16 +334,28 @@ public abstract class InboxStoreContract {
         @Test
         public fun `comparing timestamps and versions as plain numbers`() {
             val ordered = listOf(
-                message(first, Long.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE, uuid = "a"),
-                message(first, Long.MIN_VALUE, 0, 0, uuid = "b"),
-                message(first, -1, -1, -1, uuid = "c"),
-                message(first, -1, 0, 0, uuid = "d"),
-                message(first, 0, 0, Int.MIN_VALUE, uuid = "e"),
-                message(first, 0, 0, -1, uuid = "f"),
-                message(first, 0, 0, 0, uuid = "g"),
-                message(first, 0, 0, Int.MAX_VALUE, uuid = "h"),
-                message(first, 0, Int.MAX_VALUE, 0, uuid = "i"),
-                message(first, Long.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE, uuid = "j"),
+                message(
+                    first,
+                    seconds = Long.MIN_VALUE,
+                    nanos = Int.MIN_VALUE,
+                    version = Int.MIN_VALUE,
+                    uuid = "a"
+                ),
+                message(first, seconds = Long.MIN_VALUE, nanos = 0, version = 0, uuid = "b"),
+                message(first, seconds = -1, nanos = -1, version = -1, uuid = "c"),
+                message(first, seconds = -1, nanos = 0, version = 0, uuid = "d"),
+                message(first, seconds = 0, nanos = 0, version = Int.MIN_VALUE, uuid = "e"),
+                message(first, seconds = 0, nanos = 0, version = -1, uuid = "f"),
+                message(first, seconds = 0, nanos = 0, version = 0, uuid = "g"),
+                message(first, seconds = 0, nanos = 0, version = Int.MAX_VALUE, uuid = "h"),
+                message(first, seconds = 0, nanos = Int.MAX_VALUE, version = 0, uuid = "i"),
+                message(
+                    first,
+                    seconds = Long.MAX_VALUE,
+                    nanos = Int.MAX_VALUE,
+                    version = Int.MAX_VALUE,
+                    uuid = "j"
+                ),
             )
             store.write(ordered.shuffled(Random(2)))
 

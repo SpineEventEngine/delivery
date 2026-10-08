@@ -103,6 +103,7 @@ internal class DeliveryShardRegistrySpec {
         store.alwaysConflicting = true
 
         shouldThrow<IllegalStateException> { registry.pickUp(first, worker("w")) }
+        store.writes shouldBe DeliveryShardRegistry.MAX_ATTEMPTS
     }
 
     @Test

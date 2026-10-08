@@ -21,6 +21,7 @@ import io.spine.delivery.storage.MissedChangeListeners
 import io.spine.delivery.storage.ShardSessionStore
 import io.spine.delivery.storage.Stored
 import io.spine.delivery.storage.Subscription
+import io.spine.delivery.storage.parseSession
 import io.spine.delivery.storage.shardOf
 import io.spine.delivery.storage.tag
 import io.spine.server.delivery.ShardIndex
@@ -82,9 +83,12 @@ public class HazelcastShardSessionStore internal constructor(
     override fun subscribeToMissedChanges(onMissed: Runnable): Subscription = missed.add(onMissed)
 
     override fun close() {
-        map.removeEntryListener(listenerId)
-        listeners.clear()
+        try {
+            map.removeEntryListener(listenerId)
+        } finally {
+            listeners.clear()
+        }
     }
 
-    private fun stored(bytes: ByteArray) = Stored(ShardSessionRecord.parseFrom(bytes), bytes)
+    private fun stored(bytes: ByteArray) = Stored(parseSession(bytes), bytes)
 }

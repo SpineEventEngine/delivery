@@ -95,12 +95,6 @@ public final class DeliveryShardRegistry implements WithLogging {
      * has not reached {@linkplain #processingTimeout processing timeout},
      * an {@link ShardAlreadyPickedUp} is thrown.
      *
-     * <p>The record to write is built once, so every attempt writes the same bytes. After
-     * an attempt, a record found equal to it, byte for byte, is this call's own write,
-     * applied by an attempt whose outcome was not known: no other caller writes this worker
-     * with this time. Before the first attempt, such a record is a pick of the same worker
-     * at the same time by an earlier call, which holds the shard.
-     *
      * @param index
      *         the index of the shard to pick up for processing
      * @param worker
@@ -117,6 +111,11 @@ public final class DeliveryShardRegistry implements WithLogging {
                 .setWorker(worker)
                 .setWhenLastPicked(now)
                 .build();
+        // The record to write is built once, so every attempt writes the same bytes. After
+        // an attempt, a record found equal to it, byte for byte, is this call's own write,
+        // applied by an attempt whose outcome was not known: no other caller writes this
+        // worker with this time. Before the first attempt, such a record is a pick of the same
+        // worker at the same time by an earlier call, which holds the shard.
         var attempted = new AtomicBoolean(false);
         // The record of the session that holds the shard, or `null` if this call picked it.
         @Nullable ShardSessionRecord holder = update(index, store.read(index), current -> {
@@ -196,6 +195,8 @@ public final class DeliveryShardRegistry implements WithLogging {
      * After a failed write, which may or may not have been applied, reads the record again
      * and decides again on it. A failure of that read fails the call.
      *
+     * @param <T>
+     *         the type of the result
      * @param index
      *         the shard of the record
      * @param initial
@@ -309,7 +310,7 @@ public final class DeliveryShardRegistry implements WithLogging {
     }
 
     /**
-     * Implementation of shard processing session, completed by releasing its shard.
+     * Implementation of the shard processing session, completed by releasing its shard.
      */
     public final class DeliveryShardSession extends ShardProcessingSession {
 

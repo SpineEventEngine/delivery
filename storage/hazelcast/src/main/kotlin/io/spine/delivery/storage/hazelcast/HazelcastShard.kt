@@ -65,7 +65,7 @@ internal class DeliverySerializableFactory : DataSerializableFactory {
  * An inbox message held by a member: its protobuf bytes, together with the fields of
  * its order key and its status, extracted by the caller.
  *
- * So the member never parses protobuf.
+ * The member therefore never parses protobuf.
  */
 internal class HeldMessage(
     val uuid: String,

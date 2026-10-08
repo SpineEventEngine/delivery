@@ -58,6 +58,16 @@ internal class LuaScript(client: RedissonClient, private val source: String) {
 }
 
 /**
+ * The number of the arguments of [WRITE_SCRIPT] before those of the messages.
+ */
+internal const val WRITE_HEADER_ARGS = 2
+
+/**
+ * The number of the arguments of [WRITE_SCRIPT] per message.
+ */
+internal const val WRITE_ARGS_PER_MESSAGE = 4
+
+/**
  * Writes messages of one shard.
  *
  * `KEYS`: the messages, order keys, all, and pending keys of the shard.
@@ -70,7 +80,7 @@ internal class LuaScript(client: RedissonClient, private val source: String) {
 internal const val WRITE_SCRIPT = """
 local count = tonumber(ARGV[2])
 for i = 0, count - 1 do
-    local at = 3 + i * 4
+    local at = $WRITE_HEADER_ARGS + 1 + i * $WRITE_ARGS_PER_MESSAGE
     local uuid = ARGV[at]
     local key = ARGV[at + 1]
     local old = redis.call('HGET', KEYS[2], uuid)
@@ -87,7 +97,7 @@ for i = 0, count - 1 do
         redis.call('ZADD', KEYS[4], 0, member)
     end
 end
-redis.call('PUBLISH', 'delivery:changes:inbox', ARGV[1])
+redis.call('PUBLISH', '$INBOX_CHANNEL', ARGV[1])
 return {count}
 """
 
@@ -114,7 +124,7 @@ for i = 2, #ARGV do
     end
 end
 if removed > 0 then
-    redis.call('PUBLISH', 'delivery:changes:inbox', ARGV[1])
+    redis.call('PUBLISH', '$INBOX_CHANNEL', ARGV[1])
 end
 return {removed}
 """
@@ -132,7 +142,7 @@ internal const val PAGE_SCRIPT = """
 local members = redis.call('ZRANGEBYLEX', KEYS[2], ARGV[1], '+', 'LIMIT', 0, tonumber(ARGV[2]))
 local result = {0}
 for i = 1, #members do
-    local value = redis.call('HGET', KEYS[1], string.sub(members[i], 44))
+    local value = redis.call('HGET', KEYS[1], string.sub(members[i], $UUID_POSITION))
     if value then
         result[#result + 1] = value
     else
@@ -157,7 +167,7 @@ while true do
     if #members == 0 then
         return {missing}
     end
-    local value = redis.call('HGET', KEYS[1], string.sub(members[1], 44))
+    local value = redis.call('HGET', KEYS[1], string.sub(members[1], $UUID_POSITION))
     if value then
         return {missing, value}
     end
@@ -190,6 +200,6 @@ if not matches then
     return {0}
 end
 redis.call('HSET', KEYS[1], ARGV[1], ARGV[4])
-redis.call('PUBLISH', 'delivery:changes:sessions', ARGV[1])
+redis.call('PUBLISH', '$SESSIONS_CHANNEL', ARGV[1])
 return {1}
 """

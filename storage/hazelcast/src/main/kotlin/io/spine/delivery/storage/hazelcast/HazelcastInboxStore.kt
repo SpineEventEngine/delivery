@@ -24,6 +24,8 @@ import io.spine.delivery.storage.ChangeListeners
 import io.spine.delivery.storage.InboxStore
 import io.spine.delivery.storage.MissedChangeListeners
 import io.spine.delivery.storage.Subscription
+import io.spine.delivery.storage.checkPageSize
+import io.spine.delivery.storage.parseMessage
 import io.spine.delivery.storage.shardOf
 import io.spine.delivery.storage.tag
 import io.spine.server.delivery.InboxMessage
@@ -34,8 +36,9 @@ import java.util.function.Consumer
 /**
  * An [InboxStore] kept in the Hazelcast map [INBOX_MAP], one entry per shard.
  *
- * Every operation is an entry processor that runs on the member owning the shard: one
- * network round trip, atomic with respect to every other operation on that shard.
+ * Every read or change of messages is an entry processor that runs on the member owning
+ * the shard: one network round trip, atomic with respect to every other operation on
+ * that shard.
  * The map is used only through processors and listeners, so that whole shards are never
  * serialized for a read.
  */
@@ -61,16 +64,15 @@ public class HazelcastInboxStore internal constructor(
     }
 
     override fun find(id: InboxMessageId): InboxMessage? =
-        map.executeOnKey(id.index.tag(), FindMessage(id.uuid))?.let(InboxMessage::parseFrom)
+        map.executeOnKey(id.index.tag(), FindMessage(id.uuid))?.let(::parseMessage)
 
     override fun page(shard: ShardIndex, since: Timestamp?, pageSize: Int): List<InboxMessage> {
-        require(pageSize > 0) { "The page size must be positive, but was $pageSize." }
-        return map.executeOnKey(shard.tag(), ReadPage(since, pageSize))
-            .map(InboxMessage::parseFrom)
+        checkPageSize(pageSize)
+        return map.executeOnKey(shard.tag(), ReadPage(since, pageSize)).map(::parseMessage)
     }
 
     override fun newestToDeliver(shard: ShardIndex): InboxMessage? =
-        map.executeOnKey(shard.tag(), FindNewestToDeliver())?.let(InboxMessage::parseFrom)
+        map.executeOnKey(shard.tag(), FindNewestToDeliver())?.let(::parseMessage)
 
     override fun count(shard: ShardIndex): Int =
         map.executeOnKey(shard.tag(), CountMessages()) ?: 0
@@ -98,8 +100,11 @@ public class HazelcastInboxStore internal constructor(
     override fun subscribeToMissedChanges(onMissed: Runnable): Subscription = missed.add(onMissed)
 
     override fun close() {
-        map.removeEntryListener(listenerId)
-        listeners.clear()
+        try {
+            map.removeEntryListener(listenerId)
+        } finally {
+            listeners.clear()
+        }
     }
 }
 

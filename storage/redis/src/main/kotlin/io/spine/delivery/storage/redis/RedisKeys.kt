@@ -32,6 +32,12 @@ private const val INT_DIGITS = 10
 internal const val ORDER_KEY_LENGTH = LONG_DIGITS + 1 + INT_DIGITS + 1 + INT_DIGITS
 
 /**
+ * The position, counted from 1 as Lua does, at which the UUID starts in a member of
+ * a sorted set: after the encoded order key and the `:` that follows it.
+ */
+internal const val UUID_POSITION = ORDER_KEY_LENGTH + 2
+
+/**
  * The hash of a shard's messages, from the UUID to the message bytes.
  */
 internal fun messagesKey(tag: String): String = "delivery:{inbox:$tag}:messages"

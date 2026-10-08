@@ -24,7 +24,7 @@ import org.redisson.api.RedissonClient
 import org.redisson.config.Config
 
 /**
- * The well-known locations of the Redisson configuration, tests' ones first.
+ * The well-known locations of the Redisson configuration, the test configuration first.
  */
 private val CONFIG_LOCATIONS = listOf(
     "redisson-test-config.yml", "redisson-test-config.yaml",
@@ -51,20 +51,32 @@ public class RedisStores private constructor(
     public val sessions: ShardSessionStore = RedisShardSessionStore(client)
 
     /**
-     * Closes the stores, and then the connection.
+     * Closes the stores, and then the connection, even if closing a store fails.
      */
     override fun close() {
-        inbox.close()
-        sessions.close()
-        client.shutdown()
+        try {
+            try {
+                inbox.close()
+            } finally {
+                sessions.close()
+            }
+        } finally {
+            client.shutdown()
+        }
     }
 
     public companion object {
 
         /**
-         * Connects to Redis as the first configuration file found in the well-known
-         * locations tells: `redisson-test-config.yml`, `redisson-test-config.yaml`,
+         * Connects to Redis as configured by the first file found in the well-known
+         * locations: `redisson-test-config.yml`, `redisson-test-config.yaml`,
          * `redisson-config.yml`, or `redisson-config.yaml`.
+         *
+         * ```kotlin
+         * RedisStores.start().use { stores ->
+         *     stores.inbox.write(messages)
+         * }
+         * ```
          *
          * @throws IllegalStateException if there is no configuration, or it cannot be read
          */
@@ -81,7 +93,15 @@ public class RedisStores private constructor(
          * Connects to Redis with the given configuration.
          */
         @JvmStatic
-        public fun start(config: Config): RedisStores = RedisStores(Redisson.create(config))
+        public fun start(config: Config): RedisStores {
+            val client = Redisson.create(config)
+            return try {
+                RedisStores(client)
+            } catch (e: RuntimeException) {
+                client.shutdown()
+                throw e
+            }
+        }
 
         private fun parse(file: URL): Config =
             try {

@@ -16,7 +16,7 @@ dependencies {
     testImplementation(project(path = ":storage:base", configuration = "testArtifacts"))
 }
 
-// The Testcontainers-based suites here (`RedisRecordStorageTest`, `MultitenantStorageTest`,
-// `RedisGroupedStorageSpec`) start a `redis:6-alpine` container. Docker is enforced by the
+// The Testcontainers-based suites here (`RedisInboxStoreSpec`, `RedisShardSessionStoreSpec`,
+// `RedisMultiNodeSpec`) start a `redis:6-alpine` container. Docker is enforced by the
 // `checkDockerAvailable` gate the `module` plugin adds, because `DockerGates.kt` lists this
 // module in `dockerDependentModules`.

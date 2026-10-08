@@ -26,6 +26,7 @@ internal class ShardUpdatesIntervalSpec {
 
     @Test
     fun `be 25 ms when the variable is not set`() {
+        DeliveryServerApp.DEFAULT_SHARD_UPDATES_INTERVAL shouldBe Duration.ofMillis(25)
         DeliveryServerApp.shardUpdatesInterval(null) shouldBe Duration.ofMillis(25)
         DeliveryServerApp.shardUpdatesInterval("") shouldBe Duration.ofMillis(25)
     }
@@ -45,7 +46,7 @@ internal class ShardUpdatesIntervalSpec {
         val error = shouldThrow<IllegalArgumentException> {
             DeliveryServerApp.shardUpdatesInterval("-1")
         }
-        error.message shouldContain "SHARD_UPDATES_INTERVAL_MILLIS"
+        error.message shouldContain DeliveryServerApp.SHARD_UPDATES_INTERVAL_VARIABLE
     }
 
     @Test
@@ -54,7 +55,7 @@ internal class ShardUpdatesIntervalSpec {
             val error = shouldThrow<IllegalArgumentException> {
                 DeliveryServerApp.shardUpdatesInterval(value)
             }
-            error.message shouldContain "SHARD_UPDATES_INTERVAL_MILLIS"
+            error.message shouldContain DeliveryServerApp.SHARD_UPDATES_INTERVAL_VARIABLE
         }
     }
 }

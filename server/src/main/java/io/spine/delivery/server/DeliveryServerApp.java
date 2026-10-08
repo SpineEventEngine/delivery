@@ -213,8 +213,8 @@ public final class DeliveryServerApp implements WithLogging {
      * are left to {@link #initAndStart()}, which records them in the same future, so that
      * a caller waiting for the port learns the cause instead of waiting for the timeout.
      *
-     * <p>When the server terminates, stops sending the shard updates, and then closes
-     * the stores.
+     * <p>When the server terminates, this method stops sending the shard updates, and then
+     * closes the stores.
      */
     private void runServer() throws IOException, InterruptedException {
         try (var stores = stores();
@@ -387,8 +387,8 @@ public final class DeliveryServerApp implements WithLogging {
      *
      * @param value
      *         the value of the variable, or {@code null} if it is not set
-     * @return the interval, {@linkplain #DEFAULT_SHARD_UPDATES_INTERVAL 25 ms} if the value
-     *         is {@code null} or empty
+     * @return the interval, or the {@linkplain #DEFAULT_SHARD_UPDATES_INTERVAL default one}
+     *         if the value is {@code null} or empty
      * @throws IllegalArgumentException
      *         if the value is not a non-negative whole number of milliseconds
      */

@@ -62,7 +62,8 @@ public interface ShardSessionStore : AutoCloseable {
 
     /**
      * Calls [onMissed] whenever changes may have been made without being reported to
-     * [subscribe]rs, for example after a connection to the backend is established again.
+     * the listeners passed to [subscribe], for example after a connection to the backend
+     * is established again.
      *
      * A store that reports every change, such as one in memory, never calls it.
      * The listener must not block.
@@ -81,9 +82,9 @@ public interface ShardSessionStore : AutoCloseable {
  * [ShardSessionStore.compareAndSet] compares the stored form, so a caller passes back
  * the `Stored` it has read, never a record rebuilt from it.
  *
- * @property record the stored record
- * @property form the stored form: the serialized bytes in the distributed stores,
- *   or the stored instance itself in memory
+ * @property record The stored record.
+ * @property form The stored form: the serialized bytes in the distributed stores,
+ *   or the stored instance itself in memory.
  */
 public class Stored(public val record: ShardSessionRecord, public val form: Any) {
 
@@ -114,8 +115,8 @@ public sealed interface CasOutcome {
     /**
      * The stored record differed from the expected one, so nothing was written.
      *
-     * @property current the record stored at the moment of the attempt, or `null` if
-     *   there was none
+     * @property current The record stored at the moment of the attempt, or `null` if
+     *   there was none.
      */
     public class Conflict(public val current: Stored?) : CasOutcome
 }
