@@ -1,6 +1,6 @@
 
 
-# Dependencies of `io.spine.delivery:spine-admin-server:0.19.3`
+# Dependencies of `io.spine.delivery:spine-admin-server:0.20.0`
 
 ## Runtime
 1.  **Group** : com.amazonaws. **Name** : aws-java-sdk-bom. **Version** : 1.12.787.
@@ -2232,14 +2232,14 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:21 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-admin-ui:0.19.3`
+# Dependencies of `io.spine.delivery:spine-admin-ui:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -3178,14 +3178,14 @@ This report was generated on **Tue Oct 06 18:54:21 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-client:0.19.3`
+# Dependencies of `io.spine.delivery:spine-client:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -3883,14 +3883,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-model:0.19.3`
+# Dependencies of `io.spine.delivery:spine-delivery-model:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -4837,14 +4837,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-server:0.19.3`
+# Dependencies of `io.spine.delivery:spine-delivery-server:0.20.0`
 
 ## Runtime
 1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.6.2.
@@ -6120,14 +6120,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:17 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-server-cloud-run:0.19.3`
+# Dependencies of `io.spine.delivery:spine-delivery-server-cloud-run:0.20.0`
 
 ## Runtime
 1.  **Group** : com.amazonaws. **Name** : aws-java-sdk-bom. **Version** : 1.12.787.
@@ -8415,14 +8415,14 @@ This report was generated on **Tue Oct 06 18:54:17 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:21 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-demo-appengine-11:0.19.3`
+# Dependencies of `io.spine.delivery:spine-demo-appengine-11:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -9600,14 +9600,14 @@ This report was generated on **Tue Oct 06 18:54:21 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-fixtures:0.19.3`
+# Dependencies of `io.spine.delivery:spine-fixtures:0.20.0`
 
 ## Runtime
 1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.22.
@@ -10749,14 +10749,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-grpc-api:0.19.3`
+# Dependencies of `io.spine.delivery:spine-grpc-api:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -11703,14 +11703,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-storage:0.19.3`
+# Dependencies of `io.spine.delivery:spine-storage:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -12408,14 +12408,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-client:0.19.3`
+# Dependencies of `io.spine.delivery:spine-delivery-client:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -13406,14 +13406,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-client-base:0.19.3`
+# Dependencies of `io.spine.delivery:spine-delivery-client-base:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -14352,14 +14352,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-demo:0.19.3`
+# Dependencies of `io.spine.delivery:spine-demo:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -15319,14 +15319,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-integration-test:0.19.3`
+# Dependencies of `io.spine.delivery:spine-integration-test:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -16317,14 +16317,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-base:0.19.3`
+# Dependencies of `io.spine.delivery:spine-base:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -17263,14 +17263,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-hazelcast:0.19.3`
+# Dependencies of `io.spine.delivery:spine-hazelcast:0.20.0`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -18219,14 +18219,14 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-redis:0.19.3`
+# Dependencies of `io.spine.delivery:spine-redis:0.20.0`
 
 ## Runtime
 1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.6.2.
@@ -19446,6 +19446,6 @@ This report was generated on **Tue Oct 06 18:54:16 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Tue Oct 06 18:54:17 WEST 2026** using 
+This report was generated on **Thu Oct 08 20:12:25 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
