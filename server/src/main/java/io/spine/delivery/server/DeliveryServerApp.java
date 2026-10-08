@@ -425,7 +425,6 @@ public final class DeliveryServerApp implements WithLogging {
         return Stores.inMemory();
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
     private static boolean useRedis() {
         var envs = System.getenv();
         return envs.containsKey("USE_REDIS") && envs.containsKey("REDIS_HOST");
