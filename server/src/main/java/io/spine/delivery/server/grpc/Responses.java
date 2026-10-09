@@ -40,7 +40,7 @@ final class Responses {
      * Creates a new {@code ShardPickedUp} rejection message with the supplied {@code shard}
      * and {@code worker}.
      *
-     * <p>The picked up time is set to the {@linkplain Time#currentTime() current time}.
+     * <p>The pick-up time is set to the {@linkplain Time#currentTime() current time}.
      */
     static ShardPickedUp shardPickedUp(ShardIndex shard, WorkerId worker) {
         var pickedUp = ShardPickedUp.newBuilder()
