@@ -55,6 +55,13 @@ public final class DeliveryShardRegistry implements WithLogging {
 
     /**
      * How many times an operation tries to change a record before it gives up.
+     *
+     * <p>An attempt fails when another call changed the record after it was read, or when
+     * the write itself failed. After a conflict, a pick usually finds the shard taken and
+     * stops without writing, so a call needs more than a couple of attempts only when
+     * something is wrong, such as a store whose writes keep failing. Sixteen attempts are
+     * a generous bound, which keeps such a call from trying forever. The number is a choice,
+     * not a measurement.
      */
     @VisibleForTesting
     static final int MAX_ATTEMPTS = 16;

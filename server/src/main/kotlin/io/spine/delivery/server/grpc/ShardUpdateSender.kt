@@ -44,18 +44,26 @@ private const val THREAD_NAME = "delivery-shard-updates"
 
 /**
  * How long [ShardUpdateSender.close] waits for the sender thread to stop.
+ *
+ * The same time that the server waits for its calls to complete when it shuts down.
  */
 private const val SHUTDOWN_TIMEOUT_SECONDS = 5L
 
 /**
  * The delay before the first retry of a failed read, unless the throttling interval
  * is longer.
+ *
+ * Short, so that a failure that passes at once delays the updates only a little.
+ * Each next retry waits twice as long, up to [MAX_RETRY_DELAY].
  */
 private val MIN_RETRY_DELAY: Duration = Duration.ofMillis(10)
 
 /**
  * The longest delay between two retries of a failed read, unless the throttling interval
  * is longer.
+ *
+ * Long enough not to load a failing store with reads, and short enough that the subscribers
+ * get the current states within about a second after the store recovers.
  */
 private val MAX_RETRY_DELAY: Duration = Duration.ofSeconds(1)
 

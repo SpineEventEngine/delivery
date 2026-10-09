@@ -35,17 +35,28 @@ import org.redisson.api.options.KeysScanOptions
 
 /**
  * The most messages that one run of a script writes or removes.
+ *
+ * Redis runs a script as one step, in which it serves no other client, so a large batch is
+ * split into several runs. This limit and [MAX_CHUNK_BYTES] keep each run short. Both are
+ * choices, not measurements.
  */
 private const val MAX_CHUNK_MESSAGES = 1_000
 
 /**
  * The most bytes of messages that one run of a script writes, unless a single message
  * is larger.
+ *
+ * Twice the default size limit of a request to the server, 4 MiB. So this limit splits
+ * a request only when `MAX_INBOUND_MESSAGE_SIZE` allows larger ones.
  */
 private const val MAX_CHUNK_BYTES = 8 * 1024 * 1024
 
 /**
  * The number of keys that Redis checks per step when it looks for the keys of the shards.
+ *
+ * `SCAN` walks the whole database in steps, one round trip each. Redis checks 10 keys per
+ * step by default, so the larger count makes the round trips fewer, while each step stays
+ * short.
  */
 private const val SCAN_COUNT = 1_000
 

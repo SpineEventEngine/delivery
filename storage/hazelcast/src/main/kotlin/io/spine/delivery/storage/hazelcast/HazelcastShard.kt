@@ -31,15 +31,21 @@ import io.spine.server.delivery.ShardIndex
  * Hazelcast identifies such a class by this factory ID together with the [class ID][ClassId.id],
  * instead of the class name. Both IDs must stay the same across versions, so that members
  * of different versions understand each other.
+ *
+ * The value only has to differ from the IDs of the other factories of the member. Hazelcast's
+ * own factories use 0 and negative IDs, and the Delivery server registers no other factory, so
+ * any positive ID would do. Should another factory take the same ID, the member fails to start,
+ * as Hazelcast rejects a second factory with the same ID.
  */
-internal const val FACTORY_ID = 1_729
+internal const val FACTORY_ID = 1_654
 
 /**
  * The classes that the Delivery stores send between the members of a Hazelcast cluster,
  * each with its class ID.
  *
  * The IDs are explicit, never the ordinals, so that reordering or adding entries cannot
- * change them.
+ * change them. They count from 1: a new class takes the next number, and the number of
+ * a removed class is never used again.
  *
  * @property id The class ID, which Hazelcast writes with [FACTORY_ID] instead of
  *   the class name. It must stay the same across versions.
