@@ -14,26 +14,22 @@
 
 package io.spine.delivery.server.grpc;
 
-import com.google.common.collect.ImmutableList;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import io.grpc.stub.StreamObserver;
-import io.spine.logging.WithLogging;
-import static java.lang.String.format;
-import io.spine.delivery.command.RemoveMessage;
-import io.spine.delivery.command.RemoveMessages;
-import io.spine.delivery.command.WriteMessage;
-import io.spine.delivery.command.WriteMessages;
 import io.spine.delivery.InboxServiceGrpc;
 import io.spine.delivery.OptionalInboxMessage;
 import io.spine.delivery.PageOfMessages;
 import io.spine.delivery.ReadMessagesSinceTime;
-import io.spine.delivery.server.ExtendedInboxStorage;
+import io.spine.delivery.command.RemoveMessage;
+import io.spine.delivery.command.RemoveMessages;
+import io.spine.delivery.command.WriteMessage;
+import io.spine.delivery.command.WriteMessages;
+import io.spine.delivery.storage.InboxStore;
+import io.spine.logging.WithLogging;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
-import io.spine.server.storage.StorageFactory;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,50 +39,70 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.delivery.server.grpc.Responses.completeCall;
 import static io.spine.delivery.server.grpc.Responses.writeOptionalMessage;
+import static io.spine.delivery.storage.StoredForms.checkPageSize;
+import static java.lang.String.format;
 
 /**
- * Acts as a gRPC-wired backend for the {@link io.spine.server.delivery.InboxStorage}.
+ * Acts as a gRPC-wired backend for the {@link io.spine.server.delivery.InboxStorage} of
+ * the client applications, on top of an {@link InboxStore}.
+ *
+ * <p>Each call checks its request, if needed, and then calls one operation of
+ * the {@link InboxStore}.
  */
 public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
         implements WithLogging, NamedHealthAwareService {
 
-    private final ExtendedInboxStorage inboxStorage;
+    /**
+     * The store of the inbox messages.
+     */
+    private final InboxStore store;
+
+    /**
+     * Whether the service reports itself as serving.
+     */
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
-     * Creates an {@code InboxService} backed by an {@link ExtendedInboxStorage} created from
-     * the configured {@code factory}.
+     * Creates an {@code InboxService} backed by the given store.
      */
-    public InboxService(StorageFactory factory) {
+    public InboxService(InboxStore store) {
         super();
-        checkNotNull(factory);
-        inboxStorage = new ExtendedInboxStorage(factory, false);
+        this.store = checkNotNull(store);
     }
 
     @Override
     public void writeOne(WriteMessage request, StreamObserver<Empty> observer) {
         log("`writeOne()`");
-        var id = request.messageId();
-        var message = request.getMessage();
-        inboxStorage.write(id, message);
+        store.write(List.of(request.getMessage()));
         completeCall(observer);
     }
 
+    /**
+     * Stores each message in the shard of its own ID. The {@code shard} field of the request
+     * is not used.
+     */
     @Override
     public void writeMany(WriteMessages request, StreamObserver<Empty> observer) {
         log("`writeMany()`");
-        var messages = request.getMessageList();
-        inboxStorage.writeBatch(messages);
+        store.write(request.getMessageList());
         completeCall(observer);
     }
 
+    /**
+     * Removes the message with the ID of the message in the request. Nothing else of
+     * the message in the request is used.
+     */
     @Override
     public void removeOne(RemoveMessage request, StreamObserver<Empty> observer) {
         log("`removeOne()`");
-        inboxStorage.delete(request.messageId());
+        store.delete(List.of(request.messageId()));
         completeCall(observer);
     }
 
+    /**
+     * Removes the messages with the IDs of the messages in the request. Nothing else of
+     * the messages, and not the {@code shard} field of the request, is used.
+     */
     @Override
     public void removeMany(RemoveMessages request, StreamObserver<Empty> observer) {
         log("`removeMany()`");
@@ -95,29 +111,38 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
                        .stream()
                        .map(InboxMessage::getId)
                        .collect(toImmutableList());
-        inboxStorage.deleteAll(ids);
+        store.delete(ids);
         completeCall(observer);
     }
 
     @Override
     public void findOne(InboxMessageId id, StreamObserver<OptionalInboxMessage> observer) {
         log("`findOne()`");
-        var result = inboxStorage.read(id);
-        writeOptionalMessage(observer, result);
+        var result = store.find(id);
+        writeOptionalMessage(observer, Optional.ofNullable(result));
     }
 
+    /**
+     * Reads a page from the start of the shard if {@code since_when} is not set, or is set
+     * to the zero timestamp.
+     *
+     * @throws IllegalArgumentException
+     *         if {@code page_size} is not positive, which fails the call with
+     *         the {@code UNKNOWN} status; it is the status that the earlier versions of
+     *         the server returned for such a page size, so the clients see no change
+     */
     @Override
     public void findManyInShard(ReadMessagesSinceTime request,
                                 StreamObserver<PageOfMessages> observer) {
-        @Nullable Timestamp sinceWhen = request.getSinceWhen();
+        var sinceWhen = request.getSinceWhen();
         if (Timestamp.getDefaultInstance()
                      .equals(sinceWhen)) {
             sinceWhen = null;
         }
         var pageSize = request.getPageSize();
+        checkPageSize(pageSize);
         var shard = request.getShard();
-        var messages =
-                inboxStorage.readAll(shard, sinceWhen, pageSize);
+        var messages = store.page(shard, sinceWhen, pageSize);
         var responseBuilder =
                 PageOfMessages.newBuilder()
                         .addAllMessage(messages);
@@ -130,16 +155,24 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     @Override
     public void newestMessageToDeliver(ShardIndex request,
                                        StreamObserver<OptionalInboxMessage> observer) {
-        var message = inboxStorage.newestMessageToDeliver(request);
-        writeOptionalMessage(observer, message);
+        var message = store.newestToDeliver(request);
+        writeOptionalMessage(observer, Optional.ofNullable(message));
     }
 
-    private void log(String s) {
-        logger().atInfo().log(() -> format(s));
+    /**
+     * Logs the given message about a request at the {@code DEBUG} level, so that serving
+     * requests does not write to the log by default.
+     */
+    private void log(String message) {
+        logger().atDebug().log(() -> message);
     }
 
-    private void log(ShardIndex shard, ImmutableList<InboxMessage> messages) {
-        logger().atInfo()
+    /**
+     * Logs the index of the shard and the size of the page read from it, at the {@code DEBUG}
+     * level.
+     */
+    private void log(ShardIndex shard, List<InboxMessage> messages) {
+        logger().atDebug()
                 .log(() -> format("`findManyInShard(%d)` -> %d.",
                                   shard.getIndex(), messages.size()));
     }

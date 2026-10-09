@@ -30,7 +30,7 @@ import io.spine.delivery.ShardServiceGrpc;
 import io.spine.delivery.rejection.ShardAlreadyPickedUp;
 import io.spine.delivery.server.DeliveryShardRegistry;
 import io.spine.server.delivery.ShardSessionRecord;
-import io.spine.server.storage.StorageFactory;
+import io.spine.delivery.storage.ShardSessionStore;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -46,22 +46,29 @@ import static io.spine.delivery.server.grpc.Responses.shardPickedUp;
 public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         implements WithLogging, NamedHealthAwareService {
 
+    /**
+     * Decides whether a shard may be picked up, and records the sessions.
+     */
     private final DeliveryShardRegistry registry;
+
+    /**
+     * Whether the service reports itself as serving.
+     */
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
      * Creates a new {@code ShardService} backed by a {@link DeliveryShardRegistry}.
      *
-     * @param factory
-     *         storage to be used to store registry's records
+     * @param store
+     *         the store of the registry's records
      * @param processingTimeout
      *         maximum span of time during which a worker can process a shard
      */
-    public ShardService(StorageFactory factory, Duration processingTimeout) {
+    public ShardService(ShardSessionStore store, Duration processingTimeout) {
         super();
-        checkNotNull(factory);
+        checkNotNull(store);
         checkNotNull(processingTimeout);
-        registry = new DeliveryShardRegistry(factory, processingTimeout);
+        registry = new DeliveryShardRegistry(store, processingTimeout);
     }
 
     @Override
@@ -90,8 +97,12 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         completeCall(observer);
     }
 
+    /**
+     * Logs the given message about the shard with the given index, at the {@code DEBUG} level,
+     * so that serving requests does not write to the log by default.
+     */
     private void log(String s, int index) {
-        logger().atInfo().log(() -> format(s, index));
+        logger().atDebug().log(() -> format(s, index));
     }
 
     @Override
@@ -108,6 +119,10 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         responseObserver.onCompleted();
     }
 
+    /**
+     * Describes the released session, as it was before the release, with the current time
+     * as the time of the release.
+     */
     private static ExpiredSession toExpiredSession(ShardSessionRecord session) {
         return ExpiredSession.newBuilder()
                 .setShard(session.getIndex())

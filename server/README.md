@@ -14,7 +14,13 @@ The port may be additionally configured by setting the `PORT` environment variab
 
 # Storage mode
 
-The server supports 3 storage modes: in-memory, Redis-based, and Hazelcast-based
+The server supports 3 storage modes: in-memory, Redis-based, and Hazelcast-based.
+
+In every mode, the messages are stored per shard: each operation on messages costs in proportion to
+the shard it touches, or to the single message it names, and never to the whole inbox. Picking up
+a shard is exclusive across all the servers that share the storage, with one exception: while
+a network split divides a Hazelcast cluster, each part may pick up the same shard, as described
+below.
 
 The in-memory storage provides the best-possible performance and is used by default.
 
@@ -25,15 +31,22 @@ environment variable. The latter allows configuring the host where the Redis ser
 accessible by the application. It is also possible to configure the `REDIS_PORT`
 environment variable that denotes the port on which Redis is accessible. The port defaults to
 `6379`. If the `USE_REDIS` variable is set, but the `REDIS_HOST` is not configured, the server will
-stay in in-memory mode.
+stay in in-memory mode. All the servers connected to the same Redis database serve the same
+content. Redis 6 or newer is required.
 
 The Hazelcast-based storage adds an ability to start several Delivery Server instances in a
-replicated cluster where all the Delivery Server instances form a single memory space and
-automatically accessing data of each other. This means that changes made on one Delivery Server
-instance will be available for all other instances in the cluster. **Pay attention that this mode is
-experimental, and there is no strong consistency guarantee in the cluster for now.** In order to use
-Hazelcast storage one must set the `USE_HAZELCAST` environment variable to any value (we check only
-the presence of the variable and ignore its value).
+cluster, so that no single server is a point of failure: changes made on one Delivery Server
+instance are available for all other instances in the cluster. In order to use Hazelcast storage
+one must set the `USE_HAZELCAST` environment variable to any value (we check only the presence of
+the variable and ignore its value).
+
+Each shard is kept by one member of the cluster, which applies every operation on the shard
+atomically. Another member keeps a backup copy of the shard, which is updated before an operation
+completes. When a member leaves, the others keep serving all the data. A completed operation is lost
+only after two failures in a row: its backup copy is not updated within Hazelcast's backup timeout
+(5 seconds by default), and then the member that holds the shard fails before the backup copy is
+updated. When a network split divides the members, each part of the cluster may pick up the same
+shard, and when the parts join again, Hazelcast keeps one part's version of each shard.
 
 # Cluster discovery
 
@@ -83,13 +96,31 @@ environment variable. Allowed values are in bounds from `1` to `Integer.MAX_VALU
 # Stale shards auto release
 
 `DeliveryShardRegistry` accepts `processingTimeout` upon which the registry can decide if a session
-is stale. The check is performed when a session is asked for picking up. If a gap between
-`session.whenLastPickedUp()` and `now()` is equal to or more than processingTimeout, the session is
-considered stale and can be picked up again. The fact of a session
-"auto-release" is logged to `WARNING` level.
+is stale. The check is performed when a session is asked for picking up. If a gap between the
+session's last pick-up time and `now()` is strictly more than `processingTimeout`, the session is
+considered stale and can be picked up again. The fact of a session "auto-release" is logged to
+`WARNING` level.
 
 The processing timeout is read from the `SHARD_PROCESSING_TIMEOUT` env variable. The number of
 seconds is expected there. By default, it is 0, which means that the stale-check is not performed at
 all.
+
+# Shard updates for the admin UI
+
+The Admin Service streams an update of a shard after the shard is picked up or released, and after
+its messages change. Each update carries the full current state of its shard: the status, the time
+of the last pick-up, and the number of messages, including `0`. Right after the acknowledgement of a
+subscription, the subscriber receives the current state of every shard that has a session record or
+holds messages. A shard whose index is not set, which only a defective client can write, is never
+sent, because an update must carry the index of its shard. `GetShardInfo` leaves such a shard out
+for the same reason. When the storage reports that changes may have been missed, for example after a
+Redis connection is established again, the state of every such shard is sent again, together with
+every shard that a subscriber last saw with messages or picked up.
+
+The updates are throttled per shard: at most one update of a shard is sent per interval, and the
+changes made during the interval are sent as one update with the final state. The interval is read
+from the `SHARD_UPDATES_INTERVAL_MILLIS` env variable, as a whole number of milliseconds. By
+default, it is `25` milliseconds. The value `0` turns the throttling off. A value that is not a
+non-negative whole number stops the server at startup.
 
 [hz-discovery]: https://docs.hazelcast.com/hazelcast/latest/clusters/discovery-mechanisms

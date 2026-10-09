@@ -24,10 +24,8 @@ import io.spine.delivery.server.grpc.HealthService;
 import io.spine.delivery.server.grpc.InboxService;
 import io.spine.delivery.server.grpc.ShardService;
 import io.spine.logging.WithLogging;
-import io.spine.server.storage.hazelcast.HazelcastStorageFactory;
-import io.spine.server.storage.memory.InMemoryStorageFactory;
-import io.spine.server.storage.redis.RedisStorageFactory;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -37,6 +35,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.protobuf.util.Durations.checkPositive;
 import static java.lang.String.format;
@@ -44,12 +43,23 @@ import static java.util.concurrent.Executors.newFixedThreadPool;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
- * Application exposing only {@link InboxService} and {@link ShardService} instances via gRPC.
+ * The Delivery server: exposes {@link InboxService}, {@link ShardService},
+ * {@link AdminService}, and {@link HealthService} via gRPC.
+ *
+ * <p>The services keep their data in the stores that the environment variables choose:
+ * in memory by default, in Redis if {@code USE_REDIS} and {@code REDIS_HOST} are set,
+ * or in a Hazelcast cluster if {@code USE_HAZELCAST} is set.
  */
 public final class DeliveryServerApp implements WithLogging {
 
+    /**
+     * The port of the gRPC server when {@code PORT} is not set.
+     */
     private static final int DEFAULT_PORT = 8484;
 
+    /**
+     * The number of bytes in a mebibyte.
+     */
     private static final int BYTES_IN_MB = 1_048_576;
 
     /**
@@ -63,7 +73,10 @@ public final class DeliveryServerApp implements WithLogging {
      */
     private static final int SHUTDOWN_TIMEOUT_SECONDS = 5;
 
-    private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB; // 4 MiB
+    /**
+     * The largest inbound message when {@code MAX_INBOUND_MESSAGE_SIZE} is not set, 4 MiB.
+     */
+    private static final int DEFAULT_MESSAGE_SIZE = 4 * BYTES_IN_MB;
 
     /**
      * A default value for {@link #SHARD_PROCESSING_TIMEOUT} constant.
@@ -73,6 +86,21 @@ public final class DeliveryServerApp implements WithLogging {
      * They continue to be held until released by a worker itself.
      */
     private static final Duration NO_SHARD_PROCESSING_TIMEOUT = Durations.ZERO;
+
+    /**
+     * The environment variable that sets the {@linkplain #SHARD_UPDATES_INTERVAL interval of
+     * the shard updates}, in milliseconds.
+     */
+    @VisibleForTesting
+    static final String SHARD_UPDATES_INTERVAL_VARIABLE = "SHARD_UPDATES_INTERVAL_MILLIS";
+
+    /**
+     * The interval of the shard updates when {@value #SHARD_UPDATES_INTERVAL_VARIABLE}
+     * is not set.
+     */
+    @VisibleForTesting
+    static final java.time.Duration DEFAULT_SHARD_UPDATES_INTERVAL =
+            java.time.Duration.ofMillis(25);
 
     /**
      * A host to use for a gRPC server.
@@ -105,9 +133,29 @@ public final class DeliveryServerApp implements WithLogging {
      */
     private static final Duration SHARD_PROCESSING_TIMEOUT = shardProcessingTimeout();
 
+    /**
+     * The shortest time between two updates of one shard that the {@link AdminService} sends
+     * to a subscriber of the shard updates.
+     *
+     * <p>Zero turns the throttling of the updates off.
+     */
+    @SuppressWarnings("CallToSystemGetenv")
+    private static final java.time.Duration SHARD_UPDATES_INTERVAL =
+            shardUpdatesInterval(System.getenv(SHARD_UPDATES_INTERVAL_VARIABLE));
+
+    /**
+     * The threads on which the gRPC server handles the calls.
+     */
     private static final ExecutorService executor = newFixedThreadPool(20);
 
+    /**
+     * The gRPC server, once created.
+     */
     private @MonotonicNonNull Server server;
+
+    /**
+     * The service that reports whether the other services are serving, once created.
+     */
     private @MonotonicNonNull HealthService healthService;
 
     /**
@@ -165,17 +213,31 @@ public final class DeliveryServerApp implements WithLogging {
     }
 
     /**
-     * Creates the storage, starts the gRPC server, and blocks until the server terminates.
+     * Creates the stores, starts the gRPC server, and blocks until the server terminates.
      *
      * <p>Completes {@link #boundPort} with the port the started server listens on. Failures
      * are left to {@link #initAndStart()}, which records them in the same future, so that
      * a caller waiting for the port learns the cause instead of waiting for the timeout.
+     *
+     * <p>When the server terminates, this method stops sending the shard updates, and then
+     * closes the stores.
      */
     private void runServer() throws IOException, InterruptedException {
-        var factory = storageFactory();
-        var inboxService = new InboxService(factory);
-        var shardService = new ShardService(factory, SHARD_PROCESSING_TIMEOUT);
-        var adminService = new AdminService(factory);
+        try (var stores = stores();
+             var adminService = new AdminService(stores.inbox(), stores.sessions(),
+                                                 SHARD_UPDATES_INTERVAL)) {
+            serve(stores, adminService);
+        }
+    }
+
+    /**
+     * Creates the services on top of the given stores, starts the gRPC server, and blocks
+     * until the server terminates.
+     */
+    private void serve(Stores stores, AdminService adminService)
+            throws IOException, InterruptedException {
+        var inboxService = new InboxService(stores.inbox());
+        var shardService = new ShardService(stores.sessions(), SHARD_PROCESSING_TIMEOUT);
         healthService = new HealthService()
                 .register(inboxService)
                 .register(shardService)
@@ -199,16 +261,15 @@ public final class DeliveryServerApp implements WithLogging {
         logger().atInfo()
                 .log(() -> format("Configured shard processing timeout: `%d` seconds.",
                     SHARD_PROCESSING_TIMEOUT.getSeconds()));
-        try {
-            server.start();
-            var assignedPort = server.getPort();
-            boundPort.complete(assignedPort);
-            logger().atInfo().log(() -> format(
-                    "gRPC server started at host '%s' and port '%d'.", HOST, assignedPort));
-            server.awaitTermination();
-        } finally {
-            factory.close();
-        }
+        logger().atInfo()
+                .log(() -> format("Configured shard updates interval: `%d` ms.",
+                                  SHARD_UPDATES_INTERVAL.toMillis()));
+        server.start();
+        var assignedPort = server.getPort();
+        boundPort.complete(assignedPort);
+        logger().atInfo().log(() -> format(
+                "gRPC server started at host '%s' and port '%d'.", HOST, assignedPort));
+        server.awaitTermination();
     }
 
     /**
@@ -302,6 +363,9 @@ public final class DeliveryServerApp implements WithLogging {
         return healthService;
     }
 
+    /**
+     * Returns the port from {@code PORT}, or {@link #DEFAULT_PORT} if it is not set.
+     */
     private static int port() {
         @SuppressWarnings("CallToSystemGetenv")
         var port = System.getenv("PORT");
@@ -311,6 +375,10 @@ public final class DeliveryServerApp implements WithLogging {
         return Integer.parseInt(port);
     }
 
+    /**
+     * Returns the largest inbound message size from {@code MAX_INBOUND_MESSAGE_SIZE}, or
+     * {@link #DEFAULT_MESSAGE_SIZE} if it is not set.
+     */
     private static int messageSize() {
         @SuppressWarnings("CallToSystemGetenv")
         var size = System.getenv("MAX_INBOUND_MESSAGE_SIZE");
@@ -320,6 +388,10 @@ public final class DeliveryServerApp implements WithLogging {
         return Integer.parseInt(size);
     }
 
+    /**
+     * Returns the shard processing timeout from {@code SHARD_PROCESSING_TIMEOUT}, in seconds,
+     * or {@link #NO_SHARD_PROCESSING_TIMEOUT} if it is not set.
+     */
     private static Duration shardProcessingTimeout() {
         @SuppressWarnings("CallToSystemGetenv")
         var envVariable = System.getenv("SHARD_PROCESSING_TIMEOUT");
@@ -331,26 +403,67 @@ public final class DeliveryServerApp implements WithLogging {
         return checkPositive(duration);
     }
 
-    private ReportingStorageFactory storageFactory() {
+    /**
+     * Parses the value of {@value #SHARD_UPDATES_INTERVAL_VARIABLE}.
+     *
+     * @param value
+     *         the value of the variable, or {@code null} if it is not set
+     * @return the interval, or the {@linkplain #DEFAULT_SHARD_UPDATES_INTERVAL default one}
+     *         if the value is {@code null} or empty
+     * @throws IllegalArgumentException
+     *         if the value is not a non-negative whole number of milliseconds
+     */
+    @VisibleForTesting
+    static java.time.Duration shardUpdatesInterval(@Nullable String value) {
+        if (isNullOrEmpty(value)) {
+            return DEFAULT_SHARD_UPDATES_INTERVAL;
+        }
+        long millis;
+        try {
+            millis = Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(invalidInterval(value), e);
+        }
+        checkArgument(millis >= 0, invalidInterval(value));
+        return java.time.Duration.ofMillis(millis);
+    }
+
+    /**
+     * Returns the message that rejects the given value of
+     * {@value #SHARD_UPDATES_INTERVAL_VARIABLE}.
+     */
+    private static String invalidInterval(String value) {
+        return format("`%s` must be a non-negative whole number of milliseconds, but was `%s`.",
+                      SHARD_UPDATES_INTERVAL_VARIABLE, value);
+    }
+
+    /**
+     * Creates the stores that the environment variables choose.
+     */
+    private Stores stores() {
         if (useRedis()) {
             logger().atConfig().log(() -> "Using Redis storage.");
-            return new ReportingStorageFactory(RedisStorageFactory.newInstance());
+            return Stores.redis();
         }
         if (useHazelcast()) {
             logger().atConfig().log(() -> "Using Hazelcast storage.");
-            return new ReportingStorageFactory(HazelcastStorageFactory.newInstance());
+            return Stores.hazelcast();
         }
         logger().atConfig().log(() -> "Using in-memory storage.");
-        var factory = new SingletonStorageFactory(InMemoryStorageFactory.newInstance());
-        return new ReportingStorageFactory(factory);
+        return Stores.inMemory();
     }
 
-    @SuppressWarnings("DuplicateStringLiteralInspection")
+    /**
+     * Tells whether both {@code USE_REDIS} and {@code REDIS_HOST} are set, whatever their values.
+     */
     private static boolean useRedis() {
         var envs = System.getenv();
         return envs.containsKey("USE_REDIS") && envs.containsKey("REDIS_HOST");
     }
 
+    /**
+     * Tells whether {@code USE_HAZELCAST} is set, whatever its value.
+     */
     @SuppressWarnings("DuplicateStringLiteralInspection")
     private static boolean useHazelcast() {
         var envs = System.getenv();

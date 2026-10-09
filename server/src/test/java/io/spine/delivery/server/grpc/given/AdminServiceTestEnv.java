@@ -23,7 +23,6 @@ import io.spine.core.EventContext;
 import io.spine.core.EventId;
 import io.spine.core.Version;
 import io.spine.delivery.admin.grpc.ShardInfo;
-import io.spine.delivery.admin.grpc.ShardInfoUpdate;
 import io.spine.delivery.admin.grpc.ShardStatus;
 import io.spine.delivery.command.PickUpShard;
 import io.spine.delivery.command.ReleaseShard;
@@ -48,7 +47,6 @@ import io.spine.server.delivery.WorkerId;
 import java.util.List;
 import java.util.UUID;
 
-import static io.spine.delivery.admin.grpc.ShardStatus.PICKED;
 import static io.spine.server.delivery.InboxMessageMixin.generateIdWith;
 
 /**
@@ -103,6 +101,23 @@ public final class AdminServiceTestEnv {
         return WriteMessage.newBuilder()
                 .setMessage(inboxMessage)
                 .build();
+    }
+
+    /**
+     * Returns the given request without the shard index of its message, as only
+     * a defective client sends it, skipping the validation of the request.
+     */
+    public static WriteMessage withoutShard(WriteMessage request) {
+        var message = request.getMessage();
+        var id = message.getId()
+                        .toBuilder()
+                        .clearIndex()
+                        .buildPartial();
+        return request.toBuilder()
+                .setMessage(message.toBuilder()
+                                   .setId(id)
+                                   .buildPartial())
+                .buildPartial();
     }
 
     /**
@@ -209,23 +224,6 @@ public final class AdminServiceTestEnv {
      */
     public static Empty request() {
         return Empty.getDefaultInstance();
-    }
-
-    /**
-     * Creates a new {@code ShardInfoUpdate} indicating that the shard with the given {@code index}
-     * is picked.
-     *
-     * <p>Does not set the {@code whenLastPicked} field.
-     *
-     * @implNote Even though the {@code whenLastPicked} field is not required by definition
-     *         and {@code vBuild()} would work as well, we use {@code buildPartial()} to indicate
-     *         that the object create with such parameters is not complete.
-     */
-    public static ShardInfoUpdate shardPickedWithoutTime(ShardIndex index) {
-        return ShardInfoUpdate.newBuilder()
-                .setIndex(index)
-                .setNewStatus(PICKED)
-                .buildPartial();
     }
 
     /**
