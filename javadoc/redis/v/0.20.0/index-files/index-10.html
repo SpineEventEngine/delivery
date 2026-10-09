@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <!-- NewPage -->
 <html lang="en"><head>
-    <title>G-index </title>
+    <title>S-index </title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="dc.created" content="2020-03-25">
     <link rel="stylesheet" type="text/css" href="../stylesheet.css" title="Style">
@@ -51,9 +51,9 @@ var pathtoroot = "../";
             <div class="subNav">
 
     <ul class="navList">
-            <li><a href="index-3.html">PREV&nbsp;LETTER</a></li>
+            <li><a href="index-9.html">PREV&nbsp;LETTER</a></li>
         
-            <li><a href="index-5.html">NEXT&nbsp;LETTER</a></li>
+            <li><a href="index-11.html">NEXT&nbsp;LETTER</a></li>
         </ul>
 <ul class="navList" id="allclasses_navbar_top" style="display: block;">
     <li><a href="../allclasses.html">All&nbsp;Classes</a></li>
@@ -117,176 +117,85 @@ var pathtoroot = "../";
         
             <a href="index-11.html">W</a>&nbsp;
         
-        <h2 class="title">G</h2>
+        <h2 class="title">S</h2>
         <dl>
         
             <dt>
                 
                 <span class="memberNameLink">
                 
-                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#getAtConfig()">getAtConfig()</a>
+                    <a href="../io/spine/delivery/storage/redis/RedisStores.html#start()">start()</a>
                 
-                </span> - function in io.spine.logging.<a href=>WithLogging</a>
+                </span> - function in io.spine.delivery.storage.redis.<a href=>RedisStores.Companion</a>
                 
 
             </dt>
-            <dd>&nbsp;</dd>
+            <dd>Connects to Redis as configured by the first file found in the well-known locations: <code>redisson-test-config.yml</code>, <code>redisson-test-config.yaml</code>, <code>redisson-config.yml</code>, or <code>redisson-config.yaml</code>.</dd>
 
         
             <dt>
                 
                 <span class="memberNameLink">
                 
-                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#getAtDebug()">getAtDebug()</a>
+                    <a href="../io/spine/delivery/storage/redis/RedisStores.html#start(org.redisson.config.Config)">start(org.redisson.config.Config)</a>
                 
-                </span> - function in io.spine.logging.<a href=>WithLogging</a>
+                </span> - function in io.spine.delivery.storage.redis.<a href=>RedisStores.Companion</a>
                 
 
             </dt>
-            <dd>&nbsp;</dd>
+            <dd>Connects to Redis with the given configuration.</dd>
 
         
             <dt>
                 
                 <span class="memberNameLink">
                 
-                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#getAtError()">getAtError()</a>
+                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#subscribe(java.util.function.Consumer)">subscribe(java.util.function.Consumer)</a>
                 
-                </span> - function in io.spine.logging.<a href=>WithLogging</a>
+                </span> - function in io.spine.delivery.storage.redis.<a href=../io/spine/delivery/storage/redis/RedisInboxStore.html>RedisInboxStore</a>
                 
 
             </dt>
-            <dd>&nbsp;</dd>
+            <dd>The listener is called on a thread of the Redis client, for the changes made by every process connected to the same Redis database.</dd>
 
         
             <dt>
                 
                 <span class="memberNameLink">
                 
-                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#getAtFine()">getAtFine()</a>
+                    <a href="../io/spine/delivery/storage/redis/RedisShardSessionStore.html#subscribe(java.util.function.Consumer)">subscribe(java.util.function.Consumer)</a>
                 
-                </span> - function in io.spine.logging.<a href=>WithLogging</a>
+                </span> - function in io.spine.delivery.storage.redis.<a href=../io/spine/delivery/storage/redis/RedisShardSessionStore.html>RedisShardSessionStore</a>
                 
 
             </dt>
-            <dd>&nbsp;</dd>
+            <dd>The listener is called on a thread of the Redis client, for the records written by every process connected to the same Redis database.</dd>
 
         
             <dt>
                 
                 <span class="memberNameLink">
                 
-                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#getAtFiner()">getAtFiner()</a>
+                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#subscribeToMissedChanges(java.lang.Runnable)">subscribeToMissedChanges(java.lang.Runnable)</a>
                 
-                </span> - function in io.spine.logging.<a href=>WithLogging</a>
+                </span> - function in io.spine.delivery.storage.redis.<a href=../io/spine/delivery/storage/redis/RedisInboxStore.html>RedisInboxStore</a>
                 
 
             </dt>
-            <dd>&nbsp;</dd>
+            <dd>Calls <a href=../io/spine/delivery/storage/redis/RedisInboxStore.html#subscribeToMissedChanges(java.lang.Runnable)>onMissed</a> whenever the subscription to the channel of the changes is established, for the first time or again, as Redis does not keep the messages published while a subscriber is disconnected.</dd>
 
         
             <dt>
                 
                 <span class="memberNameLink">
                 
-                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#getAtFinest()">getAtFinest()</a>
+                    <a href="../io/spine/delivery/storage/redis/RedisShardSessionStore.html#subscribeToMissedChanges(java.lang.Runnable)">subscribeToMissedChanges(java.lang.Runnable)</a>
                 
-                </span> - function in io.spine.logging.<a href=>WithLogging</a>
-                
-
-            </dt>
-            <dd>&nbsp;</dd>
-
-        
-            <dt>
-                
-                <span class="memberNameLink">
-                
-                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#getAtInfo()">getAtInfo()</a>
-                
-                </span> - function in io.spine.logging.<a href=>WithLogging</a>
+                </span> - function in io.spine.delivery.storage.redis.<a href=../io/spine/delivery/storage/redis/RedisShardSessionStore.html>RedisShardSessionStore</a>
                 
 
             </dt>
-            <dd>&nbsp;</dd>
-
-        
-            <dt>
-                
-                <span class="memberNameLink">
-                
-                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#getAtSevere()">getAtSevere()</a>
-                
-                </span> - function in io.spine.logging.<a href=>WithLogging</a>
-                
-
-            </dt>
-            <dd>&nbsp;</dd>
-
-        
-            <dt>
-                
-                <span class="memberNameLink">
-                
-                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#getAtTrace()">getAtTrace()</a>
-                
-                </span> - function in io.spine.logging.<a href=>WithLogging</a>
-                
-
-            </dt>
-            <dd>&nbsp;</dd>
-
-        
-            <dt>
-                
-                <span class="memberNameLink">
-                
-                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#getAtWarning()">getAtWarning()</a>
-                
-                </span> - function in io.spine.logging.<a href=>WithLogging</a>
-                
-
-            </dt>
-            <dd>&nbsp;</dd>
-
-        
-            <dt>
-                
-                <span class="memberNameLink">
-                
-                    <a href="../io/spine/delivery/storage/redis/RedisStores.html#getInbox()">getInbox()</a>
-                
-                </span> - function in io.spine.delivery.storage.redis.<a href=../io/spine/delivery/storage/redis/RedisStores.html>RedisStores</a>
-                
-
-            </dt>
-            <dd>The store of the inbox messages.</dd>
-
-        
-            <dt>
-                
-                <span class="memberNameLink">
-                
-                    <a href="../io/spine/delivery/storage/redis/RedisInboxStore.html#getLogger()">getLogger()</a>
-                
-                </span> - function in io.spine.logging.<a href=>WithLogging</a>
-                
-
-            </dt>
-            <dd>&nbsp;</dd>
-
-        
-            <dt>
-                
-                <span class="memberNameLink">
-                
-                    <a href="../io/spine/delivery/storage/redis/RedisStores.html#getSessions()">getSessions()</a>
-                
-                </span> - function in io.spine.delivery.storage.redis.<a href=../io/spine/delivery/storage/redis/RedisStores.html>RedisStores</a>
-                
-
-            </dt>
-            <dd>The store of the shard session records.</dd>
+            <dd>Calls <a href=../io/spine/delivery/storage/redis/RedisShardSessionStore.html#subscribeToMissedChanges(java.lang.Runnable)>onMissed</a> whenever the subscription to the channel of the changes is established, for the first time or again, as Redis does not keep the messages published while a subscriber is disconnected.</dd>
 
         
         </dl>
@@ -344,9 +253,9 @@ var pathtoroot = "../";
         <div class="subNav">
 
     <ul class="navList">
-            <li><a href="index-3.html">PREV&nbsp;LETTER</a></li>
+            <li><a href="index-9.html">PREV&nbsp;LETTER</a></li>
         
-            <li><a href="index-5.html">NEXT&nbsp;LETTER</a></li>
+            <li><a href="index-11.html">NEXT&nbsp;LETTER</a></li>
         </ul>
 <ul class="navList" id="allclasses_navbar_top" style="display: block;">
     <li><a href="../allclasses.html">All&nbsp;Classes</a></li>
