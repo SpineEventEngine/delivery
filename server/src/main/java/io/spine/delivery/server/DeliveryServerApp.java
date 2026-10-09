@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.isNullOrEmpty;
 import static com.google.protobuf.util.Durations.checkPositive;
 import static java.lang.String.format;
@@ -121,7 +120,8 @@ public final class DeliveryServerApp implements WithLogging {
     private static final Duration SHARD_PROCESSING_TIMEOUT = shardProcessingTimeout();
 
     /**
-     * The shortest time between two updates of one shard sent to an admin subscriber.
+     * The shortest time between two updates of one shard that the {@link AdminService} sends
+     * to a subscriber of the shard updates.
      *
      * <p>Zero turns the throttling of the updates off.
      */
@@ -141,11 +141,6 @@ public final class DeliveryServerApp implements WithLogging {
      * The assigned port is then available via {@link #awaitPort()}.
      */
     private final int port;
-
-    /**
-     * The shortest time between two updates of one shard sent to an admin subscriber.
-     */
-    private final java.time.Duration shardUpdatesInterval;
 
     /**
      * Completes with the port the gRPC server listens on once it has started, or
@@ -169,20 +164,7 @@ public final class DeliveryServerApp implements WithLogging {
      */
     @VisibleForTesting
     DeliveryServerApp(int port) {
-        this(port, SHARD_UPDATES_INTERVAL);
-    }
-
-    /**
-     * Creates a new instance of the application exposed at the given {@code port}, which
-     * throttles the shard updates to admin subscribers with the given interval.
-     *
-     * <p>Intended for tests, which turn the throttling off to assert the sequences
-     * of updates.
-     */
-    @VisibleForTesting
-    DeliveryServerApp(int port, java.time.Duration shardUpdatesInterval) {
         this.port = port;
-        this.shardUpdatesInterval = checkNotNull(shardUpdatesInterval);
     }
 
     /**
@@ -219,7 +201,7 @@ public final class DeliveryServerApp implements WithLogging {
     private void runServer() throws IOException, InterruptedException {
         try (var stores = stores();
              var adminService = new AdminService(stores.inbox(), stores.sessions(),
-                                                 shardUpdatesInterval)) {
+                                                 SHARD_UPDATES_INTERVAL)) {
             serve(stores, adminService);
         }
     }
@@ -253,7 +235,7 @@ public final class DeliveryServerApp implements WithLogging {
                     SHARD_PROCESSING_TIMEOUT.getSeconds()));
         logger().atInfo()
                 .log(() -> format("Configured shard updates interval: `%d` ms.",
-                                  shardUpdatesInterval.toMillis()));
+                                  SHARD_UPDATES_INTERVAL.toMillis()));
         server.start();
         var assignedPort = server.getPort();
         boundPort.complete(assignedPort);

@@ -29,7 +29,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -60,10 +59,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 /**
  * Tests {@code AdminService} through the gRPC API of a running app.
  *
- * <p>The app sends the updates without throttling, so that each test can assert the exact
- * sequence of the states that a subscriber receives. A test waits for each expected state
- * before it causes the next change, because changes that land before their shard is read
- * merge into one update.
+ * <p>The app throttles the updates of each shard, so the changes of a shard made within
+ * the throttling interval arrive as one update with their final state. To assert the exact
+ * sequence of the states that a subscriber receives, a test waits for each expected state
+ * before it causes the next change.
  */
 @DisplayName("`AdminService` should")
 final class AdminServiceTest extends WithApp implements WithLogging {
@@ -78,10 +77,6 @@ final class AdminServiceTest extends WithApp implements WithLogging {
      * remembered for the cancellation on the test completion.
      */
     private final List<WithAckObserver> subscriptions = new ArrayList<>();
-
-    AdminServiceTest() {
-        super(Duration.ZERO);
-    }
 
     /**
      * Cancels the subscriptions created by the test.

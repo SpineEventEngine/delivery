@@ -20,33 +20,53 @@ import java.util.TreeMap
 import kotlin.math.min
 
 /**
- * The messages of one shard, indexed by UUID and ordered by the order key.
+ * The inbox messages of one shard, kept in the order in which they are read.
  *
- * Holds each message in a form [M] that a [MessageForm] describes: the `InboxMessage`
- * object in memory, or its bytes with the order-key fields in Hazelcast.
+ * Each message is identified by the UUID of its ID: the `uuid` field of its
+ * `InboxMessageId`. A shard stores at most one message per UUID, so storing a message
+ * replaces the stored one with the same UUID.
  *
- * The sorted maps hold the same objects as the hash map, with a comparator that reads
- * the order key from them, so there is no separate key object per message. The map of
- * the `TO_DELIVER` messages exists only while there are such messages.
+ * The messages are ordered by their order key, which compares, in turn:
+ *  1. the time the message was received, `when_received`: first its seconds, then its nanos;
+ *  2. the version of the message;
+ *  3. the UUID, by its Unicode code points.
  *
- * The number of messages is the size of the hash map, which holds each UUID once,
- * so overwrites and repeated removals cannot skew it.
+ * Pages of messages are read in this order. As the time of receiving comes first, the order
+ * is chronological, and the version and the UUID only break ties.
  *
- * This class is not thread-safe. Its users guard every instance, for example by
- * synchronizing on it.
+ * The number of messages is the number of distinct UUIDs, so storing a message again, or
+ * removing an absent one, never skews it.
  *
- * @param M The form in which a message is held.
+ * This class is not thread-safe. To use an instance from several threads, synchronize on it.
+ *
+ * @param M The type of the stored messages.
  *
  * @property shard The shard of the messages.
- * @property form The description of the held form.
+ * @property form Reads the order key and the status of a stored message.
  */
 public class ShardInbox<M : Any>(
     public val shard: ShardIndex,
     private val form: MessageForm<M>
 ) {
 
+    /**
+     * The messages by the UUIDs of their IDs.
+     */
     private val byUuid = HashMap<String, M>()
+
+    /**
+     * All the messages, in the order of their order keys.
+     *
+     * Each message is both a key and its value, and [form] reads the order key from it,
+     * so the map creates no key object per message.
+     */
     private val all = TreeMap<Any, M>(form.comparator)
+
+    /**
+     * The messages in the `TO_DELIVER` status, in the order of their order keys.
+     *
+     * `null` while there are none, so that a shard without such messages holds no empty map.
+     */
     private var toDeliver: TreeMap<Any, M>? = null
 
     /**
@@ -58,7 +78,8 @@ public class ShardInbox<M : Any>(
     /**
      * The messages of the shard, in no particular order.
      *
-     * A view that reflects later changes; it must be read under the same guard.
+     * The collection reflects later changes of the shard, so read it while holding the same
+     * lock as for the other operations.
      */
     public val messages: Collection<M>
         get() = byUuid.values
@@ -89,6 +110,9 @@ public class ShardInbox<M : Any>(
         return true
     }
 
+    /**
+     * Removes the message from the ordered maps.
+     */
     private fun unindex(message: M) {
         all.remove(message)
         val pending = toDeliver ?: return
@@ -129,22 +153,29 @@ public class ShardInbox<M : Any>(
     }
 
     /**
-     * Returns the `TO_DELIVER` message with the largest order key, or `null` if there
-     * is none.
+     * Returns the newest message to deliver, or `null` if there is none.
+     *
+     * That is the message in the `TO_DELIVER` status that was received last: the last one in
+     * the order of the order keys, which compare the time of receiving first. Of the messages
+     * received at the same time, it is the one with the highest version, and then with
+     * the greatest UUID, so that every store returns the same message.
      */
     public fun newestToDeliver(): M? = toDeliver?.lastEntry()?.value
 }
 
 /**
- * Describes the form in which a [ShardInbox] holds a message.
+ * Reads the parts of a stored message that a [ShardInbox] needs: the UUID of its ID,
+ * the components of its order key, and whether it is to be delivered.
  *
- * @param M The held form.
+ * @param M The type of the stored messages.
  */
 public abstract class MessageForm<M : Any> {
 
     /**
-     * Orders held messages by the order key, and places a [SinceProbe] after every
-     * message received at exactly its time.
+     * Orders the stored messages by their order keys.
+     *
+     * Also compares a message with a [SinceProbe], which sorts after every message received
+     * at exactly its time, so that a page can start right after a given time.
      */
     internal val comparator: Comparator<Any> = Comparator { left, right -> compareAny(left, right) }
 

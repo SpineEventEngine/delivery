@@ -114,8 +114,8 @@ call with status `UNKNOWN`, as uncaught exceptions do today.
 The admin tests that assert exact sequences of updates
 (`AdminServiceTest.notifyMessagesWritten`, `notifyMessagesRemoved`,
 `notifyMessageRemoved`, `notifyUnpicked`) change to the throttled, full-state
-updates. They run with the throttling interval set to 0 where they assert a
-sequence, and wait for each expected state before they cause the next change.
+updates. They run with the default interval, and wait for each expected state
+before they cause the next change, so that no two changes merge into one update.
 
 ## Design
 
@@ -537,9 +537,8 @@ does today; unlike that one, the error message names the variable. An interval
 of 0 turns throttling off: every change makes its shard due at once. Changes
 that land while a read is in flight still merge into the next update, and an
 unchanged state is still not sent. A container receives the variable at start,
-like every other setting of the image. Tests set the interval through a
-package-private constructor of `DeliveryServerApp`, next to the one that takes
-the port.
+like every other setting of the image. The parsing of the variable is tested as
+a function; the tests of the sender pass the interval to it directly.
 
 `GetShardInfo` reads the stores directly and is always exact.
 

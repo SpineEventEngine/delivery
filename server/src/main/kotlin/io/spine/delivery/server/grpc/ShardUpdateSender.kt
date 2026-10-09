@@ -38,59 +38,78 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * The name of the thread that reads and sends the updates.
+ * The name of the thread on which the updates are read and sent.
  */
 private const val THREAD_NAME = "delivery-shard-updates"
 
 /**
- * How long [ShardUpdateSender.close] waits for the sending thread to stop.
+ * How long [ShardUpdateSender.close] waits for the sender thread to stop.
  */
 private const val SHUTDOWN_TIMEOUT_SECONDS = 5L
 
 /**
- * The shortest delay before a failed read is retried.
+ * The delay before the first retry of a failed read, unless the throttling interval
+ * is longer.
  */
 private val MIN_RETRY_DELAY: Duration = Duration.ofMillis(10)
 
 /**
- * The longest delay before a failed read is retried, unless the interval is longer.
+ * The longest delay between two retries of a failed read, unless the throttling interval
+ * is longer.
  */
 private val MAX_RETRY_DELAY: Duration = Duration.ofSeconds(1)
 
 /**
- * Sends [ShardInfoUpdate]s to the admin subscribers of this node.
+ * Tells its subscribers how the shards change.
  *
- * Follows three rules:
+ * A subscriber is the response stream of a gRPC call, passed to [subscribe]. It receives
+ * [ShardInfoUpdate]s, each of which carries the full current state of one shard: whether
+ * a worker has picked the shard, when the shard was last picked, and how many messages
+ * it holds.
  *
- * 1. The stores report every shard that changes, through any node. Nothing else is
- *    carried, neither the count nor the record.
- * 2. Updates are throttled per shard. When a shard changes and it was last read more
- *    than the interval ago, the shard is due at once; otherwise, it is due when
- *    the interval ends. Further changes until then are absorbed into that update.
- *    One shard never postpones another.
- * 3. An update carries the full state of the shard, read when the update is sent. A single
- *    thread works in sweeps: it takes all the shards that are due, clears their marks,
- *    reads their records and counts in one batch, and sends each shard's state to every
- *    subscriber that has not received exactly that state last.
+ * ## Where the changes come from
  *
- * Marking a shard as changed is a constant-time update of a map, so the operations
- * that change the stores never wait for the updates. A change that lands while its shard
- * is being read marks the shard again, so a later sweep sends it.
+ * The [inbox] and [sessions] stores report the index of every shard that changes, whichever
+ * Delivery server sharing the stores made the change. They report nothing else, neither
+ * the new number of messages nor the new session record. The sender records that the shard
+ * changed, and later reads the state of the shard from the stores, and sends it.
  *
- * A new subscriber gets the acknowledgment first. Then, on the sending thread, it gets
- * the current state of every known shard, and only after that does it join the sweeps.
- * The known shards are the shards with a session record, the shards with messages, and
- * the shards that a subscriber last received in another state than that of a shard with
- * neither, so that a shard whose data vanished is reported as such.
+ * Recording a change takes constant time, so the code that changes the stores never waits
+ * for the subscribers. All the reading and sending happens on one thread, the sender thread,
+ * which the sender owns.
  *
- * When a store reports that changes may have been missed, every known shard is marked
- * as changed, so that a shard emptied in the meantime is reported with a count of 0.
+ * ## Throttling
  *
- * While there are no subscribers, changes are not even marked.
+ * At most one update of a shard is sent per [interval]. When a shard changes, and its state
+ * was not read for sending during the last interval, its update is sent at once. Otherwise,
+ * the update is sent when the interval ends, with the state as of that moment, so that all
+ * the changes made in the meantime arrive as one update. Each shard is throttled on its own:
+ * a shard that changes often never delays the updates of another.
  *
- * @param inbox The store of the messages.
- * @param sessions The store of the shard sessions.
- * @param interval The shortest time between two updates of one shard; zero turns
+ * A subscriber never receives the same state of a shard twice in a row.
+ *
+ * ## New subscribers
+ *
+ * A new subscriber first receives the acknowledgment of its subscription. Then it receives
+ * the current state of every known shard, and only after that the updates of later changes.
+ * A change made in between is recorded as any other, so it is not lost.
+ *
+ * The known shards are:
+ *  - the shards that have a session record;
+ *  - the shards that hold messages;
+ *  - the shards that a subscriber last received with messages, as picked, or with the time
+ *    of a pick. The data of such a shard may have vanished, which the subscribers must learn.
+ *
+ * ## Missed changes
+ *
+ * A store may report that it could have missed changes, for example after it connected to
+ * its backend again. The sender then treats every known shard as changed.
+ *
+ * While there are no subscribers, the sender ignores all changes.
+ *
+ * @param inbox The store of the inbox messages.
+ * @param sessions The store of the shard session records.
+ * @param interval The shortest time between two updates of one shard. Zero turns
  *   the throttling off.
  */
 internal class ShardUpdateSender(
@@ -99,51 +118,86 @@ internal class ShardUpdateSender(
     interval: Duration
 ) : AutoCloseable, WithLogging {
 
+    /**
+     * The throttling interval, in nanoseconds.
+     */
     private val intervalNanos = interval.toNanos()
+
+    /**
+     * The delay before the first retry of a failed read, in nanoseconds.
+     */
     private val minRetryNanos = max(MIN_RETRY_DELAY.toNanos(), intervalNanos)
+
+    /**
+     * The longest delay between two retries of a failed read, in nanoseconds.
+     */
     private val maxRetryNanos = max(MAX_RETRY_DELAY.toNanos(), minRetryNanos)
 
+    /**
+     * Runs all the reading and sending, on the sender thread.
+     *
+     * As there is only one thread, a subscriber never receives two updates at the same
+     * time, and the properties accessed on the sender thread only need no synchronization.
+     */
     private val executor: ScheduledExecutorService =
         Executors.newSingleThreadScheduledExecutor { task ->
             Thread(task, THREAD_NAME).apply { isDaemon = true }
         }
 
-    private val sweepTask = Runnable { logFailures { sweep() } }
-
-    private val shards = ConcurrentHashMap<ShardIndex, ShardState>()
+    /**
+     * The task that runs [sendReadyUpdates].
+     */
+    private val sendReadyUpdatesTask = Runnable { logFailures { sendReadyUpdates() } }
 
     /**
-     * The subscribers, from the moment they are acknowledged.
+     * The throttling of each shard that has changed while there were subscribers.
+     */
+    private val throttles = ConcurrentHashMap<ShardIndex, ShardThrottle>()
+
+    /**
+     * The subscribers, from the moment their subscription is acknowledged until they cancel
+     * it, or fail to receive an update.
      */
     private val subscribers: MutableSet<Subscriber> = ConcurrentHashMap.newKeySet()
 
     /**
-     * When the reads may be tried again after a failure, valid while [retryDelay] is not
-     * zero; accessed on the sending thread only.
+     * The time, by [System.nanoTime], before which a failed read is not tried again.
+     *
+     * Meaningful only while [retryDelay] is not zero. Accessed on the sender thread only.
      */
     private var retryAt = 0L
 
     /**
-     * The delay before the next retry, or zero if the last read succeeded; accessed on
-     * the sending thread only.
+     * The delay before the next retry of a failed read, in nanoseconds, or zero if the last
+     * read succeeded.
+     *
+     * Doubles after each failure, up to [maxRetryNanos]. Accessed on the sender thread only.
      */
     private var retryDelay = 0L
 
-    // The last property: it passes `this` to the stores, which may call it at once, so
-    // every other property must be initialized before.
+    /**
+     * The subscriptions of the sender to the changes of the stores.
+     *
+     * Declared after all the other properties: subscribing passes the sender to the stores,
+     * which may call it at once, so every other property must be initialized by then.
+     */
     private val storeSubscriptions = listOf(
-        inbox.subscribe { changed(it) },
-        sessions.subscribe { changed(it) },
-        inbox.subscribeToMissedChanges { missedChanges() },
-        sessions.subscribeToMissedChanges { missedChanges() }
+        inbox.subscribe { onChange(it) },
+        sessions.subscribe { onChange(it) },
+        inbox.subscribeToMissedChanges { onMissedChanges() },
+        sessions.subscribeToMissedChanges { onMissedChanges() }
     )
 
     /**
-     * Adds the subscriber.
+     * Adds a subscriber.
      *
-     * Sends it the acknowledgment on the calling thread. Then, on the sending thread,
-     * sends it the current state of every known shard, after which the subscriber
-     * receives the updates of the sweeps.
+     * Sends the acknowledgment of the subscription on the calling thread. Then, on the sender
+     * thread, sends the current state of every known shard, after which the subscriber
+     * receives the updates of later changes.
+     *
+     * The subscriber is removed when its call is cancelled.
+     *
+     * @param observer The response stream of the subscription call.
      */
     fun subscribe(observer: ServerCallStreamObserver<SubscriptionResponse>) {
         val subscriber = Subscriber(observer)
@@ -155,11 +209,11 @@ internal class ShardUpdateSender(
             subscribers.remove(subscriber)
             throw e
         }
-        execute(0) { join(subscriber) }
+        runOnSenderThread(0) { sendInitialStates(subscriber) }
     }
 
     /**
-     * Stops the sending thread and releases the subscriptions to the stores.
+     * Cancels the subscriptions to the stores, and stops the sender thread.
      */
     override fun close() {
         try {
@@ -169,6 +223,10 @@ internal class ShardUpdateSender(
         }
     }
 
+    /**
+     * Stops the sender thread, waiting up to [SHUTDOWN_TIMEOUT_SECONDS] for it, and forgets
+     * the subscribers.
+     */
     private fun stopSending() {
         executor.shutdownNow()
         try {
@@ -181,56 +239,81 @@ internal class ShardUpdateSender(
         subscribers.clear()
     }
 
-    private fun changed(shard: ShardIndex) {
+    /**
+     * Records that the shard changed, and schedules sending its update when the throttling
+     * allows.
+     *
+     * The stores call it on the thread that made the change, or on a thread of their backend
+     * client. Does nothing while there are no subscribers.
+     */
+    private fun onChange(shard: ShardIndex) {
         if (subscribers.isEmpty()) {
             return
         }
-        val state = shards.computeIfAbsent(shard) { ShardState() }
-        val delay = state.mark(System.nanoTime(), intervalNanos)
+        val throttle = throttles.computeIfAbsent(shard) { ShardThrottle() }
+        val delay = throttle.recordChange(System.nanoTime(), intervalNanos)
         if (delay >= 0) {
-            schedule(delay)
+            scheduleSending(delay)
         }
-    }
-
-    private fun missedChanges() {
-        if (subscribers.isEmpty()) {
-            return
-        }
-        execute(0) { markKnown() }
     }
 
     /**
-     * Marks every known shard as changed.
+     * Arranges for every known shard to be treated as changed, after a store reported that
+     * it could have missed changes.
+     *
+     * Does nothing while there are no subscribers.
      */
-    private fun markKnown() {
+    private fun onMissedChanges() {
+        if (subscribers.isEmpty()) {
+            return
+        }
+        runOnSenderThread(0) { recordChangeOfKnownShards() }
+    }
+
+    /**
+     * Records a change of every known shard.
+     *
+     * Reads the stores to learn which shards are known. If the read fails, tries again later.
+     */
+    private fun recordChangeOfKnownShards() {
         val now = System.nanoTime()
         val wait = retryWait(now)
         if (wait > 0) {
-            execute(wait) { markKnown() }
+            runOnSenderThread(wait) { recordChangeOfKnownShards() }
             return
         }
         val known = try {
-            readKnown().map { it.index }
+            readKnownStates().map { it.index }
         } catch (e: RuntimeException) {
             logger.atWarning().withCause(e).log {
                 "Reading the known shards after missed changes failed. They will be read again."
             }
-            execute(failed(now)) { markKnown() }
+            runOnSenderThread(readFailed(now)) { recordChangeOfKnownShards() }
             return
         }
-        succeeded()
-        known.forEach(::changed)
+        readSucceeded()
+        known.forEach(::onChange)
     }
 
-    private fun schedule(delayNanos: Long) {
+    /**
+     * Schedules a run of [sendReadyUpdates] after the given delay.
+     *
+     * Does nothing once the sender is closed.
+     */
+    private fun scheduleSending(delayNanos: Long) {
         try {
-            executor.schedule(sweepTask, delayNanos, NANOSECONDS)
+            executor.schedule(sendReadyUpdatesTask, delayNanos, NANOSECONDS)
         } catch (_: RejectedExecutionException) {
             // The sender is closed.
         }
     }
 
-    private fun execute(delayNanos: Long, action: () -> Unit) {
+    /**
+     * Runs the action on the sender thread after the given delay, and logs its failure.
+     *
+     * Does nothing once the sender is closed.
+     */
+    private fun runOnSenderThread(delayNanos: Long, action: () -> Unit) {
         try {
             executor.schedule({ logFailures(action) }, delayNanos, NANOSECONDS)
         } catch (_: RejectedExecutionException) {
@@ -238,42 +321,53 @@ internal class ShardUpdateSender(
         }
     }
 
-    private fun sweep() {
+    /**
+     * Sends the updates of all the shards whose time to be sent has come.
+     *
+     * Takes these shards from their throttles, reads their states from the stores in one batch,
+     * and sends each state to every subscriber that has received its initial states. If
+     * the read fails, the updates become pending again, and are retried after a delay that
+     * grows with each failure.
+     */
+    private fun sendReadyUpdates() {
         val now = System.nanoTime()
         val wait = retryWait(now)
         if (wait > 0) {
-            schedule(wait)
+            scheduleSending(wait)
             return
         }
-        val due = ArrayList<ShardIndex>()
-        for ((shard, state) in shards) {
-            if (state.takeIfDue(now)) {
-                due.add(shard)
+        val ready = ArrayList<ShardIndex>()
+        for ((shard, throttle) in throttles) {
+            if (throttle.takeIfReady(now)) {
+                ready.add(shard)
             }
         }
-        if (due.isEmpty()) {
+        if (ready.isEmpty()) {
             return
         }
         val updates = try {
-            read(due)
+            readStates(ready)
         } catch (e: RuntimeException) {
             logger.atWarning().withCause(e).log {
-                "Reading the state of ${due.size} shards failed. It will be read again."
+                "Reading the state of ${ready.size} shards failed. It will be read again."
             }
-            due.forEach { shards.getValue(it).markAgain(now) }
-            schedule(failed(now))
+            ready.forEach { throttles.getValue(it).retry(now) }
+            scheduleSending(readFailed(now))
             return
         }
-        succeeded()
+        readSucceeded()
         for (update in updates) {
-            subscribers.forEach { if (it.joined) it.send(update) }
+            subscribers.forEach { if (it.receivesChanges) it.send(update) }
         }
     }
 
-    private fun read(due: List<ShardIndex>): List<ShardInfoUpdate> {
-        val counts = inbox.count(due)
-        val records = sessions.read(due)
-        return due.mapNotNull { state(it, records[it]?.record, counts[it] ?: 0) }
+    /**
+     * Reads the states of the given shards, in one batch per store.
+     */
+    private fun readStates(shards: List<ShardIndex>): List<ShardInfoUpdate> {
+        val counts = inbox.count(shards)
+        val records = sessions.read(shards)
+        return shards.mapNotNull { stateOf(it, records[it]?.record, counts[it] ?: 0) }
     }
 
     /**
@@ -283,7 +377,7 @@ internal class ShardUpdateSender(
      *
      * Such a shard is left out of the updates, so that it does not stop the others.
      */
-    private fun state(
+    private fun stateOf(
         shard: ShardIndex,
         record: ShardSessionRecord?,
         count: Int
@@ -292,70 +386,87 @@ internal class ShardUpdateSender(
             currentState(shard, record, count)
         } catch (e: IllegalArgumentException) {
             logger.atWarning().withCause(e).log {
-                "The state of the shard `${shard.tag()}` cannot be sent to admin subscribers."
+                "The state of the shard `${shard.tag()}` cannot be sent to the subscribers."
             }
             null
         }
 
-    private fun join(subscriber: Subscriber) {
+    /**
+     * Sends the current state of every known shard to a new subscriber, after which
+     * the subscriber receives the updates of later changes.
+     *
+     * Runs on the sender thread, so no update of a change reaches the subscriber before its
+     * initial states. If the read fails, tries again later.
+     */
+    private fun sendInitialStates(subscriber: Subscriber) {
         if (subscriber !in subscribers) {
             return
         }
         val now = System.nanoTime()
         val wait = retryWait(now)
         if (wait > 0) {
-            execute(wait) { join(subscriber) }
+            runOnSenderThread(wait) { sendInitialStates(subscriber) }
             return
         }
         val states = try {
-            readKnown()
+            readKnownStates()
         } catch (e: RuntimeException) {
             logger.atWarning().withCause(e).log {
                 "Reading the state of the shards for a new subscriber failed." +
                         " It will be read again."
             }
-            execute(failed(now)) { join(subscriber) }
+            runOnSenderThread(readFailed(now)) { sendInitialStates(subscriber) }
             return
         }
-        succeeded()
+        readSucceeded()
         for (state in states) {
             if (!subscriber.send(state)) {
                 return
             }
         }
-        subscriber.joined = true
+        subscriber.receivesChanges = true
     }
 
-    private fun readKnown(): List<ShardInfoUpdate> {
+    /**
+     * Reads the current states of all the known shards.
+     */
+    private fun readKnownStates(): List<ShardInfoUpdate> {
         val records = sessions.readAll().associateBy({ it.record.index }, { it.record })
         val counts = inbox.counts()
         val known = LinkedHashSet<ShardIndex>(records.keys)
         known.addAll(counts.keys)
         subscribers.forEach { known.addAll(it.shardsWithData()) }
-        return known.mapNotNull { state(it, records[it], counts[it] ?: 0) }
+        return known.mapNotNull { stateOf(it, records[it], counts[it] ?: 0) }
     }
 
     /**
-     * Returns how long the reads must still wait after a failure, or zero if they need
-     * not wait.
+     * Returns how long a read must still wait after a failure, in nanoseconds, or zero if
+     * it need not wait.
      */
     private fun retryWait(now: Long): Long =
         if (retryDelay == 0L) 0L else max(retryAt - now, 0L)
 
     /**
-     * Records a failed read, and returns the delay before the reads are tried again.
+     * Records a failed read, and returns the delay in nanoseconds before the next attempt.
      */
-    private fun failed(now: Long): Long {
+    private fun readFailed(now: Long): Long {
         retryDelay = if (retryDelay == 0L) minRetryNanos else min(retryDelay * 2, maxRetryNanos)
         retryAt = now + retryDelay
         return retryDelay
     }
 
-    private fun succeeded() {
+    /**
+     * Records a successful read, after which reads need not wait.
+     */
+    private fun readSucceeded() {
         retryDelay = 0L
     }
 
-    @Suppress("TooGenericExceptionCaught") // Nothing must stop the sending thread.
+    /**
+     * Runs the action, and logs its failure instead of throwing it, so that a failure never
+     * stops the sender thread.
+     */
+    @Suppress("TooGenericExceptionCaught") // Nothing must stop the sender thread.
     private fun logFailures(action: () -> Unit) {
         try {
             action()
@@ -365,36 +476,45 @@ internal class ShardUpdateSender(
     }
 
     /**
-     * An admin subscriber of this node.
+     * A subscriber to the shard updates.
+     *
+     * Remembers the state of each shard that it last received, so that it never receives
+     * the same state twice in a row.
+     *
+     * @property observer The response stream of the subscription call.
      */
     private inner class Subscriber(
         private val observer: ServerCallStreamObserver<SubscriptionResponse>
     ) {
 
         /**
-         * Whether the subscriber has received its initial state, after which the sweeps
-         * serve it; accessed on the sending thread only.
+         * Whether the subscriber has received its initial states, after which it receives
+         * the updates of changes.
+         *
+         * Accessed on the sender thread only.
          */
-        var joined = false
+        var receivesChanges = false
 
         /**
-         * The state of each shard that the subscriber received last; accessed on
-         * the sending thread only.
+         * The state of each shard that the subscriber received last.
+         *
+         * Accessed on the sender thread only.
          */
         private val lastReceived = HashMap<ShardIndex, ShardInfoUpdate>()
 
         /**
-         * Whether sending to the subscriber failed, after which nothing is sent to it;
-         * accessed on the sending thread only.
+         * Whether sending to the subscriber has failed, after which nothing is sent to it.
+         *
+         * Accessed on the sender thread only.
          */
         private var failed = false
 
         /**
-         * Sends the update, unless it is the state the subscriber received last.
+         * Sends the update, unless it is the state that the subscriber received last.
          *
          * A subscriber that fails to receive it is removed, and its call is closed.
          *
-         * @return `false` if the subscriber has failed, now or before
+         * @return `false` if sending to the subscriber has failed, now or before.
          */
         fun send(update: ShardInfoUpdate): Boolean {
             if (failed) {
@@ -420,6 +540,9 @@ internal class ShardUpdateSender(
             }
         }
 
+        /**
+         * Closes the subscription call with the given error, unless it is already closed.
+         */
         private fun closeWithError(e: RuntimeException) {
             try {
                 observer.onError(e)
@@ -429,66 +552,102 @@ internal class ShardUpdateSender(
         }
 
         /**
-         * Returns the shards that the subscriber last received with messages, picked, or
-         * with the time of a pick: in another state than that of a shard with neither
-         * messages nor a session record.
+         * Returns the shards that the subscriber last received with messages, as picked, or
+         * with the time of a pick.
+         *
+         * A shard without messages and without a session record has none of these, so its
+         * state differs from all of them.
          */
         fun shardsWithData(): List<ShardIndex> =
             lastReceived.values
                 .filter(::hasData)
                 .map { it.index }
 
+        /**
+         * Tells whether the state has messages, is picked, or has the time of a pick.
+         */
         private fun hasData(state: ShardInfoUpdate): Boolean =
             state.newMessagesCount > 0 || state.newStatus == PICKED || state.hasWhenLastPicked()
     }
 }
 
 /**
- * The throttling state of one shard.
+ * Decides when the next update of one shard may be sent.
+ *
+ * A change of the shard makes an update of it pending. The update may be sent at once,
+ * unless the state of the shard was read for sending less than the throttling interval ago.
+ * Then it may be sent when that interval ends. Changes made while the update is pending join
+ * it, and make no other update.
+ *
+ * The methods are synchronized, because changes are recorded on any thread, while
+ * the pending updates are taken on the sender thread.
  */
-private class ShardState {
+private class ShardThrottle {
 
-    private var marked = false
-    private var dueAt = 0L
-    private var wasRead = false
+    /**
+     * Whether an update of the shard waits to be sent.
+     */
+    private var pending = false
+
+    /**
+     * When the pending update may be sent, by [System.nanoTime].
+     */
+    private var sendAt = 0L
+
+    /**
+     * Whether the state of the shard has ever been read for sending.
+     */
+    private var readBefore = false
+
+    /**
+     * When the state of the shard was last read for sending, by [System.nanoTime].
+     */
     private var lastReadAt = 0L
 
     /**
-     * Marks the shard as changed.
+     * Records a change of the shard.
      *
-     * @return the delay in nanoseconds until the shard is due, or -1 if the shard was
-     *   already marked
+     * @return The delay in nanoseconds until the update may be sent, or -1 if an update was
+     *   already pending, in which case its sending is already scheduled.
      */
     @Synchronized
-    fun mark(now: Long, intervalNanos: Long): Long {
-        if (marked) {
+    fun recordChange(now: Long, intervalNanos: Long): Long {
+        if (pending) {
             return -1
         }
-        marked = true
-        dueAt = if (wasRead && now - lastReadAt < intervalNanos) lastReadAt + intervalNanos else now
-        return max(dueAt - now, 0)
+        pending = true
+        sendAt = if (readBefore && now - lastReadAt < intervalNanos) {
+            lastReadAt + intervalNanos
+        } else {
+            now
+        }
+        return max(sendAt - now, 0)
     }
 
     /**
-     * Marks the shard as changed and due at once, after its read has failed.
+     * Makes the update pending again, to be sent at once, after reading the state of
+     * the shard has failed.
      */
     @Synchronized
-    fun markAgain(now: Long) {
-        marked = true
-        dueAt = now
+    fun retry(now: Long) {
+        pending = true
+        sendAt = now
     }
 
     /**
-     * Takes the shard for a read, if it is marked and due: clears its mark and records
-     * the time of the read.
+     * Takes the pending update, if its time to be sent has come.
+     *
+     * A taken update is no longer pending, and the time of the read that follows is recorded.
+     *
+     * @return `true` if the update is taken.
      */
     @Synchronized
-    fun takeIfDue(now: Long): Boolean {
-        if (!marked || dueAt - now > 0) {
+    fun takeIfReady(now: Long): Boolean {
+        if (!pending || sendAt - now > 0) {
             return false
         }
-        marked = false
-        wasRead = true
+        pending = false
+        readBefore = true
         lastReadAt = now
         return true
     }
