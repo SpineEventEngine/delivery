@@ -35,14 +35,20 @@ internal typealias ShardEntry = MutableMap.MutableEntry<String, HazelcastShard?>
  * so that the backup replica, which runs the same processor, ends in the same state.
  *
  * @param R The type of the result.
+ *
+ * @property classId The concrete processor class. Hazelcast writes its [ID][ClassId.id] with
+ *   [FACTORY_ID] instead of the class name. The member that receives the processor passes
+ *   the ID to [DeliverySerializableFactory] to create an instance, and then reads
+ *   the processor's data into it. The ID must stay the same across versions, so that members
+ *   of different versions understand each other during a rolling upgrade.
  */
 internal abstract class ShardProcessor<R>(
-    private val classId: Int
+    private val classId: ClassId
 ) : EntryProcessor<String, HazelcastShard?, R>, IdentifiedDataSerializable {
 
     final override fun getFactoryId(): Int = FACTORY_ID
 
-    final override fun getClassId(): Int = classId
+    final override fun getClassId(): Int = classId.id
 
     companion object {
         @Serial
@@ -53,7 +59,9 @@ internal abstract class ShardProcessor<R>(
 /**
  * A processor that only reads its shard, and therefore needs no backup processor.
  */
-internal abstract class ReadingProcessor<R>(classId: Int) : ShardProcessor<R>(classId), ReadOnly {
+internal abstract class ReadingProcessor<R>(
+    classId: ClassId
+) : ShardProcessor<R>(classId), ReadOnly {
 
     final override fun getBackupProcessor(): EntryProcessor<String, HazelcastShard?, R>? = null
 

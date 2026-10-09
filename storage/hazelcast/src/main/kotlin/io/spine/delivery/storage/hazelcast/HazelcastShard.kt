@@ -27,29 +27,45 @@ import io.spine.server.delivery.ShardIndex
 /**
  * The ID of the factory of the serializable classes of the Delivery stores.
  *
- * Fixed for the life of the stored data, as are the class IDs below.
+ * Fixed for the life of the stored data, as are the [class IDs][ClassId.id].
  */
 internal const val FACTORY_ID = 1_729
 
 /**
- * The class IDs of the serializable classes of the Delivery stores.
+ * The serializable classes of the Delivery stores, each with its class ID.
+ *
+ * The IDs are explicit, never the ordinals, so that reordering or adding entries cannot
+ * change them.
+ *
+ * @property id The class ID, which Hazelcast writes with [FACTORY_ID] instead of
+ *   the class name. Fixed for the life of the stored data.
  */
-internal object ClassId {
-    const val SHARD = 1
-    const val WRITE = 2
-    const val DELETE = 3
-    const val FIND = 4
-    const val PAGE = 5
-    const val NEWEST = 6
-    const val COUNT = 7
+internal enum class ClassId(val id: Int) {
+    SHARD(1),
+    WRITE(2),
+    DELETE(3),
+    FIND(4),
+    PAGE(5),
+    NEWEST(6),
+    COUNT(7);
+
+    companion object {
+
+        /**
+         * Returns the class with the given ID, or `null` if there is none.
+         */
+        fun of(id: Int): ClassId? = entries.firstOrNull { it.id == id }
+    }
 }
 
 /**
  * Creates the serializable classes of the Delivery stores when Hazelcast reads them.
+ *
+ * The `when` below is exhaustive, so the compiler requires a creator for each [ClassId].
  */
 internal class DeliverySerializableFactory : DataSerializableFactory {
 
-    override fun create(typeId: Int): IdentifiedDataSerializable = when (typeId) {
+    override fun create(typeId: Int): IdentifiedDataSerializable = when (ClassId.of(typeId)) {
         ClassId.SHARD -> HazelcastShard()
         ClassId.WRITE -> WriteMessages()
         ClassId.DELETE -> DeleteMessages()
@@ -57,7 +73,7 @@ internal class DeliverySerializableFactory : DataSerializableFactory {
         ClassId.PAGE -> ReadPage()
         ClassId.NEWEST -> FindNewestToDeliver()
         ClassId.COUNT -> CountMessages()
-        else -> throw IllegalArgumentException("Unknown class ID: $typeId.")
+        null -> throw IllegalArgumentException("Unknown class ID: $typeId.")
     }
 }
 
@@ -145,7 +161,7 @@ internal class HazelcastShard() : IdentifiedDataSerializable {
 
     override fun getFactoryId(): Int = FACTORY_ID
 
-    override fun getClassId(): Int = ClassId.SHARD
+    override fun getClassId(): Int = ClassId.SHARD.id
 
     override fun writeData(out: ObjectDataOutput) {
         out.writeInt(inbox.shard.index)
