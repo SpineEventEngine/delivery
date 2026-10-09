@@ -1,0 +1,41 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:io.grpc.health.v1/HealthCheckRequest.Builder///PointingToDeclaration/io/grpc/health/v1/HealthCheckRequest.Builder.html
+$dokka.location:io.grpc.health.v1/HealthCheckResponse.Builder///PointingToDeclaration/io/grpc/health/v1/HealthCheckResponse.Builder.html
+$dokka.location:io.grpc.health.v1/HealthCheckResponse.ServingStatus///PointingToDeclaration/io/grpc/health/v1/HealthCheckResponse.ServingStatus.html
+$dokka.location:io.grpc.health.v1/HealthGrpc.AsyncService///PointingToDeclaration/io/grpc/health/v1/HealthGrpc.AsyncService.html
+$dokka.location:io.grpc.health.v1/HealthGrpc.HealthBlockingStub///PointingToDeclaration/io/grpc/health/v1/HealthGrpc.HealthBlockingStub.html
+$dokka.location:io.grpc.health.v1/HealthGrpc.HealthBlockingV2Stub///PointingToDeclaration/io/grpc/health/v1/HealthGrpc.HealthBlockingV2Stub.html
+$dokka.location:io.grpc.health.v1/HealthGrpc.HealthFutureStub///PointingToDeclaration/io/grpc/health/v1/HealthGrpc.HealthFutureStub.html
+$dokka.location:io.grpc.health.v1/HealthGrpc.HealthImplBase///PointingToDeclaration/io/grpc/health/v1/HealthGrpc.HealthImplBase.html
+$dokka.location:io.grpc.health.v1/HealthGrpc.HealthStub///PointingToDeclaration/io/grpc/health/v1/HealthGrpc.HealthStub.html
+$dokka.location:io.spine.delivery.admin.grpc/AdminServiceGrpc.AdminServiceBlockingStub///PointingToDeclaration/io/spine/delivery/admin/grpc/AdminServiceGrpc.AdminServiceBlockingStub.html
+$dokka.location:io.spine.delivery.admin.grpc/AdminServiceGrpc.AdminServiceBlockingV2Stub///PointingToDeclaration/io/spine/delivery/admin/grpc/AdminServiceGrpc.AdminServiceBlockingV2Stub.html
+$dokka.location:io.spine.delivery.admin.grpc/AdminServiceGrpc.AdminServiceFutureStub///PointingToDeclaration/io/spine/delivery/admin/grpc/AdminServiceGrpc.AdminServiceFutureStub.html
+$dokka.location:io.spine.delivery.admin.grpc/AdminServiceGrpc.AdminServiceImplBase///PointingToDeclaration/io/spine/delivery/admin/grpc/AdminServiceGrpc.AdminServiceImplBase.html
+$dokka.location:io.spine.delivery.admin.grpc/AdminServiceGrpc.AdminServiceStub///PointingToDeclaration/io/spine/delivery/admin/grpc/AdminServiceGrpc.AdminServiceStub.html
+$dokka.location:io.spine.delivery.admin.grpc/AdminServiceGrpc.AsyncService///PointingToDeclaration/io/spine/delivery/admin/grpc/AdminServiceGrpc.AsyncService.html
+$dokka.location:io.spine.delivery.admin.grpc/ShardInfo.Builder///PointingToDeclaration/io/spine/delivery/admin/grpc/ShardInfo.Builder.html
+$dokka.location:io.spine.delivery.admin.grpc/ShardInfoList.Builder///PointingToDeclaration/io/spine/delivery/admin/grpc/ShardInfoList.Builder.html
+$dokka.location:io.spine.delivery.admin.grpc/ShardInfoUpdate.Builder///PointingToDeclaration/io/spine/delivery/admin/grpc/ShardInfoUpdate.Builder.html
+$dokka.location:io.spine.delivery.admin.grpc/SubscriptionResponse.Builder///PointingToDeclaration/io/spine/delivery/admin/grpc/SubscriptionResponse.Builder.html
+$dokka.location:io.spine.delivery.admin.grpc/SubscriptionResponse.ValueCase///PointingToDeclaration/io/spine/delivery/admin/grpc/SubscriptionResponse.ValueCase.html
+$dokka.location:io.spine.delivery/InboxServiceGrpc.AsyncService///PointingToDeclaration/io/spine/delivery/InboxServiceGrpc.AsyncService.html
+$dokka.location:io.spine.delivery/InboxServiceGrpc.InboxServiceBlockingStub///PointingToDeclaration/io/spine/delivery/InboxServiceGrpc.InboxServiceBlockingStub.html
+$dokka.location:io.spine.delivery/InboxServiceGrpc.InboxServiceBlockingV2Stub///PointingToDeclaration/io/spine/delivery/InboxServiceGrpc.InboxServiceBlockingV2Stub.html
+$dokka.location:io.spine.delivery/InboxServiceGrpc.InboxServiceFutureStub///PointingToDeclaration/io/spine/delivery/InboxServiceGrpc.InboxServiceFutureStub.html
+$dokka.location:io.spine.delivery/InboxServiceGrpc.InboxServiceImplBase///PointingToDeclaration/io/spine/delivery/InboxServiceGrpc.InboxServiceImplBase.html
+$dokka.location:io.spine.delivery/InboxServiceGrpc.InboxServiceStub///PointingToDeclaration/io/spine/delivery/InboxServiceGrpc.InboxServiceStub.html
+$dokka.location:io.spine.delivery/OptionalInboxMessage.Builder///PointingToDeclaration/io/spine/delivery/OptionalInboxMessage.Builder.html
+$dokka.location:io.spine.delivery/PageOfMessages.Builder///PointingToDeclaration/io/spine/delivery/PageOfMessages.Builder.html
+$dokka.location:io.spine.delivery/ReadMessagesSinceTime.Builder///PointingToDeclaration/io/spine/delivery/ReadMessagesSinceTime.Builder.html
+$dokka.location:io.spine.delivery/ShardServiceGrpc.AsyncService///PointingToDeclaration/io/spine/delivery/ShardServiceGrpc.AsyncService.html
+$dokka.location:io.spine.delivery/ShardServiceGrpc.ShardServiceBlockingStub///PointingToDeclaration/io/spine/delivery/ShardServiceGrpc.ShardServiceBlockingStub.html
+$dokka.location:io.spine.delivery/ShardServiceGrpc.ShardServiceBlockingV2Stub///PointingToDeclaration/io/spine/delivery/ShardServiceGrpc.ShardServiceBlockingV2Stub.html
+$dokka.location:io.spine.delivery/ShardServiceGrpc.ShardServiceFutureStub///PointingToDeclaration/io/spine/delivery/ShardServiceGrpc.ShardServiceFutureStub.html
+$dokka.location:io.spine.delivery/ShardServiceGrpc.ShardServiceImplBase///PointingToDeclaration/io/spine/delivery/ShardServiceGrpc.ShardServiceImplBase.html
+$dokka.location:io.spine.delivery/ShardServiceGrpc.ShardServiceStub///PointingToDeclaration/io/spine/delivery/ShardServiceGrpc.ShardServiceStub.html
+io.grpc.health.v1
+io.spine.delivery
+io.spine.delivery.admin
+io.spine.delivery.admin.grpc
