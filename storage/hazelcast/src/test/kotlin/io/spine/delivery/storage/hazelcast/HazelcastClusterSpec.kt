@@ -27,12 +27,12 @@ import io.spine.delivery.storage.given.shard
 import io.spine.server.delivery.InboxMessageStatus.DELIVERED
 import io.spine.server.delivery.InboxMessageStatus.TO_DELIVER
 import java.time.Duration
-import java.util.UUID
 import java.util.concurrent.Callable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit.SECONDS
+import kotlin.uuid.Uuid
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -49,12 +49,12 @@ internal class HazelcastClusterSpec {
     /**
      * The name of the first member.
      */
-    private val firstName = "first-${UUID.randomUUID()}"
+    private val firstName = "first-${Uuid.random()}"
 
     /**
      * The name of the second member.
      */
-    private val secondName = "second-${UUID.randomUUID()}"
+    private val secondName = "second-${Uuid.random()}"
 
     /**
      * The stores of the first member.
@@ -68,7 +68,7 @@ internal class HazelcastClusterSpec {
 
     @BeforeEach
     fun startMembers() {
-        val cluster = "delivery-test-${UUID.randomUUID()}"
+        val cluster = "delivery-test-${Uuid.random()}"
         first = HazelcastStores.start(testConfig(cluster, firstName))
         second = HazelcastStores.start(testConfig(cluster, secondName))
         awaitSafeCluster(firstName)
@@ -128,7 +128,7 @@ internal class HazelcastClusterSpec {
 
         first.inbox.write(listOf(message(shard(1))))
         changes.expect(shard(1))
-        first.sessions.compareAndSet(shard(2), null, session(shard(2)), UUID.randomUUID())
+        first.sessions.compareAndSet(shard(2), null, session(shard(2)), Uuid.random())
         changes.expect(shard(2))
     }
 
@@ -142,7 +142,7 @@ internal class HazelcastClusterSpec {
                 pool.submit(Callable {
                     start.await()
                     shards.map {
-                        stores.sessions.compareAndSet(it, null, session(it), UUID.randomUUID())
+                        stores.sessions.compareAndSet(it, null, session(it), Uuid.random())
                     }
                 })
             }
@@ -162,7 +162,7 @@ internal class HazelcastClusterSpec {
         val messages = (0 until 300).map { message(shard(it), seconds = it.toLong()) }
         first.inbox.write(messages)
         val sessions = (0 until 300).map { session(shard(it)) }
-        sessions.forEach { first.sessions.compareAndSet(it.index, null, it, UUID.randomUUID()) }
+        sessions.forEach { first.sessions.compareAndSet(it.index, null, it, Uuid.random()) }
 
         terminate(firstName)
 
@@ -173,7 +173,7 @@ internal class HazelcastClusterSpec {
 
     @Test
     fun `hand all data over to a member that joins after the writes`() {
-        val cluster = "delivery-test-${UUID.randomUUID()}"
+        val cluster = "delivery-test-${Uuid.random()}"
         val alone = HazelcastStores.start(testConfig(cluster))
         try {
             val shards = (0 until 30).map { shard(it) }
@@ -183,7 +183,7 @@ internal class HazelcastClusterSpec {
                 message(shards[it % shards.size], seconds = it.toLong(), status = status)
             }
             alone.inbox.write(messages)
-            val joiningName = "joining-${UUID.randomUUID()}"
+            val joiningName = "joining-${Uuid.random()}"
             val joining = HazelcastStores.start(testConfig(cluster, joiningName))
             try {
                 awaitSafeCluster(joiningName)

@@ -27,8 +27,8 @@ import io.spine.delivery.storage.shardOf
 import io.spine.delivery.storage.tag
 import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
-import java.util.UUID
 import java.util.function.Consumer
+import kotlin.uuid.Uuid
 
 /**
  * A [ShardSessionStore] kept in a Hazelcast map, from the [tag][tag] of a shard to
@@ -92,7 +92,7 @@ public class HazelcastShardSessionStore internal constructor(
         shard: ShardIndex,
         expected: Stored?,
         replacement: ShardSessionRecord,
-        writeId: UUID
+        writeId: Uuid
     ): CasOutcome {
         val tag = shard.tag()
         val bytes = sessionForm(writeId, replacement)

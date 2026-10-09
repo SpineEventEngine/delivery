@@ -22,12 +22,12 @@ import io.spine.delivery.storage.given.message
 import io.spine.delivery.storage.given.session
 import io.spine.delivery.storage.given.shard
 import java.time.Duration
-import java.util.UUID
 import java.util.concurrent.Callable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.Semaphore
 import java.util.concurrent.TimeUnit.SECONDS
+import kotlin.uuid.Uuid
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -83,7 +83,7 @@ internal class RedisMultiNodeSpec {
 
         first.inbox.write(listOf(message(shard(1))))
         changes.expect(shard(1))
-        first.sessions.compareAndSet(shard(2), null, session(shard(2)), UUID.randomUUID())
+        first.sessions.compareAndSet(shard(2), null, session(shard(2)), Uuid.random())
         changes.expect(shard(2))
     }
 
@@ -97,7 +97,7 @@ internal class RedisMultiNodeSpec {
                 pool.submit(Callable {
                     start.await()
                     shards.map {
-                        stores.sessions.compareAndSet(it, null, session(it), UUID.randomUUID())
+                        stores.sessions.compareAndSet(it, null, session(it), Uuid.random())
                     }
                 })
             }

@@ -18,7 +18,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import io.spine.delivery.storage.given.session
 import io.spine.delivery.storage.given.shard
-import java.util.UUID
+import kotlin.uuid.Uuid
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -28,7 +28,7 @@ internal class StoredFormsSpec {
     @Test
     fun `keep the record and its write ID`() {
         val record = session(shard(1))
-        val writeId = UUID.randomUUID()
+        val writeId = Uuid.random()
         val form = sessionForm(writeId, record)
 
         val stored = parseSession(form)
@@ -41,7 +41,7 @@ internal class StoredFormsSpec {
     @Test
     fun `be the bytes of a 'StoredShardSession'`() {
         val record = session(shard(1))
-        val writeId = UUID.randomUUID()
+        val writeId = Uuid.random()
 
         val session = StoredShardSession.parseFrom(sessionForm(writeId, record))
 

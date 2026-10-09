@@ -24,7 +24,7 @@ import io.spine.delivery.storage.given.session
 import io.spine.delivery.storage.given.shard
 import io.spine.server.delivery.ShardSessionRecord
 import java.time.Duration
-import java.util.UUID
+import kotlin.uuid.Uuid
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -77,7 +77,7 @@ public abstract class ShardSessionStoreContract {
     /**
      * Returns the ID of a new write.
      */
-    private fun newWriteId(): UUID = UUID.randomUUID()
+    private fun newWriteId(): Uuid = Uuid.random()
 
     /**
      * Writes the record of a shard that has none, and returns it as stored.

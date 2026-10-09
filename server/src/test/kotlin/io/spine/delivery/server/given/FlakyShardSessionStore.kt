@@ -19,7 +19,7 @@ import io.spine.delivery.storage.ShardSessionStore
 import io.spine.delivery.storage.Stored
 import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * A store whose writes fail in the ways that the client of a database may fail.
@@ -74,14 +74,14 @@ internal class FlakyShardSessionStore(
         shard: ShardIndex,
         expected: Stored?,
         replacement: ShardSessionRecord,
-        writeId: UUID
+        writeId: Uuid
     ): CasOutcome {
         writes++
         pending.forEach { it() }
         pending.clear()
         if (alwaysConflicting) {
             val changing = replacement.toBuilder().clearWorker().buildPartial()
-            return CasOutcome.Conflict(Stored(changing, UUID.randomUUID(), changing))
+            return CasOutcome.Conflict(Stored(changing, Uuid.random(), changing))
         }
         if (lateWrites > 0) {
             lateWrites--

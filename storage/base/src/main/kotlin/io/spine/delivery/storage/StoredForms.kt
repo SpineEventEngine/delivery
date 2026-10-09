@@ -19,7 +19,7 @@ package io.spine.delivery.storage
 import com.google.protobuf.InvalidProtocolBufferException
 import io.spine.server.delivery.InboxMessage
 import io.spine.server.delivery.ShardSessionRecord
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 /**
  * Parses the stored bytes of an inbox message.
@@ -37,7 +37,7 @@ public fun parseMessage(bytes: ByteArray): InboxMessage =
  * Returns the stored form of a shard session record written by the given write:
  * the bytes of a [StoredShardSession] that holds the write ID and the record.
  */
-public fun sessionForm(writeId: UUID, record: ShardSessionRecord): ByteArray =
+public fun sessionForm(writeId: Uuid, record: ShardSessionRecord): ByteArray =
     StoredShardSession.newBuilder()
         .setWriteId(writeId.toString())
         .setRecord(record)
@@ -57,7 +57,7 @@ public fun parseSession(form: ByteArray): Stored {
         throw IllegalStateException("The stored bytes are not a `StoredShardSession`.", e)
     }
     val writeId = try {
-        UUID.fromString(session.writeId)
+        Uuid.parse(session.writeId)
     } catch (e: IllegalArgumentException) {
         throw IllegalStateException("The stored write ID `${session.writeId}` is not a UUID.", e)
     }

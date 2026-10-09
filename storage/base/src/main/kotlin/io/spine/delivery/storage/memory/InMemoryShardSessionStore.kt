@@ -21,9 +21,9 @@ import io.spine.delivery.storage.Stored
 import io.spine.delivery.storage.Subscription
 import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
-import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Consumer
+import kotlin.uuid.Uuid
 
 /**
  * A [ShardSessionStore] that keeps the records in the memory of the process.
@@ -63,7 +63,7 @@ public class InMemoryShardSessionStore : ShardSessionStore {
         shard: ShardIndex,
         expected: Stored?,
         replacement: ShardSessionRecord,
-        writeId: UUID
+        writeId: Uuid
     ): CasOutcome {
         var conflict: CasOutcome.Conflict? = null
         records.compute(shard) { _, current ->

@@ -25,8 +25,8 @@ import io.spine.delivery.storage.shardOf
 import io.spine.delivery.storage.tag
 import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
-import java.util.UUID
 import java.util.function.Consumer
+import kotlin.uuid.Uuid
 import org.redisson.api.RScript.Mode.READ_WRITE
 import org.redisson.api.RedissonClient
 
@@ -92,7 +92,7 @@ public class RedisShardSessionStore internal constructor(
         shard: ShardIndex,
         expected: Stored?,
         replacement: ShardSessionRecord,
-        writeId: UUID
+        writeId: Uuid
     ): CasOutcome {
         val expectedBytes = if (expected == null) {
             ByteArray(0)

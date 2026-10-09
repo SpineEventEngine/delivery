@@ -34,9 +34,9 @@ import io.spine.delivery.storage.memory.InMemoryShardSessionStore
 import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
 import java.time.Duration
-import java.util.UUID
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit.MILLISECONDS
+import kotlin.uuid.Uuid
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -153,9 +153,9 @@ internal class ShardUpdateSenderSpec {
         fun `with the current state of every known shard`() {
             write(first, count = 2)
             val picked = session(second, pickedAt = 5)
-            sessions.compareAndSet(second, null, picked, UUID.randomUUID())
+            sessions.compareAndSet(second, null, picked, Uuid.random())
             val released = session(third, pickedAt = 7).toBuilder().clearWorker().build()
-            sessions.compareAndSet(third, null, released, UUID.randomUUID())
+            sessions.compareAndSet(third, null, released, Uuid.random())
 
             val observer = sender().subscribed()
 
@@ -289,7 +289,7 @@ internal class ShardUpdateSenderSpec {
         fun `the full state of the shard, including a count of zero`() {
             val observer = sender().subscribed()
             val picked = session(first, pickedAt = 10)
-            sessions.compareAndSet(first, null, picked, UUID.randomUUID())
+            sessions.compareAndSet(first, null, picked, Uuid.random())
             observer.nextUpdate() shouldBe state(first, 0, picked)
 
             val messages = listOf(message(first), message(first))
@@ -297,7 +297,7 @@ internal class ShardUpdateSenderSpec {
             observer.nextUpdate() shouldBe state(first, 2, picked)
 
             val released = picked.toBuilder().clearWorker().build()
-            sessions.compareAndSet(first, sessions.read(first), released, UUID.randomUUID())
+            sessions.compareAndSet(first, sessions.read(first), released, Uuid.random())
             observer.nextUpdate() shouldBe state(first, 2, released)
 
             inbox.delete(messages.map { it.id })
@@ -429,7 +429,7 @@ internal class ShardUpdateSenderSpec {
         fun `of a shard whose session record vanished`() {
             val observer = sender().subscribed()
             val picked = session(first, pickedAt = 3)
-            sessions.compareAndSet(first, null, picked, UUID.randomUUID())
+            sessions.compareAndSet(first, null, picked, Uuid.random())
             observer.nextUpdate() shouldBe state(first, 0, picked)
             sessions.vanish(first)
 

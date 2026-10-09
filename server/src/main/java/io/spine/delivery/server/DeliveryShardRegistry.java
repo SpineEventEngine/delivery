@@ -28,9 +28,9 @@ import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.delivery.WorkerId;
+import kotlin.uuid.Uuid;
 import org.jspecify.annotations.Nullable;
 
-import java.util.UUID;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -41,7 +41,6 @@ import static io.spine.base.Time.currentTime;
 import static io.spine.delivery.storage.Shards.tag;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
-import static java.util.UUID.randomUUID;
 
 /**
  * The registry of the shard indexes along with the worker identifiers,
@@ -134,7 +133,7 @@ public final class DeliveryShardRegistry implements WithLogging {
         // Every attempt writes the same record with the same write ID, which no other call
         // has. So a record found with this write ID is this call's own write, applied by
         // an attempt whose outcome was not known.
-        var writeId = randomUUID();
+        var writeId = Uuid.Companion.random();
         // The record of the session that holds the shard, or `null` if this call picked it.
         @Nullable ShardSessionRecord holder = update(index, writeId, store.read(index), current -> {
             if (current == null) {
@@ -169,7 +168,7 @@ public final class DeliveryShardRegistry implements WithLogging {
      * is already cleared.
      */
     public void releaseShard(ShardIndex index) {
-        update(index, randomUUID(), store.read(index),
+        update(index, Uuid.Companion.random(), store.read(index),
                current -> current == null
                           ? Decision.done(null)
                           : Decision.write(cleared(current), null));
@@ -191,7 +190,7 @@ public final class DeliveryShardRegistry implements WithLogging {
         var result = ImmutableSet.<ShardSessionRecord>builder();
         for (var stored : store.readAll()) {
             var index = stored.getRecord().getIndex();
-            var released = update(index, randomUUID(), stored, current -> {
+            var released = update(index, Uuid.Companion.random(), stored, current -> {
                 if (current == null || !isInactive(current.getRecord(), inactivityPeriod, now)) {
                     return Decision.done(null);
                 }
@@ -227,7 +226,7 @@ public final class DeliveryShardRegistry implements WithLogging {
      *         if the record keeps changing for {@link #MAX_ATTEMPTS} attempts
      */
     private <T> T update(ShardIndex index,
-                         UUID writeId,
+                         Uuid writeId,
                          @Nullable Stored initial,
                          Function<@Nullable Stored, Decision<T>> decide) {
         var current = initial;

@@ -33,11 +33,11 @@ import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
 import io.spine.server.delivery.WorkerId
 import io.spine.testing.time.FrozenMadHatterParty
-import java.util.UUID
 import java.util.concurrent.Callable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit.SECONDS
+import kotlin.uuid.Uuid
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -100,7 +100,7 @@ internal class DeliveryShardRegistrySpec {
                     shard: ShardIndex,
                     expected: Stored?,
                     replacement: ShardSessionRecord,
-                    writeId: UUID
+                    writeId: Uuid
                 ): CasOutcome {
                     if (!raced) {
                         raced = true

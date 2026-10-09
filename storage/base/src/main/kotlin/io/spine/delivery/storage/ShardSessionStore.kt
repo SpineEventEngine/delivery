@@ -16,8 +16,8 @@ package io.spine.delivery.storage
 
 import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
-import java.util.UUID
 import java.util.function.Consumer
+import kotlin.uuid.Uuid
 
 /**
  * Stores the session records of shards: which worker processes a shard, and since when.
@@ -67,7 +67,7 @@ public interface ShardSessionStore : AutoCloseable {
         shard: ShardIndex,
         expected: Stored?,
         replacement: ShardSessionRecord,
-        writeId: UUID
+        writeId: Uuid
     ): CasOutcome
 
     /**
@@ -111,7 +111,7 @@ public interface ShardSessionStore : AutoCloseable {
  */
 public class Stored(
     public val record: ShardSessionRecord,
-    public val writeId: UUID,
+    public val writeId: Uuid,
     public val form: Any
 ) {
 
