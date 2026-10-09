@@ -17,21 +17,19 @@ package io.spine.delivery.server.grpc;
 import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
 import io.grpc.stub.StreamObserver;
-import io.spine.logging.WithLogging;
-import static java.lang.String.format;
-import io.spine.delivery.command.RemoveMessage;
-import io.spine.delivery.command.RemoveMessages;
-import io.spine.delivery.command.WriteMessage;
-import io.spine.delivery.command.WriteMessages;
 import io.spine.delivery.InboxServiceGrpc;
 import io.spine.delivery.OptionalInboxMessage;
 import io.spine.delivery.PageOfMessages;
 import io.spine.delivery.ReadMessagesSinceTime;
+import io.spine.delivery.command.RemoveMessage;
+import io.spine.delivery.command.RemoveMessages;
+import io.spine.delivery.command.WriteMessage;
+import io.spine.delivery.command.WriteMessages;
 import io.spine.delivery.storage.InboxStore;
+import io.spine.logging.WithLogging;
 import io.spine.server.delivery.InboxMessage;
 import io.spine.server.delivery.InboxMessageId;
 import io.spine.server.delivery.ShardIndex;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +40,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.delivery.server.grpc.Responses.completeCall;
 import static io.spine.delivery.server.grpc.Responses.writeOptionalMessage;
+import static java.lang.String.format;
 
 /**
  * Acts as a gRPC-wired backend for the {@link io.spine.server.delivery.InboxStorage} of
@@ -107,7 +106,7 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     @Override
     public void findManyInShard(ReadMessagesSinceTime request,
                                 StreamObserver<PageOfMessages> observer) {
-        @Nullable Timestamp sinceWhen = request.getSinceWhen();
+        var sinceWhen = request.getSinceWhen();
         if (Timestamp.getDefaultInstance()
                      .equals(sinceWhen)) {
             sinceWhen = null;
