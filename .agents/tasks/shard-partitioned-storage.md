@@ -402,7 +402,8 @@ stored form of the session record.
 **Encoding.** Keys, hash fields, sorted-set members, and both change channels
 use `StringCodec` (UTF-8). Hash values, script arguments, and script results use
 `ByteArrayCodec`. Message values are exactly `InboxMessage.toByteArray()`;
-registry values are exactly `ShardSessionRecord.toByteArray()`. These formats
+registry values are the 16 bytes of the write ID followed by
+`ShardSessionRecord.toByteArray()`. These formats
 are fixed for the life of the stored data.
 
 **Scripts.** Every script receives its keys through `KEYS[]` and runs with
