@@ -160,17 +160,19 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
     }
 
     /**
-     * Logs the given message at the {@code INFO} level.
+     * Logs the given message about a request at the {@code DEBUG} level, so that serving
+     * requests does not write to the log by default.
      */
-    private void log(String s) {
-        logger().atInfo().log(() -> format(s));
+    private void log(String message) {
+        logger().atDebug().log(() -> message);
     }
 
     /**
-     * Logs the index of the shard and the size of the page read from it.
+     * Logs the index of the shard and the size of the page read from it, at the {@code DEBUG}
+     * level.
      */
     private void log(ShardIndex shard, List<InboxMessage> messages) {
-        logger().atInfo()
+        logger().atDebug()
                 .log(() -> format("`findManyInShard(%d)` -> %d.",
                                   shard.getIndex(), messages.size()));
     }

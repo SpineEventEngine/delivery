@@ -98,10 +98,11 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     }
 
     /**
-     * Logs the given message about the shard with the given index, at the {@code INFO} level.
+     * Logs the given message about the shard with the given index, at the {@code DEBUG} level,
+     * so that serving requests does not write to the log by default.
      */
     private void log(String s, int index) {
-        logger().atInfo().log(() -> format(s, index));
+        logger().atDebug().log(() -> format(s, index));
     }
 
     @Override

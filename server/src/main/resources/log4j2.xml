@@ -14,12 +14,19 @@
 
 <Configuration>
     <Appenders>
+        <!--
+          The appender writes synchronously. The server logs each request at `DEBUG` only,
+          so at `INFO` it writes when it starts, and on warnings and errors, none of which
+          is on the path of a request. A synchronous appender writes the last messages
+          before a crash too, which an asynchronous one may lose.
+          -->
         <Console name="LogToConsole" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{ISO8601} %t %-5level %logger{36} - %msg%n"/>
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="io.spine.delivery.server" level="TRACE" additivity="false">
+        <!-- Set the level to `DEBUG` to log every request served. -->
+        <Logger name="io.spine.delivery.server" level="INFO" additivity="false">
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <Root level="INFO">
