@@ -24,15 +24,17 @@ import io.spine.server.delivery.ShardIndex
 private const val TAG_SEPARATOR = '/'
 
 /**
- * Returns the shard tag, `<index>/<ofTotal>`, which names the shard in the keys and
- * the change notifications of the distributed stores.
+ * Returns the tag of the shard: `<index>/<ofTotal>`, in decimal.
+ *
+ * The tag identifies the shard where only a string can, such as in the key of a database
+ * entry, or in a message about a changed shard.
  */
 public fun ShardIndex.tag(): String = "$index$TAG_SEPARATOR$ofTotal"
 
 /**
- * Returns the shard named by the given [tag][ShardIndex.tag].
+ * Returns the shard that the given [tag][ShardIndex.tag] identifies.
  *
- * @throws IllegalArgumentException if the string is not a shard tag
+ * @throws IllegalArgumentException If the string is not a shard tag.
  */
 public fun shardOf(tag: String): ShardIndex {
     val separator = tag.indexOf(TAG_SEPARATOR)

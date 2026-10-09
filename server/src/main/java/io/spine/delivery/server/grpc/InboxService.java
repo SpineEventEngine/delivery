@@ -35,11 +35,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.ImmutableList.toImmutableList;
 import static io.spine.delivery.server.grpc.Responses.completeCall;
 import static io.spine.delivery.server.grpc.Responses.writeOptionalMessage;
+import static io.spine.delivery.storage.StoredForms.checkPageSize;
 import static java.lang.String.format;
 
 /**
@@ -52,7 +52,14 @@ import static java.lang.String.format;
 public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
         implements WithLogging, NamedHealthAwareService {
 
+    /**
+     * The store of the inbox messages.
+     */
     private final InboxStore store;
+
+    /**
+     * Whether the service reports itself as serving.
+     */
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
@@ -70,6 +77,10 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
         completeCall(observer);
     }
 
+    /**
+     * Stores each message in the shard of its own ID. The {@code shard} field of the request
+     * is not used.
+     */
     @Override
     public void writeMany(WriteMessages request, StreamObserver<Empty> observer) {
         log("`writeMany()`");
@@ -77,6 +88,10 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
         completeCall(observer);
     }
 
+    /**
+     * Removes the message with the ID of the message in the request. Nothing else of
+     * the message in the request is used.
+     */
     @Override
     public void removeOne(RemoveMessage request, StreamObserver<Empty> observer) {
         log("`removeOne()`");
@@ -84,6 +99,10 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
         completeCall(observer);
     }
 
+    /**
+     * Removes the messages with the IDs of the messages in the request. Nothing else of
+     * the messages, and not the {@code shard} field of the request, is used.
+     */
     @Override
     public void removeMany(RemoveMessages request, StreamObserver<Empty> observer) {
         log("`removeMany()`");
@@ -103,6 +122,15 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
         writeOptionalMessage(observer, Optional.ofNullable(result));
     }
 
+    /**
+     * Reads a page from the start of the shard if {@code since_when} is not set, or is set
+     * to the zero timestamp.
+     *
+     * @throws IllegalArgumentException
+     *         if {@code page_size} is not positive, which fails the call with
+     *         the {@code UNKNOWN} status; it is the status that the earlier versions of
+     *         the server returned for such a page size, so the clients see no change
+     */
     @Override
     public void findManyInShard(ReadMessagesSinceTime request,
                                 StreamObserver<PageOfMessages> observer) {
@@ -112,7 +140,7 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
             sinceWhen = null;
         }
         var pageSize = request.getPageSize();
-        checkArgument(pageSize > 0, "The page size must be positive, but was %s.", pageSize);
+        checkPageSize(pageSize);
         var shard = request.getShard();
         var messages = store.page(shard, sinceWhen, pageSize);
         var responseBuilder =
@@ -131,10 +159,16 @@ public final class InboxService extends InboxServiceGrpc.InboxServiceImplBase
         writeOptionalMessage(observer, Optional.ofNullable(message));
     }
 
+    /**
+     * Logs the given message at the {@code INFO} level.
+     */
     private void log(String s) {
         logger().atInfo().log(() -> format(s));
     }
 
+    /**
+     * Logs the index of the shard and the size of the page read from it.
+     */
     private void log(ShardIndex shard, List<InboxMessage> messages) {
         logger().atInfo()
                 .log(() -> format("`findManyInShard(%d)` -> %d.",

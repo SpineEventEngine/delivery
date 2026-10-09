@@ -23,7 +23,7 @@ import io.spine.server.delivery.ShardSessionRecord
 /**
  * Parses the stored bytes of an inbox message.
  *
- * @throws IllegalStateException if the bytes are not an `InboxMessage`
+ * @throws IllegalStateException If the bytes are not an `InboxMessage`.
  */
 public fun parseMessage(bytes: ByteArray): InboxMessage =
     try {
@@ -35,7 +35,7 @@ public fun parseMessage(bytes: ByteArray): InboxMessage =
 /**
  * Parses the stored bytes of a shard session record.
  *
- * @throws IllegalStateException if the bytes are not a `ShardSessionRecord`
+ * @throws IllegalStateException If the bytes are not a `ShardSessionRecord`.
  */
 public fun parseSession(bytes: ByteArray): ShardSessionRecord =
     try {
@@ -47,7 +47,7 @@ public fun parseSession(bytes: ByteArray): ShardSessionRecord =
 /**
  * Checks that a page size is positive.
  *
- * @throws IllegalArgumentException if it is not
+ * @throws IllegalArgumentException If it is not.
  */
 public fun checkPageSize(pageSize: Int) {
     require(pageSize > 0) { "The page size must be positive, but was $pageSize." }

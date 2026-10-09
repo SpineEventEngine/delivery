@@ -105,6 +105,9 @@ private val MAX_RETRY_DELAY: Duration = Duration.ofSeconds(1)
  * A store may report that it could have missed changes, for example after it connected to
  * its backend again. The sender then treats every known shard as changed.
  *
+ * A shard whose index is not set, which only a defective client can write, is never sent,
+ * because an update must carry the index of its shard. The other shards are sent as usual.
+ *
  * While there are no subscribers, the sender ignores all changes.
  *
  * @param inbox The store of the inbox messages.

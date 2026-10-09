@@ -54,8 +54,19 @@ private const val WAIT_MILLIS = 10_000L
 @DisplayName("`ShardUpdateSender` should")
 internal class ShardUpdateSenderSpec {
 
+    /**
+     * The store of the messages, whose reads the tests count and fail.
+     */
     private val inbox = ObservedInboxStore(InMemoryInboxStore())
+
+    /**
+     * The store of the session records, whose records the tests make vanish.
+     */
     private val sessions = VanishingShardSessionStore(InMemoryShardSessionStore())
+
+    /**
+     * The senders created by a test, closed after it.
+     */
     private val senders = ArrayList<ShardUpdateSender>()
 
     private val first = shard(1)
@@ -67,9 +78,15 @@ internal class ShardUpdateSenderSpec {
         senders.forEach { it.close() }
     }
 
+    /**
+     * Creates a sender with the given throttling interval, which is closed after the test.
+     */
     private fun sender(interval: Duration = Duration.ZERO): ShardUpdateSender =
         ShardUpdateSender(inbox, sessions, interval).also { senders.add(it) }
 
+    /**
+     * Subscribes the given observer, and returns it.
+     */
     private fun ShardUpdateSender.subscribed(
         observer: RecordingObserver = RecordingObserver()
     ): RecordingObserver {
@@ -93,12 +110,22 @@ internal class ShardUpdateSenderSpec {
         return observer
     }
 
+    /**
+     * Writes the given number of new messages to the shard.
+     */
     private fun write(shard: ShardIndex, count: Int = 1) =
         inbox.write((1..count).map { message(shard) })
 
+    /**
+     * Returns the update that carries the given state of the shard.
+     */
     private fun state(shard: ShardIndex, count: Int, session: ShardSessionRecord? = null) =
         currentState(shard, session, count)
 
+    /**
+     * Waits until the counts of given shards have been read at least the given number of
+     * times.
+     */
     private fun awaitShardReads(count: Int) {
         val deadline = System.currentTimeMillis() + WAIT_MILLIS
         while (inbox.shardReads.get() < count) {

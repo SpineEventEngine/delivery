@@ -45,7 +45,8 @@ service AdminService {
     //
     // Users should consider the subscription as created only after receiving the acknowledgement
     // in the `SubscriptionResponse`. Right after the acknowledgement, the subscriber receives
-    // the current state of every known shard, which reflects the changes made before.
+    // the current state of every shard that has a session record or holds messages, which
+    // reflects the changes made before. A shard whose index is not set is never sent.
     //
     // Each update is sent as a single `ShardInfoUpdate`, which carries the full current state of
     // its shard. The updates of each shard are throttled, so that the changes made within

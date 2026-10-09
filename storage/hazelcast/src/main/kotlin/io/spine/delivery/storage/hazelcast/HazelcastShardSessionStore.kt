@@ -29,22 +29,39 @@ import io.spine.server.delivery.ShardSessionRecord
 import java.util.function.Consumer
 
 /**
- * A [ShardSessionStore] kept in the Hazelcast map [SESSIONS_MAP] of serialized records,
- * keyed by the shard tag.
+ * A [ShardSessionStore] kept in a Hazelcast map, from the [tag][tag] of a shard to the bytes
+ * of its session record.
  *
- * The map keeps its values in the binary form, so `replace` and `putIfAbsent` compare
- * the stored bytes.
+ * The map keeps its values as bytes, so its `replace` and `putIfAbsent` compare the stored
+ * bytes, which makes them the atomic compare-and-set that [compareAndSet] needs.
+ *
+ * @param map The map of the records.
+ * @param missed The listeners of the changes that the store may have missed, shared with
+ *   the other store of the same member.
  */
 public class HazelcastShardSessionStore internal constructor(
     private val map: IMap<String, ByteArray>,
     private val missed: MissedChangeListeners
 ) : ShardSessionStore {
 
+    /**
+     * The listeners passed to [subscribe].
+     */
     private val listeners = ChangeListeners()
+
+    /**
+     * The ID of the listener of the changes of [map], which tells [listeners] about them.
+     *
+     * The listener receives the changes made by every member of the cluster, without
+     * the records themselves.
+     */
     private val listenerId = map.addEntryListener(ShardChanges(listeners), false)
 
     override fun read(shard: ShardIndex): Stored? = map[shard.tag()]?.let(::stored)
 
+    /**
+     * Reads the records with one `getAll` of the map.
+     */
     override fun read(shards: Collection<ShardIndex>): Map<ShardIndex, Stored> {
         if (shards.isEmpty()) {
             return emptyMap()
@@ -59,6 +76,16 @@ public class HazelcastShardSessionStore internal constructor(
 
     override fun readAll(): List<Stored> = map.values.map(::stored)
 
+    /**
+     * Writes with `putIfAbsent` if no record is expected, and with `replace` of the expected
+     * bytes otherwise. Both compare the stored bytes and write in one atomic step.
+     *
+     * When `replace` fails, the current record is read again, so the conflict may report
+     * a record newer than the one that failed the comparison.
+     *
+     * @throws IllegalArgumentException If [expected] was not read from a store that keeps
+     *   records as bytes.
+     */
     override fun compareAndSet(
         shard: ShardIndex,
         expected: Stored?,
@@ -78,10 +105,26 @@ public class HazelcastShardSessionStore internal constructor(
         return CasOutcome.Conflict(map[tag]?.let(::stored))
     }
 
+    /**
+     * The listener is called on a thread of Hazelcast, for the records written by every
+     * member.
+     */
     override fun subscribe(onChange: Consumer<ShardIndex>): Subscription = listeners.add(onChange)
 
+    /**
+     * Calls [onMissed] when a member leaves the cluster, when a part of the data is lost,
+     * and when the cluster joins again after a network split.
+     *
+     * Hazelcast may lose the reports of the changes in these cases.
+     */
     override fun subscribeToMissedChanges(onMissed: Runnable): Subscription = missed.add(onMissed)
 
+    /**
+     * Stops listening to the changes of the map, and removes the listeners passed to
+     * [subscribe].
+     *
+     * The records stay in the cluster.
+     */
     override fun close() {
         try {
             map.removeEntryListener(listenerId)
@@ -90,5 +133,8 @@ public class HazelcastShardSessionStore internal constructor(
         }
     }
 
+    /**
+     * Returns the record with the given bytes as its stored form.
+     */
     private fun stored(bytes: ByteArray) = Stored(parseSession(bytes), bytes)
 }

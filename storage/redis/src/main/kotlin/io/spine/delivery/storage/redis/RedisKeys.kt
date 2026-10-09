@@ -27,33 +27,49 @@ private const val LONG_DIGITS = 20
 private const val INT_DIGITS = 10
 
 /**
- * The length of an [encoded order key][encodeOrderKey].
+ * The number of characters of an [encoded order key][encodeOrderKey].
  */
 internal const val ORDER_KEY_LENGTH = LONG_DIGITS + 1 + INT_DIGITS + 1 + INT_DIGITS
 
 /**
- * The position, counted from 1 as Lua does, at which the UUID starts in a member of
- * a sorted set: after the encoded order key and the `:` that follows it.
+ * The position at which the UUID starts in an element of the sorted set of a shard: after
+ * the encoded order key and the `:` that follows it.
+ *
+ * Counted from 1, as Lua counts the characters of a string.
  */
 internal const val UUID_POSITION = ORDER_KEY_LENGTH + 2
 
 /**
- * The hash of a shard's messages, from the UUID to the message bytes.
+ * Returns the key of the hash that holds the messages of a shard: from the UUID of each
+ * message to its bytes.
+ *
+ * The part of the key in braces is the same for all the keys of a shard. A Redis cluster
+ * therefore keeps them on one server, where a script can use them together.
  */
 internal fun messagesKey(tag: String): String = "delivery:{inbox:$tag}:messages"
 
 /**
- * The hash of a shard's encoded order keys, from the UUID to the key.
+ * Returns the key of the hash that holds the [encoded order key][encodeOrderKey] of each
+ * message of a shard, by the UUID of the message.
+ *
+ * A write or a delete reads the old order key of a message here, to find the elements
+ * of the message in the sorted sets of the shard.
  */
 internal fun orderKeysKey(tag: String): String = "delivery:{inbox:$tag}:keys"
 
 /**
- * The sorted set of all of a shard's messages, as `<encoded order key>:<UUID>`.
+ * Returns the key of the sorted set of all the messages of a shard.
+ *
+ * Each element is `<encoded order key>:<UUID>`. All the elements have the same score,
+ * so Redis orders them by their bytes, which is the order of their order keys.
  */
 internal fun allKey(tag: String): String = "delivery:{inbox:$tag}:all"
 
 /**
- * The sorted set of a shard's `TO_DELIVER` messages, as `<encoded order key>:<UUID>`.
+ * Returns the key of the sorted set of the messages of a shard in the `TO_DELIVER` status.
+ *
+ * Its elements are those of the [sorted set of all the messages][allKey] that are to be
+ * delivered.
  */
 internal fun pendingKey(tag: String): String = "delivery:{inbox:$tag}:pending"
 
@@ -63,23 +79,27 @@ internal fun pendingKey(tag: String): String = "delivery:{inbox:$tag}:pending"
 internal const val MESSAGES_PATTERN = "delivery:{inbox:*}:messages"
 
 /**
- * Returns the shard tag of a [messages][messagesKey] hash.
+ * Returns the [tag][io.spine.delivery.storage.tag] of the shard whose [messages][messagesKey] are
+ * kept under the given key.
  */
 internal fun tagOfMessagesKey(key: String): String =
     key.removePrefix("delivery:{inbox:").removeSuffix("}:messages")
 
 /**
- * The hash of the shard session records, from the shard tag to the record bytes.
+ * The key of the hash that holds the session records: from the [tag][io.spine.delivery.storage.tag]
+ * of a shard to the bytes of its record.
  */
 internal const val SESSIONS_KEY = "delivery:{sessions}"
 
 /**
- * The channel on which the tag of every changed shard of the inbox is published.
+ * The channel on which the [tag][io.spine.delivery.storage.tag] of every shard whose messages
+ * change is published.
  */
 internal const val INBOX_CHANNEL = "delivery:changes:inbox"
 
 /**
- * The channel on which the tag of the shard of every changed session record is published.
+ * The channel on which the [tag][io.spine.delivery.storage.tag] of every shard whose session record
+ * changes is published.
  */
 internal const val SESSIONS_CHANNEL = "delivery:changes:sessions"
 
@@ -100,8 +120,14 @@ internal fun encodeOrderKey(seconds: Long, nanos: Int, version: Int): String =
 internal fun encodeTime(seconds: Long, nanos: Int): String =
     "${encodeLong(seconds)}:${encodeInt(nanos)}"
 
+/**
+ * Encodes a `long` as 20 digits, offset by 2⁶³ so that it is never negative.
+ */
 private fun encodeLong(value: Long): String =
     java.lang.Long.toUnsignedString(value xor Long.MIN_VALUE).padStart(LONG_DIGITS, '0')
 
+/**
+ * Encodes an `int` as 10 digits, offset by 2³¹ so that it is never negative.
+ */
 private fun encodeInt(value: Int): String =
     Integer.toUnsignedString(value xor Int.MIN_VALUE).padStart(INT_DIGITS, '0')

@@ -27,6 +27,11 @@ import org.junit.jupiter.api.Test
 @DisplayName("`InboxService` should")
 internal class InboxServiceSpec : WithApp() {
 
+    /**
+     * Expects the `UNKNOWN` status, which the earlier versions of the server returned for
+     * such a page size: their storage rejected it with an `IllegalArgumentException`, which
+     * gRPC reports as `UNKNOWN`. The status stays, so the clients see no change.
+     */
     @Test
     fun `fail a page request whose page size is not positive`() {
         for (pageSize in listOf(0, -1)) {

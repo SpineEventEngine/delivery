@@ -102,7 +102,7 @@ public class ShardInbox<M : Any>(
     /**
      * Removes the message with the given UUID.
      *
-     * @return `true` if there was such a message
+     * @return `true` if there was such a message.
      */
     public fun remove(uuid: String): Boolean {
         val old = byUuid.remove(uuid) ?: return false
@@ -128,11 +128,10 @@ public class ShardInbox<M : Any>(
     public fun find(uuid: String): M? = byUuid[uuid]
 
     /**
-     * Returns at most [limit] messages, in the ascending order of their order keys,
-     * whose `when_received` is strictly after [since], or from the first one,
-     * if [since] is `null`.
+     * Returns at most [limit] messages, in the order of their order keys: those received
+     * strictly after [since], or from the start of the shard, if [since] is `null`.
      *
-     * @throws IllegalArgumentException if [limit] is not positive
+     * @throws IllegalArgumentException If [limit] is not positive.
      */
     public fun page(since: Timestamp?, limit: Int): List<M> {
         checkPageSize(limit)
@@ -141,7 +140,7 @@ public class ShardInbox<M : Any>(
         } else {
             all.tailMap(SinceProbe(since.seconds, since.nanos), false).values
         }
-        // The size of the whole map is known at once; a sub-map counts its entries.
+        // The size of the whole map is known at once, while a sub-map counts its entries.
         val result = ArrayList<M>(min(limit, all.size))
         for (message in source) {
             if (result.size == limit) {
@@ -204,6 +203,10 @@ public abstract class MessageForm<M : Any> {
      */
     public abstract fun isToDeliver(message: M): Boolean
 
+    /**
+     * Compares two keys of the ordered maps of a [ShardInbox]: stored messages, or
+     * a [SinceProbe].
+     */
     @Suppress("UNCHECKED_CAST") // Only messages of this form and probes are compared.
     private fun compareAny(left: Any, right: Any): Int = when {
         // `TreeMap` checks the bound of a sub-map by comparing it with itself.
@@ -213,6 +216,9 @@ public abstract class MessageForm<M : Any> {
         else -> compareMessages(left as M, right as M)
     }
 
+    /**
+     * Compares two messages by their order keys.
+     */
     private fun compareMessages(left: M, right: M): Int {
         var result = seconds(left).compareTo(seconds(right))
         if (result != 0) {
@@ -246,9 +252,17 @@ public abstract class MessageForm<M : Any> {
 /**
  * A lookup key that sorts after every message received at exactly the given time,
  * and before every message received later.
+ *
+ * A page that starts at the probe therefore starts right after the given time.
+ *
+ * @property seconds The seconds of the time.
+ * @property nanos The nanos of the time.
  */
 private class SinceProbe(val seconds: Long, val nanos: Int) : Comparable<SinceProbe> {
 
+    /**
+     * Compares the probe with another one by their times.
+     */
     override fun compareTo(other: SinceProbe): Int {
         val result = seconds.compareTo(other.seconds)
         return if (result != 0) result else nanos.compareTo(other.nanos)

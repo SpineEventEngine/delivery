@@ -80,6 +80,9 @@ public abstract class InboxStoreContract {
      */
     protected open val quietPeriod: Duration = Duration.ZERO
 
+    /**
+     * The store under test, created anew for each test.
+     */
     private lateinit var store: InboxStore
 
     private val first = shard(1)
@@ -96,8 +99,14 @@ public abstract class InboxStoreContract {
         store.close()
     }
 
+    /**
+     * Writes the given messages in one batch.
+     */
     private fun write(vararg messages: InboxMessage) = store.write(messages.asList())
 
+    /**
+     * Reads all the messages of the shard in one page.
+     */
     private fun all(shard: ShardIndex): List<InboxMessage> = store.page(shard, null, Int.MAX_VALUE)
 
     @Nested

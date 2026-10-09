@@ -29,8 +29,6 @@ import java.util.function.Consumer
  *
  * The [stored form][Stored.form] of a record is the record instance itself, so
  * [compareAndSet] compares the records with `equals`.
- *
- * The listeners passed to [subscribe] are called on the thread that wrote the record.
  */
 public class InMemoryShardSessionStore : ShardSessionStore {
 
@@ -44,14 +42,8 @@ public class InMemoryShardSessionStore : ShardSessionStore {
      */
     private val listeners = ChangeListeners()
 
-    /**
-     * Returns the record of the shard, or `null` if there is none.
-     */
     override fun read(shard: ShardIndex): Stored? = records[shard]?.let(::stored)
 
-    /**
-     * Returns the records of those of the given shards that have one.
-     */
     override fun read(shards: Collection<ShardIndex>): Map<ShardIndex, Stored> {
         val result = HashMap<ShardIndex, Stored>()
         for (shard in shards) {
@@ -60,19 +52,11 @@ public class InMemoryShardSessionStore : ShardSessionStore {
         return result
     }
 
-    /**
-     * Returns all the records.
-     */
     override fun readAll(): List<Stored> = records.values.map(::stored)
 
     /**
-     * Writes [replacement] as the record of the shard, if the stored record equals
-     * the [expected] one, or if there is no record and [expected] is `null`.
-     *
-     * The comparison and the write are one atomic step.
-     *
-     * @return [CasOutcome.Applied] if the replacement was written, or [CasOutcome.Conflict]
-     *   with the current record otherwise.
+     * Compares the stored record with the expected one by `equals`, and writes
+     * the replacement, in one atomic step of the map.
      */
     override fun compareAndSet(
         shard: ShardIndex,
@@ -96,8 +80,7 @@ public class InMemoryShardSessionStore : ShardSessionStore {
     }
 
     /**
-     * Calls [onChange] with the shard of every record written by [compareAndSet], on
-     * the thread that wrote it.
+     * The listener is called on the thread that wrote the record.
      */
     override fun subscribe(onChange: Consumer<ShardIndex>): Subscription = listeners.add(onChange)
 

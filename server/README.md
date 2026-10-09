@@ -18,7 +18,10 @@ The server supports 3 storage modes: in-memory, Redis-based, and Hazelcast-based
 
 In every mode, the messages are stored per shard: each operation on messages costs in proportion to
 the shard it touches, or to the single message it names, and never to the whole inbox. Picking up
-a shard is exclusive across all the servers that share the storage.
+a shard is exclusive across all the servers that share the storage, with two exceptions. While
+a network split divides a Hazelcast cluster, each part may pick up the same shard, as described
+below. And two concurrent pick-ups of one shard by one worker may both succeed when they get the
+same time to the microsecond on two servers; different workers still exclude each other.
 
 The in-memory storage provides the best-possible performance and is used by default.
 
@@ -39,12 +42,12 @@ one must set the `USE_HAZELCAST` environment variable to any value (we check onl
 the variable and ignore its value).
 
 Each shard is kept by one member of the cluster, which applies every operation on the shard
-atomically. The shard has a synchronous backup on another member. When a member leaves, the others
-keep serving all the data. A completed operation is lost only after two failures in a row: its
-backup is not acknowledged within Hazelcast's backup timeout (5 seconds by default), and then its
-member fails before the replicas synchronize. During a split-brain, the separated parts of the
-cluster may both pick up the same shard, and after the merge, Hazelcast keeps one part's version of
-each shard.
+atomically. Another member keeps a backup copy of the shard, which is updated before an operation
+completes. When a member leaves, the others keep serving all the data. A completed operation is lost
+only after two failures in a row: its backup copy is not updated within Hazelcast's backup timeout
+(5 seconds by default), and then the member that holds the shard fails before the backup copy is
+updated. When a network split divides the members, each part of the cluster may pick up the same
+shard, and when the parts join again, Hazelcast keeps one part's version of each shard.
 
 # Cluster discovery
 
@@ -105,12 +108,15 @@ all.
 
 # Shard updates for the admin UI
 
-The Admin Service streams an update of a shard after the shard is picked up or released, and
-after its messages change. Each update carries the full current state of its shard: the status,
-the time of the last pick-up, and the number of messages, including `0`. Right after
-the acknowledgement of a subscription, the subscriber receives the current state of every known
-shard. When the storage reports that changes may have been missed, for example after a Redis
-connection is established again, every known shard is sent again.
+The Admin Service streams an update of a shard after the shard is picked up or released, and after
+its messages change. Each update carries the full current state of its shard: the status, the time
+of the last pick-up, and the number of messages, including `0`. Right after the acknowledgement of a
+subscription, the subscriber receives the current state of every shard that has a session record or
+holds messages. A shard whose index is not set, which only a defective client can write, is never
+sent, because an update must carry the index of its shard. When the storage reports that changes may
+have been missed, for example after a Redis connection is established again, the state of every such
+shard is sent again, together with every shard that a subscriber last saw with messages or picked
+up.
 
 The updates are throttled per shard: at most one update of a shard is sent per interval, and the
 changes made during the interval are sent as one update with the final state. The interval is read

@@ -46,9 +46,9 @@ import static java.lang.System.lineSeparator;
  * The registry of the shard indexes along with the worker identifiers,
  * which process the messages corresponding to each index.
  *
- * <p>The session records are kept in a {@link ShardSessionStore}, which may be shared by
- * several nodes. Every read-then-write of a record is a compare-and-set against the record
- * that was read, so each change is atomic across all the nodes.
+ * <p>The session records are kept in a {@link ShardSessionStore}, which several Delivery
+ * servers may share. Every read-then-write of a record is a compare-and-set against
+ * the record that was read, so each change is atomic across all those servers.
  */
 public final class DeliveryShardRegistry implements WithLogging {
 
@@ -58,7 +58,15 @@ public final class DeliveryShardRegistry implements WithLogging {
     @VisibleForTesting
     static final int MAX_ATTEMPTS = 16;
 
+    /**
+     * The store of the session records.
+     */
     private final ShardSessionStore store;
+
+    /**
+     * How long a worker may hold a shard before its session is stale, or zero if a session
+     * never becomes stale.
+     */
     private final Duration processingTimeout;
 
     /**
@@ -78,7 +86,8 @@ public final class DeliveryShardRegistry implements WithLogging {
     /**
      * Picks up the shard at a given index to process.
      *
-     * <p>This action is exclusive across all the nodes that share the store: a single shard
+     * <p>This action is exclusive across all the servers that share the store, with the exceptions
+     * below: a single shard
      * may be served by a single worker at a given moment of time.
      *
      * <p>In case of a successful operation, an instance of {@link ShardProcessingSession}
@@ -94,6 +103,12 @@ public final class DeliveryShardRegistry implements WithLogging {
      * <p>In case the shard at a given index is already picked up by a worker and
      * has not reached {@linkplain #processingTimeout processing timeout},
      * an {@link ShardAlreadyPickedUp} is thrown.
+     *
+     * <p>The exclusivity has two exceptions. A store shared by servers that a network split
+     * divides may let each part of them pick the same shard. And two concurrent picks of one
+     * shard by one worker that take the same current time may both succeed, as each of them
+     * takes the record of the other for its own write. Different workers always exclude each
+     * other.
      *
      * @param index
      *         the index of the shard to pick up for processing
@@ -162,8 +177,8 @@ public final class DeliveryShardRegistry implements WithLogging {
      * Clears up the recorded {@code WorkerId}s from the session records if there was no activity
      * for longer than the passed {@code inactivityPeriod}.
      *
-     * <p>It may be handy if an application node hangs or gets killed — so that it is not able
-     * to complete the session in a conventional way.
+     * <p>It may be handy if an instance of the application hangs or gets killed, so that it
+     * is not able to complete the session in a conventional way.
      *
      * @return the released records as they were before the release, each reported by
      *         the only call whose write released it
@@ -237,6 +252,9 @@ public final class DeliveryShardRegistry implements WithLogging {
         throw new IllegalStateException(message);
     }
 
+    /**
+     * Returns the stored record without its worker.
+     */
     private static ShardSessionRecord cleared(Stored stored) {
         return stored.getRecord()
                      .toBuilder()
@@ -244,6 +262,9 @@ public final class DeliveryShardRegistry implements WithLogging {
                      .build();
     }
 
+    /**
+     * Logs that the stale session is released, with how long it lasted.
+     */
     private void logStale(ShardSessionRecord session, Timestamp now) {
         var processingTime = between(session.getWhenLastPicked(), now);
         var logMessage = String.join(
@@ -255,6 +276,10 @@ public final class DeliveryShardRegistry implements WithLogging {
         logger().atWarning().log(() -> logMessage);
     }
 
+    /**
+     * Tells whether strictly more than the processing timeout has passed since the session
+     * started, and the timeout is set.
+     */
     private boolean isStale(ShardSessionRecord session, Timestamp now) {
         if (processingTimeout.getSeconds() == 0) {
             return false;
@@ -263,6 +288,9 @@ public final class DeliveryShardRegistry implements WithLogging {
         return compare(elapsed, processingTimeout) > 0;
     }
 
+    /**
+     * Tells whether the session has a worker, and has lasted at least the given period.
+     */
     private static boolean isInactive(ShardSessionRecord session,
                                       Duration inactivityPeriod,
                                       Timestamp now) {
@@ -273,6 +301,9 @@ public final class DeliveryShardRegistry implements WithLogging {
         return compare(elapsed, inactivityPeriod) >= 0;
     }
 
+    /**
+     * Tells whether a worker holds the shard of the record.
+     */
     private static boolean hasWorker(ShardSessionRecord record) {
         return !WorkerId.getDefaultInstance()
                         .equals(record.getWorker());
@@ -286,9 +317,19 @@ public final class DeliveryShardRegistry implements WithLogging {
      */
     private static final class Decision<T> {
 
+        /**
+         * The record to write, or {@code null} if nothing is to be written.
+         */
         private final @Nullable ShardSessionRecord replacement;
+
+        /**
+         * The result of the operation, once the decision is carried out.
+         */
         private final T result;
 
+        /**
+         * Creates the decision to write the replacement, if any, and finish with the result.
+         */
         private Decision(@Nullable ShardSessionRecord replacement, T result) {
             this.replacement = replacement;
             this.result = result;
@@ -314,10 +355,16 @@ public final class DeliveryShardRegistry implements WithLogging {
      */
     public final class DeliveryShardSession extends ShardProcessingSession {
 
+        /**
+         * Creates the session described by the given record.
+         */
         private DeliveryShardSession(ShardSessionRecord record) {
             super(record);
         }
 
+        /**
+         * Releases the shard of the session.
+         */
         @Override
         protected void complete() {
             releaseShard(shardIndex());

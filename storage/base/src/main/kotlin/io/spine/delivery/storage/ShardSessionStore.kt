@@ -19,10 +19,11 @@ import io.spine.server.delivery.ShardSessionRecord
 import java.util.function.Consumer
 
 /**
- * Stores the session records of the shard registry.
+ * Stores the session records of shards: which worker processes a shard, and since when.
  *
- * Writes go through [compareAndSet] only, so that every read-then-write of the registry
- * is atomic across all the nodes that share the store.
+ * The only way to write a record is [compareAndSet], which writes it only if the stored
+ * record has not changed since it was read. So when several processes share the store,
+ * no two of them can change a record based on the same stored value.
  */
 public interface ShardSessionStore : AutoCloseable {
 
@@ -32,7 +33,7 @@ public interface ShardSessionStore : AutoCloseable {
     public fun read(shard: ShardIndex): Stored?
 
     /**
-     * Returns the records of the given shards that exist.
+     * Returns the records of those of the given shards that have one.
      */
     public fun read(shards: Collection<ShardIndex>): Map<ShardIndex, Stored>
 
@@ -45,8 +46,8 @@ public interface ShardSessionStore : AutoCloseable {
      * Writes [replacement] as the record of the shard, if the stored record is still
      * the [expected] one, or if there is no record and [expected] is `null`.
      *
-     * @return [CasOutcome.Applied] if the replacement was written,
-     *   or [CasOutcome.Conflict] with the current record otherwise
+     * @return [CasOutcome.Applied] if the replacement was written, or [CasOutcome.Conflict]
+     *   with the current record otherwise.
      */
     public fun compareAndSet(
         shard: ShardIndex,
@@ -55,8 +56,11 @@ public interface ShardSessionStore : AutoCloseable {
     ): CasOutcome
 
     /**
-     * Calls [onChange] with the shard of every written record, written through any node,
-     * after the write is applied. The listener must not block.
+     * Calls [onChange] with the shard of every written record, after the write is applied,
+     * whichever process sharing the store wrote it.
+     *
+     * The listener is called on the thread that wrote the record, or on a thread of
+     * the client of the database, so it must not block.
      */
     public fun subscribe(onChange: Consumer<ShardIndex>): Subscription
 
@@ -67,6 +71,8 @@ public interface ShardSessionStore : AutoCloseable {
      *
      * A store that reports every change, such as one in memory, never calls it.
      * The listener must not block.
+     *
+     * @return The subscription that stops the calls.
      */
     public fun subscribeToMissedChanges(onMissed: Runnable): Subscription = Subscription {}
 
@@ -77,14 +83,14 @@ public interface ShardSessionStore : AutoCloseable {
 }
 
 /**
- * A shard session record together with the exact form in which it is stored.
+ * A shard session record together with the exact form in which a store keeps it.
  *
- * [ShardSessionStore.compareAndSet] compares the stored form, so a caller passes back
- * the `Stored` it has read, never a record rebuilt from it.
+ * [ShardSessionStore.compareAndSet] compares the stored forms, not the records. So to
+ * write a record, pass the `Stored` that was read, never a record rebuilt from it.
  *
  * @property record The stored record.
- * @property form The stored form: the serialized bytes in the distributed stores,
- *   or the stored instance itself in memory.
+ * @property form The form in which the store keeps the record, such as its serialized
+ *   bytes, or the record itself.
  */
 public class Stored(public val record: ShardSessionRecord, public val form: Any) {
 
@@ -99,6 +105,10 @@ public class Stored(public val record: ShardSessionRecord, public val form: Any)
             record == other
         }
 
+    /**
+     * Returns a string with the record, leaving out the stored form, which is usually
+     * just bytes.
+     */
     override fun toString(): String = "Stored(record=$record)"
 }
 

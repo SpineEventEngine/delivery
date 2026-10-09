@@ -267,6 +267,9 @@ final class AdminServiceTest extends WithApp implements WithLogging {
         return observer;
     }
 
+    /**
+     * Subscribes the observer to the shard updates, and waits for the acknowledgment.
+     */
     private void subscribe(BlockingMemoizingObserver<ShardInfoUpdate> observer) {
         var ackObserver = new WithAckObserver(observer);
         adminService().subscribeToShardUpdates(Empty.getDefaultInstance(), ackObserver);
@@ -274,6 +277,9 @@ final class AdminServiceTest extends WithApp implements WithLogging {
         subscriptions.add(ackObserver);
     }
 
+    /**
+     * Creates a new message to deliver in the given shard.
+     */
     private static io.spine.server.delivery.InboxMessage newMessage(ShardIndex index) {
         return copyWithNewShard(toDeliver(newUuid(), TypeUrl.of(Something.class)), index);
     }

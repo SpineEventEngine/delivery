@@ -21,13 +21,20 @@ import java.util.UUID
  * Creates the configuration of a test member that forms a cluster of its own, unless
  * other members are given the same [clusterName].
  *
+ * The member is registered under [memberName], by which `Hazelcast.getHazelcastInstanceByName`
+ * finds it while it runs.
+ *
  * Multicast and cloud auto-detection are off, so that a test member never joins
  * the members of other tests or of a running Delivery server. Members of one cluster
  * find each other over TCP/IP on the loopback interface.
  */
-internal fun testConfig(clusterName: String = "delivery-test-${UUID.randomUUID()}"): Config {
+internal fun testConfig(
+    clusterName: String = "delivery-test-${UUID.randomUUID()}",
+    memberName: String = "delivery-test-member-${UUID.randomUUID()}"
+): Config {
     val config = Config()
         .setClusterName(clusterName)
+        .setInstanceName(memberName)
         .setProperty("hazelcast.phone.home.enabled", "false")
         .setProperty("hazelcast.logging.type", "none")
     val join = config.networkConfig.join

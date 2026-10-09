@@ -24,6 +24,10 @@ import org.junit.jupiter.api.DisplayName
 @DisplayName("`HazelcastInboxStore` should")
 internal class HazelcastInboxStoreSpec : InboxStoreContract() {
 
+    /**
+     * Hazelcast reports the changes on its own threads, after the operation returns, so
+     * a test waits this long to make sure that no other change is reported.
+     */
     override val quietPeriod: Duration = Duration.ofMillis(300)
 
     override fun newStore(): InboxStore {
@@ -34,6 +38,9 @@ internal class HazelcastInboxStoreSpec : InboxStoreContract() {
 
     companion object {
 
+        /**
+         * The member shared by all the tests, in a cluster of its own.
+         */
         private val member = com.hazelcast.core.Hazelcast.newHazelcastInstance(
             HazelcastStores.configure(testConfig())
         )

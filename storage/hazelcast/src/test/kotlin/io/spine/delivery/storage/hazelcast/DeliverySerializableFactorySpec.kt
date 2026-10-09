@@ -23,6 +23,9 @@ import org.junit.jupiter.api.Test
 @DisplayName("`DeliverySerializableFactory` should")
 internal class DeliverySerializableFactorySpec {
 
+    /**
+     * The factory under test.
+     */
     private val factory = DeliverySerializableFactory()
 
     @Test

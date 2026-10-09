@@ -26,15 +26,18 @@ import org.junit.jupiter.api.fail
 /**
  * Collects the shards that a store reports as changed.
  *
- * @param changeTimeout how long to wait for a change that must be reported
- * @param quietPeriod how long to wait to make sure that no other change is reported;
- *   zero for a store that reports changes before its operation returns
+ * @param changeTimeout How long to wait for a change that must be reported.
+ * @param quietPeriod How long to wait to make sure that no other change is reported;
+ *   zero for a store that reports changes before its operation returns.
  */
 public class ChangeRecorder(
     private val changeTimeout: Duration,
     private val quietPeriod: Duration
 ) : Consumer<ShardIndex> {
 
+    /**
+     * The reported shards, in the order they were reported.
+     */
     private val changes = LinkedBlockingQueue<ShardIndex>()
 
     override fun accept(shard: ShardIndex) {
@@ -69,6 +72,9 @@ public class ChangeRecorder(
         drainAfterQuietPeriod().shouldBeEmpty()
     }
 
+    /**
+     * Waits for the quiet period, and then takes all the reported shards.
+     */
     private fun drainAfterQuietPeriod(): List<ShardIndex> {
         if (!quietPeriod.isZero) {
             Thread.sleep(quietPeriod.toMillis())

@@ -24,7 +24,9 @@ import org.redisson.api.RedissonClient
 import org.redisson.config.Config
 
 /**
- * The well-known locations of the Redisson configuration, the test configuration first.
+ * The names of the resources that may hold the configuration of the Redis client, in
+ * the order they are looked up. The test configurations come first, so that tests can
+ * override the configuration of the application.
  */
 private val CONFIG_LOCATIONS = listOf(
     "redisson-test-config.yml", "redisson-test-config.yaml",
@@ -32,9 +34,12 @@ private val CONFIG_LOCATIONS = listOf(
 )
 
 /**
- * The Delivery stores of one Redis connection.
+ * The inbox and session stores that share one connection to Redis.
  *
- * Every Delivery server that connects to the same Redis database serves the same content.
+ * All the processes connected to the same Redis database read and write the same data,
+ * and hear about the changes made by each other.
+ *
+ * @param client The client connected to Redis.
  */
 public class RedisStores private constructor(
     private val client: RedissonClient
@@ -78,7 +83,7 @@ public class RedisStores private constructor(
          * }
          * ```
          *
-         * @throws IllegalStateException if there is no configuration, or it cannot be read
+         * @throws IllegalStateException If there is no configuration, or it cannot be read.
          */
         @JvmStatic
         public fun start(): RedisStores {
@@ -91,6 +96,8 @@ public class RedisStores private constructor(
 
         /**
          * Connects to Redis with the given configuration.
+         *
+         * If creating the stores fails, the connection is closed.
          */
         @JvmStatic
         public fun start(config: Config): RedisStores {
@@ -103,6 +110,11 @@ public class RedisStores private constructor(
             }
         }
 
+        /**
+         * Reads the configuration of the Redis client from the given YAML file.
+         *
+         * @throws IllegalStateException If the file cannot be read.
+         */
         private fun parse(file: URL): Config =
             try {
                 Config.fromYAML(file)

@@ -21,12 +21,17 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * A session store whose records can vanish without a notification, as the records of
- * a lost Hazelcast partition do.
+ * a lost part of the data of a Hazelcast cluster do.
+ *
+ * @param delegate The store that keeps the records.
  */
 internal class VanishingShardSessionStore(
     private val delegate: ShardSessionStore
 ) : ShardSessionStore by delegate {
 
+    /**
+     * The shards whose records are hidden from all reads.
+     */
     private val vanished: MutableSet<ShardIndex> = ConcurrentHashMap.newKeySet()
 
     /**

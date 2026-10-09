@@ -106,6 +106,9 @@ final class ShardInfoUpdatesTest extends UtilityClassTest<ShardInfoUpdates> {
                      () -> ShardInfoUpdates.currentState(SHARD, null, -1));
     }
 
+    /**
+     * Creates the ID of a worker.
+     */
     private static WorkerId worker() {
         return WorkerId.newBuilder()
                 .setNodeId(NodeId.newBuilder().setValue("node"))

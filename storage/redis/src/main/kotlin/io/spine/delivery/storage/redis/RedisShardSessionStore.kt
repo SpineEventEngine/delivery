@@ -29,22 +29,42 @@ import org.redisson.api.RScript.Mode.READ_WRITE
 import org.redisson.api.RedissonClient
 
 /**
- * A [ShardSessionStore] kept in one Redis hash, from the shard tag to the record bytes.
+ * A [ShardSessionStore] kept in one Redis hash, from the [tag] of a shard to the bytes of
+ * its session record.
  *
- * [compareAndSet] runs as a Lua script that compares the stored bytes.
+ * @param client The client connected to Redis.
  */
 public class RedisShardSessionStore internal constructor(
     client: RedissonClient
 ) : ShardSessionStore {
 
+    /**
+     * The hash of the records.
+     */
     private val hash = client.getMap<String, ByteArray>(SESSIONS_KEY, HASH_CODEC)
+
+    /**
+     * The listeners passed to [subscribe].
+     */
     private val listeners = ChangeListeners()
+
+    /**
+     * The channel on which [COMPARE_AND_SET_SCRIPT] publishes the shards of the written
+     * records, which tells [listeners] about them.
+     */
     private val channel =
         ChangeChannel(client, SESSIONS_CHANNEL) { listeners.changed(shardOf(it)) }
+
+    /**
+     * Writes a record if the stored one is the expected one.
+     */
     private val compareAndSetScript = LuaScript(client, COMPARE_AND_SET_SCRIPT)
 
     override fun read(shard: ShardIndex): Stored? = hash[shard.tag()]?.let(::stored)
 
+    /**
+     * Reads the records in one round trip.
+     */
     override fun read(shards: Collection<ShardIndex>): Map<ShardIndex, Stored> {
         if (shards.isEmpty()) {
             return emptyMap()
@@ -59,6 +79,13 @@ public class RedisShardSessionStore internal constructor(
 
     override fun readAll(): List<Stored> = hash.readAllValues().map(::stored)
 
+    /**
+     * Compares the stored bytes with those of [expected], and writes the replacement, with
+     * [COMPARE_AND_SET_SCRIPT], in one atomic step of Redis.
+     *
+     * @throws IllegalArgumentException If [expected] was not read from a store that keeps
+     *   records as bytes.
+     */
     override fun compareAndSet(
         shard: ShardIndex,
         expected: Stored?,
@@ -88,11 +115,26 @@ public class RedisShardSessionStore internal constructor(
         return CasOutcome.Conflict((result.getOrNull(1) as ByteArray?)?.let(::stored))
     }
 
+    /**
+     * The listener is called on a thread of the Redis client, for the records written by
+     * every process connected to the same Redis database.
+     */
     override fun subscribe(onChange: Consumer<ShardIndex>): Subscription = listeners.add(onChange)
 
+    /**
+     * Calls [onMissed] whenever the subscription to the channel of the changes is
+     * established, for the first time or again, as Redis does not keep the messages
+     * published while a subscriber is disconnected.
+     */
     override fun subscribeToMissedChanges(onMissed: Runnable): Subscription =
         channel.subscribeToMissed(onMissed)
 
+    /**
+     * Stops listening to the channel of the changes, and removes the listeners passed to
+     * [subscribe].
+     *
+     * The records stay in Redis, and the client stays connected.
+     */
     override fun close() {
         try {
             channel.close()
@@ -101,5 +143,8 @@ public class RedisShardSessionStore internal constructor(
         }
     }
 
+    /**
+     * Returns the record with the given bytes as its stored form.
+     */
     private fun stored(bytes: ByteArray) = Stored(parseSession(bytes), bytes)
 }

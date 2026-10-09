@@ -46,7 +46,14 @@ import static io.spine.delivery.server.grpc.Responses.shardPickedUp;
 public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         implements WithLogging, NamedHealthAwareService {
 
+    /**
+     * Decides whether a shard may be picked up, and records the sessions.
+     */
     private final DeliveryShardRegistry registry;
+
+    /**
+     * Whether the service reports itself as serving.
+     */
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
     /**
@@ -90,6 +97,9 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         completeCall(observer);
     }
 
+    /**
+     * Logs the given message about the shard with the given index, at the {@code INFO} level.
+     */
     private void log(String s, int index) {
         logger().atInfo().log(() -> format(s, index));
     }
@@ -108,6 +118,10 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         responseObserver.onCompleted();
     }
 
+    /**
+     * Describes the released session, as it was before the release, with the current time
+     * as the time of the release.
+     */
     private static ExpiredSession toExpiredSession(ShardSessionRecord session) {
         return ExpiredSession.newBuilder()
                 .setShard(session.getIndex())

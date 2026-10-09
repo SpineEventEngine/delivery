@@ -24,17 +24,32 @@ import io.spine.delivery.storage.redis.RedisStores;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The stores of a Delivery node.
+ * The stores of this Delivery server: one for the inbox messages, and one for the shard
+ * session records.
  *
- * <p>In a distributed mode, both stores share one connection to the backend, which closes
- * with them.
+ * <p>In the Redis and Hazelcast modes, both stores share one connection to Redis, or one
+ * Hazelcast member, which closes together with them.
  */
 final class Stores implements AutoCloseable {
 
+    /**
+     * The store of the inbox messages.
+     */
     private final InboxStore inbox;
+
+    /**
+     * The store of the shard session records.
+     */
     private final ShardSessionStore sessions;
+
+    /**
+     * Closes both stores, and their connection, if any.
+     */
     private final Runnable closer;
 
+    /**
+     * Creates the stores that the given action closes.
+     */
     private Stores(InboxStore inbox, ShardSessionStore sessions, Runnable closer) {
         this.inbox = checkNotNull(inbox);
         this.sessions = checkNotNull(sessions);

@@ -21,16 +21,22 @@ import io.spine.server.delivery.ShardIndex
 import java.util.function.Consumer
 
 /**
- * Stores the inbox messages of the Delivery server, partitioned by shard.
+ * Stores inbox messages, grouped by the shard of each message.
  *
- * Every operation on messages costs in proportion to the shard it touches, or to
- * the single message it names, never to the whole inbox.
+ * The shard of a message is the `index` of its `InboxMessageId`. Every operation on
+ * messages costs in proportion to the shard it touches, or to the single message it names,
+ * never to the number of all the stored messages.
  *
- * Within a shard, the messages are ordered by their order key: `when_received`
- * (seconds, then nanos), then `version`, then the UUID of the message ID. The numbers
- * are compared as signed integers, and the UUIDs by Unicode code points. Timestamps are
- * never validated: a value outside the range of `google.protobuf.Timestamp` is ordered
- * by its numbers like any other.
+ * Within a shard, the messages are ordered by their order key, which compares, in turn:
+ *  1. the time the message was received, `when_received`: first its seconds, then its nanos;
+ *  2. the `version` of the message;
+ *  3. the `uuid` of the message ID, by its Unicode code points.
+ *
+ * The numbers are compared as signed integers. Timestamps are not validated: a value outside
+ * the range that `google.protobuf.Timestamp` allows is ordered by its numbers like any other.
+ *
+ * Several processes may share one store, for example several Delivery servers that use
+ * the same database. Each of them then sees the changes made by the others.
  */
 public interface InboxStore : AutoCloseable {
 
@@ -38,16 +44,18 @@ public interface InboxStore : AutoCloseable {
      * Stores the given messages, each in the shard of its own ID, replacing a stored message
      * with the same ID.
      *
-     * Each shard of the batch is written in one atomic step, or, where a backend limits
-     * the size of a step, in a few atomic chunks. Writing the same messages twice in a row
-     * leaves the same state.
+     * The messages of each shard are written in one atomic step. A store that limits the size
+     * of an atomic step may split the messages of one shard into a few such steps.
+     *
+     * Writing the same messages twice in a row leaves the same state as writing them once.
      */
     public fun write(messages: Iterable<InboxMessage>)
 
     /**
      * Removes the messages with the given IDs. An absent ID is not an error.
      *
-     * Each shard of the batch is changed in one atomic step, or in a few atomic chunks.
+     * The messages of each shard are removed in one atomic step, or in a few such steps,
+     * as in [write].
      */
     public fun delete(ids: Iterable<InboxMessageId>)
 
@@ -61,13 +69,17 @@ public interface InboxStore : AutoCloseable {
      * order keys: those whose `when_received` is strictly after [since], or from the start
      * of the shard, if [since] is `null`.
      *
-     * @throws IllegalArgumentException if [pageSize] is not positive
+     * @throws IllegalArgumentException If [pageSize] is not positive.
      */
     public fun page(shard: ShardIndex, since: Timestamp?, pageSize: Int): List<InboxMessage>
 
     /**
-     * Returns the message of the shard in the `TO_DELIVER` status with the largest order
-     * key, or `null` if there is none.
+     * Returns the newest message to deliver in the shard, or `null` if there is none.
+     *
+     * That is the message in the `TO_DELIVER` status that was received last: the last one in
+     * the order of the order keys, which compare the time of receiving first. Of the messages
+     * received at the same time, it is the one with the highest version, and then with
+     * the greatest UUID.
      */
     public fun newestToDeliver(shard: ShardIndex): InboxMessage?
 
@@ -88,11 +100,13 @@ public interface InboxStore : AutoCloseable {
     public fun counts(): Map<ShardIndex, Int>
 
     /**
-     * Calls [onChange] with the shard of every change of the stored messages, made through
-     * any node, after the change is applied.
+     * Calls [onChange] with the shard of every change of the stored messages, after
+     * the change is applied, whichever process sharing the store made it.
      *
      * Every write is reported. A delete that removes nothing is not.
-     * The listener must not block.
+     *
+     * The listener is called on the thread that made the change, or on a thread of
+     * the client of the database, so it must not block.
      */
     public fun subscribe(onChange: Consumer<ShardIndex>): Subscription
 
@@ -103,6 +117,8 @@ public interface InboxStore : AutoCloseable {
      *
      * A store that reports every change, such as one in memory, never calls it.
      * The listener must not block.
+     *
+     * @return The subscription that stops the calls.
      */
     public fun subscribeToMissedChanges(onMissed: Runnable): Subscription = Subscription {}
 
@@ -113,12 +129,12 @@ public interface InboxStore : AutoCloseable {
 }
 
 /**
- * A subscription to the changes of a store.
+ * A subscription of a listener to the changes of a store.
  */
 public fun interface Subscription {
 
     /**
-     * Stops the delivery of the changes to the subscriber.
+     * Stops calling the listener.
      */
     public fun cancel()
 }

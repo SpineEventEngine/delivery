@@ -45,12 +45,24 @@ import static io.spine.delivery.admin.grpc.ShardStatus.PICKED;
 public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         implements WithLogging, NamedHealthAwareService, AutoCloseable {
 
+    /**
+     * Whether the service reports itself as serving.
+     */
     private final AtomicBoolean healthy = new AtomicBoolean(true);
 
+    /**
+     * The store of the inbox messages, which tells the number of messages in each shard.
+     */
     private final InboxStore inbox;
 
+    /**
+     * The store of the shard session records, which tells whether each shard is picked up.
+     */
     private final ShardSessionStore sessions;
 
+    /**
+     * Sends the updates of the shards to the subscribers.
+     */
     private final ShardUpdateSender sender;
 
     /**

@@ -37,13 +37,20 @@ private val QUIET_PERIOD: Duration = Duration.ofMillis(200)
 /**
  * The server side of an admin subscription, recording what the server sends.
  *
- * @param failingUpdates whether sending an update to this subscriber fails
+ * @param failingUpdates Whether sending an update to this subscriber fails.
  */
 internal class RecordingObserver(
     private val failingUpdates: Boolean = false
 ) : ServerCallStreamObserver<SubscriptionResponse>() {
 
+    /**
+     * The responses sent to the subscriber, in the order they were sent.
+     */
     private val responses = LinkedBlockingQueue<SubscriptionResponse>()
+
+    /**
+     * The action that the server runs when the call is cancelled, once it sets one.
+     */
     private var onCancel: Runnable? = null
 
     /**

@@ -24,6 +24,10 @@ import org.junit.jupiter.api.DisplayName
 @RequiresDocker
 internal class RedisShardSessionStoreSpec : ShardSessionStoreContract() {
 
+    /**
+     * Redis reports the changes through its channels, after the operation returns, so
+     * a test waits this long to make sure that no other change is reported.
+     */
     override val quietPeriod: Duration = Duration.ofMillis(300)
 
     override fun newStore(): ShardSessionStore {
@@ -33,6 +37,9 @@ internal class RedisShardSessionStoreSpec : ShardSessionStoreContract() {
 
     companion object {
 
+        /**
+         * The Redis server shared by all the tests, started by the first of them.
+         */
         private val redis by lazy { TestRedis() }
 
         @JvmStatic

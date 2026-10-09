@@ -29,7 +29,7 @@ import io.spine.delivery.storage.ShardSessionStore
 import io.spine.logging.WithLogging
 
 /**
- * The name of the map that holds the inbox, one entry per shard.
+ * The name of the map that holds the inbox messages, with one entry per shard.
  */
 public const val INBOX_MAP: String = "delivery-inbox"
 
@@ -39,22 +39,33 @@ public const val INBOX_MAP: String = "delivery-inbox"
 public const val SESSIONS_MAP: String = "delivery-sessions"
 
 /**
- * The Delivery stores of one embedded Hazelcast member.
+ * The inbox and session stores of one Hazelcast member, which runs inside this process.
  *
- * Members discover each other as their configuration specifies, by IP multicast under
- * the cluster name `delivery` with the `hazelcast.yaml` of this module. Every member holds
- * a share of the data, and a synchronous backup of another member's share, so that each
- * Delivery server of the cluster serves the same content.
+ * The members find each other as their configuration specifies. With the `hazelcast.yaml`
+ * of this module, they do so by IP multicast, under the cluster name `delivery`. Together,
+ * the members of a cluster hold the data: each of them holds a share of it, and a backup
+ * copy of a share of another member. When a member leaves, the others keep all the data,
+ * and every member reads the same data.
  *
- * Notifications of changes that a member sent right before it crashed may be lost, and
- * a lost partition loses its entries without notifications. So the stores report missed
- * changes when a member leaves the cluster, when a partition is lost, and after
- * a split-brain merge.
+ * In some cases, the stores cannot be sure that they reported every change:
+ *  - a member may leave right after a change, before telling the other members about it;
+ *  - a part of the data may be lost, when a member and the holder of its backup copy fail
+ *    together, which removes entries without reporting them;
+ *  - two parts of a cluster may join again after a network split, and keep only one part's
+ *    version of each entry.
+ *
+ * In each of these cases, the stores report that they may have missed changes.
+ *
+ * @param instance The member that holds the data of the stores, together with the other
+ *   members of its cluster.
  */
 public class HazelcastStores private constructor(
-    internal val instance: HazelcastInstance
+    private val instance: HazelcastInstance
 ) : AutoCloseable, WithLogging {
 
+    /**
+     * The listeners of the changes that the stores may have missed, shared by both stores.
+     */
     private val missed = MissedChangeListeners()
 
     /**
@@ -70,6 +81,7 @@ public class HazelcastStores private constructor(
         HazelcastShardSessionStore(instance.getMap(SESSIONS_MAP), missed)
 
     init {
+        // A member may have left right after a change, before telling the others about it.
         instance.cluster.addMembershipListener(object : MembershipListener {
             override fun memberAdded(event: MembershipEvent) = Unit
 
@@ -78,12 +90,16 @@ public class HazelcastStores private constructor(
                 missed.missed()
             }
         })
+        // The cluster joined again after a network split, keeping one version of each entry.
         instance.lifecycleService.addLifecycleListener { event ->
             if (event.state == MERGED) {
-                logger.atWarning().log { "The Hazelcast member merged after a split-brain." }
+                logger.atWarning().log {
+                    "The Hazelcast member joined its cluster again after a network split."
+                }
                 missed.missed()
             }
         }
+        // A part of the data was lost, without reporting the removed entries.
         instance.partitionService.addPartitionLostListener {
             logger.atError().log {
                 "The Hazelcast partition ${it.partitionId} lost its data" +
@@ -131,8 +147,10 @@ public class HazelcastStores private constructor(
         public fun start(): HazelcastStores = start(Config.load())
 
         /**
-         * Starts a member with the given configuration, adding the maps and
-         * the serialization of the Delivery stores to it.
+         * Starts a member with the given configuration, after adding the maps and
+         * the serialization of the stores to it.
+         *
+         * If creating the stores fails, the member is shut down.
          */
         @JvmStatic
         public fun start(config: Config): HazelcastStores {
@@ -146,9 +164,17 @@ public class HazelcastStores private constructor(
         }
 
         /**
-         * Adds the maps and the serialization of the Delivery stores to the configuration.
+         * Adds the maps and the serialization of the stores to the configuration.
          *
-         * A map configuration of the same name in the given configuration is replaced.
+         * The map of the inbox keeps each shard as an object, so that the operations on
+         * a shard change it in place, without serializing it. The map of the session records
+         * keeps them as bytes, so that its compare-and-set compares the bytes, and never
+         * removes a record on its own. Each map has one backup copy, which is updated before
+         * an operation completes.
+         *
+         * A configuration of a map with the same name in the given configuration is replaced.
+         *
+         * @return The given configuration.
          */
         @JvmStatic
         public fun configure(config: Config): Config {

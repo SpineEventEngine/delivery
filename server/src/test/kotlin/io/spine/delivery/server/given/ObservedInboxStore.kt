@@ -23,9 +23,13 @@ import java.util.function.Consumer
 
 /**
  * An inbox store that counts the reads of message counts, can fail them, and can miss
- * changes, as a distributed store does.
+ * changes, as a store shared by several processes does.
+ *
+ * @param delegate The store that keeps the messages.
  */
-internal class ObservedInboxStore(private val delegate: InboxStore) : InboxStore by delegate {
+internal class ObservedInboxStore(
+    private val delegate: InboxStore
+) : InboxStore by delegate {
 
     /**
      * The number of reads of the counts of given shards, failed ones included.
@@ -53,6 +57,9 @@ internal class ObservedInboxStore(private val delegate: InboxStore) : InboxStore
     @Volatile
     var muted = false
 
+    /**
+     * The listeners of missed changes, called by [reportMissedChanges].
+     */
     private val missed = MissedChangeListeners()
 
     override fun subscribe(onChange: Consumer<ShardIndex>): Subscription =
@@ -79,6 +86,9 @@ internal class ObservedInboxStore(private val delegate: InboxStore) : InboxStore
         return delegate.counts()
     }
 
+    /**
+     * Throws if the given number of the next failing reads is positive, and decrements it.
+     */
     private fun failIfAsked(failing: AtomicInteger) {
         if (failing.getAndUpdate { if (it > 0) it - 1 else 0 } > 0) {
             error("The read failed.")

@@ -54,6 +54,9 @@ public abstract class ShardSessionStoreContract {
      */
     protected open val quietPeriod: Duration = Duration.ZERO
 
+    /**
+     * The store under test, created anew for each test.
+     */
     private lateinit var store: ShardSessionStore
 
     private val first = shard(1)
@@ -70,11 +73,17 @@ public abstract class ShardSessionStoreContract {
         store.close()
     }
 
+    /**
+     * Writes the record of a shard that has none, and returns it as stored.
+     */
     private fun create(record: ShardSessionRecord): Stored {
         store.compareAndSet(record.index, null, record) shouldBe CasOutcome.Applied
         return store.read(record.index).shouldNotBeNull()
     }
 
+    /**
+     * Checks that the outcome is a conflict with the given current record, or with none.
+     */
     private fun CasOutcome.shouldConflictWith(record: ShardSessionRecord?) {
         val conflict = shouldBeInstanceOf<CasOutcome.Conflict>()
         conflict.current?.record shouldBe record

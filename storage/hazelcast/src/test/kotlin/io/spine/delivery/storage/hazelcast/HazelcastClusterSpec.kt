@@ -17,6 +17,8 @@ package io.spine.delivery.storage.hazelcast
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import com.hazelcast.core.Hazelcast
+import com.hazelcast.core.HazelcastInstance
 import io.spine.delivery.storage.CasOutcome
 import io.spine.delivery.storage.ChangeRecorder
 import io.spine.delivery.storage.given.message
@@ -44,31 +46,67 @@ private val CLUSTER_TIMEOUT: Duration = Duration.ofSeconds(30)
 @DisplayName("Hazelcast stores of two members should")
 internal class HazelcastClusterSpec {
 
+    /**
+     * The name of the first member.
+     */
+    private val firstName = "first-${UUID.randomUUID()}"
+
+    /**
+     * The name of the second member.
+     */
+    private val secondName = "second-${UUID.randomUUID()}"
+
+    /**
+     * The stores of the first member.
+     */
     private lateinit var first: HazelcastStores
+
+    /**
+     * The stores of the second member.
+     */
     private lateinit var second: HazelcastStores
 
     @BeforeEach
     fun startMembers() {
         val cluster = "delivery-test-${UUID.randomUUID()}"
-        first = HazelcastStores.start(testConfig(cluster))
-        second = HazelcastStores.start(testConfig(cluster))
-        awaitSafeCluster(first)
+        first = HazelcastStores.start(testConfig(cluster, firstName))
+        second = HazelcastStores.start(testConfig(cluster, secondName))
+        awaitSafeCluster(firstName)
     }
 
-    private fun awaitSafeCluster(stores: HazelcastStores) {
+    /**
+     * Returns the running member with the given name, or `null` if it has stopped.
+     */
+    private fun member(name: String): HazelcastInstance? =
+        Hazelcast.getHazelcastInstanceByName(name)
+
+    /**
+     * Waits until the named member is in a cluster of two members, in which every entry has
+     * its backup copy.
+     */
+    private fun awaitSafeCluster(memberName: String) {
+        val member = checkNotNull(member(memberName)) { "The member is not running." }
         val deadline = System.nanoTime() + CLUSTER_TIMEOUT.toNanos()
-        while (stores.instance.cluster.members.size < 2 ||
-            !stores.instance.partitionService.isClusterSafe) {
+        while (member.cluster.members.size < 2 || !member.partitionService.isClusterSafe) {
             check(System.nanoTime() < deadline) { "The cluster has not become safe." }
             Thread.sleep(100)
         }
     }
 
+    /**
+     * Stops the named member at once, as a crash does, without handing its data over.
+     */
+    private fun terminate(memberName: String) {
+        checkNotNull(member(memberName)) { "The member is not running." }
+            .lifecycleService
+            .terminate()
+    }
+
     @AfterEach
     fun stopMembers() {
-        listOf(first, second).forEach {
-            if (it.instance.lifecycleService.isRunning) {
-                it.close()
+        mapOf(firstName to first, secondName to second).forEach { (name, stores) ->
+            if (member(name)?.lifecycleService?.isRunning == true) {
+                stores.close()
             }
         }
     }
@@ -124,7 +162,7 @@ internal class HazelcastClusterSpec {
         val sessions = (0 until 300).map { session(shard(it)) }
         sessions.forEach { first.sessions.compareAndSet(it.index, null, it) }
 
-        first.instance.lifecycleService.terminate()
+        terminate(firstName)
 
         messages.forEach { second.inbox.find(it.id) shouldBe it }
         second.inbox.counts().values.sum() shouldBe messages.size
@@ -143,9 +181,10 @@ internal class HazelcastClusterSpec {
                 message(shards[it % shards.size], seconds = it.toLong(), status = status)
             }
             alone.inbox.write(messages)
-            val joining = HazelcastStores.start(testConfig(cluster))
+            val joiningName = "joining-${UUID.randomUUID()}"
+            val joining = HazelcastStores.start(testConfig(cluster, joiningName))
             try {
-                awaitSafeCluster(joining)
+                awaitSafeCluster(joiningName)
                 alone.close()
 
                 for (shard in shards) {
@@ -168,7 +207,7 @@ internal class HazelcastClusterSpec {
         val missed = Semaphore(0)
         second.inbox.subscribeToMissedChanges { missed.release() }
 
-        first.instance.lifecycleService.terminate()
+        terminate(firstName)
 
         missed.tryAcquire(CLUSTER_TIMEOUT.seconds, SECONDS) shouldBe true
     }

@@ -102,7 +102,7 @@ call with status `UNKNOWN`, as uncaught exceptions do today.
 
 | Behavior | Today | After this work | Why |
 |---|---|---|---|
-| Exclusivity of `PickShard` | Holds within one node only. | Holds across all nodes. | Defect: two nodes can pick one shard. |
+| Exclusivity of `PickShard` | Holds within one node only. | Holds across all the nodes that share the storage, with two exceptions: while a network split divides a Hazelcast cluster, each part may pick the same shard (see "Hazelcast backend"); and two concurrent picks of one shard by one worker that get the same "now" may both succeed (see "The shard registry on top of `compareAndSet`"). | Defect: two nodes can pick one shard. |
 | Message counts of `AdminService` | Count only the operations of the serving node, and drift (issue #70). | Exact, and the same on every node. | Defect. |
 | Shards listed by `GetShardInfo` | Shards of the registry, plus every shard the node has seen since it started, even with a count of zero or below. | Shards of the registry, plus every shard that holds at least one message. | Follows from exact counts. |
 | Updates of `SubscribeToShardUpdates` | One update per message written or removed, and one per pick or release, each carrying only the changed field. Nothing is sent before the first change. | Throttled per shard: at most one update per shard per interval (25 ms by default). Each update carries the shard's full current state: status, last pick time, and message count. Right after the acknowledgment, a new subscriber receives the current state of every known shard. See "Admin updates". | The admin clients need the current state and an exact zero, not every intermediate step. In protobuf, a count of 0 in an update that carries only a status looks the same as a real 0, so only full-state updates make zero reliable. |
@@ -221,8 +221,18 @@ error.
   found after a `CONFLICT` or an exception equals that replacement byte for
   byte, the pick counts as applied: the backend client resent the write after a
   lost reply, the reply itself was lost, or an earlier attempt landed late. The
-  replacement holds this worker and this `when_last_picked`, so no other caller
-  can produce the same bytes.
+  replacement holds this worker and this `when_last_picked`, so only a pick by
+  the same worker that took the same "now" can produce the same bytes.
+- **A known race of one worker with itself.** Two concurrent picks of one shard
+  by one worker that take the same "now" build identical records. One of them
+  writes its record, and the other then finds it after a conflict and counts it
+  as its own write, so both succeed, and both report the session of that worker.
+  Different workers still exclude each other, because the worker is part of
+  the bytes. Within one node, Spine's clock gives every call a distinct time,
+  so the race needs two nodes that take the same time to the microsecond. Telling
+  the two apart would take a request ID, which `ShardSessionRecord` has no field
+  for; limiting the rule to exceptions would instead fail a pick whose write
+  the backend client resent after a lost reply. The race is accepted.
 - **Releases do not apply that rule.** Two nodes clearing the same session build
   identical replacements, so equal bytes do not show whose write it was.
   - `ReleaseSession` writes the cleared record whenever the record exists, even
@@ -501,6 +511,10 @@ The rest follows from these three rules:
   and the shards that some subscriber last received with messages, picked, or
   with the time of a pick. A shard emptied in the meantime is then reported with
   0, and a shard whose session record vanished is reported as not picked.
+- **A shard that an update cannot carry is left out.** A `ShardInfoUpdate` must
+  carry a set shard index, so a shard whose index is not set, which only
+  a defective client can write, is never sent, neither in the initial state nor
+  later. The failure is logged, and the other shards are sent as usual.
 - **Failures are contained.** If a sweep's batched read fails, the sweep marks
   its shards as changed again, so a later sweep retries them; retries back off
   from the larger of 10 ms and the interval, doubling up to one second, while
@@ -705,7 +719,8 @@ lose.
     must not report the session;
   - a `PickShard` attempt that lands after a later attempt of the same call has
     been sent: the call still succeeds.
-- **Validation**: a non-positive page size fails the call.
+- **Validation**: a non-positive page size fails the call with `UNKNOWN`, the status
+  that `master` produces for it, as "Validation" explains.
 - **Admin updates**:
   - the first change of a shard is sent at once; changes within the interval
     become one update at its end, with the final state;
@@ -764,23 +779,22 @@ lose.
 - [x] Implement the in-memory backend.
 - [x] Move the server onto the stores, with the admin updates and their
       configuration; remove the classes listed above; fix the admin UI's zero.
-      Until the new backends exist, the Redis and Hazelcast modes fail at
-      startup.
-- [ ] Measure the in-memory mode against `master`; fix any loss.
-- [ ] Implement the Hazelcast backend.
-- [ ] Implement the Redis backend.
-- [ ] Push the branch only from here on. Until both new backends exist, the
+- [x] Measure the in-memory mode against `master`; fix any loss. No result
+      loses; the results are in the pull request.
+- [x] Implement the Hazelcast backend.
+- [x] Implement the Redis backend.
+- [x] Push the branch only from here on. Until both new backends exist, the
       Docker-based `DistributedTest`, which runs Hazelcast containers built from
       the working tree, cannot pass, so no earlier state is pushed.
-- [ ] Add the multi-node tests.
+- [x] Add the multi-node tests.
 - [ ] Measure the distributed modes against `master`; record all results in the
       pull request.
-- [ ] Update `server/README.md` and `docs/project.md`: the storage modes, the
+- [x] Update `server/README.md` and `docs/project.md`: the storage modes, the
       consistency of the Hazelcast mode, `SHARD_UPDATES_INTERVAL_MILLIS`, and
       the stale-session threshold, which the code applies when strictly more
       than the timeout has passed (the README says "equal to or more").
-- [ ] Bump the minor version.
-- [ ] Run `./gradlew clean build dokkaGenerate`.
+- [x] Bump the minor version.
+- [x] Run `./gradlew clean build dokkaGenerate`.
 
 ## Status
 

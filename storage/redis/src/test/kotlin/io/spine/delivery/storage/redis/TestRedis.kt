@@ -30,6 +30,9 @@ private const val REDIS_PORT = 6379
  */
 internal class TestRedis : AutoCloseable {
 
+    /**
+     * The started container of the server.
+     */
     private val container: GenericContainer<*> =
         GenericContainer(DockerImageName.parse("redis:6-alpine"))
             .withExposedPorts(REDIS_PORT)

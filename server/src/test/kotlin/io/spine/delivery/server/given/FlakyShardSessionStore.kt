@@ -21,9 +21,11 @@ import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
 
 /**
- * A store whose writes fail in the ways a backend client may fail.
+ * A store whose writes fail in the ways that the client of a database may fail.
  *
  * Not thread-safe: the tests that inject failures call the store from one thread.
+ *
+ * @param delegate The store that keeps the records.
  */
 internal class FlakyShardSessionStore(
     private val delegate: ShardSessionStore
@@ -56,6 +58,10 @@ internal class FlakyShardSessionStore(
     var writes = 0
         private set
 
+    /**
+     * The writes that failed without being applied, to be applied right before the next
+     * write.
+     */
     private val pending = ArrayList<() -> Unit>()
 
     override fun read(shard: ShardIndex): Stored? {

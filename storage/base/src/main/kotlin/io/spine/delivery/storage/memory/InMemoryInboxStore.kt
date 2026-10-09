@@ -37,9 +37,6 @@ import java.util.function.Consumer
  *
  * The stored messages are the written objects themselves, and reads return them as they are,
  * which is safe because Protobuf messages are immutable.
- *
- * The listeners passed to [subscribe] are called on the thread that made the change, after
- * the lock of the shard is released.
  */
 public class InMemoryInboxStore : InboxStore {
 
@@ -54,10 +51,8 @@ public class InMemoryInboxStore : InboxStore {
     private val listeners = ChangeListeners()
 
     /**
-     * Stores the given messages, each in the shard of its own ID.
-     *
-     * The messages of each shard are stored under one lock, and then the shard is reported
-     * as changed.
+     * Stores the messages of each shard under the lock of the shard, and then reports
+     * the shard as changed.
      */
     override fun write(messages: Iterable<InboxMessage>) {
         for ((shard, batch) in messages.groupBy { it.id.index }) {
@@ -70,10 +65,8 @@ public class InMemoryInboxStore : InboxStore {
     }
 
     /**
-     * Removes the messages with the given IDs.
-     *
-     * The messages of each shard are removed under one lock, and then the shard is reported
-     * as changed, if any of its messages was removed.
+     * Removes the messages of each shard under the lock of the shard, and then reports
+     * the shard as changed, if any of its messages was removed.
      */
     override fun delete(ids: Iterable<InboxMessageId>) {
         for ((shard, batch) in ids.groupBy { it.index }) {
@@ -91,7 +84,7 @@ public class InMemoryInboxStore : InboxStore {
     }
 
     /**
-     * Returns the message with the given ID, or `null` if there is none.
+     * Looks the message up by its UUID in the inbox of its shard, under the lock of the shard.
      */
     override fun find(id: InboxMessageId): InboxMessage? {
         val inbox = inboxes[id.index] ?: return null
@@ -99,11 +92,8 @@ public class InMemoryInboxStore : InboxStore {
     }
 
     /**
-     * Returns at most [pageSize] messages of the shard, in the order of their order keys:
-     * those received strictly after [since], or from the start of the shard, if [since]
-     * is `null`.
-     *
-     * @throws IllegalArgumentException if [pageSize] is not positive.
+     * Reads the page under the lock of the shard. The page holds the stored messages
+     * themselves, not copies of them.
      */
     override fun page(shard: ShardIndex, since: Timestamp?, pageSize: Int): List<InboxMessage> {
         checkPageSize(pageSize)
@@ -112,8 +102,7 @@ public class InMemoryInboxStore : InboxStore {
     }
 
     /**
-     * Returns the message of the shard in the `TO_DELIVER` status that was received last,
-     * or `null` if there is none.
+     * Takes the last message of the ordered messages to deliver, under the lock of the shard.
      */
     override fun newestToDeliver(shard: ShardIndex): InboxMessage? {
         val inbox = inboxes[shard] ?: return null
@@ -121,7 +110,7 @@ public class InMemoryInboxStore : InboxStore {
     }
 
     /**
-     * Returns the number of messages in the shard.
+     * Returns the number of distinct UUIDs in the inbox of the shard.
      */
     override fun count(shard: ShardIndex): Int {
         val inbox = inboxes[shard] ?: return 0
@@ -129,14 +118,15 @@ public class InMemoryInboxStore : InboxStore {
     }
 
     /**
-     * Returns the number of messages in each of the given shards, including those that hold
-     * none.
+     * Counts the shards one by one, each under its own lock, so the counts of different
+     * shards may come from slightly different moments.
      */
     override fun count(shards: Collection<ShardIndex>): Map<ShardIndex, Int> =
         shards.associateWith { count(it) }
 
     /**
-     * Returns the number of messages of every shard that holds at least one.
+     * Counts every shard that has ever been written to, each under its own lock, and leaves
+     * out the empty ones.
      */
     override fun counts(): Map<ShardIndex, Int> {
         val result = HashMap<ShardIndex, Int>()
@@ -150,8 +140,8 @@ public class InMemoryInboxStore : InboxStore {
     }
 
     /**
-     * Calls [onChange] with the shard of every write, and of every delete that removes
-     * a message, on the thread that made the change.
+     * The listener is called on the thread that made the change, after the lock of
+     * the shard is released.
      */
     override fun subscribe(onChange: Consumer<ShardIndex>): Subscription = listeners.add(onChange)
 

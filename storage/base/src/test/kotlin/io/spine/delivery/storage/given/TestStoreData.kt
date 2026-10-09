@@ -59,7 +59,7 @@ public fun time(seconds: Long, nanos: Int = 0): Timestamp =
 /**
  * Creates an inbox message.
  *
- * @param payloadSize the number of bytes in the message of the wrapped event
+ * @param payloadSize The number of bytes in the message of the wrapped event.
  */
 public fun message(
     shard: ShardIndex,

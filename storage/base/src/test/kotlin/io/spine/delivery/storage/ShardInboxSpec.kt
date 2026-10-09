@@ -34,6 +34,9 @@ import org.junit.jupiter.api.Test
 internal class ShardInboxSpec {
 
     private val shard = shard(1)
+    /**
+     * The inbox under test, holding the messages as they are.
+     */
     private val inbox = ShardInbox(shard, TestForm)
 
     @Test

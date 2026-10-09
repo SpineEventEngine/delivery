@@ -24,18 +24,25 @@ import org.redisson.client.codec.StringCodec
 import org.redisson.codec.CompositeCodec
 
 /**
- * The codec of the hashes of the stores: string fields, and byte values.
+ * Encodes the hashes of the stores in Redis: their fields as UTF-8 strings, and their values
+ * as raw bytes.
  */
 internal val HASH_CODEC = CompositeCodec(
     StringCodec.INSTANCE, ByteArrayCodec.INSTANCE, ByteArrayCodec.INSTANCE
 )
 
 /**
- * A subscription of a store to the channel on which the changed shard tags are published.
+ * Listens to the Redis channel on which a store publishes the [tag][io.spine.delivery.storage.tag]
+ * of every changed shard.
  *
- * Redis delivers the published messages at most once. Whenever the subscription is
- * established, for the first time or again, it therefore reports that changes may have
- * been missed.
+ * Redis delivers a published message only to the subscribers connected at that moment,
+ * at most once. When the connection is lost and established again, the messages published
+ * in between never arrive. So each time the subscription is established, for the first
+ * time or again, the channel reports that changes may have been missed.
+ *
+ * @param client The client connected to Redis.
+ * @param channel The name of the channel.
+ * @param onTag Receives the tag of every changed shard, on a thread of the client.
  */
 internal class ChangeChannel(
     client: RedissonClient,
@@ -43,6 +50,9 @@ internal class ChangeChannel(
     onTag: (String) -> Unit
 ) : WithLogging {
 
+    /**
+     * The channel, with its messages decoded as UTF-8 strings.
+     */
     private val topic = client.getTopic(channel, StringCodec.INSTANCE)
 
     /**
@@ -50,26 +60,43 @@ internal class ChangeChannel(
      */
     private val missed = MissedChangeListeners()
 
-    // Added first, so that it hears the first subscription too. Adding a listener
-    // returns once the channel is subscribed.
+    /**
+     * The ID of the listener of the subscription, which reports missed changes whenever
+     * the subscription is established.
+     *
+     * Added before [messageListenerId], so that it hears the first subscription too:
+     * adding the first listener subscribes to the channel, and returns once subscribed.
+     */
     private val statusListenerId = topic.addListener(object : StatusListener {
+
+        /**
+         * Logs the subscription, and reports that changes may have been missed.
+         */
         override fun onSubscribe(channel: String) {
             logger.atInfo().log { "Subscribed to the Redis channel `$channel`." }
             missed.missed()
         }
 
+        /**
+         * Does nothing, as the channel is subscribed to again, if the connection allows.
+         */
         override fun onUnsubscribe(channel: String) = Unit
     })
 
+    /**
+     * The ID of the listener of the messages, which passes each tag to `onTag`.
+     */
     private val messageListenerId = topic.addListener(String::class.java) { _, tag -> onTag(tag) }
 
     /**
      * Adds a listener of the changes that may have been missed.
+     *
+     * @return The subscription that removes the listener.
      */
     fun subscribeToMissed(onMissed: Runnable): Subscription = missed.add(onMissed)
 
     /**
-     * Stops listening to the channel.
+     * Stops listening to the channel, and removes the listeners of missed changes.
      */
     fun close() {
         try {

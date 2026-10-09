@@ -20,18 +20,26 @@ import java.util.concurrent.CopyOnWriteArrayList
 import java.util.function.Consumer
 
 /**
- * The listeners of the changes of a store.
+ * The listeners of the changed shards of a store, which a store calls when a shard changes.
  *
  * A listener that throws does not stop the others: its exception is logged.
+ *
+ * The listeners may be added, removed, and called on any threads.
  */
 public class ChangeListeners : WithLogging {
 
+    /**
+     * The listeners, in the order they were added.
+     *
+     * A copy-on-write list, so that the listeners are called without a lock, while others
+     * are added or removed.
+     */
     private val listeners = CopyOnWriteArrayList<Consumer<ShardIndex>>()
 
     /**
      * Adds the listener.
      *
-     * @return the subscription that removes the listener
+     * @return The subscription that removes the listener.
      */
     public fun add(listener: Consumer<ShardIndex>): Subscription {
         listeners.add(listener)

@@ -42,7 +42,14 @@ private val TIMEOUT: Duration = Duration.ofSeconds(30)
 @RequiresDocker
 internal class RedisMultiNodeSpec {
 
+    /**
+     * The stores of the first node, with a connection of their own.
+     */
     private lateinit var first: RedisStores
+
+    /**
+     * The stores of the second node, with a connection of their own.
+     */
     private lateinit var second: RedisStores
 
     @BeforeEach
@@ -133,6 +140,9 @@ internal class RedisMultiNodeSpec {
 
     companion object {
 
+        /**
+         * The Redis server shared by all the tests, started by the first of them.
+         */
         private val redis by lazy { TestRedis() }
 
         @JvmStatic

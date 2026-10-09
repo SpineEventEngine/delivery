@@ -41,7 +41,14 @@ import org.junit.jupiter.api.Test
 @DisplayName("`DeliveryShardRegistry` should")
 internal class DeliveryShardRegistrySpec {
 
+    /**
+     * The store of the registry, into whose writes the tests inject failures.
+     */
     private val store = FlakyShardSessionStore(InMemoryShardSessionStore())
+
+    /**
+     * The registry under test, whose sessions never become stale.
+     */
     private val registry = DeliveryShardRegistry(store, Durations.ZERO)
     private val first = shard(1)
 
@@ -169,6 +176,9 @@ internal class DeliveryShardRegistrySpec {
         }
     }
 
+    /**
+     * Creates the ID of a worker with the given name.
+     */
     private fun worker(name: String): WorkerId =
         WorkerId.newBuilder()
             .setNodeId(NodeId.newBuilder().setValue("node"))
