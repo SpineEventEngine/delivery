@@ -16,6 +16,7 @@ package io.spine.delivery.storage
 
 import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
+import java.util.UUID
 import java.util.function.Consumer
 
 /**
@@ -24,6 +25,10 @@ import java.util.function.Consumer
  * The only way to write a record is [compareAndSet], which writes it only if the stored
  * record has not changed since it was read. So when several processes share the store,
  * no two of them can change a record based on the same stored value.
+ *
+ * Each record is stored with the ID of the write that stored it. A writer that did not
+ * learn the outcome of its write tells by that ID whether the record it finds is its own,
+ * even when another writer stored an equal record.
  */
 public interface ShardSessionStore : AutoCloseable {
 
@@ -43,16 +48,26 @@ public interface ShardSessionStore : AutoCloseable {
     public fun readAll(): List<Stored>
 
     /**
-     * Writes [replacement] as the record of the shard, if the stored record is still
-     * the [expected] one, or if there is no record and [expected] is `null`.
+     * Writes [replacement] with [writeId] as the record of the shard, if the stored record
+     * is still the [expected] one, or if there is no record and [expected] is `null`.
      *
+     * The stored record is the expected one only if both the record and the write ID are
+     * the same. So a record that an equal record of another write replaced does not
+     * match.
+     *
+     * @param shard The shard whose record to write.
+     * @param expected The record as it was read, or `null` if there was none.
+     * @param replacement The record to write.
+     * @param writeId The ID of the write, which is stored with the record. All attempts of
+     *   one write pass the same ID, and different writes pass different IDs.
      * @return [CasOutcome.Applied] if the replacement was written, or [CasOutcome.Conflict]
      *   with the current record otherwise.
      */
     public fun compareAndSet(
         shard: ShardIndex,
         expected: Stored?,
-        replacement: ShardSessionRecord
+        replacement: ShardSessionRecord,
+        writeId: UUID
     ): CasOutcome
 
     /**
@@ -83,33 +98,28 @@ public interface ShardSessionStore : AutoCloseable {
 }
 
 /**
- * A shard session record together with the exact form in which a store keeps it.
+ * A shard session record together with the ID of the write that stored it, and the exact
+ * form in which a store keeps them.
  *
  * [ShardSessionStore.compareAndSet] compares the stored forms, not the records. So to
- * write a record, pass the `Stored` that was read, never a record rebuilt from it.
+ * write a record, pass the `Stored` that was read, never one rebuilt from its record.
  *
  * @property record The stored record.
- * @property form The form in which the store keeps the record, such as its serialized
- *   bytes, or the record itself.
+ * @property writeId The ID of the write that stored the record.
+ * @property form The form in which the store keeps the record and the write ID, such as
+ *   their serialized bytes, or the record itself.
  */
-public class Stored(public val record: ShardSessionRecord, public val form: Any) {
+public class Stored(
+    public val record: ShardSessionRecord,
+    public val writeId: UUID,
+    public val form: Any
+) {
 
     /**
-     * Tells whether this stored record is exactly the given one: byte for byte, if the
-     * form is serialized, or by equality otherwise.
+     * Returns a string with the record and the write ID, leaving out the stored form,
+     * which is usually just bytes.
      */
-    public fun holds(other: ShardSessionRecord): Boolean =
-        if (form is ByteArray) {
-            form.contentEquals(other.toByteArray())
-        } else {
-            record == other
-        }
-
-    /**
-     * Returns a string with the record, leaving out the stored form, which is usually
-     * just bytes.
-     */
-    override fun toString(): String = "Stored(record=$record)"
+    override fun toString(): String = "Stored(record=$record, writeId=$writeId)"
 }
 
 /**

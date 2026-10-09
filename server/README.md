@@ -18,10 +18,9 @@ The server supports 3 storage modes: in-memory, Redis-based, and Hazelcast-based
 
 In every mode, the messages are stored per shard: each operation on messages costs in proportion to
 the shard it touches, or to the single message it names, and never to the whole inbox. Picking up
-a shard is exclusive across all the servers that share the storage, with two exceptions. While
+a shard is exclusive across all the servers that share the storage, with one exception: while
 a network split divides a Hazelcast cluster, each part may pick up the same shard, as described
-below. And two concurrent pick-ups of one shard by one worker may both succeed when they get the
-same time to the microsecond on two servers; different workers still exclude each other.
+below.
 
 The in-memory storage provides the best-possible performance and is used by default.
 

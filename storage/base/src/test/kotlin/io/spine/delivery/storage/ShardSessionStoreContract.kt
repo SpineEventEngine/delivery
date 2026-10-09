@@ -24,6 +24,7 @@ import io.spine.delivery.storage.given.session
 import io.spine.delivery.storage.given.shard
 import io.spine.server.delivery.ShardSessionRecord
 import java.time.Duration
+import java.util.UUID
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -74,10 +75,15 @@ public abstract class ShardSessionStoreContract {
     }
 
     /**
+     * Returns the ID of a new write.
+     */
+    private fun newWriteId(): UUID = UUID.randomUUID()
+
+    /**
      * Writes the record of a shard that has none, and returns it as stored.
      */
     private fun create(record: ShardSessionRecord): Stored {
-        store.compareAndSet(record.index, null, record) shouldBe CasOutcome.Applied
+        store.compareAndSet(record.index, null, record, newWriteId()) shouldBe CasOutcome.Applied
         return store.read(record.index).shouldNotBeNull()
     }
 
@@ -122,10 +128,13 @@ public abstract class ShardSessionStoreContract {
         @Test
         public fun `creating it when none is expected`() {
             val record = session(first)
+            val writeId = newWriteId()
 
-            store.compareAndSet(first, null, record) shouldBe CasOutcome.Applied
+            store.compareAndSet(first, null, record, writeId) shouldBe CasOutcome.Applied
 
-            store.read(first)?.record shouldBe record
+            val stored = store.read(first).shouldNotBeNull()
+            stored.record shouldBe record
+            stored.writeId shouldBe writeId
             store.read(second).shouldBeNull()
         }
 
@@ -134,7 +143,7 @@ public abstract class ShardSessionStoreContract {
             val existing = session(first)
             create(existing)
 
-            store.compareAndSet(first, null, session(first, worker = "other"))
+            store.compareAndSet(first, null, session(first, worker = "other"), newWriteId())
                 .shouldConflictWith(existing)
             store.read(first)?.record shouldBe existing
         }
@@ -144,7 +153,8 @@ public abstract class ShardSessionStoreContract {
             val stored = create(session(first))
             val replacement = session(first, worker = "other", pickedAt = 1)
 
-            store.compareAndSet(first, stored, replacement) shouldBe CasOutcome.Applied
+            store.compareAndSet(first, stored, replacement, newWriteId()) shouldBe
+                    CasOutcome.Applied
 
             store.read(first)?.record shouldBe replacement
         }
@@ -153,18 +163,30 @@ public abstract class ShardSessionStoreContract {
         public fun `rejecting a stale expected record`() {
             val stale = create(session(first))
             val current = session(first, worker = "current", pickedAt = 1)
-            store.compareAndSet(first, stale, current) shouldBe CasOutcome.Applied
+            store.compareAndSet(first, stale, current, newWriteId()) shouldBe CasOutcome.Applied
 
-            store.compareAndSet(first, stale, session(first, worker = "late", pickedAt = 2))
-                .shouldConflictWith(current)
+            val late = session(first, worker = "late", pickedAt = 2)
+            store.compareAndSet(first, stale, late, newWriteId()).shouldConflictWith(current)
             store.read(first)?.record shouldBe current
+        }
+
+        @Test
+        public fun `rejecting an expected record that an equal record of another write replaced`() {
+            val record = session(first)
+            val stale = create(record)
+            store.compareAndSet(first, stale, record, newWriteId()) shouldBe CasOutcome.Applied
+
+            val late = session(first, worker = "late", pickedAt = 1)
+            store.compareAndSet(first, stale, late, newWriteId()).shouldConflictWith(record)
+            store.read(first)?.record shouldBe record
         }
 
         @Test
         public fun `rejecting an expected record when there is none`() {
             val stored = create(session(first))
 
-            store.compareAndSet(second, stored, session(second)).shouldConflictWith(null)
+            store.compareAndSet(second, stored, session(second), newWriteId())
+                .shouldConflictWith(null)
             store.read(second).shouldBeNull()
         }
 
@@ -172,13 +194,15 @@ public abstract class ShardSessionStoreContract {
         public fun `executed twice in a row, recognizing its own write`() {
             val stored = create(session(first))
             val replacement = session(first, worker = "other", pickedAt = 1)
-            store.compareAndSet(first, stored, replacement) shouldBe CasOutcome.Applied
+            val writeId = newWriteId()
+            store.compareAndSet(first, stored, replacement, writeId) shouldBe CasOutcome.Applied
 
-            val repeated = store.compareAndSet(first, stored, replacement)
+            val repeated = store.compareAndSet(first, stored, replacement, writeId)
 
             val conflict = repeated.shouldBeInstanceOf<CasOutcome.Conflict>()
-            conflict.current.shouldNotBeNull().holds(replacement) shouldBe true
-            conflict.current.shouldNotBeNull().holds(session(first)) shouldBe false
+            val current = conflict.current.shouldNotBeNull()
+            current.record shouldBe replacement
+            current.writeId shouldBe writeId
             store.read(first)?.record shouldBe replacement
         }
     }
@@ -201,7 +225,7 @@ public abstract class ShardSessionStoreContract {
             val stored = create(session(first))
             changes.expect(first)
 
-            store.compareAndSet(first, stored, session(first, worker = "other"))
+            store.compareAndSet(first, stored, session(first, worker = "other"), newWriteId())
             changes.expect(first)
         }
 
@@ -210,7 +234,7 @@ public abstract class ShardSessionStoreContract {
             create(session(first))
             changes.expect(first)
 
-            store.compareAndSet(first, null, session(first, worker = "other"))
+            store.compareAndSet(first, null, session(first, worker = "other"), newWriteId())
             changes.expectNone()
         }
 

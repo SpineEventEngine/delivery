@@ -128,7 +128,7 @@ internal class HazelcastClusterSpec {
 
         first.inbox.write(listOf(message(shard(1))))
         changes.expect(shard(1))
-        first.sessions.compareAndSet(shard(2), null, session(shard(2)))
+        first.sessions.compareAndSet(shard(2), null, session(shard(2)), UUID.randomUUID())
         changes.expect(shard(2))
     }
 
@@ -141,7 +141,9 @@ internal class HazelcastClusterSpec {
             val results = listOf(first, second).map { stores ->
                 pool.submit(Callable {
                     start.await()
-                    shards.map { stores.sessions.compareAndSet(it, null, session(it)) }
+                    shards.map {
+                        stores.sessions.compareAndSet(it, null, session(it), UUID.randomUUID())
+                    }
                 })
             }
             start.countDown()
@@ -160,7 +162,7 @@ internal class HazelcastClusterSpec {
         val messages = (0 until 300).map { message(shard(it), seconds = it.toLong()) }
         first.inbox.write(messages)
         val sessions = (0 until 300).map { session(shard(it)) }
-        sessions.forEach { first.sessions.compareAndSet(it.index, null, it) }
+        sessions.forEach { first.sessions.compareAndSet(it.index, null, it, UUID.randomUUID()) }
 
         terminate(firstName)
 

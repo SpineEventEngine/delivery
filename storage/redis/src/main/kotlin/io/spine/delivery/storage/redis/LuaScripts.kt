@@ -219,12 +219,12 @@ end
  * `KEYS` is the key of the hash of the [session records][SESSIONS_KEY].
  *
  * `ARGV` holds the tag of the shard, `1` if a record is expected or `0` otherwise,
- * the bytes of the expected record, which are empty if none is expected, and the bytes of
- * the replacement.
+ * the [stored form][io.spine.delivery.storage.sessionForm] of the expected record, which is
+ * empty if none is expected, and the stored form of the replacement.
  *
  * If the replacement was written, publishes the tag of the shard on [SESSIONS_CHANNEL],
- * and returns `{1}`. Otherwise, returns `{0}`, followed by the bytes of the current record,
- * if there is one.
+ * and returns `{1}`. Otherwise, returns `{0}`, followed by the stored form of the current
+ * record, if there is one.
  */
 internal const val COMPARE_AND_SET_SCRIPT = """
 local current = redis.call('HGET', KEYS[1], ARGV[1])

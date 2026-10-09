@@ -22,15 +22,17 @@ import io.spine.delivery.storage.ShardSessionStore
 import io.spine.delivery.storage.Stored
 import io.spine.delivery.storage.Subscription
 import io.spine.delivery.storage.parseSession
+import io.spine.delivery.storage.sessionForm
 import io.spine.delivery.storage.shardOf
 import io.spine.delivery.storage.tag
 import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
+import java.util.UUID
 import java.util.function.Consumer
 
 /**
- * A [ShardSessionStore] kept in a Hazelcast map, from the [tag][tag] of a shard to the bytes
- * of its session record.
+ * A [ShardSessionStore] kept in a Hazelcast map, from the [tag][tag] of a shard to
+ * the [stored form][sessionForm] of its session record.
  *
  * The map keeps its values as bytes, so its `replace` and `putIfAbsent` compare the stored
  * bytes, which makes them the atomic compare-and-set that [compareAndSet] needs.
@@ -57,7 +59,7 @@ public class HazelcastShardSessionStore internal constructor(
      */
     private val listenerId = map.addEntryListener(ShardChanges(listeners), false)
 
-    override fun read(shard: ShardIndex): Stored? = map[shard.tag()]?.let(::stored)
+    override fun read(shard: ShardIndex): Stored? = map[shard.tag()]?.let(::parseSession)
 
     /**
      * Reads the records with one `getAll` of the map.
@@ -69,12 +71,12 @@ public class HazelcastShardSessionStore internal constructor(
         val found = map.getAll(shards.mapTo(HashSet()) { it.tag() })
         val result = HashMap<ShardIndex, Stored>()
         for ((tag, bytes) in found) {
-            result[shardOf(tag)] = stored(bytes)
+            result[shardOf(tag)] = parseSession(bytes)
         }
         return result
     }
 
-    override fun readAll(): List<Stored> = map.values.map(::stored)
+    override fun readAll(): List<Stored> = map.values.map(::parseSession)
 
     /**
      * Writes with `putIfAbsent` if no record is expected, and with `replace` of the expected
@@ -89,20 +91,21 @@ public class HazelcastShardSessionStore internal constructor(
     override fun compareAndSet(
         shard: ShardIndex,
         expected: Stored?,
-        replacement: ShardSessionRecord
+        replacement: ShardSessionRecord,
+        writeId: UUID
     ): CasOutcome {
         val tag = shard.tag()
-        val bytes = replacement.toByteArray()
+        val bytes = sessionForm(replacement, writeId)
         if (expected == null) {
             val current = map.putIfAbsent(tag, bytes) ?: return CasOutcome.Applied
-            return CasOutcome.Conflict(stored(current))
+            return CasOutcome.Conflict(parseSession(current))
         }
         val form = expected.form
         require(form is ByteArray) { "The expected record was not read from this store." }
         if (map.replace(tag, form, bytes)) {
             return CasOutcome.Applied
         }
-        return CasOutcome.Conflict(map[tag]?.let(::stored))
+        return CasOutcome.Conflict(map[tag]?.let(::parseSession))
     }
 
     /**
@@ -132,9 +135,4 @@ public class HazelcastShardSessionStore internal constructor(
             listeners.clear()
         }
     }
-
-    /**
-     * Returns the record with the given bytes as its stored form.
-     */
-    private fun stored(bytes: ByteArray) = Stored(parseSession(bytes), bytes)
 }

@@ -19,6 +19,7 @@ import io.spine.delivery.storage.ShardSessionStore
 import io.spine.delivery.storage.Stored
 import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
+import java.util.UUID
 
 /**
  * A store whose writes fail in the ways that the client of a database may fail.
@@ -72,21 +73,22 @@ internal class FlakyShardSessionStore(
     override fun compareAndSet(
         shard: ShardIndex,
         expected: Stored?,
-        replacement: ShardSessionRecord
+        replacement: ShardSessionRecord,
+        writeId: UUID
     ): CasOutcome {
         writes++
         pending.forEach { it() }
         pending.clear()
         if (alwaysConflicting) {
             val changing = replacement.toBuilder().clearWorker().buildPartial()
-            return CasOutcome.Conflict(Stored(changing, changing))
+            return CasOutcome.Conflict(Stored(changing, UUID.randomUUID(), changing))
         }
         if (lateWrites > 0) {
             lateWrites--
-            pending.add { delegate.compareAndSet(shard, expected, replacement) }
+            pending.add { delegate.compareAndSet(shard, expected, replacement, writeId) }
             error("The write timed out.")
         }
-        val outcome = delegate.compareAndSet(shard, expected, replacement)
+        val outcome = delegate.compareAndSet(shard, expected, replacement, writeId)
         if (lostReplies > 0) {
             lostReplies--
             error("The reply was lost.")

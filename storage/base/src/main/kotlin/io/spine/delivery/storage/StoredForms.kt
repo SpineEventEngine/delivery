@@ -19,6 +19,8 @@ package io.spine.delivery.storage
 import com.google.protobuf.InvalidProtocolBufferException
 import io.spine.server.delivery.InboxMessage
 import io.spine.server.delivery.ShardSessionRecord
+import java.nio.ByteBuffer
+import java.util.UUID
 
 /**
  * Parses the stored bytes of an inbox message.
@@ -33,16 +35,42 @@ public fun parseMessage(bytes: ByteArray): InboxMessage =
     }
 
 /**
- * Parses the stored bytes of a shard session record.
- *
- * @throws IllegalStateException If the bytes are not a `ShardSessionRecord`.
+ * The number of bytes of the write ID that starts the stored form of a session record.
  */
-public fun parseSession(bytes: ByteArray): ShardSessionRecord =
-    try {
-        ShardSessionRecord.parseFrom(bytes)
-    } catch (e: InvalidProtocolBufferException) {
-        throw IllegalStateException("The stored bytes are not a `ShardSessionRecord`.", e)
+private const val WRITE_ID_SIZE = 2 * Long.SIZE_BYTES
+
+/**
+ * Returns the stored form of a shard session record written by the given write:
+ * the 16 bytes of the write ID, followed by the bytes of the record.
+ */
+public fun sessionForm(record: ShardSessionRecord, writeId: UUID): ByteArray {
+    val bytes = record.toByteArray()
+    return ByteBuffer.allocate(WRITE_ID_SIZE + bytes.size)
+        .putLong(writeId.mostSignificantBits)
+        .putLong(writeId.leastSignificantBits)
+        .put(bytes)
+        .array()
+}
+
+/**
+ * Parses the stored form of a shard session record, which [sessionForm] returns.
+ *
+ * @return The record and its write ID, with the given bytes as their stored form.
+ * @throws IllegalStateException If the bytes are not such a form.
+ */
+public fun parseSession(form: ByteArray): Stored {
+    check(form.size >= WRITE_ID_SIZE) {
+        "The stored bytes are too short to start with a write ID."
     }
+    val buffer = ByteBuffer.wrap(form)
+    val writeId = UUID(buffer.getLong(0), buffer.getLong(Long.SIZE_BYTES))
+    val record = try {
+        ShardSessionRecord.parser().parseFrom(form, WRITE_ID_SIZE, form.size - WRITE_ID_SIZE)
+    } catch (e: InvalidProtocolBufferException) {
+        throw IllegalStateException("The stored bytes do not end with a `ShardSessionRecord`.", e)
+    }
+    return Stored(record, writeId, form)
+}
 
 /**
  * Checks that a page size is positive.

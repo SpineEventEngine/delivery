@@ -102,7 +102,7 @@ call with status `UNKNOWN`, as uncaught exceptions do today.
 
 | Behavior | Today | After this work | Why |
 |---|---|---|---|
-| Exclusivity of `PickShard` | Holds within one node only. | Holds across all the nodes that share the storage, with two exceptions: while a network split divides a Hazelcast cluster, each part may pick the same shard (see "Hazelcast backend"); and two concurrent picks of one shard by one worker that get the same "now" may both succeed (see "The shard registry on top of `compareAndSet`"). | Defect: two nodes can pick one shard. |
+| Exclusivity of `PickShard` | Holds within one node only. | Holds across all the nodes that share the storage, with one exception: while a network split divides a Hazelcast cluster, each part may pick the same shard (see "Hazelcast backend"). | Defect: two nodes can pick one shard. |
 | Message counts of `AdminService` | Count only the operations of the serving node, and drift (issue #70). | Exact, and the same on every node. | Defect. |
 | Shards listed by `GetShardInfo` | Shards of the registry, plus every shard the node has seen since it started, even with a count of zero or below. | Shards of the registry, plus every shard that holds at least one message. | Follows from exact counts. |
 | Updates of `SubscribeToShardUpdates` | One update per message written or removed, and one per pick or release, each carrying only the changed field. Nothing is sent before the first change. | Throttled per shard: at most one update per shard per interval (25 ms by default). Each update carries the shard's full current state: status, last pick time, and message count. Right after the acknowledgment, a new subscriber receives the current state of every known shard. See "Admin updates". | The admin clients need the current state and an exact zero, not every intermediate step. In protobuf, a count of 0 in an update that carries only a status looks the same as a real 0, so only full-state updates make zero reliable. |
@@ -176,7 +176,7 @@ interface ShardSessionStore : AutoCloseable {
     fun read(shards: Collection<ShardIndex>): Map<ShardIndex, Stored>
     fun readAll(): List<Stored>
     fun compareAndSet(shard: ShardIndex, expected: Stored?,
-                      replacement: ShardSessionRecord): CasOutcome
+                      replacement: ShardSessionRecord, writeId: UUID): CasOutcome
     fun subscribe(onChange: Consumer<ShardIndex>): Subscription
 }
 ```
@@ -191,11 +191,18 @@ The batched reads, `count(shards)` and `read(shards)`, serve the admin updates.
   the same state. The backend clients retry commands whose outcome they do not
   know, so this matters. A resend that interleaves with a later operation on the
   same message can still undo that operation, as it can today.
-- A `Stored` holds a `ShardSessionRecord` together with its exact stored form
-  (bytes in Redis and Hazelcast, the stored instance in memory).
-  `compareAndSet` writes `replacement` only if the stored form still equals
-  `expected`'s, or if there is no record and `expected` is `null`. It returns
-  either `APPLIED`, or `CONFLICT` with the current `Stored`, if any.
+- A `Stored` holds a `ShardSessionRecord`, the write ID it was written with,
+  and their exact stored form: in Redis and Hazelcast, the 16 bytes of the
+  write ID followed by the bytes of the record; in memory, the record instance.
+  `compareAndSet` writes `replacement` with `writeId` only if the stored record
+  and write ID still equal `expected`'s, or if there is no record and
+  `expected` is `null`. It returns either `APPLIED`, or `CONFLICT` with
+  the current `Stored`, if any.
+- The write ID lets a writer tell its own record from an equal record written
+  by another operation. Every attempt of one operation passes the same write ID,
+  and different operations pass different ones. As `compareAndSet` compares
+  the write IDs too, a record that an equal record of another operation replaced
+  no longer matches the expected one.
 - `subscribe` reports the shard of every change made through any node, after the
   change is applied. Every write counts as a change, even one that stores an equal
   message, because telling them apart costs a comparison of whole messages; a
@@ -216,25 +223,17 @@ error.
   Redis client, or a failed Hazelcast operation. The write may or may not have
   been applied, so the call reads the record again and decides again from what
   it finds. The call fails only if that read fails too.
-- **`PickShard` recognizes its own write.** The call takes "now" once and builds
-  its replacement once, so every attempt sends the same bytes. When the record
-  found after a `CONFLICT` or an exception equals that replacement byte for
-  byte, the pick counts as applied: the backend client resent the write after a
-  lost reply, the reply itself was lost, or an earlier attempt landed late. The
-  replacement holds this worker and this `when_last_picked`, so only a pick by
-  the same worker that took the same "now" can produce the same bytes.
-- **A known race of one worker with itself.** Two concurrent picks of one shard
-  by one worker that take the same "now" build identical records. One of them
-  writes its record, and the other then finds it after a conflict and counts it
-  as its own write, so both succeed, and both report the session of that worker.
-  Different workers still exclude each other, because the worker is part of
-  the bytes. Within one node, Spine's clock gives every call a distinct time,
-  so the race needs two nodes that take the same time to the microsecond. Telling
-  the two apart would take a request ID, which `ShardSessionRecord` has no field
-  for; limiting the rule to exceptions would instead fail a pick whose write
-  the backend client resent after a lost reply. The race is accepted.
-- **Releases do not apply that rule.** Two nodes clearing the same session build
-  identical replacements, so equal bytes do not show whose write it was.
+- **`PickShard` recognizes its own write.** The call takes "now" once, builds
+  its replacement once, and takes a random UUID as its write ID, so every
+  attempt writes the same record with the same write ID. When the record found
+  after a `CONFLICT` or an exception carries that write ID, the pick counts as
+  applied: the backend client resent the write after a lost reply, the reply
+  itself was lost, or an earlier attempt landed late. No other call has that
+  write ID, so the record of another call never counts as this call's own, even
+  one with the same worker and the same "now". Two concurrent picks of one shard
+  by one worker therefore exclude each other, as picks by different workers do.
+- **Releases do not look for their own writes.** Each release passes a write ID
+  of its own, as every write does, and decides on the record alone.
   - `ReleaseSession` writes the cleared record whenever the record exists, even
     if its worker is already cleared, as it does today.
   - `ReleaseSessions` clears only records that still have a worker, so an
@@ -293,10 +292,9 @@ holds each UUID once.
 - Change listeners are called after the shard's monitor is released. They only
   mark the shard as changed (see "Admin updates"). An exception from a listener
   is caught and logged.
-- The shard registry is a `ConcurrentHashMap<ShardIndex, ShardSessionRecord>`.
+- The shard registry is a `ConcurrentHashMap<ShardIndex, Stored>`.
   `compareAndSet` runs inside `compute` for the shard and compares the stored
-  record with `equals`, which is exact here because the expected record is the
-  stored instance itself.
+  record and write ID with the expected ones by `equals`.
 
 ### Hazelcast backend
 
@@ -356,7 +354,7 @@ is lost, and after a split-brain merge (a `MembershipListener`,
 a `PartitionLostListener`, and the `MERGED` lifecycle event).
 
 **Shard registry.** `delivery-sessions` is an `IMap<String, byte[]>` of
-serialized `ShardSessionRecord`s keyed by the shard tag. `compareAndSet` maps to
+the stored forms of the session records, keyed by the shard tag. `compareAndSet` maps to
 `replace(key, expected, replacement)` or `putIfAbsent`, which compare the stored
 binary form.
 
@@ -399,7 +397,7 @@ slot of a Redis Cluster:
 | `delivery:{inbox:<tag>}:pending` | sorted set, all scores 0 | `<encoded order key>:<UUID>`, `TO_DELIVER` messages |
 
 The shard registry is one hash, `delivery:{sessions}`, from the shard tag to the
-serialized `ShardSessionRecord`.
+stored form of the session record.
 
 **Encoding.** Keys, hash fields, sorted-set members, and both change channels
 use `StringCodec` (UTF-8). Hash values, script arguments, and script results use
@@ -713,12 +711,16 @@ lose.
   - change notifications from every kind of change, and none from a change that
     changes nothing;
   - `compareAndSet` with and without an expected record, executed twice in a
-    row, and against a stale expected record;
+    row, against a stale expected record, and against an expected record that
+    an equal record of another write replaced;
   - a `compareAndSet` that applies its write and then throws, injected through a
     test decorator of the store: `PickShard` must succeed, and `ReleaseSessions`
     must not report the session;
   - a `PickShard` attempt that lands after a later attempt of the same call has
-    been sent: the call still succeeds.
+    been sent: the call still succeeds;
+  - a pick of the same shard by the same worker at the same "now", made through
+    another registry between a pick's read and its write: the later pick fails
+    with `ShardAlreadyPickedUp`.
 - **Validation**: a non-positive page size fails the call with `UNKNOWN`, the status
   that `master` produces for it, as "Validation" explains.
 - **Admin updates**:
@@ -787,6 +789,8 @@ lose.
       Docker-based `DistributedTest`, which runs Hazelcast containers built from
       the working tree, cannot pass, so no earlier state is pushed.
 - [x] Add the multi-node tests.
+- [x] Keep a write ID per call with each session record, so that a pick never
+      takes the record of another call for its own write.
 - [ ] Measure the distributed modes against `master`; record all results in the
       pull request.
 - [x] Update `server/README.md` and `docs/project.md`: the storage modes, the

@@ -23,14 +23,17 @@ import io.kotest.matchers.shouldBe
 import io.spine.base.Time
 import io.spine.delivery.rejection.ShardAlreadyPickedUp
 import io.spine.delivery.server.given.FlakyShardSessionStore
+import io.spine.delivery.storage.CasOutcome
 import io.spine.delivery.storage.ShardSessionStore
 import io.spine.delivery.storage.Stored
 import io.spine.delivery.storage.given.shard
 import io.spine.delivery.storage.memory.InMemoryShardSessionStore
 import io.spine.server.NodeId
 import io.spine.server.delivery.ShardIndex
+import io.spine.server.delivery.ShardSessionRecord
 import io.spine.server.delivery.WorkerId
 import io.spine.testing.time.FrozenMadHatterParty
+import java.util.UUID
 import java.util.concurrent.Callable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
@@ -77,6 +80,36 @@ internal class DeliveryShardRegistrySpec {
         Time.setProvider(FrozenMadHatterParty(Time.currentTime()))
         try {
             registry.pickUp(first, worker("w"))
+
+            shouldThrow<ShardAlreadyPickedUp> { registry.pickUp(first, worker("w")) }
+        } finally {
+            Time.resetProvider()
+        }
+    }
+
+    @Test
+    fun `not pick a shard that the same worker picks at the same time on another server`() {
+        Time.setProvider(FrozenMadHatterParty(Time.currentTime()))
+        try {
+            val shared = InMemoryShardSessionStore()
+            val other = DeliveryShardRegistry(shared, Durations.ZERO)
+            // A store whose first write lets the other server pick the shard first.
+            val racing = object : ShardSessionStore by shared {
+                private var raced = false
+                override fun compareAndSet(
+                    shard: ShardIndex,
+                    expected: Stored?,
+                    replacement: ShardSessionRecord,
+                    writeId: UUID
+                ): CasOutcome {
+                    if (!raced) {
+                        raced = true
+                        other.pickUp(shard, worker("w"))
+                    }
+                    return shared.compareAndSet(shard, expected, replacement, writeId)
+                }
+            }
+            val registry = DeliveryShardRegistry(racing, Durations.ZERO)
 
             shouldThrow<ShardAlreadyPickedUp> { registry.pickUp(first, worker("w")) }
         } finally {

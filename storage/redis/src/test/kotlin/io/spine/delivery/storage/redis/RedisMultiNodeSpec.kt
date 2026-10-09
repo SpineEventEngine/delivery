@@ -22,6 +22,7 @@ import io.spine.delivery.storage.given.message
 import io.spine.delivery.storage.given.session
 import io.spine.delivery.storage.given.shard
 import java.time.Duration
+import java.util.UUID
 import java.util.concurrent.Callable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
@@ -82,7 +83,7 @@ internal class RedisMultiNodeSpec {
 
         first.inbox.write(listOf(message(shard(1))))
         changes.expect(shard(1))
-        first.sessions.compareAndSet(shard(2), null, session(shard(2)))
+        first.sessions.compareAndSet(shard(2), null, session(shard(2)), UUID.randomUUID())
         changes.expect(shard(2))
     }
 
@@ -95,7 +96,9 @@ internal class RedisMultiNodeSpec {
             val results = listOf(first, second).map { stores ->
                 pool.submit(Callable {
                     start.await()
-                    shards.map { stores.sessions.compareAndSet(it, null, session(it)) }
+                    shards.map {
+                        stores.sessions.compareAndSet(it, null, session(it), UUID.randomUUID())
+                    }
                 })
             }
             start.countDown()

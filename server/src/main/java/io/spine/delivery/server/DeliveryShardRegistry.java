@@ -30,7 +30,7 @@ import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.delivery.WorkerId;
 import org.jspecify.annotations.Nullable;
 
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.UUID;
 import java.util.function.Function;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -41,6 +41,7 @@ import static io.spine.base.Time.currentTime;
 import static io.spine.delivery.storage.Shards.tag;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
+import static java.util.UUID.randomUUID;
 
 /**
  * The registry of the shard indexes along with the worker identifiers,
@@ -86,9 +87,9 @@ public final class DeliveryShardRegistry implements WithLogging {
     /**
      * Picks up the shard at a given index to process.
      *
-     * <p>This action is exclusive across all the servers that share the store, with the exceptions
-     * below: a single shard
-     * may be served by a single worker at a given moment of time.
+     * <p>This action is exclusive across all the servers that share the store, with
+     * the exception below: a single shard may be served by a single worker at a given moment
+     * of time.
      *
      * <p>In case of a successful operation, an instance of {@link ShardProcessingSession}
      * is returned. There are two options when it is successful:
@@ -104,11 +105,8 @@ public final class DeliveryShardRegistry implements WithLogging {
      * has not reached {@linkplain #processingTimeout processing timeout},
      * an {@link ShardAlreadyPickedUp} is thrown.
      *
-     * <p>The exclusivity has two exceptions. A store shared by servers that a network split
-     * divides may let each part of them pick the same shard. And two concurrent picks of one
-     * shard by one worker that take the same current time may both succeed, as each of them
-     * takes the record of the other for its own write. Different workers always exclude each
-     * other.
+     * <p>The exclusivity has one exception: a store shared by servers that a network split
+     * divides may let each part of them pick the same shard.
      *
      * @param index
      *         the index of the shard to pick up for processing
@@ -116,7 +114,7 @@ public final class DeliveryShardRegistry implements WithLogging {
      *         the identifier of the worker for which to pick the shard
      * @return the session of shard processing
      * @throws ShardAlreadyPickedUp
-     *         if the shard is already picked up by another worker
+     *         if the shard is already picked up, even by the same worker
      */
     public ShardProcessingSession pickUp(ShardIndex index, WorkerId worker)
             throws ShardAlreadyPickedUp {
@@ -126,19 +124,16 @@ public final class DeliveryShardRegistry implements WithLogging {
                 .setWorker(worker)
                 .setWhenLastPicked(now)
                 .build();
-        // The record to write is built once, so every attempt writes the same bytes. After
-        // an attempt, a record found equal to it, byte for byte, is this call's own write,
-        // applied by an attempt whose outcome was not known: no other caller writes this
-        // worker with this time. Before the first attempt, such a record is a pick of the same
-        // worker at the same time by an earlier call, which holds the shard.
-        var attempted = new AtomicBoolean(false);
+        // Every attempt writes the same record with the same write ID, which no other call
+        // has. So a record found with this write ID is this call's own write, applied by
+        // an attempt whose outcome was not known.
+        var writeId = randomUUID();
         // The record of the session that holds the shard, or `null` if this call picked it.
-        @Nullable ShardSessionRecord holder = update(index, store.read(index), current -> {
+        @Nullable ShardSessionRecord holder = update(index, writeId, store.read(index), current -> {
             if (current == null) {
-                attempted.set(true);
                 return Decision.write(picked, null);
             }
-            if (attempted.get() && current.holds(picked)) {
+            if (current.getWriteId().equals(writeId)) {
                 return Decision.done(null);
             }
             var record = current.getRecord();
@@ -148,7 +143,6 @@ public final class DeliveryShardRegistry implements WithLogging {
                 }
                 logStale(record, now);
             }
-            attempted.set(true);
             return Decision.write(picked, null);
         });
         if (holder != null) {
@@ -168,9 +162,10 @@ public final class DeliveryShardRegistry implements WithLogging {
      * is already cleared.
      */
     public void releaseShard(ShardIndex index) {
-        update(index, store.read(index), current -> current == null
-                                                    ? Decision.done(null)
-                                                    : Decision.write(cleared(current), null));
+        update(index, randomUUID(), store.read(index),
+               current -> current == null
+                          ? Decision.done(null)
+                          : Decision.write(cleared(current), null));
     }
 
     /**
@@ -189,7 +184,7 @@ public final class DeliveryShardRegistry implements WithLogging {
         var result = ImmutableSet.<ShardSessionRecord>builder();
         for (var stored : store.readAll()) {
             var index = stored.getRecord().getIndex();
-            var released = update(index, stored, current -> {
+            var released = update(index, randomUUID(), stored, current -> {
                 if (current == null || !isInactive(current.getRecord(), inactivityPeriod, now)) {
                     return Decision.done(null);
                 }
@@ -214,6 +209,8 @@ public final class DeliveryShardRegistry implements WithLogging {
      *         the type of the result
      * @param index
      *         the shard of the record
+     * @param writeId
+     *         the ID with which every attempt writes, which no other call uses
      * @param initial
      *         the record to decide on first
      * @param decide
@@ -223,6 +220,7 @@ public final class DeliveryShardRegistry implements WithLogging {
      *         if the record keeps changing for {@link #MAX_ATTEMPTS} attempts
      */
     private <T> T update(ShardIndex index,
+                         UUID writeId,
                          @Nullable Stored initial,
                          Function<@Nullable Stored, Decision<T>> decide) {
         var current = initial;
@@ -233,7 +231,7 @@ public final class DeliveryShardRegistry implements WithLogging {
                 return decision.result;
             }
             try {
-                var outcome = store.compareAndSet(index, current, replacement);
+                var outcome = store.compareAndSet(index, current, replacement, writeId);
                 if (outcome instanceof CasOutcome.Conflict conflict) {
                     current = conflict.getCurrent();
                 } else {

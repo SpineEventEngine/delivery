@@ -21,6 +21,7 @@ import io.spine.delivery.storage.Stored
 import io.spine.delivery.storage.Subscription
 import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.function.Consumer
 
@@ -28,47 +29,48 @@ import java.util.function.Consumer
  * A [ShardSessionStore] that keeps the records in the memory of the process.
  *
  * The [stored form][Stored.form] of a record is the record instance itself, so
- * [compareAndSet] compares the records with `equals`.
+ * [compareAndSet] compares the records, and their write IDs, with `equals`.
  */
 public class InMemoryShardSessionStore : ShardSessionStore {
 
     /**
-     * The session record of each shard that has one.
+     * The session record of each shard that has one, with the ID of its write.
      */
-    private val records = ConcurrentHashMap<ShardIndex, ShardSessionRecord>()
+    private val records = ConcurrentHashMap<ShardIndex, Stored>()
 
     /**
      * The listeners of the written records.
      */
     private val listeners = ChangeListeners()
 
-    override fun read(shard: ShardIndex): Stored? = records[shard]?.let(::stored)
+    override fun read(shard: ShardIndex): Stored? = records[shard]
 
     override fun read(shards: Collection<ShardIndex>): Map<ShardIndex, Stored> {
         val result = HashMap<ShardIndex, Stored>()
         for (shard in shards) {
-            records[shard]?.let { result[shard] = stored(it) }
+            records[shard]?.let { result[shard] = it }
         }
         return result
     }
 
-    override fun readAll(): List<Stored> = records.values.map(::stored)
+    override fun readAll(): List<Stored> = records.values.toList()
 
     /**
-     * Compares the stored record with the expected one by `equals`, and writes
-     * the replacement, in one atomic step of the map.
+     * Compares the stored record and write ID with the expected ones by `equals`, and
+     * writes the replacement, in one atomic step of the map.
      */
     override fun compareAndSet(
         shard: ShardIndex,
         expected: Stored?,
-        replacement: ShardSessionRecord
+        replacement: ShardSessionRecord,
+        writeId: UUID
     ): CasOutcome {
         var conflict: CasOutcome.Conflict? = null
         records.compute(shard) { _, current ->
-            if (current == expected?.record) {
-                replacement
+            if (current?.record == expected?.record && current?.writeId == expected?.writeId) {
+                Stored(replacement, writeId, replacement)
             } else {
-                conflict = CasOutcome.Conflict(current?.let(::stored))
+                conflict = CasOutcome.Conflict(current)
                 current
             }
         }
@@ -90,9 +92,4 @@ public class InMemoryShardSessionStore : ShardSessionStore {
     override fun close() {
         listeners.clear()
     }
-
-    /**
-     * Returns the record with itself as its stored form.
-     */
-    private fun stored(record: ShardSessionRecord) = Stored(record, record)
 }

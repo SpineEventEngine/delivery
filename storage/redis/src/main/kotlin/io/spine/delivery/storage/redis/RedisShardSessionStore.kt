@@ -20,17 +20,19 @@ import io.spine.delivery.storage.ShardSessionStore
 import io.spine.delivery.storage.Stored
 import io.spine.delivery.storage.Subscription
 import io.spine.delivery.storage.parseSession
+import io.spine.delivery.storage.sessionForm
 import io.spine.delivery.storage.shardOf
 import io.spine.delivery.storage.tag
 import io.spine.server.delivery.ShardIndex
 import io.spine.server.delivery.ShardSessionRecord
+import java.util.UUID
 import java.util.function.Consumer
 import org.redisson.api.RScript.Mode.READ_WRITE
 import org.redisson.api.RedissonClient
 
 /**
- * A [ShardSessionStore] kept in one Redis hash, from the [tag] of a shard to the bytes of
- * its session record.
+ * A [ShardSessionStore] kept in one Redis hash, from the [tag] of a shard to
+ * the [stored form][sessionForm] of its session record.
  *
  * @param client The client connected to Redis.
  */
@@ -60,7 +62,7 @@ public class RedisShardSessionStore internal constructor(
      */
     private val compareAndSetScript = LuaScript(client, COMPARE_AND_SET_SCRIPT)
 
-    override fun read(shard: ShardIndex): Stored? = hash[shard.tag()]?.let(::stored)
+    override fun read(shard: ShardIndex): Stored? = hash[shard.tag()]?.let(::parseSession)
 
     /**
      * Reads the records in one round trip.
@@ -72,12 +74,12 @@ public class RedisShardSessionStore internal constructor(
         val found = hash.getAll(shards.mapTo(HashSet()) { it.tag() })
         val result = HashMap<ShardIndex, Stored>()
         for ((tag, bytes) in found) {
-            result[shardOf(tag)] = stored(bytes)
+            result[shardOf(tag)] = parseSession(bytes)
         }
         return result
     }
 
-    override fun readAll(): List<Stored> = hash.readAllValues().map(::stored)
+    override fun readAll(): List<Stored> = hash.readAllValues().map(::parseSession)
 
     /**
      * Compares the stored bytes with those of [expected], and writes the replacement, with
@@ -89,7 +91,8 @@ public class RedisShardSessionStore internal constructor(
     override fun compareAndSet(
         shard: ShardIndex,
         expected: Stored?,
-        replacement: ShardSessionRecord
+        replacement: ShardSessionRecord,
+        writeId: UUID
     ): CasOutcome {
         val expectedBytes = if (expected == null) {
             ByteArray(0)
@@ -105,14 +108,14 @@ public class RedisShardSessionStore internal constructor(
                 shard.tag().toByteArray(),
                 (if (expected == null) "0" else "1").toByteArray(),
                 expectedBytes,
-                replacement.toByteArray()
+                sessionForm(replacement, writeId)
             )
         )
         val applied = result.firstOrNull() ?: error("The compare-and-set script returned nothing.")
         if (applied == 1L) {
             return CasOutcome.Applied
         }
-        return CasOutcome.Conflict((result.getOrNull(1) as ByteArray?)?.let(::stored))
+        return CasOutcome.Conflict((result.getOrNull(1) as ByteArray?)?.let(::parseSession))
     }
 
     /**
@@ -142,9 +145,4 @@ public class RedisShardSessionStore internal constructor(
             listeners.clear()
         }
     }
-
-    /**
-     * Returns the record with the given bytes as its stored form.
-     */
-    private fun stored(bytes: ByteArray) = Stored(parseSession(bytes), bytes)
 }

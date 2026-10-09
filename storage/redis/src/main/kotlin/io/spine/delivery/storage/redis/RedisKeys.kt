@@ -87,7 +87,7 @@ internal fun tagOfMessagesKey(key: String): String =
 
 /**
  * The key of the hash that holds the session records: from the [tag][io.spine.delivery.storage.tag]
- * of a shard to the bytes of its record.
+ * of a shard to the [stored form][io.spine.delivery.storage.sessionForm] of its record.
  */
 internal const val SESSIONS_KEY = "delivery:{sessions}"
 
