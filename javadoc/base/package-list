@@ -1,4 +1,7 @@
 $dokka.format:javadoc-v1
 $dokka.linkExtension:html
-
-io.spine.server.storage.query
+$dokka.location:io.spine.delivery.storage/CasOutcome.Applied///PointingToDeclaration/io/spine/delivery/storage/CasOutcome.Applied.html
+$dokka.location:io.spine.delivery.storage/CasOutcome.Conflict///PointingToDeclaration/io/spine/delivery/storage/CasOutcome.Conflict.html
+$dokka.location:io.spine.delivery.storage/StoredShardSession.Builder///PointingToDeclaration/io/spine/delivery/storage/StoredShardSession.Builder.html
+io.spine.delivery.storage
+io.spine.delivery.storage.memory
