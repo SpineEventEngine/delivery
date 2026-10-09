@@ -19,7 +19,6 @@ package io.spine.delivery.storage
 import com.google.protobuf.InvalidProtocolBufferException
 import io.spine.server.delivery.InboxMessage
 import io.spine.server.delivery.ShardSessionRecord
-import java.nio.ByteBuffer
 import java.util.UUID
 
 /**
@@ -35,22 +34,15 @@ public fun parseMessage(bytes: ByteArray): InboxMessage =
     }
 
 /**
- * The number of bytes of the write ID that starts the stored form of a session record.
- */
-private const val WRITE_ID_SIZE = 2 * Long.SIZE_BYTES
-
-/**
  * Returns the stored form of a shard session record written by the given write:
- * the 16 bytes of the write ID, followed by the bytes of the record.
+ * the bytes of a [StoredShardSession] that holds the write ID and the record.
  */
-public fun sessionForm(writeId: UUID, record: ShardSessionRecord): ByteArray {
-    val bytes = record.toByteArray()
-    return ByteBuffer.allocate(WRITE_ID_SIZE + bytes.size)
-        .putLong(writeId.mostSignificantBits)
-        .putLong(writeId.leastSignificantBits)
-        .put(bytes)
-        .array()
-}
+public fun sessionForm(writeId: UUID, record: ShardSessionRecord): ByteArray =
+    StoredShardSession.newBuilder()
+        .setWriteId(writeId.toString())
+        .setRecord(record)
+        .build()
+        .toByteArray()
 
 /**
  * Parses the stored form of a shard session record, which [sessionForm] returns.
@@ -59,17 +51,17 @@ public fun sessionForm(writeId: UUID, record: ShardSessionRecord): ByteArray {
  * @throws IllegalStateException If the bytes are not such a form.
  */
 public fun parseSession(form: ByteArray): Stored {
-    check(form.size >= WRITE_ID_SIZE) {
-        "The stored bytes are too short to start with a write ID."
-    }
-    val buffer = ByteBuffer.wrap(form)
-    val writeId = UUID(buffer.getLong(0), buffer.getLong(Long.SIZE_BYTES))
-    val record = try {
-        ShardSessionRecord.parser().parseFrom(form, WRITE_ID_SIZE, form.size - WRITE_ID_SIZE)
+    val session = try {
+        StoredShardSession.parseFrom(form)
     } catch (e: InvalidProtocolBufferException) {
-        throw IllegalStateException("The stored bytes do not end with a `ShardSessionRecord`.", e)
+        throw IllegalStateException("The stored bytes are not a `StoredShardSession`.", e)
     }
-    return Stored(record, writeId, form)
+    val writeId = try {
+        UUID.fromString(session.writeId)
+    } catch (e: IllegalArgumentException) {
+        throw IllegalStateException("The stored write ID `${session.writeId}` is not a UUID.", e)
+    }
+    return Stored(session.record, writeId, form)
 }
 
 /**

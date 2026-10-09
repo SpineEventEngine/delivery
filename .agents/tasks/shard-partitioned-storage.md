@@ -192,8 +192,10 @@ The batched reads, `count(shards)` and `read(shards)`, serve the admin updates.
   know, so this matters. A resend that interleaves with a later operation on the
   same message can still undo that operation, as it can today.
 - A `Stored` holds a `ShardSessionRecord`, the write ID it was written with,
-  and their exact stored form: in Redis and Hazelcast, the 16 bytes of the
-  write ID followed by the bytes of the record; in memory, the record instance.
+  and their exact stored form: in Redis and Hazelcast, the bytes of
+  a `StoredShardSession` message, which holds the write ID as a UUID string and
+  the record; in memory, the record instance. `compareAndSet` passes back
+  the exact bytes that were read, so the serialization need not be deterministic.
   `compareAndSet` writes `replacement` with `writeId` only if the stored record
   and write ID still equal `expected`'s, or if there is no record and
   `expected` is `null`. It returns either `APPLIED`, or `CONFLICT` with
@@ -402,9 +404,8 @@ stored form of the session record.
 **Encoding.** Keys, hash fields, sorted-set members, and both change channels
 use `StringCodec` (UTF-8). Hash values, script arguments, and script results use
 `ByteArrayCodec`. Message values are exactly `InboxMessage.toByteArray()`;
-registry values are the 16 bytes of the write ID followed by
-`ShardSessionRecord.toByteArray()`. These formats
-are fixed for the life of the stored data.
+registry values are `StoredShardSession.toByteArray()`. These formats are fixed
+for the life of the stored data.
 
 **Scripts.** Every script receives its keys through `KEYS[]` and runs with
 `EVALSHA`, loading itself again on `NOSCRIPT`. Scripts run only commands that

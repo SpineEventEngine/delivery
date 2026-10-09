@@ -39,13 +39,28 @@ internal class StoredFormsSpec {
     }
 
     @Test
-    fun `not be parsed from bytes too short for a write ID`() {
-        shouldThrow<IllegalStateException> { parseSession(ByteArray(15)) }
+    fun `be the bytes of a 'StoredShardSession'`() {
+        val record = session(shard(1))
+        val writeId = UUID.randomUUID()
+
+        val session = StoredShardSession.parseFrom(sessionForm(writeId, record))
+
+        session.writeId shouldBe writeId.toString()
+        session.record shouldBe record
     }
 
     @Test
-    fun `not be parsed from bytes that do not end with a record`() {
-        val form = sessionForm(UUID.randomUUID(), session(shard(1))) + byteArrayOf(-1)
+    fun `not be parsed from bytes that are not a 'StoredShardSession'`() {
+        shouldThrow<IllegalStateException> { parseSession(byteArrayOf(-1)) }
+    }
+
+    @Test
+    fun `not be parsed with a write ID that is not a UUID`() {
+        val form = StoredShardSession.newBuilder()
+            .setWriteId("not a UUID")
+            .setRecord(session(shard(1)))
+            .build()
+            .toByteArray()
 
         shouldThrow<IllegalStateException> { parseSession(form) }
     }
