@@ -29,7 +29,7 @@ internal class StoredFormsSpec {
     fun `keep the record and its write ID`() {
         val record = session(shard(1))
         val writeId = UUID.randomUUID()
-        val form = sessionForm(record, writeId)
+        val form = sessionForm(writeId, record)
 
         val stored = parseSession(form)
 
@@ -45,7 +45,7 @@ internal class StoredFormsSpec {
 
     @Test
     fun `not be parsed from bytes that do not end with a record`() {
-        val form = sessionForm(session(shard(1)), UUID.randomUUID()) + byteArrayOf(-1)
+        val form = sessionForm(UUID.randomUUID(), session(shard(1))) + byteArrayOf(-1)
 
         shouldThrow<IllegalStateException> { parseSession(form) }
     }

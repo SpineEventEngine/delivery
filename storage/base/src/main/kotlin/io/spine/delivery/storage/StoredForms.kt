@@ -43,7 +43,7 @@ private const val WRITE_ID_SIZE = 2 * Long.SIZE_BYTES
  * Returns the stored form of a shard session record written by the given write:
  * the 16 bytes of the write ID, followed by the bytes of the record.
  */
-public fun sessionForm(record: ShardSessionRecord, writeId: UUID): ByteArray {
+public fun sessionForm(writeId: UUID, record: ShardSessionRecord): ByteArray {
     val bytes = record.toByteArray()
     return ByteBuffer.allocate(WRITE_ID_SIZE + bytes.size)
         .putLong(writeId.mostSignificantBits)

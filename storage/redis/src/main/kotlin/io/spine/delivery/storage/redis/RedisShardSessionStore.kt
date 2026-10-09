@@ -108,7 +108,7 @@ public class RedisShardSessionStore internal constructor(
                 shard.tag().toByteArray(),
                 (if (expected == null) "0" else "1").toByteArray(),
                 expectedBytes,
-                sessionForm(replacement, writeId)
+                sessionForm(writeId, replacement)
             )
         )
         val applied = result.firstOrNull() ?: error("The compare-and-set script returned nothing.")

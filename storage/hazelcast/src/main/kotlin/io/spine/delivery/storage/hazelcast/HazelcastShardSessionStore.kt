@@ -95,7 +95,7 @@ public class HazelcastShardSessionStore internal constructor(
         writeId: UUID
     ): CasOutcome {
         val tag = shard.tag()
-        val bytes = sessionForm(replacement, writeId)
+        val bytes = sessionForm(writeId, replacement)
         if (expected == null) {
             val current = map.putIfAbsent(tag, bytes) ?: return CasOutcome.Applied
             return CasOutcome.Conflict(parseSession(current))

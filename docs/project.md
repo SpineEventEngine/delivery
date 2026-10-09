@@ -123,5 +123,11 @@ keep a Docker-less environment from reporting a misleading "tests passed":
 - **Versioning** follows the Spine SDK policy; the published version lives in
   `version.gradle.kts` as `versionToPublish`.
 
+### Design rules
+
+- **Serialized forms**: a function or constructor that writes a serialized form
+  takes the parts of the form in the order in which it writes them. For example,
+  `sessionForm(writeId, record)` writes the write ID before the record.
+
 Read [`.agents/guidelines/jvm-project.md`](../.agents/guidelines/jvm-project.md) for build stack,
 coding style, tests, and versioning.
