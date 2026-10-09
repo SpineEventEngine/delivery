@@ -21,6 +21,7 @@ import com.hazelcast.nio.ObjectDataInput
 import com.hazelcast.nio.ObjectDataOutput
 import com.hazelcast.nio.serialization.IdentifiedDataSerializable
 import io.spine.server.delivery.ShardIndex
+import java.io.Serial
 
 /**
  * An entry of the inbox map: a shard tag, and the shard's messages, if there are any.
@@ -42,6 +43,11 @@ internal abstract class ShardProcessor<R>(
     final override fun getFactoryId(): Int = FACTORY_ID
 
     final override fun getClassId(): Int = classId
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 0L
+    }
 }
 
 /**
@@ -50,6 +56,11 @@ internal abstract class ShardProcessor<R>(
 internal abstract class ReadingProcessor<R>(classId: Int) : ShardProcessor<R>(classId), ReadOnly {
 
     final override fun getBackupProcessor(): EntryProcessor<String, HazelcastShard?, R>? = null
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 0L
+    }
 }
 
 /**
@@ -88,6 +99,11 @@ internal class WriteMessages() : ShardProcessor<Unit?>(ClassId.WRITE) {
         ofTotal = input.readInt()
         messages = List(input.readInt()) { HeldMessage.readFrom(input) }
     }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 0L
+    }
 }
 
 /**
@@ -124,6 +140,11 @@ internal class DeleteMessages() : ShardProcessor<Boolean>(ClassId.DELETE) {
     override fun readData(input: ObjectDataInput) {
         uuids = List(input.readInt()) { checkNotNull(input.readString()) }
     }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 0L
+    }
 }
 
 /**
@@ -145,6 +166,11 @@ internal class FindMessage() : ReadingProcessor<ByteArray?>(ClassId.FIND) {
 
     override fun readData(input: ObjectDataInput) {
         uuid = checkNotNull(input.readString())
+    }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 0L
     }
 }
 
@@ -187,6 +213,11 @@ internal class ReadPage() : ReadingProcessor<ArrayList<ByteArray>>(ClassId.PAGE)
         }
         limit = input.readInt()
     }
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 0L
+    }
 }
 
 /**
@@ -201,6 +232,11 @@ internal class FindNewestToDeliver : ReadingProcessor<ByteArray?>(ClassId.NEWEST
     override fun writeData(out: ObjectDataOutput) = Unit
 
     override fun readData(input: ObjectDataInput) = Unit
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 0L
+    }
 }
 
 /**
@@ -213,4 +249,9 @@ internal class CountMessages : ReadingProcessor<Int>(ClassId.COUNT) {
     override fun writeData(out: ObjectDataOutput) = Unit
 
     override fun readData(input: ObjectDataInput) = Unit
+
+    companion object {
+        @Serial
+        private const val serialVersionUID: Long = 0L
+    }
 }
