@@ -1,4 +1,4 @@
 $dokka.format:javadoc-v1
 $dokka.linkExtension:html
 
-io.spine.server.storage.hazelcast
+io.spine.delivery.storage.hazelcast
