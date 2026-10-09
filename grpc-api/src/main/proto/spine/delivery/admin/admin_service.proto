@@ -32,7 +32,8 @@ import "spine/server/delivery/delivery.proto";
 // Acts as a backend implementation for `AdminService`.
 service AdminService {
 
-    // Gets information about shards on the Delivery server.
+    // Gets information about shards on the Delivery server: every shard that has a session
+    // record or holds messages. A shard whose index is not set is left out.
     rpc GetShardInfo(google.protobuf.Empty) returns (ShardInfoList);
 
     // Subscribes to the updates of shard info.

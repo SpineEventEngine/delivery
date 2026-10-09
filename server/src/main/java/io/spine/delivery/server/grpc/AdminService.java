@@ -46,6 +46,11 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
         implements WithLogging, NamedHealthAwareService, AutoCloseable {
 
     /**
+     * The index of a shard that is not set, which only a defective client can write.
+     */
+    private static final ShardIndex UNSET_INDEX = ShardIndex.getDefaultInstance();
+
+    /**
      * Whether the service reports itself as serving.
      */
     private final AtomicBoolean healthy = new AtomicBoolean(true);
@@ -110,9 +115,17 @@ public final class AdminService extends AdminServiceGrpc.AdminServiceImplBase
 
     /**
      * Fetches information about the shards that have a session record or hold messages.
+     *
+     * <p>Leaves out the shard of the messages whose shard index is not set, which only
+     * a defective client can write, because a {@code ShardInfo} must carry the index of its
+     * shard. A session record always has its index set, as the record must have one too.
      */
     private ShardInfoList fetch() {
         var counts = new HashMap<>(inbox.counts());
+        if (counts.remove(UNSET_INDEX) != null) {
+            logger().atWarning()
+                    .log(() -> "A shard whose index is not set is left out of the shard info.");
+        }
         var shardListBuilder = ShardInfoList.newBuilder();
         for (var stored : sessions.readAll()) {
             var record = stored.getRecord();

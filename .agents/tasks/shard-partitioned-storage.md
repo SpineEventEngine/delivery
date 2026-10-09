@@ -104,7 +104,7 @@ call with status `UNKNOWN`, as uncaught exceptions do today.
 |---|---|---|---|
 | Exclusivity of `PickShard` | Holds within one node only. | Holds across all the nodes that share the storage, with one exception: while a network split divides a Hazelcast cluster, each part may pick the same shard (see "Hazelcast backend"). | Defect: two nodes can pick one shard. |
 | Message counts of `AdminService` | Count only the operations of the serving node, and drift (issue #70). | Exact, and the same on every node. | Defect. |
-| Shards listed by `GetShardInfo` | Shards of the registry, plus every shard the node has seen since it started, even with a count of zero or below. | Shards of the registry, plus every shard that holds at least one message. | Follows from exact counts. |
+| Shards listed by `GetShardInfo` | Shards of the registry, plus every shard the node has seen since it started, even with a count of zero or below. | Shards of the registry, plus every shard that holds at least one message, except a shard whose index is not set, which only a defective client can write. | Follows from exact counts. A `ShardInfo` must carry a set index, so such a shard would fail the whole call. |
 | Updates of `SubscribeToShardUpdates` | One update per message written or removed, and one per pick or release, each carrying only the changed field. Nothing is sent before the first change. | Throttled per shard: at most one update per shard per interval (25 ms by default). Each update carries the shard's full current state: status, last pick time, and message count. Right after the acknowledgment, a new subscriber receives the current state of every known shard. See "Admin updates". | The admin clients need the current state and an exact zero, not every intermediate step. In protobuf, a count of 0 in an update that carries only a status looks the same as a real 0, so only full-state updates make zero reliable. |
 | The admin UI showing a count of 0 | Ignores updates whose count is 0, so a drained shard keeps its last non-zero count. | Shows 0. | Defect. The UI ships in the image; its interface does not change. |
 | Timestamps outside the range of `google.protobuf.Timestamp` (see "Terms") | Accepted on write. Afterwards, any call that compares such a value fails: a page read that sorts two or more messages of the shard, or that has a `since_when` and a non-empty shard, and `NewestMessageToDeliver`. | Compared as plain numbers; nothing fails. | Only a defective client sends such values. Comparing plain numbers removes all validation and keeps writes exactly as today. |
@@ -569,7 +569,8 @@ a function; the tests of the sender pass the interval to it directly.
 - `InboxService` checks `page_size`, then calls one store operation.
 - `ShardService` uses `DeliveryShardRegistry`, built on `ShardSessionStore`.
 - `AdminService.GetShardInfo` combines `ShardSessionStore.readAll()` with
-  `InboxStore.counts()`. `SubscribeToShardUpdates` serves the updates described
+  `InboxStore.counts()`, and leaves out a shard whose index is not set, as
+  the updates do. `SubscribeToShardUpdates` serves the updates described
   in "Admin updates". The startup read of all messages goes away.
 - The admin UI applies a count of 0 like any other count.
 
@@ -753,7 +754,9 @@ lose.
   - a failed send to one subscriber does not stop the others; nothing is read
     while there are no subscribers; shutdown stops the sender;
   - a new subscriber first receives the current state of every known shard,
-    including a change made between its `GetShardInfo` and its subscription.
+    including a change made between its `GetShardInfo` and its subscription;
+  - `GetShardInfo` leaves out the shard of a message whose shard index is not
+    set, and lists the other shards.
 - **Multi-node tests** with two stores on one Redis, and with two Hazelcast
   members, in the storage modules, which already run Docker-based suites:
   - concurrent creations of one session record let exactly one win, which is

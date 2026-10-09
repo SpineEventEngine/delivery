@@ -51,6 +51,7 @@ import static io.spine.delivery.server.grpc.given.AdminServiceTestEnv.removeMess
 import static io.spine.delivery.server.grpc.given.AdminServiceTestEnv.request;
 import static io.spine.delivery.server.grpc.given.AdminServiceTestEnv.shardInfo;
 import static io.spine.delivery.server.grpc.given.AdminServiceTestEnv.testMessage;
+import static io.spine.delivery.server.grpc.given.AdminServiceTestEnv.withoutShard;
 import static io.spine.delivery.server.grpc.given.AdminServiceTestEnv.writeMessage;
 import static io.spine.delivery.server.grpc.given.AdminServiceTestEnv.writeMessages;
 import static io.spine.server.delivery.DeliveryStrategy.newIndex;
@@ -118,6 +119,22 @@ final class AdminServiceTest extends WithApp implements WithLogging {
                         shardInfo(shard3, NOT_PICKED, 0),
                         shardInfo(shard4, PICKED, 0)
                 );
+    }
+
+    @Test
+    @DisplayName("leave out of the shard info a shard whose index is not set")
+    void leaveOutUnsetIndex() {
+        var shard = newIndex(1, 5);
+        syncInboxService().writeOne(testMessage(shard));
+        syncInboxService().writeOne(withoutShard(testMessage(shard)));
+
+        var actual = syncAdminService()
+                .getShardInfo(request())
+                .getShardsList();
+
+        assertThat(actual)
+                .comparingExpectedFieldsOnly()
+                .containsExactly(shardInfo(shard, NOT_PICKED, 1));
     }
 
     @Test

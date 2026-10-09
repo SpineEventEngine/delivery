@@ -112,10 +112,10 @@ its messages change. Each update carries the full current state of its shard: th
 of the last pick-up, and the number of messages, including `0`. Right after the acknowledgement of a
 subscription, the subscriber receives the current state of every shard that has a session record or
 holds messages. A shard whose index is not set, which only a defective client can write, is never
-sent, because an update must carry the index of its shard. When the storage reports that changes may
-have been missed, for example after a Redis connection is established again, the state of every such
-shard is sent again, together with every shard that a subscriber last saw with messages or picked
-up.
+sent, because an update must carry the index of its shard. `GetShardInfo` leaves such a shard out
+for the same reason. When the storage reports that changes may have been missed, for example after a
+Redis connection is established again, the state of every such shard is sent again, together with
+every shard that a subscriber last saw with messages or picked up.
 
 The updates are throttled per shard: at most one update of a shard is sent per interval, and the
 changes made during the interval are sent as one update with the final state. The interval is read

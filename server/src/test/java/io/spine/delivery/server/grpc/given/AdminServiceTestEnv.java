@@ -104,6 +104,23 @@ public final class AdminServiceTestEnv {
     }
 
     /**
+     * Returns the given request without the shard index of its message, as only
+     * a defective client sends it, skipping the validation of the request.
+     */
+    public static WriteMessage withoutShard(WriteMessage request) {
+        var message = request.getMessage();
+        var id = message.getId()
+                        .toBuilder()
+                        .clearIndex()
+                        .buildPartial();
+        return request.toBuilder()
+                .setMessage(message.toBuilder()
+                                   .setId(id)
+                                   .buildPartial())
+                .buildPartial();
+    }
+
+    /**
      * Creates a new {@code ReleaseShard} request for the {@code pickedUp} shard.
      */
     public static ReleaseShard releaseShard(ShardPickedUp pickedUp) {
