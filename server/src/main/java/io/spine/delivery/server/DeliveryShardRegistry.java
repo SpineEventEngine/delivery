@@ -287,16 +287,16 @@ public final class DeliveryShardRegistry implements WithLogging {
      * Decides what a release of a shard by the given worker does with the current record
      * of the shard.
      *
-     * <p>The release clears the worker of the record if the given worker holds the shard,
-     * which results in {@link ReleaseOutcome#RELEASED}. If no worker holds the shard,
-     * the result is {@link ReleaseOutcome#NOT_PICKED_UP}, and if another worker holds it,
-     * the result is {@link ReleaseOutcome#HELD_BY_ANOTHER_WORKER}. In both cases, the release
-     * finishes without a write.
-     *
      * <p>Every attempt of the release writes with the same write ID, which no other call
      * uses. So a record with this ID is the release's own write, applied by an attempt whose
      * outcome was not known, and the result is {@link ReleaseOutcome#RELEASED} without
      * a write.
+     *
+     * <p>Otherwise, the release clears the worker of the record if the given worker holds
+     * the shard, which results in {@link ReleaseOutcome#RELEASED}. If no worker holds
+     * the shard, the result is {@link ReleaseOutcome#NOT_PICKED_UP}, and if another worker
+     * holds it, the result is {@link ReleaseOutcome#HELD_BY_ANOTHER_WORKER}. In both cases,
+     * the release finishes without a write.
      *
      * @param current
      *         the current record of the shard, or {@code null} if there is none
