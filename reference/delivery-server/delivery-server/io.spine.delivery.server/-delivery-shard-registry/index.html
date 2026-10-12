@@ -45,7 +45,7 @@
         </button>
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
         <div class="library-version" id="library-version">
-0.20.0        </div>
+0.21.0        </div>
         <div class="navigation-controls">
         <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
                 <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
@@ -145,7 +145,22 @@
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":delivery-server/main"><div class="symbol monospace"><span class="token keyword">inner </span><span class="token keyword">class </span><a href="-delivery-shard-session/index.html">DeliveryShardSession</a> : <span data-unresolved-link="io.spine.server.delivery/ShardProcessingSession///PointingToDeclaration/">ShardProcessingSession</span></div><div class="brief ">Implementation of the shard processing session, completed by releasing its shard.</div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":delivery-server/main"><div class="symbol monospace"><span class="token keyword">inner </span><span class="token keyword">class </span><a href="-delivery-shard-session/index.html">DeliveryShardSession</a> : <span data-unresolved-link="io.spine.server.delivery/ShardProcessingSession///PointingToDeclaration/">ShardProcessingSession</span></div><div class="brief ">Implementation of the shard processing session, completed by releasing its shard if its worker still holds it.</div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="75984794%2FClasslikes%2F803260522" anchor-label="ReleaseOutcome" id="75984794%2FClasslikes%2F803260522" data-filterable-set=":delivery-server/main"></a>
+          <div class="table-row table-row_content" data-filterable-current=":delivery-server/main" data-filterable-set=":delivery-server/main">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-release-outcome/index.html"><span>Release</span><wbr></wbr><span><span>Outcome</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="75984794%2FClasslikes%2F803260522"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":delivery-server/main"><div class="symbol monospace"><span class="token keyword">enum </span><a href="-release-outcome/index.html">ReleaseOutcome</a></div><div class="brief ">The outcome of a <a href="release-shard.html">release</a> of a shard.</div></div></div>
                 </div>
               </div>
             </div>
@@ -184,17 +199,17 @@
               </div>
             </div>
           </div>
-<a data-name="-180749869%2FFunctions%2F803260522" anchor-label="releaseShard" id="-180749869%2FFunctions%2F803260522" data-filterable-set=":delivery-server/main"></a>
+<a data-name="-724403973%2FFunctions%2F803260522" anchor-label="releaseShard" id="-724403973%2FFunctions%2F803260522" data-filterable-set=":delivery-server/main"></a>
           <div class="table-row table-row_content" data-filterable-current=":delivery-server/main" data-filterable-set=":delivery-server/main">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
                   <div><a href="release-shard.html"><span>release</span><wbr></wbr><span><span>Shard</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-180749869%2FFunctions%2F803260522"></span>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-724403973%2FFunctions%2F803260522"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":delivery-server/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="release-shard.html"><span class="token function">releaseShard</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">index<span class="token operator">: </span><span data-unresolved-link="io.spine.server.delivery/ShardIndex///PointingToDeclaration/">ShardIndex</span></span></span><span class="token punctuation">)</span></div><div class="brief ">Releases the shard under the given index.</div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":delivery-server/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="release-shard.html"><span class="token function">releaseShard</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">index<span class="token operator">: </span><span data-unresolved-link="io.spine.server.delivery/ShardIndex///PointingToDeclaration/">ShardIndex</span><span class="token punctuation">, </span></span><span class="parameter ">worker<span class="token operator">: </span><span data-unresolved-link="io.spine.server.delivery/WorkerId///PointingToDeclaration/">WorkerId</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="-release-outcome/index.html">DeliveryShardRegistry.ReleaseOutcome</a></div><div class="brief ">Releases the shard under the given index, if the given worker holds it.</div></div></div>
                 </div>
               </div>
             </div>
