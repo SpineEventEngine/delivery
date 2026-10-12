@@ -117,9 +117,33 @@ var pathtoroot = "../../../../";
 
     <tr class="altColor"><th class="colFirst" scope="row"><a href=DeliveryServerApp.html>DeliveryServerApp</a></th><td class="colLast">The Delivery server: exposes <a href=grpc/InboxService.html>InboxService</a>, <a href=grpc/ShardService.html>ShardService</a>, <a href=grpc/AdminService.html>AdminService</a>, and <a href=grpc/HealthService.html>HealthService</a> via gRPC.</td></tr>
 
-    <tr class="rowColor"><th class="colFirst" scope="row"><a href=DeliveryShardRegistry.DeliveryShardSession.html>DeliveryShardSession</a></th><td class="colLast">Implementation of the shard processing session, completed by releasing its shard.</td></tr>
+    <tr class="rowColor"><th class="colFirst" scope="row"><a href=DeliveryShardRegistry.DeliveryShardSession.html>DeliveryShardSession</a></th><td class="colLast">Implementation of the shard processing session, completed by releasing its shard if its worker still holds it.</td></tr>
 
     <tr class="altColor"><th class="colFirst" scope="row"><a href=DeliveryShardRegistry.html>DeliveryShardRegistry</a></th><td class="colLast">The registry of the shard indexes along with the worker identifiers, which process the messages corresponding to each index.</td></tr>
+</tbody>
+</table>
+
+    </div>
+
+                </li>
+                
+                <li class="blockList">
+                    
+                    
+                    
+                    
+                    
+    <div class="typeSummary">
+
+<table>
+<caption><span>Enum Summary</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Enum</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tbody>
+
+    <tr class="altColor"><th class="colFirst" scope="row"><a href=DeliveryShardRegistry.ReleaseOutcome.html>ReleaseOutcome</a></th><td class="colLast">The outcome of a <a href=DeliveryShardRegistry.html#releaseShard(io.spine.server.delivery.ShardIndex,io.spine.server.delivery.WorkerId)>release</a> of a shard.</td></tr>
 </tbody>
 </table>
 
