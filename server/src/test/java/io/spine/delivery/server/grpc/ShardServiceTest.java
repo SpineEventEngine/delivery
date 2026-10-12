@@ -34,6 +34,7 @@ import static com.google.common.truth.extensions.proto.ProtoTruth.assertThat;
 import static com.google.common.util.concurrent.Uninterruptibles.sleepUninterruptibly;
 import static io.spine.delivery.server.grpc.given.ShardServiceTestEnv.asPickedUp;
 import static io.spine.delivery.server.grpc.given.ShardServiceTestEnv.asReleased;
+import static io.spine.delivery.server.grpc.given.ShardServiceTestEnv.byAnotherWorker;
 import static io.spine.delivery.server.grpc.given.ShardServiceTestEnv.pickUpShard;
 import static io.spine.delivery.server.grpc.given.ShardServiceTestEnv.release;
 import static io.spine.delivery.server.grpc.given.ShardServiceTestEnv.releaseExpiredSessions;
@@ -139,6 +140,23 @@ final class ShardServiceTest {
                 shardService.releaseSession(releaseRequest);
                 shardService.pickShard(pickUpRequest);
             });
+        }
+
+        @Test
+        @DisplayName("keeping the shard picked up when another worker releases it")
+        void keepPickedUp() {
+            var shardService = syncShardService();
+            var pickUpRequest = pickUpShard();
+            shardService.pickShard(pickUpRequest);
+
+            shardService.releaseSession(byAnotherWorker(release(pickUpRequest)));
+
+            var anotherPick = shardService.pickShard(byAnotherWorker(pickUpRequest));
+            assertThat(anotherPick.hasAlreadyPickedUp())
+                    .isTrue();
+            assertThat(anotherPick.getAlreadyPickedUp()
+                                  .getWorker())
+                    .isEqualTo(pickUpRequest.getWorker());
         }
     }
 

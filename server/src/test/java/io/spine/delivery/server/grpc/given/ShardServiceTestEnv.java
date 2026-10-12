@@ -51,10 +51,7 @@ public final class ShardServiceTestEnv implements Closeable {
 
     private static final NodeId node = ServerEnvironment.instance().nodeId();
     private static final ShardIndex shard = DeliveryStrategy.newIndex(0, 1);
-    private static final WorkerId worker = WorkerId.newBuilder()
-            .setNodeId(node)
-            .setValue(newUuid())
-            .build();
+    private static final WorkerId worker = newWorker();
 
     private final Collection<Server> runningServers = new ArrayList<>();
 
@@ -107,6 +104,34 @@ public final class ShardServiceTestEnv implements Closeable {
         return ReleaseShard.newBuilder()
                 .setShard(request.getShard())
                 .setWorker(request.getWorker())
+                .build();
+    }
+
+    /**
+     * Returns the given request to pick up a shard, as sent by another worker.
+     */
+    public static PickUpShard byAnotherWorker(PickUpShard request) {
+        return request.toBuilder()
+                .setWorker(newWorker())
+                .build();
+    }
+
+    /**
+     * Returns the given request to release a shard, as sent by another worker.
+     */
+    public static ReleaseShard byAnotherWorker(ReleaseShard request) {
+        return request.toBuilder()
+                .setWorker(newWorker())
+                .build();
+    }
+
+    /**
+     * Creates the ID of a new worker of this node.
+     */
+    private static WorkerId newWorker() {
+        return WorkerId.newBuilder()
+                .setNodeId(node)
+                .setValue(newUuid())
                 .build();
     }
 
