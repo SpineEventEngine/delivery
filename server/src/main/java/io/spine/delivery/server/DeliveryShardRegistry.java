@@ -145,16 +145,16 @@ public final class DeliveryShardRegistry implements WithLogging {
     /**
      * Releases the shard under the given index, if the given worker holds it.
      *
-     * <p>Clears the worker of the shard's record only if it is the given worker, and leaves
-     * the session of another worker intact. So a worker whose session became stale cannot
-     * release the shard that another worker picked after that, even by a late or a repeated
-     * request.
+     * <p>Clears the worker of the shard's record only if the given worker holds the shard,
+     * and leaves the session of another worker intact. So a worker whose session became stale
+     * cannot release the shard that another worker picked after that, even by a late or
+     * a repeated request.
      *
      * @param index
      *         the index of the shard to release
      * @param worker
      *         the worker that releases the shard
-     * @return the outcome of the release
+     * @return the {@linkplain ReleaseOutcome outcome} of the release
      */
     public ReleaseOutcome releaseShard(ShardIndex index, WorkerId worker) {
         checkNotNull(index);
@@ -198,7 +198,7 @@ public final class DeliveryShardRegistry implements WithLogging {
      * and decides again on it. A failure of that read fails the call.
      *
      * @param <T>
-     *         the type of the result
+     *         the type of the result, which may be a nullable type
      * @param index
      *         the shard of the record
      * @param writeId
@@ -245,13 +245,14 @@ public final class DeliveryShardRegistry implements WithLogging {
     /**
      * Decides what a pick of a shard does with the current record of the shard.
      *
-     * <p>The pick writes its record if there is no record, if no worker holds the shard, or
-     * if the session of the holder is stale at the time of the pick. Otherwise, the pick
-     * finishes without a write, with the record of the holder.
-     *
      * <p>Every attempt of the pick writes with the same write ID, which no other call uses.
      * So a record with this ID is the pick's own write, applied by an attempt whose outcome
-     * was not known, and the pick finishes as successful.
+     * was not known, and the pick succeeds without a write.
+     *
+     * <p>Otherwise, the pick writes its record if there is no record, if no worker holds
+     * the shard, or if the session of the worker that holds it is stale at the time of
+     * the pick. If that session is not stale, the pick finishes without a write, with
+     * the record of the session.
      *
      * @param current
      *         the current record of the shard, or {@code null} if there is none
@@ -259,8 +260,8 @@ public final class DeliveryShardRegistry implements WithLogging {
      *         the record that the pick writes
      * @param writeId
      *         the ID with which every attempt of the pick writes
-     * @return the decision whose result is the record of the session that holds the shard,
-     *         or {@code null} if the pick took the shard
+     * @return the decision whose result is the record of the session of the worker that
+     *         holds the shard, or {@code null} if the pick took the shard
      */
     private Decision<@Nullable ShardSessionRecord> decidePick(@Nullable Stored current,
                                                               ShardSessionRecord picked,
@@ -286,12 +287,16 @@ public final class DeliveryShardRegistry implements WithLogging {
      * Decides what a release of a shard by the given worker does with the current record
      * of the shard.
      *
-     * <p>The release clears the worker of the record if it is the given worker. If no worker
-     * or another worker holds the shard, the release finishes without a write.
+     * <p>The release clears the worker of the record if the given worker holds the shard,
+     * which results in {@link ReleaseOutcome#RELEASED}. If no worker holds the shard,
+     * the result is {@link ReleaseOutcome#NOT_PICKED_UP}, and if another worker holds it,
+     * the result is {@link ReleaseOutcome#HELD_BY_ANOTHER_WORKER}. In both cases, the release
+     * finishes without a write.
      *
      * <p>Every attempt of the release writes with the same write ID, which no other call
      * uses. So a record with this ID is the release's own write, applied by an attempt whose
-     * outcome was not known, and the release finishes as successful.
+     * outcome was not known, and the result is {@link ReleaseOutcome#RELEASED} without
+     * a write.
      *
      * @param current
      *         the current record of the shard, or {@code null} if there is none
@@ -328,11 +333,11 @@ public final class DeliveryShardRegistry implements WithLogging {
      * @param current
      *         the current record of the shard, or {@code null} if there is none
      * @param inactivityPeriod
-     *         how long a session lasts before it is inactive
+     *         the period after which a session is inactive
      * @param now
      *         the time of the release
      * @return the decision whose result is the released record as it was before
-     *         the release, or {@code null} if the session is not released
+     *         the release, or {@code null} if there is no released record to report
      */
     private static Decision<@Nullable ShardSessionRecord> decideExpiry(@Nullable Stored current,
                                                                        Duration inactivityPeriod,
@@ -404,7 +409,7 @@ public final class DeliveryShardRegistry implements WithLogging {
      * What to do with the current record of a shard.
      *
      * @param <T>
-     *         the type of the result of the operation
+     *         the type of the result of the operation, which may be a nullable type
      */
     private static final class Decision<T extends @Nullable Object> {
 
@@ -443,7 +448,8 @@ public final class DeliveryShardRegistry implements WithLogging {
     }
 
     /**
-     * Implementation of the shard processing session, completed by releasing its shard.
+     * Implementation of the shard processing session, completed by releasing its shard
+     * if its worker still holds it.
      */
     public final class DeliveryShardSession extends ShardProcessingSession {
 
@@ -462,9 +468,13 @@ public final class DeliveryShardRegistry implements WithLogging {
 
         /**
          * Releases the shard of the session, if its worker still holds it.
+         *
+         * <p>The release leaves the session of another worker intact by itself, so its
+         * outcome only tells what happened. This method returns nothing, and does not report
+         * the outcome.
          */
         @Override
-        @SuppressWarnings("ResultOfMethodCallIgnored" /* `complete()` cannot return it. */)
+        @SuppressWarnings("ResultOfMethodCallIgnored" /* The outcome is informational. */)
         protected void complete() {
             releaseShard(shardIndex(), worker);
         }
@@ -476,7 +486,7 @@ public final class DeliveryShardRegistry implements WithLogging {
     public enum ReleaseOutcome {
 
         /**
-         * The worker held the shard, and its session is released.
+         * The worker held the shard, and its session was released.
          */
         RELEASED,
 
@@ -486,7 +496,10 @@ public final class DeliveryShardRegistry implements WithLogging {
         NOT_PICKED_UP,
 
         /**
-         * Another worker held the shard, so its session is left intact.
+         * Another worker held the shard, so its session was left intact.
+         *
+         * <p>It is also the outcome of a release whose write was applied, but whose reply was
+         * lost, if another worker picked the shard before the release read its record again.
          */
         HELD_BY_ANOTHER_WORKER
     }

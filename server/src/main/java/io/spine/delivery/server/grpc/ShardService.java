@@ -103,17 +103,19 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
                             " which asked to release it. The session is left intact.",
                     tag(shard), nameOf(worker)));
         }
-        var message = switch (outcome) {
+        var template = switch (outcome) {
             case RELEASED -> "Shard %d released.";
             case NOT_PICKED_UP -> "Shard %d NOT released: no worker holds it.";
             case HELD_BY_ANOTHER_WORKER -> "Shard %d NOT released: another worker holds it.";
         };
-        log(message, shard.getIndex());
+        log(template, shard.getIndex());
         completeCall(observer);
     }
 
     /**
-     * Returns the name of the worker for a log message: {@code <value>@<node>}.
+     * Formats the ID of the worker for a log message, as {@code <value>@<node>}, where
+     * {@code <value>} is the value of the worker ID, and {@code <node>} is the value of
+     * the ID of its node.
      */
     private static String nameOf(WorkerId worker) {
         return worker.getValue() + '@' + worker.getNodeId().getValue();

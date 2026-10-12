@@ -108,7 +108,9 @@ public final class ShardServiceTestEnv implements Closeable {
     }
 
     /**
-     * Returns the given request to pick up a shard, as sent by another worker.
+     * Returns a copy of the given request to pick up a shard, as if another worker sent it.
+     *
+     * <p>Each call uses a new worker.
      */
     public static PickUpShard byAnotherWorker(PickUpShard request) {
         return request.toBuilder()
@@ -117,7 +119,9 @@ public final class ShardServiceTestEnv implements Closeable {
     }
 
     /**
-     * Returns the given request to release a shard, as sent by another worker.
+     * Returns a copy of the given request to release a shard, as if another worker sent it.
+     *
+     * <p>Each call uses a new worker.
      */
     public static ReleaseShard byAnotherWorker(ReleaseShard request) {
         return request.toBuilder()
