@@ -30,6 +30,7 @@ import io.spine.delivery.ShardServiceGrpc;
 import io.spine.delivery.rejection.ShardAlreadyPickedUp;
 import io.spine.delivery.server.DeliveryShardRegistry;
 import io.spine.server.delivery.ShardSessionRecord;
+import io.spine.server.delivery.WorkerId;
 import io.spine.delivery.storage.ShardSessionStore;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -37,8 +38,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.spine.delivery.DeliveryPickUpOutcomes.alreadyPickedUp;
 import static io.spine.delivery.DeliveryPickUpOutcomes.pickedUp;
+import static io.spine.delivery.server.DeliveryShardRegistry.ReleaseOutcome.HELD_BY_ANOTHER_WORKER;
 import static io.spine.delivery.server.grpc.Responses.completeCall;
 import static io.spine.delivery.server.grpc.Responses.shardPickedUp;
+import static io.spine.delivery.storage.Shards.tag;
 
 /**
  * Acts as a gRPC-wired backend for the {@link io.spine.delivery.ShardSessionRegistry}.
@@ -92,17 +95,37 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     @Override
     public void releaseSession(ReleaseShard request, StreamObserver<Empty> observer) {
         var shard = request.getShard();
-        registry.releaseShard(shard);
-        log("Shard %d released.", shard.getIndex());
+        var worker = request.getWorker();
+        var outcome = registry.releaseShard(shard, worker);
+        if (outcome == HELD_BY_ANOTHER_WORKER) {
+            logger().atWarning().log(() -> format(
+                    "The shard `%s` is held by another worker, not by the worker `%s`," +
+                            " which asked to release it. The session is left intact.",
+                    tag(shard), nameOf(worker)));
+        }
+        var template = switch (outcome) {
+            case RELEASED -> "Shard %d released.";
+            case NOT_PICKED_UP -> "Shard %d NOT released: no worker holds it.";
+            case HELD_BY_ANOTHER_WORKER -> "Shard %d NOT released: another worker holds it.";
+        };
+        log(template, shard.getIndex());
         completeCall(observer);
     }
 
     /**
-     * Logs the given message about the shard with the given index, at the {@code DEBUG} level,
-     * so that serving requests does not write to the log by default.
+     * Returns the name of the worker for a log message: {@code <value>@<node>}, where
+     * {@code <value>} is the worker ID value, and {@code <node>} is the node ID value.
      */
-    private void log(String s, int index) {
-        logger().atDebug().log(() -> format(s, index));
+    private static String nameOf(WorkerId worker) {
+        return worker.getValue() + '@' + worker.getNodeId().getValue();
+    }
+
+    /**
+     * Logs the message made of the given template and the index of the shard, at
+     * the {@code DEBUG} level, so that serving requests does not write to the log by default.
+     */
+    private void log(String template, int index) {
+        logger().atDebug().log(() -> format(template, index));
     }
 
     @Override

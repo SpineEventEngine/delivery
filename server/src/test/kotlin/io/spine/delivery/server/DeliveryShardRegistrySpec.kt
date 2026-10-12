@@ -15,29 +15,33 @@
 package io.spine.delivery.server
 
 import com.google.protobuf.util.Durations
+import com.google.protobuf.util.Timestamps
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import io.spine.base.Time
 import io.spine.delivery.rejection.ShardAlreadyPickedUp
+import io.spine.delivery.server.DeliveryShardRegistry.DeliveryShardSession
+import io.spine.delivery.server.DeliveryShardRegistry.ReleaseOutcome.HELD_BY_ANOTHER_WORKER
+import io.spine.delivery.server.DeliveryShardRegistry.ReleaseOutcome.NOT_PICKED_UP
+import io.spine.delivery.server.DeliveryShardRegistry.ReleaseOutcome.RELEASED
 import io.spine.delivery.server.given.FlakyShardSessionStore
-import io.spine.delivery.storage.CasOutcome
+import io.spine.delivery.server.given.RacingShardSessionStore
 import io.spine.delivery.storage.ShardSessionStore
 import io.spine.delivery.storage.Stored
 import io.spine.delivery.storage.given.shard
 import io.spine.delivery.storage.memory.InMemoryShardSessionStore
 import io.spine.server.NodeId
 import io.spine.server.delivery.ShardIndex
-import io.spine.server.delivery.ShardSessionRecord
 import io.spine.server.delivery.WorkerId
 import io.spine.testing.time.FrozenMadHatterParty
 import java.util.concurrent.Callable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit.SECONDS
-import kotlin.uuid.Uuid
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -67,7 +71,7 @@ internal class DeliveryShardRegistrySpec {
     @Test
     fun `pick a shard when an earlier attempt of the same call lands late`() {
         registry.pickUp(first, worker("w"))
-        registry.releaseShard(first)
+        registry.releaseShard(first, worker("w"))
         store.lateWrites = 1
 
         registry.pickUp(first, worker("w"))
@@ -93,22 +97,9 @@ internal class DeliveryShardRegistrySpec {
         try {
             val shared = InMemoryShardSessionStore()
             val other = DeliveryShardRegistry(shared, Durations.ZERO)
-            // A store whose first write lets the other server pick the shard first.
-            val racing = object : ShardSessionStore by shared {
-                private var raced = false
-                override fun compareAndSet(
-                    shard: ShardIndex,
-                    expected: Stored?,
-                    replacement: ShardSessionRecord,
-                    writeId: Uuid
-                ): CasOutcome {
-                    if (!raced) {
-                        raced = true
-                        other.pickUp(shard, worker("w"))
-                    }
-                    return shared.compareAndSet(shard, expected, replacement, writeId)
-                }
-            }
+            val racing = RacingShardSessionStore(shared, beforeFirstWrite = {
+                other.pickUp(it, worker("w"))
+            })
             val registry = DeliveryShardRegistry(racing, Durations.ZERO)
 
             shouldThrow<ShardAlreadyPickedUp> { registry.pickUp(first, worker("w")) }
@@ -118,13 +109,101 @@ internal class DeliveryShardRegistrySpec {
     }
 
     @Test
+    fun `release a shard that the worker holds`() {
+        registry.pickUp(first, worker("w"))
+
+        registry.releaseShard(first, worker("w")) shouldBe RELEASED
+
+        store.read(first).shouldNotBeNull().record.hasWorker() shouldBe false
+    }
+
+    @Test
     fun `release a shard whose reply was lost`() {
         registry.pickUp(first, worker("w"))
         store.lostReplies = 1
 
-        registry.releaseShard(first)
+        registry.releaseShard(first, worker("w")) shouldBe RELEASED
 
         store.read(first).shouldNotBeNull().record.hasWorker() shouldBe false
+    }
+
+    @Test
+    fun `not release a shard that another worker holds`() {
+        registry.pickUp(first, worker("a"))
+
+        registry.releaseShard(first, worker("b")) shouldBe HELD_BY_ANOTHER_WORKER
+
+        store.read(first).shouldNotBeNull().record.worker shouldBe worker("a")
+    }
+
+    @Test
+    fun `not let a worker with a stale session release the shard that another worker picked`() {
+        val timeout = Durations.fromSeconds(1)
+        val expiring = DeliveryShardRegistry(store, timeout)
+        val start = Time.currentTime()
+        try {
+            Time.setProvider(FrozenMadHatterParty(start))
+            expiring.pickUp(first, worker("a"))
+            val afterTimeout = Timestamps.add(start, Durations.add(timeout, timeout))
+            Time.setProvider(FrozenMadHatterParty(afterTimeout))
+            expiring.pickUp(first, worker("b"))
+
+            expiring.releaseShard(first, worker("a")) shouldBe HELD_BY_ANOTHER_WORKER
+
+            store.read(first).shouldNotBeNull().record.worker shouldBe worker("b")
+            shouldThrow<ShardAlreadyPickedUp> { expiring.pickUp(first, worker("c")) }
+        } finally {
+            Time.resetProvider()
+        }
+    }
+
+    @Test
+    fun `not release a shard that another worker picks while the release is in progress`() {
+        val shared = InMemoryShardSessionStore()
+        val other = DeliveryShardRegistry(shared, Durations.ZERO)
+        other.pickUp(first, worker("a"))
+        val racing = RacingShardSessionStore(shared, beforeFirstWrite = {
+            other.releaseShard(it, worker("a"))
+            other.pickUp(it, worker("b"))
+        })
+        val releasing = DeliveryShardRegistry(racing, Durations.ZERO)
+
+        releasing.releaseShard(first, worker("a")) shouldBe HELD_BY_ANOTHER_WORKER
+
+        shared.read(first).shouldNotBeNull().record.worker shouldBe worker("b")
+    }
+
+    @Test
+    fun `not write when releasing a shard that no worker holds`() {
+        val neverPicked = shard(2)
+        registry.pickUp(first, worker("w"))
+        registry.releaseShard(first, worker("w"))
+        val writes = store.writes
+
+        registry.releaseShard(first, worker("w")) shouldBe NOT_PICKED_UP
+        registry.releaseShard(neverPicked, worker("w")) shouldBe NOT_PICKED_UP
+
+        store.writes shouldBe writes
+    }
+
+    @Test
+    fun `complete a session by releasing its shard`() {
+        val session = registry.pickUp(first, worker("w")).shouldBeInstanceOf<DeliveryShardSession>()
+
+        session.complete()
+
+        store.read(first).shouldNotBeNull().record.hasWorker() shouldBe false
+    }
+
+    @Test
+    fun `not release the shard of another worker when completing a session`() {
+        val session = registry.pickUp(first, worker("a")).shouldBeInstanceOf<DeliveryShardSession>()
+        registry.releaseShard(first, worker("a"))
+        registry.pickUp(first, worker("b"))
+
+        session.complete()
+
+        store.read(first).shouldNotBeNull().record.worker shouldBe worker("b")
     }
 
     @Test
