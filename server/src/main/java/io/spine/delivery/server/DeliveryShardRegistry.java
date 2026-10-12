@@ -333,7 +333,7 @@ public final class DeliveryShardRegistry implements WithLogging {
      * @param current
      *         the current record of the shard, or {@code null} if there is none
      * @param inactivityPeriod
-     *         the period after which a session is inactive
+     *         the shortest duration of an inactive session
      * @param now
      *         the time of the release
      * @return the decision whose result is the released record as it was before
@@ -469,9 +469,8 @@ public final class DeliveryShardRegistry implements WithLogging {
         /**
          * Releases the shard of the session, if its worker still holds it.
          *
-         * <p>The release leaves the session of another worker intact by itself, so its
-         * outcome only tells what happened. This method returns nothing, and does not report
-         * the outcome.
+         * <p>The release itself leaves the session of another worker intact, so its outcome
+         * needs no handling here, and is ignored.
          */
         @Override
         @SuppressWarnings("ResultOfMethodCallIgnored" /* The outcome is informational. */)
@@ -498,8 +497,9 @@ public final class DeliveryShardRegistry implements WithLogging {
         /**
          * Another worker held the shard, so its session was left intact.
          *
-         * <p>It is also the outcome of a release whose write was applied, but whose reply was
-         * lost, if another worker picked the shard before the release read its record again.
+         * <p>This outcome is also reported for a release whose write was applied but whose
+         * reply was lost, when another worker picked the shard before the release read
+         * the record again.
          */
         HELD_BY_ANOTHER_WORKER
     }

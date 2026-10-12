@@ -113,20 +113,19 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     }
 
     /**
-     * Formats the ID of the worker for a log message, as {@code <value>@<node>}, where
-     * {@code <value>} is the value of the worker ID, and {@code <node>} is the value of
-     * the ID of its node.
+     * Returns the name of the worker for a log message: {@code <value>@<node>}, where
+     * {@code <value>} is the worker ID value, and {@code <node>} is the node ID value.
      */
     private static String nameOf(WorkerId worker) {
         return worker.getValue() + '@' + worker.getNodeId().getValue();
     }
 
     /**
-     * Logs the given message about the shard with the given index, at the {@code DEBUG} level,
-     * so that serving requests does not write to the log by default.
+     * Logs the message made of the given template and the index of the shard, at
+     * the {@code DEBUG} level, so that serving requests does not write to the log by default.
      */
-    private void log(String s, int index) {
-        logger().atDebug().log(() -> format(s, index));
+    private void log(String template, int index) {
+        logger().atDebug().log(() -> format(template, index));
     }
 
     @Override
