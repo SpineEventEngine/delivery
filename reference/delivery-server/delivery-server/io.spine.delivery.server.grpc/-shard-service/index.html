@@ -45,7 +45,7 @@
         </button>
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
         <div class="library-version" id="library-version">
-0.21.0        </div>
+0.22.0        </div>
         <div class="navigation-controls">
         <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
                 <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
@@ -109,7 +109,7 @@
   <div class="breadcrumbs"><a href="../../../index.html">delivery-server</a><span class="delimiter">/</span><a href="../index.html">io.spine.delivery.server.grpc</a><span class="delimiter">/</span><span class="current">ShardService</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Shard</span><wbr></wbr><span><span>Service</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":delivery-server/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">ShardService</a> : <span data-unresolved-link="io.spine.delivery/ShardServiceGrpc.ShardServiceImplBase///PointingToDeclaration/">ShardServiceGrpc.ShardServiceImplBase</span>, <span data-unresolved-link="io.spine.logging/WithLogging///PointingToDeclaration/">WithLogging</span>, <a href="../-named-health-aware-service/index.html">NamedHealthAwareService</a></div><p class="paragraph">Acts as a gRPC-wired backend for the <span data-unresolved-link="io.spine.delivery/ShardSessionRegistry///PointingToDeclaration/">io.spine.delivery.ShardSessionRegistry</span>.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":delivery-server/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">ShardService</a> : <span data-unresolved-link="io.spine.delivery/ShardServiceGrpc.ShardServiceImplBase///PointingToDeclaration/">ShardServiceGrpc.ShardServiceImplBase</span>, <a href="../-named-health-aware-service/index.html">NamedHealthAwareService</a>, <span data-unresolved-link="io.spine.logging/WithLogging///PointingToDeclaration/">WithLogging</span></div><p class="paragraph">Acts as a gRPC-wired backend for the <span data-unresolved-link="io.spine.delivery/ShardSessionRegistry///PointingToDeclaration/">io.spine.delivery.ShardSessionRegistry</span>. </p><p class="paragraph">A pick-up or release call that is cancelled before the service starts serving it is not served. This narrows the window in which a late request can affect the newer requests of the same worker. A call cancelled after the service started serving it is served as usual.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
