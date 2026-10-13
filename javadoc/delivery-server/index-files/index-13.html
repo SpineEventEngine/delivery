@@ -147,9 +147,9 @@ var pathtoroot = "../";
                 
                 <span class="memberNameLink">
                 
-                    <a href="../io/spine/delivery/server/DeliveryShardRegistry.ReleaseOutcome.html#RELEASED">RELEASED</a>
+                    <a href="../io/spine/delivery/server/ReleaseOutcome.html#RELEASED">RELEASED</a>
                 
-                </span> - enum entry in io.spine.delivery.server.<a href=../io/spine/delivery/server/DeliveryShardRegistry.ReleaseOutcome.html>DeliveryShardRegistry.ReleaseOutcome</a>
+                </span> - enum entry in io.spine.delivery.server.<a href=../io/spine/delivery/server/ReleaseOutcome.html>ReleaseOutcome</a>
                 
 
             </dt>
@@ -167,6 +167,19 @@ var pathtoroot = "../";
 
             </dt>
             <dd>Clears up the recorded <code>WorkerId</code>s from the session records if there was no activity for longer than the passed <code>inactivityPeriod</code>.</dd>
+
+        
+            <dt>
+                
+                <span class="memberNameLink">
+                
+                    <a href="../io/spine/delivery/server/ReleaseOutcome.html">ReleaseOutcome</a>
+                
+                </span> - class in io.spine.delivery.server
+                
+
+            </dt>
+            <dd>The outcome of a <a href=../io/spine/delivery/server/DeliveryShardRegistry.html#releaseShard(io.spine.server.delivery.ShardIndex,io.spine.server.delivery.WorkerId)>release</a> of a shard.</dd>
 
         
             <dt>
@@ -232,6 +245,19 @@ var pathtoroot = "../";
 
             </dt>
             <dd>Removes the message with the ID of the message in the request.</dd>
+
+        
+            <dt>
+                
+                <span class="memberNameLink">
+                
+                    <a href="../io/spine/delivery/server/ReleaseOutcome.html#RENEWED">RENEWED</a>
+                
+                </span> - enum entry in io.spine.delivery.server.<a href=../io/spine/delivery/server/ReleaseOutcome.html>ReleaseOutcome</a>
+                
+
+            </dt>
+            <dd><p>The worker held the shard in a newer session than the one that the release found, so the newer session was left intact. </p><p>The worker picked the shard again while the release was in progress. Usually, the worker started a new round of delivery, and the release came late. </p><p>Rarely, a delayed retry of an earlier pick-up renewed the session instead. After such a renewal, the shard stays with the worker, which can still pick it up again and deliver. Other workers get the shard only after the worker releases it in a later round, after the session becomes stale, or after a release of inactive sessions clears it. With no processing timeout, a session never becomes stale. </p><p>This outcome is also reported for a release whose write was applied but whose reply was lost, when the worker picked the shard again before the release read the record again.</p></dd>
 
         
         </dl>

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <!-- NewPage -->
 <html lang="en"><head>
-    <title>ShardService 0.21.0 API </title>
+    <title>ShardService 0.22.0 API </title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="dc.created" content="2020-03-25">
     <link rel="stylesheet" type="text/css" href="../../../../../stylesheet.css" title="Style">
@@ -143,9 +143,9 @@ var pathtoroot = "../../../../../";
                     <pre class="wrap-overflow">
 
 public final class <span class="typeNameLabel"><a href=ShardService.html>ShardService</a></span>
-extends ShardServiceGrpc.ShardServiceImplBase implements WithLogging, <a href=NamedHealthAwareService.html>NamedHealthAwareService</a>
+extends ShardServiceGrpc.ShardServiceImplBase implements <a href=NamedHealthAwareService.html>NamedHealthAwareService</a>, WithLogging
                     </pre>
-                    <div class="block"><p>Acts as a gRPC-wired backend for the io.spine.delivery.ShardSessionRegistry.</p></div>
+                    <div class="block"><p>Acts as a gRPC-wired backend for the io.spine.delivery.ShardSessionRegistry. </p><p>A pick-up or release call that is cancelled before the service starts serving it is not served. This narrows the window in which a late request can affect the newer requests of the same worker. A call cancelled after the service started serving it is served as usual.</p></div>
 
                     <dl>
 
