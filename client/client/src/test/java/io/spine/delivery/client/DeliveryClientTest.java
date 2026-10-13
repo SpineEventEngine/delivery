@@ -119,12 +119,15 @@ final class DeliveryClientTest {
         }
 
         @Test
-        @DisplayName("do not pick up a shard for delivery if one is already picked up")
+        @DisplayName("do not pick up a shard for delivery if another worker holds it")
         void notPickUpShard() {
             var firstAttempt = client.pickUpShard(shard, worker);
             assertThat(firstAttempt.hasSession())
                     .isTrue();
-            var secondAttempt = client.pickUpShard(shard, worker);
+            var anotherWorker = worker.toBuilder()
+                    .setValue("another-worker")
+                    .build();
+            var secondAttempt = client.pickUpShard(shard, anotherWorker);
             assertThat(secondAttempt.hasAlreadyPicked())
                     .isTrue();
 

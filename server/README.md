@@ -22,6 +22,21 @@ a shard is exclusive across all the servers that share the storage, with one exc
 a network split divides a Hazelcast cluster, each part may pick up the same shard, as described
 below.
 
+The exclusivity is per worker. The worker that holds a shard may pick it up again, which renews
+its session. This lets a worker recover when it loses track of its session: for example, when
+the reply to its pick-up is lost, when its release fails, or when it restarts after a failure.
+Any other worker is rejected while the session is not stale.
+
+Clients choose the worker IDs. An ID must stay the same across a restart for the worker to
+recover its shards. Each unit of work that may run concurrently needs its own ID, because
+pick-ups under one ID never exclude each other.
+
+Two rules narrow the window in which a late request can affect the newer requests of the same
+worker. First, a release ends only the session it found: if the worker picks the shard up again
+while its release is in progress, the newer session stays intact. Second, a pick-up or a release
+of a shard whose call is cancelled before the server starts serving it is not served. A call is
+cancelled, for example, when its deadline passes or its connection is reset.
+
 The in-memory storage provides the best-possible performance and is used by default.
 
 The Redis storage adds an ability to store the server info in a separate more durable storage. In

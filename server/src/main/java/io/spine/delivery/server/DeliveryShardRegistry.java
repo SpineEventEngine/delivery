@@ -56,8 +56,8 @@ public final class DeliveryShardRegistry implements WithLogging {
      * How many times an operation tries to change a record before it gives up.
      *
      * <p>An attempt fails when another call changed the record after it was read, or when
-     * the write itself failed. After a conflict, a pick usually finds the shard taken and
-     * stops without writing, so a call needs more than a couple of attempts only when
+     * the write itself failed. After a conflict, a pick usually finds the shard taken by another
+     * worker and stops without writing, so a call needs more than a couple of attempts only when
      * something is wrong, such as a store whose writes keep failing. Sixteen attempts are
      * a generous bound, which keeps such a call from trying forever. The number is a choice,
      * not a measurement.
@@ -97,17 +97,25 @@ public final class DeliveryShardRegistry implements WithLogging {
      * the exception below: a single shard may be served by a single worker at a given moment
      * of time.
      *
+     * <p>The exclusivity is per worker, and clients choose the worker IDs. An ID must stay
+     * the same across a restart for the worker to recover its shards. Each unit of work that may
+     * run concurrently needs its own ID, because pick-ups under one ID never exclude each other.
+     *
      * <p>In case of a successful operation, an instance of {@link ShardProcessingSession}
-     * is returned. There are two options when it is successful:
+     * is returned. There are three options when it is successful:
      *
      * <ol>
      *     <li>There is no worker associated with the requested shard.
-     *     <li>The requested shard is already being processed by some worker, but its
-     *     processing time reached {@link #processingTimeout}. Such a session is considered
-     *     stale and released automatically.
+     *     <li>The requested shard is already held by the given worker. The worker gets the shard
+     *     again, and its session is renewed. A worker asks for a shard it holds when it loses
+     *     track of its session, for example, when the reply to its pick-up is lost, when its
+     *     release fails, or when it restarts after a failure.
+     *     <li>The requested shard is already held by another worker, but its processing time
+     *     reached {@link #processingTimeout}. Such a session is considered stale and released
+     *     automatically.
      * </ol>
      *
-     * <p>In case the shard at a given index is already picked up by a worker and
+     * <p>In case the shard at a given index is already picked up by another worker and
      * has not reached {@linkplain #processingTimeout processing timeout},
      * an {@link ShardAlreadyPickedUp} is thrown.
      *
@@ -120,7 +128,7 @@ public final class DeliveryShardRegistry implements WithLogging {
      *         the identifier of the worker for which to pick the shard
      * @return the session of shard processing
      * @throws ShardAlreadyPickedUp
-     *         if the shard is already picked up, even by the same worker
+     *         if another worker holds the shard, and its session is not stale
      */
     public ShardProcessingSession pickUp(ShardIndex index, WorkerId worker)
             throws ShardAlreadyPickedUp {
@@ -139,7 +147,7 @@ public final class DeliveryShardRegistry implements WithLogging {
                     .setWhenPicked(holder.getWhenLastPicked())
                     .build();
         }
-        return new DeliveryShardSession(picked);
+        return new DeliveryShardSession(picked, this);
     }
 
     /**
@@ -149,6 +157,12 @@ public final class DeliveryShardRegistry implements WithLogging {
      * and leaves the session of another worker intact. So a worker whose session became stale
      * cannot release the shard that another worker picked after that, even by a late or
      * a repeated request.
+     *
+     * <p>The release ends only the session it found when it first read the record. If the given
+     * worker picked the shard again after that, its newer session is left intact. So a release
+     * that stalls after it read the record cannot end the session that its worker started
+     * meanwhile. A release that reads the record only after the worker picked the shard again
+     * finds the newer session, and ends it.
      *
      * @param index
      *         the index of the shard to release
@@ -160,8 +174,10 @@ public final class DeliveryShardRegistry implements WithLogging {
         checkNotNull(index);
         checkNotNull(worker);
         var writeId = Uuid.Companion.random();
-        return update(index, writeId, store.read(index),
-                      current -> decideRelease(current, worker, writeId));
+        var found = store.read(index);
+        var foundWriteId = found != null ? found.getWriteId() : null;
+        return update(index, writeId, found,
+                      current -> decideRelease(current, worker, writeId, foundWriteId));
     }
 
     /**
@@ -179,7 +195,8 @@ public final class DeliveryShardRegistry implements WithLogging {
         var now = currentTime();
         var result = ImmutableSet.<ShardSessionRecord>builder();
         for (var stored : store.readAll()) {
-            var index = stored.getRecord().getIndex();
+            var index = stored.getRecord()
+                              .getIndex();
             var released = update(index, Uuid.Companion.random(), stored,
                                   current -> decideExpiry(current, inactivityPeriod, now));
             if (released != null) {
@@ -196,6 +213,9 @@ public final class DeliveryShardRegistry implements WithLogging {
      * <p>After a conflict, decides again on the record that the store reports as current.
      * After a failed write, which may or may not have been applied, reads the record again
      * and decides again on it. A failure of that read fails the call.
+     *
+     * <p>Only the decision that is carried out runs its follow-up: the one that needs no
+     * write, or the one whose write the store confirms.
      *
      * @param <T>
      *         the type of the result, which may be a nullable type
@@ -218,27 +238,32 @@ public final class DeliveryShardRegistry implements WithLogging {
         var current = initial;
         for (var attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
             var decision = decide.apply(current);
-            var replacement = decision.replacement;
+            var replacement = decision.replacement();
             if (replacement == null) {
-                return decision.result;
+                decision.followUp().run();
+                return decision.result();
             }
+            CasOutcome outcome;
             try {
-                var outcome = store.compareAndSet(index, current, replacement, writeId);
-                if (outcome instanceof CasOutcome.Conflict conflict) {
-                    current = conflict.getCurrent();
-                } else {
-                    return decision.result;
-                }
+                outcome = store.compareAndSet(index, current, replacement, writeId);
             } catch (RuntimeException e) {
                 logger().atWarning().withCause(e).log(() -> format(
                         "Writing the session of the shard `%s` failed. Reading it again.",
                         tag(index)));
                 current = store.read(index);
+                continue;
             }
+            if (outcome instanceof CasOutcome.Conflict conflict) {
+                current = conflict.getCurrent();
+                continue;
+            }
+            decision.followUp().run();
+            return decision.result();
         }
         var message = format("The session of the shard `%s` kept changing for %d attempts.",
                              tag(index), MAX_ATTEMPTS);
-        logger().atError().log(() -> message);
+        logger().atError()
+                .log(() -> message);
         throw new IllegalStateException(message);
     }
 
@@ -250,9 +275,13 @@ public final class DeliveryShardRegistry implements WithLogging {
      * was not known, and the pick succeeds without a write.
      *
      * <p>Otherwise, the pick writes its record if there is no record, if no worker holds
-     * the shard, or if the session of the worker that holds it is stale at the time of
-     * the pick. If that session is not stale, the pick finishes without a write, with
-     * the record of the session.
+     * the shard, if the picking worker holds it, or if the session of another worker that holds
+     * it is stale at the time of the pick. When the picking worker holds the shard, the write
+     * renews its session. If the session of another worker is not stale, the pick finishes
+     * without a write, with the record of the session.
+     *
+     * <p>A renewed session and a stale one taken over are logged at most once, after the store
+     * confirms the write. If a failed write proves to have been applied, nothing is logged.
      *
      * @param current
      *         the current record of the shard, or {@code null} if there is none
@@ -269,10 +298,18 @@ public final class DeliveryShardRegistry implements WithLogging {
         if (current == null) {
             return Decision.write(picked, null);
         }
-        if (current.getWriteId().equals(writeId)) {
+        if (current.getWriteId()
+                   .equals(writeId)) {
             return Decision.done(null);
         }
         var record = current.getRecord();
+        if (!hasWorker(record)) {
+            return Decision.write(picked, null);
+        }
+        if (record.getWorker()
+                  .equals(picked.getWorker())) {
+            return Decision.write(picked, null, () -> logRenewed(record));
+        }
         var whenPicked = picked.getWhenLastPicked();
         if (hasWorker(record)) {
             if (!isStale(record, whenPicked)) {
@@ -293,10 +330,17 @@ public final class DeliveryShardRegistry implements WithLogging {
      * a write.
      *
      * <p>Otherwise, the release clears the worker of the record if the given worker holds
-     * the shard, which results in {@link ReleaseOutcome#RELEASED}. If no worker holds
-     * the shard, the result is {@link ReleaseOutcome#NOT_PICKED_UP}, and if another worker
-     * holds it, the result is {@link ReleaseOutcome#HELD_BY_ANOTHER_WORKER}. In both cases,
-     * the release finishes without a write.
+     * the shard in the session that the release found, which results in
+     * {@link ReleaseOutcome#RELEASED}. The release finishes without a write in the other cases:
+     *
+     * <ul>
+     *     <li>If no worker holds the shard, the result is {@link ReleaseOutcome#NOT_PICKED_UP}.
+     *     <li>If another worker holds it, the result is
+     *     {@link ReleaseOutcome#HELD_BY_ANOTHER_WORKER}.
+     *     <li>If the given worker holds it, but the record is not the one that the release
+     *     found, the worker picked the shard again in the meantime. The result is
+     *     {@link ReleaseOutcome#RENEWED}, so the newer session stays intact.
+     * </ul>
      *
      * @param current
      *         the current record of the shard, or {@code null} if there is none
@@ -304,24 +348,35 @@ public final class DeliveryShardRegistry implements WithLogging {
      *         the worker that releases the shard
      * @param writeId
      *         the ID with which every attempt of the release writes
+     * @param foundWriteId
+     *         the write ID of the record that the release found when it first read the record,
+     *         or {@code null} if there was no record
      * @return the decision whose result is the outcome of the release
      */
     private static Decision<ReleaseOutcome> decideRelease(@Nullable Stored current,
                                                           WorkerId worker,
-                                                          Uuid writeId) {
+                                                          Uuid writeId,
+                                                          @Nullable Uuid foundWriteId) {
         if (current == null) {
             return Decision.done(ReleaseOutcome.NOT_PICKED_UP);
         }
-        if (current.getWriteId().equals(writeId)) {
+        if (current.getWriteId()
+                   .equals(writeId)) {
             return Decision.done(ReleaseOutcome.RELEASED);
         }
         var record = current.getRecord();
         if (!hasWorker(record)) {
             return Decision.done(ReleaseOutcome.NOT_PICKED_UP);
         }
-        return record.getWorker().equals(worker)
-               ? Decision.write(cleared(current), ReleaseOutcome.RELEASED)
-               : Decision.done(ReleaseOutcome.HELD_BY_ANOTHER_WORKER);
+        if (!record.getWorker()
+                   .equals(worker)) {
+            return Decision.done(ReleaseOutcome.HELD_BY_ANOTHER_WORKER);
+        }
+        if (!current.getWriteId()
+                    .equals(foundWriteId)) {
+            return Decision.done(ReleaseOutcome.RENEWED);
+        }
+        return Decision.write(cleared(current), ReleaseOutcome.RELEASED);
     }
 
     /**
@@ -359,6 +414,18 @@ public final class DeliveryShardRegistry implements WithLogging {
     }
 
     /**
+     * Logs that the worker that holds the shard of the session picked it up again.
+     */
+    private void logRenewed(ShardSessionRecord session) {
+        logger().atDebug()
+                .log(() -> format(
+                        "Shard %d was picked up again by the worker that holds it." +
+                                " The session is renewed.",
+                        session.getIndex()
+                               .getIndex()));
+    }
+
+    /**
      * Logs that the stale session is released, with how long it lasted.
      */
     private void logStale(ShardSessionRecord session, Timestamp now) {
@@ -366,10 +433,12 @@ public final class DeliveryShardRegistry implements WithLogging {
         var logMessage = String.join(
                 lineSeparator(),
                 format("Shard %d reached the processing timeout and was released automatically.",
-                       session.getIndex().getIndex()),
+                       session.getIndex()
+                              .getIndex()),
                 format("Processing time: %d seconds.", processingTime.getSeconds()),
                 format("Configured threshold: %d seconds.", processingTimeout.getSeconds()));
-        logger().atWarning().log(() -> logMessage);
+        logger().atWarning()
+                .log(() -> logMessage);
     }
 
     /**
@@ -403,104 +472,5 @@ public final class DeliveryShardRegistry implements WithLogging {
     private static boolean hasWorker(ShardSessionRecord record) {
         return !WorkerId.getDefaultInstance()
                         .equals(record.getWorker());
-    }
-
-    /**
-     * What to do with the current record of a shard.
-     *
-     * @param <T>
-     *         the type of the result of the operation, which may be a nullable type
-     */
-    private static final class Decision<T extends @Nullable Object> {
-
-        /**
-         * The record to write, or {@code null} if nothing is to be written.
-         */
-        private final @Nullable ShardSessionRecord replacement;
-
-        /**
-         * The result of the operation, once the decision is carried out.
-         */
-        private final T result;
-
-        /**
-         * Creates the decision to write the replacement, if any, and finish with the result.
-         */
-        private Decision(@Nullable ShardSessionRecord replacement, T result) {
-            this.replacement = replacement;
-            this.result = result;
-        }
-
-        /**
-         * Writes the replacement, and then finishes with the given result.
-         */
-        static <T extends @Nullable Object> Decision<T> write(ShardSessionRecord replacement,
-                                                              T result) {
-            return new Decision<>(replacement, result);
-        }
-
-        /**
-         * Finishes with the given result, without a write.
-         */
-        static <T extends @Nullable Object> Decision<T> done(T result) {
-            return new Decision<>(null, result);
-        }
-    }
-
-    /**
-     * Implementation of the shard processing session, completed by releasing its shard
-     * if its worker still holds it.
-     */
-    public final class DeliveryShardSession extends ShardProcessingSession {
-
-        /**
-         * The worker that picked the shard.
-         */
-        private final WorkerId worker;
-
-        /**
-         * Creates the session described by the given record.
-         */
-        private DeliveryShardSession(ShardSessionRecord record) {
-            super(record);
-            this.worker = record.getWorker();
-        }
-
-        /**
-         * Releases the shard of the session, if its worker still holds it.
-         *
-         * <p>The release itself leaves the session of another worker intact, so its outcome
-         * needs no handling here, and is ignored.
-         */
-        @Override
-        @SuppressWarnings("ResultOfMethodCallIgnored" /* The outcome is informational. */)
-        protected void complete() {
-            releaseShard(shardIndex(), worker);
-        }
-    }
-
-    /**
-     * The outcome of a {@linkplain #releaseShard(ShardIndex, WorkerId) release} of a shard.
-     */
-    public enum ReleaseOutcome {
-
-        /**
-         * The worker held the shard, and its session was released.
-         */
-        RELEASED,
-
-        /**
-         * No worker held the shard, so there was nothing to release.
-         */
-        NOT_PICKED_UP,
-
-        /**
-         * Another worker held the shard, so its session was left intact.
-         *
-         * <p>This outcome is also reported for a release whose write was applied but whose
-         * reply was lost, when another worker picked the shard before the release read
-         * the record again.
-         */
-        HELD_BY_ANOTHER_WORKER
     }
 }

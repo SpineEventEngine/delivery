@@ -27,6 +27,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.function.Supplier;
 
 import static com.google.common.truth.Truth.assertThat;
+import static io.spine.delivery.TestEnv.ANOTHER_WORKER;
 import static io.spine.delivery.TestEnv.SHARD;
 import static io.spine.delivery.TestEnv.WORKER;
 import static io.spine.delivery.TestEnv.generate;
@@ -54,17 +55,20 @@ public class ConsistencyTest extends DistributedTest {
 
     @ParameterizedTest
     @MethodSource("clients")
-    @DisplayName("do not pick up on another node if already picked up")
-    void doesNotPickUpShard(Supplier<DeliveryClient> first,
-                            Supplier<DeliveryClient> second) {
+    @DisplayName("let only the worker that holds a shard pick it up again on another node")
+    void onlyHolderPicksUpAgain(Supplier<DeliveryClient> first,
+                                Supplier<DeliveryClient> second) {
         var client1 = first.get();
         var client2 = second.get();
 
         var firstAttempt = client1.pickUpShard(SHARD, WORKER);
         assertThat(firstAttempt.hasSession())
                 .isTrue();
-        var secondAttempt = client2.pickUpShard(SHARD, WORKER);
-        assertThat(secondAttempt.hasAlreadyPicked())
+        var byHolder = client2.pickUpShard(SHARD, WORKER);
+        assertThat(byHolder.hasSession())
+                .isTrue();
+        var byAnother = client2.pickUpShard(SHARD, ANOTHER_WORKER);
+        assertThat(byAnother.hasAlreadyPicked())
                 .isTrue();
     }
 
@@ -79,11 +83,11 @@ public class ConsistencyTest extends DistributedTest {
         var firstAttempt = client1.pickUpShard(SHARD, WORKER);
         assertThat(firstAttempt.hasSession())
                 .isTrue();
-        var secondAttempt = client2.pickUpShard(SHARD, WORKER);
+        var secondAttempt = client2.pickUpShard(SHARD, ANOTHER_WORKER);
         assertThat(secondAttempt.hasAlreadyPicked())
                 .isTrue();
         assertDoesNotThrow(() -> client2.releaseShard(SHARD, WORKER));
-        var thirdAttempt = client1.pickUpShard(SHARD, WORKER);
+        var thirdAttempt = client1.pickUpShard(SHARD, ANOTHER_WORKER);
         assertThat(thirdAttempt.hasSession())
                 .isTrue();
     }
