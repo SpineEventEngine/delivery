@@ -118,6 +118,25 @@ internal class DeliveryShardRegistrySpec {
     }
 
     @Test
+    fun `not move the session back in time when a pick of its worker loses a race`() {
+        val start = freezeAt(Time.currentTime())
+        val later = Timestamps.add(start, Durations.fromSeconds(1))
+        val shared = InMemoryShardSessionStore()
+        val other = DeliveryShardRegistry(shared, Durations.ZERO)
+        val racing = RacingShardSessionStore(shared, beforeFirstWrite = {
+            freezeAt(later)
+            other.pickUp(it, worker("w"))
+        })
+        val stalled = DeliveryShardRegistry(racing, Durations.ZERO)
+
+        stalled.pickUp(first, worker("w"))
+
+        val record = shared.read(first).shouldNotBeNull().record
+        record.worker shouldBe worker("w")
+        record.whenLastPicked shouldBe later
+    }
+
+    @Test
     fun `not let another worker pick a shard that a worker holds`() {
         registry.pickUp(first, worker("a"))
 

@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.protobuf.Duration;
 import com.google.protobuf.Timestamp;
 import com.google.protobuf.util.Durations;
+import com.google.protobuf.util.Timestamps;
 import io.spine.delivery.rejection.ShardAlreadyPickedUp;
 import io.spine.delivery.storage.CasOutcome;
 import io.spine.delivery.storage.ShardSessionStore;
@@ -280,6 +281,11 @@ public final class DeliveryShardRegistry implements WithLogging {
      * renews its session. If the session of another worker is not stale, the pick finishes
      * without a write, with the record of the session.
      *
+     * <p>The pick takes its time when it starts. If the picking worker holds the shard in
+     * a session picked at that time or later, for example, by another attempt of the same pick
+     * on another server, the pick succeeds without a write. So a pick that lost a race never
+     * moves the session back in time, which would make it stale too early.
+     *
      * <p>A renewed session is logged at most once, after the store confirms the write. If a
      * failed write proves to have been applied, the renewal is not logged. A stale session is
      * logged each time the pick decides to take it over.
@@ -309,6 +315,11 @@ public final class DeliveryShardRegistry implements WithLogging {
         }
         if (record.getWorker()
                   .equals(picked.getWorker())) {
+            var asRecentAsThisPick = Timestamps.compare(record.getWhenLastPicked(),
+                                                        picked.getWhenLastPicked()) >= 0;
+            if (asRecentAsThisPick) {
+                return Decision.done(null);
+            }
             return Decision.write(picked, null, () -> logRenewed(record));
         }
         var whenPicked = picked.getWhenLastPicked();
