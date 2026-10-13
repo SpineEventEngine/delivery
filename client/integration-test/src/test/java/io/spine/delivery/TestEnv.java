@@ -62,6 +62,14 @@ final class TestEnv {
             .build();
 
     /**
+     * Predefined {@code WorkerId} of another worker on the predefined {@code NODE}.
+     */
+    public static final WorkerId ANOTHER_WORKER = WorkerId.newBuilder()
+            .setNodeId(NODE)
+            .setValue("another-worker")
+            .build();
+
+    /**
      * Creates a new {@code InboxMessage} with the {@linkplain Something} target type and a random
      * {@code UUID}.
      */

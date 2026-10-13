@@ -14,20 +14,23 @@
 
 package io.spine.delivery.server
 
+import com.google.protobuf.Timestamp
 import com.google.protobuf.util.Durations
 import com.google.protobuf.util.Timestamps
+import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.spine.base.Time
 import io.spine.delivery.rejection.ShardAlreadyPickedUp
-import io.spine.delivery.server.DeliveryShardRegistry.DeliveryShardSession
-import io.spine.delivery.server.DeliveryShardRegistry.ReleaseOutcome.HELD_BY_ANOTHER_WORKER
-import io.spine.delivery.server.DeliveryShardRegistry.ReleaseOutcome.NOT_PICKED_UP
-import io.spine.delivery.server.DeliveryShardRegistry.ReleaseOutcome.RELEASED
+import io.spine.delivery.server.ReleaseOutcome.HELD_BY_ANOTHER_WORKER
+import io.spine.delivery.server.ReleaseOutcome.NOT_PICKED_UP
+import io.spine.delivery.server.ReleaseOutcome.RELEASED
+import io.spine.delivery.server.ReleaseOutcome.RENEWED
 import io.spine.delivery.server.given.FlakyShardSessionStore
 import io.spine.delivery.server.given.RacingShardSessionStore
 import io.spine.delivery.storage.ShardSessionStore
@@ -42,6 +45,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit.SECONDS
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
@@ -58,6 +62,11 @@ internal class DeliveryShardRegistrySpec {
      */
     private val registry = DeliveryShardRegistry(store, Durations.ZERO)
     private val first = shard(1)
+
+    @AfterEach
+    fun resetTime() {
+        Time.resetProvider()
+    }
 
     @Test
     fun `pick a shard whose write was applied before its reply was lost`() {
@@ -80,32 +89,61 @@ internal class DeliveryShardRegistrySpec {
     }
 
     @Test
-    fun `not pick a shard that the same worker picked at the same time`() {
-        Time.setProvider(FrozenMadHatterParty(Time.currentTime()))
-        try {
-            registry.pickUp(first, worker("w"))
+    fun `let the worker that holds a shard pick it again`() {
+        val start = freezeAt(Time.currentTime())
+        registry.pickUp(first, worker("w"))
+        val held = store.read(first).shouldNotBeNull()
+        val later = freezeAt(Timestamps.add(start, Durations.fromSeconds(1)))
 
-            shouldThrow<ShardAlreadyPickedUp> { registry.pickUp(first, worker("w")) }
-        } finally {
-            Time.resetProvider()
-        }
+        registry.pickUp(first, worker("w"))
+
+        val renewed = store.read(first).shouldNotBeNull()
+        renewed.record.worker shouldBe worker("w")
+        renewed.record.whenLastPicked shouldBe later
+        renewed.writeId shouldNotBe held.writeId
     }
 
     @Test
-    fun `not pick a shard that the same worker picks at the same time on another server`() {
-        Time.setProvider(FrozenMadHatterParty(Time.currentTime()))
-        try {
-            val shared = InMemoryShardSessionStore()
-            val other = DeliveryShardRegistry(shared, Durations.ZERO)
-            val racing = RacingShardSessionStore(shared, beforeFirstWrite = {
-                other.pickUp(it, worker("w"))
-            })
-            val registry = DeliveryShardRegistry(racing, Durations.ZERO)
+    fun `let a retried pick of the worker that holds a shard succeed on another server`() {
+        val shared = InMemoryShardSessionStore()
+        val other = DeliveryShardRegistry(shared, Durations.ZERO)
+        val racing = RacingShardSessionStore(shared, beforeFirstWrite = {
+            other.pickUp(it, worker("w"))
+        })
+        val retrying = DeliveryShardRegistry(racing, Durations.ZERO)
 
-            shouldThrow<ShardAlreadyPickedUp> { registry.pickUp(first, worker("w")) }
-        } finally {
-            Time.resetProvider()
-        }
+        shouldNotThrow<ShardAlreadyPickedUp> { retrying.pickUp(first, worker("w")) }
+
+        shared.read(first).shouldNotBeNull().record.worker shouldBe worker("w")
+    }
+
+    @Test
+    fun `not move the session back in time when a pick of its worker loses a race`() {
+        val start = freezeAt(Time.currentTime())
+        val later = Timestamps.add(start, Durations.fromSeconds(1))
+        val shared = InMemoryShardSessionStore()
+        val other = DeliveryShardRegistry(shared, Durations.ZERO)
+        val racing = RacingShardSessionStore(shared, beforeFirstWrite = {
+            freezeAt(later)
+            other.pickUp(it, worker("w"))
+        })
+        val stalled = DeliveryShardRegistry(racing, Durations.ZERO)
+
+        stalled.pickUp(first, worker("w"))
+
+        val record = shared.read(first).shouldNotBeNull().record
+        record.worker shouldBe worker("w")
+        record.whenLastPicked shouldBe later
+    }
+
+    @Test
+    fun `not let another worker pick a shard that a worker holds`() {
+        registry.pickUp(first, worker("a"))
+
+        val rejection = shouldThrow<ShardAlreadyPickedUp> { registry.pickUp(first, worker("b")) }
+
+        rejection.messageThrown().worker shouldBe worker("a")
+        store.read(first).shouldNotBeNull().record.worker shouldBe worker("a")
     }
 
     @Test
@@ -140,21 +178,15 @@ internal class DeliveryShardRegistrySpec {
     fun `not let a worker with a stale session release the shard that another worker picked`() {
         val timeout = Durations.fromSeconds(1)
         val expiring = DeliveryShardRegistry(store, timeout)
-        val start = Time.currentTime()
-        try {
-            Time.setProvider(FrozenMadHatterParty(start))
-            expiring.pickUp(first, worker("a"))
-            val afterTimeout = Timestamps.add(start, Durations.add(timeout, timeout))
-            Time.setProvider(FrozenMadHatterParty(afterTimeout))
-            expiring.pickUp(first, worker("b"))
+        val start = freezeAt(Time.currentTime())
+        expiring.pickUp(first, worker("a"))
+        freezeAt(Timestamps.add(start, Durations.add(timeout, timeout)))
+        expiring.pickUp(first, worker("b"))
 
-            expiring.releaseShard(first, worker("a")) shouldBe HELD_BY_ANOTHER_WORKER
+        expiring.releaseShard(first, worker("a")) shouldBe HELD_BY_ANOTHER_WORKER
 
-            store.read(first).shouldNotBeNull().record.worker shouldBe worker("b")
-            shouldThrow<ShardAlreadyPickedUp> { expiring.pickUp(first, worker("c")) }
-        } finally {
-            Time.resetProvider()
-        }
+        store.read(first).shouldNotBeNull().record.worker shouldBe worker("b")
+        shouldThrow<ShardAlreadyPickedUp> { expiring.pickUp(first, worker("c")) }
     }
 
     @Test
@@ -171,6 +203,45 @@ internal class DeliveryShardRegistrySpec {
         releasing.releaseShard(first, worker("a")) shouldBe HELD_BY_ANOTHER_WORKER
 
         shared.read(first).shouldNotBeNull().record.worker shouldBe worker("b")
+    }
+
+    @Test
+    fun `not end a session that the same worker renewed while the release is in progress`() {
+        val shared = InMemoryShardSessionStore()
+        val other = DeliveryShardRegistry(shared, Durations.ZERO)
+        other.pickUp(first, worker("w"))
+        lateinit var renewed: Stored
+        val racing = RacingShardSessionStore(shared, beforeFirstWrite = {
+            other.pickUp(it, worker("w"))
+            renewed = shared.read(it).shouldNotBeNull()
+        })
+        val releasing = DeliveryShardRegistry(racing, Durations.ZERO)
+
+        releasing.releaseShard(first, worker("w")) shouldBe RENEWED
+
+        val current = shared.read(first).shouldNotBeNull()
+        current.record.worker shouldBe worker("w")
+        current.writeId shouldBe renewed.writeId
+    }
+
+    @Test
+    fun `keep a session renewed at the same instant while its release is in progress`() {
+        val now = freezeAt(Time.currentTime())
+        val shared = InMemoryShardSessionStore()
+        val other = DeliveryShardRegistry(shared, Durations.ZERO)
+        other.pickUp(first, worker("w"))
+        val found = shared.read(first).shouldNotBeNull()
+        val racing = RacingShardSessionStore(shared, beforeFirstWrite = {
+            other.pickUp(it, worker("w"))
+        })
+        val releasing = DeliveryShardRegistry(racing, Durations.ZERO)
+
+        releasing.releaseShard(first, worker("w")) shouldBe RENEWED
+
+        val current = shared.read(first).shouldNotBeNull()
+        current.record.worker shouldBe worker("w")
+        current.record.whenLastPicked shouldBe now
+        current.writeId shouldNotBe found.writeId
     }
 
     @Test
@@ -286,6 +357,15 @@ internal class DeliveryShardRegistrySpec {
         } finally {
             pool.shutdownNow()
         }
+    }
+
+    /**
+     * Freezes the current time at the given moment until the end of the test, and returns
+     * the moment.
+     */
+    private fun freezeAt(moment: Timestamp): Timestamp {
+        Time.setProvider(FrozenMadHatterParty(moment))
+        return moment
     }
 
     /**

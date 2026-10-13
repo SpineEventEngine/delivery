@@ -45,7 +45,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Test environment for
- * {@link io.spine.delivery.server.grpc.ShardServiceTest ShardServiceTest}.
+ * {@link io.spine.delivery.server.grpc.ShardServiceTest ShardServiceTest} and
+ * {@code ShardServiceSpec}.
  */
 public final class ShardServiceTestEnv implements Closeable {
 

@@ -91,29 +91,38 @@ final class ShardServiceTest {
         }
 
         @Test
-        @DisplayName("not picking up already picked up shard")
-        void notPickSame() {
+        @DisplayName("picking up a picked up shard again only for the worker that holds it")
+        void pickAgainOnlyByHolder() {
             var frozen = Time.currentTime();
             Time.setProvider(new FrozenMadHatterParty(frozen));
-            var shardService = syncShardService();
-            var request = pickUpShard();
-            var firstAttempt = shardService.pickShard(request);
-            assertThat(firstAttempt.hasPickedUp())
-                    .isTrue();
-            var secondAttempt = shardService.pickShard(request);
-            assertThat(secondAttempt.hasAlreadyPickedUp())
-                    .isTrue();
+            try {
+                var shardService = syncShardService();
+                var request = pickUpShard();
+                var firstAttempt = shardService.pickShard(request);
+                assertThat(firstAttempt.hasPickedUp())
+                        .isTrue();
 
-            var expected = Rejections.ShardAlreadyPickedUp.newBuilder()
-                    .setShard(request.getShard())
-                    .setWorker(request.getWorker())
-                    .setWhenPicked(frozen)
-                    .build();
+                var byHolder = shardService.pickShard(request);
+                assertThat(byHolder.hasPickedUp())
+                        .isTrue();
+                assertThat(byHolder.getPickedUp())
+                        .comparingExpectedFieldsOnly()
+                        .isEqualTo(asPickedUp(request));
 
-            assertThat(secondAttempt.getAlreadyPickedUp())
-                    .comparingExpectedFieldsOnly()
-                    .isEqualTo(expected);
-            Time.resetProvider();
+                var byAnother = shardService.pickShard(byAnotherWorker(request));
+                assertThat(byAnother.hasAlreadyPickedUp())
+                        .isTrue();
+                var expected = Rejections.ShardAlreadyPickedUp.newBuilder()
+                        .setShard(request.getShard())
+                        .setWorker(request.getWorker())
+                        .setWhenPicked(frozen)
+                        .build();
+                assertThat(byAnother.getAlreadyPickedUp())
+                        .comparingExpectedFieldsOnly()
+                        .isEqualTo(expected);
+            } finally {
+                Time.resetProvider();
+            }
         }
     }
 
