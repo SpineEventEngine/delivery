@@ -225,6 +225,26 @@ internal class DeliveryShardRegistrySpec {
     }
 
     @Test
+    fun `keep a session renewed at the same instant while its release is in progress`() {
+        val now = freezeAt(Time.currentTime())
+        val shared = InMemoryShardSessionStore()
+        val other = DeliveryShardRegistry(shared, Durations.ZERO)
+        other.pickUp(first, worker("w"))
+        val found = shared.read(first).shouldNotBeNull()
+        val racing = RacingShardSessionStore(shared, beforeFirstWrite = {
+            other.pickUp(it, worker("w"))
+        })
+        val releasing = DeliveryShardRegistry(racing, Durations.ZERO)
+
+        releasing.releaseShard(first, worker("w")) shouldBe RENEWED
+
+        val current = shared.read(first).shouldNotBeNull()
+        current.record.worker shouldBe worker("w")
+        current.record.whenLastPicked shouldBe now
+        current.writeId shouldNotBe found.writeId
+    }
+
+    @Test
     fun `not write when releasing a shard that no worker holds`() {
         val neverPicked = shard(2)
         registry.pickUp(first, worker("w"))

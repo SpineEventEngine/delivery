@@ -281,9 +281,12 @@ public final class DeliveryShardRegistry implements WithLogging {
      * renews its session. If the session of another worker is not stale, the pick finishes
      * without a write, with the record of the session.
      *
-     * <p>The pick takes its time when it starts. If the picking worker holds the shard in
-     * a session picked at that time or later, for example, by another attempt of the same pick
-     * on another server, the pick succeeds without a write. So a pick that lost a race never
+     * <p>When the picking worker holds the shard, the pick always writes, so the renewed session
+     * gets a new write ID. A release in progress then tells it from the session it found.
+     *
+     * <p>The pick takes its time when it starts. If the stored session was picked at that time
+     * or later, for example, by another attempt of the same pick on another server, or by
+     * a server whose clock is ahead, the renewal keeps the stored time. So a renewal never
      * moves the session back in time, which would make it stale too early.
      *
      * <p>A renewed session is logged at most once, after the store confirms the write. If a
@@ -317,10 +320,12 @@ public final class DeliveryShardRegistry implements WithLogging {
                   .equals(picked.getWorker())) {
             var asRecentAsThisPick = Timestamps.compare(record.getWhenLastPicked(),
                                                         picked.getWhenLastPicked()) >= 0;
-            if (asRecentAsThisPick) {
-                return Decision.done(null);
-            }
-            return Decision.write(picked, null, () -> logRenewed(record));
+            var renewal = asRecentAsThisPick
+                          ? picked.toBuilder()
+                                  .setWhenLastPicked(record.getWhenLastPicked())
+                                  .build()
+                          : picked;
+            return Decision.write(renewal, null, () -> logRenewed(record));
         }
         var whenPicked = picked.getWhenLastPicked();
         if (hasWorker(record)) {
