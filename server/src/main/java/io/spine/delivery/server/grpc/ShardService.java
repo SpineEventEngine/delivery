@@ -50,10 +50,9 @@ import static java.lang.String.format;
 /**
  * Acts as a gRPC-wired backend for the {@link io.spine.delivery.ShardSessionRegistry}.
  *
- * <p>A pick-up or a release of a shard whose call is cancelled before the service starts
- * serving it is not served. This narrows the window in which a late request can affect
- * the newer requests of the same worker. A call cancelled after the service started serving
- * it is served as usual.
+ * <p>A pick-up or release call that is cancelled before the service starts serving it is not
+ * served. This narrows the window in which a late request can affect the newer requests of
+ * the same worker. A call cancelled after the service started serving it is served as usual.
  */
 public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
         implements NamedHealthAwareService, WithLogging {
@@ -135,15 +134,14 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
     }
 
     /**
-     * Ends the current call with the {@code CANCELLED} status, without serving it, if the call
-     * is cancelled.
+     * If the current call is cancelled, ends it with {@code CANCELLED} without serving it.
      *
      * <p>A call may wait in the queue of the server's executor before it is served, and it may
      * be cancelled meanwhile: for example, when the client cancels it, when its deadline
-     * passes, when its connection is reset, or when the server shuts down. gRPC cancels
-     * the context of such a call at once, even while the call waits. Serving the call after
-     * that could harm the newer calls of the same worker. For example, a late release could
-     * end the session that the worker started after the release failed on the worker's side.
+     * passes, when its connection is reset, or when the server is forced to shut down. gRPC
+     * cancels the context of such a call at once, even while the call waits. Serving the call
+     * after that could harm the newer calls of the same worker. For example, a late release
+     * could end the session that the worker started after its release failed.
      *
      * @param action
      *         the requested action, to name in the log
@@ -153,8 +151,8 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
      *         the worker of the request
      * @param observer
      *         the observer of the call
-     * @return {@code true} if the call is cancelled, and is now ended,
-     *         {@code false} if the call is to be served
+     * @return {@code true} if the call is cancelled and now ended;
+     *         {@code false} if it is to be served
      */
     private boolean endIfCancelled(String action,
                                    ShardIndex shard,

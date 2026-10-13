@@ -25,7 +25,7 @@ import io.spine.server.delivery.WorkerId;
 public final class DeliveryShardSession extends ShardProcessingSession {
 
     /**
-     * The registry that picked the shard of the session, and releases it.
+     * The registry that picked the shard of the session and releases it.
      */
     private final DeliveryShardRegistry registry;
 

@@ -33,9 +33,9 @@ pick-ups under one ID never exclude each other.
 
 Two rules narrow the window in which a late request can affect the newer requests of the same
 worker. First, a release ends only the session it found: if the worker picks the shard up again
-while its release is in progress, the newer session stays intact. Second, a pick-up or a release
-of a shard whose call is cancelled before the server starts serving it is not served. A call is
-cancelled, for example, when its deadline passes or its connection is reset.
+while its release is in progress, the newer session stays intact. Second, a pick-up or release
+call that is cancelled before the server starts serving it is not served. A call is cancelled,
+for example, when its deadline passes or its connection is reset.
 
 The in-memory storage provides the best-possible performance and is used by default.
 

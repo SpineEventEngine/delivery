@@ -45,7 +45,8 @@ The gRPC API stays as it is: Spine 1.x apps use this server too. Nothing changes
   requesting one, write the new record. This renews the session. It comes before the stale
   check, so a holder renewing its own stale session gets no stale warning. A `Decision` carries
   a follow-up that `update` runs only once the decision is carried out, so the renewal
-  (`DEBUG`) and a stale takeover (`WARNING`) are logged once, after the write is applied.
+  (`DEBUG`) is logged once, after the write is applied. A stale takeover (`WARNING`) is logged
+  when the pick decides on it.
   Update the `pickUp` Javadoc.
 - `DeliveryShardRegistry.releaseShard`: read the record once, and pass the write ID it saw to
   `decideRelease`. The decision order is:

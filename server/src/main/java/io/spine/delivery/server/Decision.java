@@ -23,11 +23,11 @@ import org.jspecify.annotations.Nullable;
  * @param <T>
  *         the type of the result of the operation, which may be a nullable type
  * @param replacement
- *         The record to write, or {@code null} if nothing is to be written.
+ *         the record to write, or {@code null} if nothing is to be written
  * @param result
- *         The result of the operation, once the decision is carried out.
+ *         the result of the operation, once the decision is carried out
  * @param followUp
- *         What to do once the decision is carried out, such as logging what it did.
+ *         what to do once the decision is carried out, such as logging what it did
  *
  *         <p>Runs only if this decision is the one carried out, so never for a decision whose
  *         write conflicted or failed.
@@ -36,6 +36,11 @@ record Decision<T extends @Nullable Object>(
         @Nullable ShardSessionRecord replacement,
         T result,
         Runnable followUp) {
+
+    /**
+     * The follow-up of a decision that has nothing to do once it is carried out.
+     */
+    private static final Runnable NO_FOLLOW_UP = () -> {};
 
     /**
      * Creates the decision to write the replacement, if any, finish with the result,
@@ -49,13 +54,11 @@ record Decision<T extends @Nullable Object>(
      */
     static <T extends @Nullable Object> Decision<T> write(ShardSessionRecord replacement,
                                                           T result) {
-        return write(replacement, result, () -> {
-        });
+        return write(replacement, result, NO_FOLLOW_UP);
     }
 
     /**
-     * Writes the replacement, and then finishes with the given result and runs
-     * the follow-up.
+     * Writes the replacement, and then finishes with the given result and runs the follow-up.
      */
     static <T extends @Nullable Object> Decision<T> write(ShardSessionRecord replacement,
                                                           T result,
@@ -67,7 +70,6 @@ record Decision<T extends @Nullable Object>(
      * Finishes with the given result, without a write.
      */
     static <T extends @Nullable Object> Decision<T> done(T result) {
-        return new Decision<>(null, result, () -> {
-        });
+        return new Decision<>(null, result, NO_FOLLOW_UP);
     }
 }

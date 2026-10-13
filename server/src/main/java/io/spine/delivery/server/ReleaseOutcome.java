@@ -14,12 +14,8 @@
 
 package io.spine.delivery.server;
 
-import io.spine.server.delivery.ShardIndex;
-import io.spine.server.delivery.WorkerId;
-
 /**
- * The outcome of a {@linkplain DeliveryShardRegistry#releaseShard(ShardIndex, WorkerId) release}
- * of a shard.
+ * The outcome of a {@linkplain DeliveryShardRegistry#releaseShard release} of a shard.
  */
 public enum ReleaseOutcome {
 
@@ -56,8 +52,8 @@ public enum ReleaseOutcome {
      * sessions clears it. With no processing timeout, a session never becomes stale.
      *
      * <p>This outcome is also reported for a release whose write was applied but whose
-     * reply was lost, when the worker picked the shard again before the release could
-     * read the record once more.
+     * reply was lost, when the worker picked the shard again before the release read
+     * the record again.
      */
     RENEWED
 }

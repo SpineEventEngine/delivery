@@ -111,13 +111,13 @@ public final class DeliveryShardRegistry implements WithLogging {
      *     track of its session, for example, when the reply to its pick-up is lost, when its
      *     release fails, or when it restarts after a failure.
      *     <li>The requested shard is already held by another worker, but its processing time
-     *     reached {@link #processingTimeout}. Such a session is considered stale and released
-     *     automatically.
+     *     reached {@link #processingTimeout}. Such a session is considered stale
+     *     and released automatically.
      * </ol>
      *
      * <p>In case the shard at a given index is already picked up by another worker and
      * has not reached {@linkplain #processingTimeout processing timeout},
-     * an {@link ShardAlreadyPickedUp} is thrown.
+     * a {@link ShardAlreadyPickedUp} is thrown.
      *
      * <p>The exclusivity has one exception: a store shared by servers that a network split
      * divides may let each part of them pick the same shard.
@@ -280,8 +280,9 @@ public final class DeliveryShardRegistry implements WithLogging {
      * renews its session. If the session of another worker is not stale, the pick finishes
      * without a write, with the record of the session.
      *
-     * <p>A renewed session and a stale one taken over are logged at most once, after the store
-     * confirms the write. If a failed write proves to have been applied, nothing is logged.
+     * <p>A renewed session is logged at most once, after the store confirms the write. If a failed
+     * write proves to have been applied, nothing is logged. A stale session is logged each time
+     * the pick decides to take it over.
      *
      * @param current
      *         the current record of the shard, or {@code null} if there is none
