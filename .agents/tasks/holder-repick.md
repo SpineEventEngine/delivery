@@ -17,7 +17,7 @@ worker:
 
 When a pick-up reply is lost, a release fails, or an app restarts with a stable (per-node)
 worker ID, the worker asks for the shard again. Today its own session rejects it, so the
-shard waits until the session expires, or forever when no timeout is set.
+shard waits until the session goes stale, or forever when no timeout is set.
 
 Worker IDs come from the client and are often per node. The server sees only
 `(shard, worker)`, so it can't tell a retry or a restart from anything else. Choosing worker
@@ -27,7 +27,7 @@ Renewing the holder's session opens one hazard, a late release. Worker W release
 but the release waits on a stalled server instance, and W's call fails. W picks the shard
 again on another instance and starts a new round. The old release then runs, finds "W holds
 the shard", and clears W's new session, so another worker can pick the shard while W
-delivers. Two rules close this:
+delivers. Two rules narrow this window:
 - Rule 1: a release remembers the write ID of the record it read first. If, after a conflict,
   it finds the same worker under another write ID, that is a newer session, and the release
   leaves it intact (`RENEWED`).
@@ -42,12 +42,19 @@ The gRPC API stays as it is: Spine 1.x apps use this server too. Nothing changes
 ## Plan
 
 - `DeliveryShardRegistry.decidePick`: after the own-write check, if the record's worker is the
-  requesting one, write the new record. This renews the session. It comes before the stale
-  check, so a holder renewing its own stale session gets no stale warning. A `Decision` carries
-  a follow-up that `update` runs only once the decision is carried out, so the renewal
-  (`DEBUG`) is logged once, after the write is applied. A stale takeover (`WARNING`) is logged
-  when the pick decides on it.
-  Update the `pickUp` Javadoc.
+  requesting one, write a new record, which renews the session.
+  - The write always happens, so the renewed session gets a new write ID. A release in
+    progress can tell it from the session it found.
+  - The pick takes its time when it starts. If the stored session is as recent as that
+    (`asRecentAsThisPick`), the written record keeps the stored, later time, so a renewal
+    never moves the session back in time. That happens when another attempt of the pick
+    won on another server, or when a server's clock is ahead.
+  - The holder check comes before the stale check, so a holder renewing its own stale
+    session gets no stale warning.
+  - A `Decision` carries a follow-up that `update` runs only once the decision is carried
+    out, so the renewal (`DEBUG`) is logged once, after the write is applied. A stale
+    takeover (`WARNING`) is logged when the pick decides on it.
+  - Update the `pickUp` Javadoc.
 - `DeliveryShardRegistry.releaseShard`: read the record once, and pass the write ID it saw to
   `decideRelease`. The decision order is:
   1. no record → `NOT_PICKED_UP`;
@@ -70,9 +77,10 @@ The gRPC API stays as it is: Spine 1.x apps use this server too. Nothing changes
 - `DeliveryShardRegistrySpec`:
   - the holder picks the shard again, and the session is renewed;
   - the holder's retried pick-up succeeds on another server;
+  - a pick of the holder that lost a race doesn't move the session back in time;
   - another worker is rejected;
   - a release doesn't end a session that the same worker renewed while the release was in
-    progress (`RENEWED`).
+    progress (`RENEWED`), also when the renewal happened at the same frozen instant.
 - `ShardServiceTest`: the same `PickUpShard` sent twice is picked up both times, and
   another worker is rejected.
 - `ShardServiceSpec` (new):
