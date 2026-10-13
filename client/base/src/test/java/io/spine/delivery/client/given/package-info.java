@@ -12,9 +12,14 @@
  * and limitations under the License.
  */
 
+/**
+ * The test environment for tests of the client base: a request execution strategy
+ * and requests that count their executions.
+ */
 @CheckReturnValue
 @NullMarked
 package io.spine.delivery.client.given;
 
 import com.google.errorprone.annotations.CheckReturnValue;
+
 import org.jspecify.annotations.NullMarked;
