@@ -40,7 +40,9 @@ import io.spine.server.delivery.InboxMessageStatus.TO_DELIVER
 import io.spine.server.delivery.ShardIndex
 import java.time.Duration
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit.SECONDS
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
@@ -599,7 +601,7 @@ abstract class InboxStoreContract {
             val pool = Executors.newFixedThreadPool(writers.size + readers)
             try {
                 val reads = (1..readers).map {
-                    pool.submit {
+                    pool.submitStopping(writing) {
                         start.await()
                         do {
                             shards.forEach(::checkReads)
@@ -607,7 +609,7 @@ abstract class InboxStoreContract {
                     }
                 }
                 val writes = writers.map { writer ->
-                    pool.submit {
+                    pool.submitStopping(writing) {
                         start.await()
                         repeat(ROUNDS) {
                             if (writing.get()) {
@@ -626,6 +628,22 @@ abstract class InboxStoreContract {
                 pool.awaitTermination(CONCURRENCY_TIMEOUT.seconds, SECONDS)
             }
             return writers
+        }
+
+        /**
+         * Submits the task, so that if it fails, it clears the [writing] flag at once, and
+         * the other threads stop after their current round or read.
+         */
+        private fun ExecutorService.submitStopping(
+            writing: AtomicBoolean,
+            task: () -> Unit
+        ): Future<*> = submit {
+            try {
+                task()
+            } catch (e: Throwable) {
+                writing.set(false)
+                throw e
+            }
         }
 
         /**
