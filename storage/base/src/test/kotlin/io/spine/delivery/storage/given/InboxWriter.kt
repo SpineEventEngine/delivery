@@ -22,7 +22,7 @@ import io.spine.server.delivery.ShardIndex
 import kotlin.random.Random
 
 /**
- * The number of the seconds at which an [InboxWriter] receives its messages.
+ * The upper bound, exclusive, of the seconds at which an [InboxWriter] receives its messages.
  *
  * It is small, so that the messages of different writers are often received at the same
  * second. Each message is received at a whole second, with no nanos.
@@ -32,8 +32,8 @@ const val RECEIVE_SECONDS: Long = 50
 /**
  * Orders the messages by their order keys, as an [InboxStore] does.
  *
- * The UUIDs are compared as strings. For the ASCII UUIDs of an [InboxWriter], it is the same
- * order as the order by Unicode code points, in which a store compares them.
+ * The UUIDs are compared as strings. For the ASCII UUIDs of an [InboxWriter], this is the same
+ * as the comparison by Unicode code points that a store uses.
  */
 val orderKeys: Comparator<InboxMessage> = compareBy(
     { it.whenReceived.seconds },
@@ -77,7 +77,7 @@ class InboxWriter(
     private val written = ArrayList<InboxMessage>()
 
     /**
-     * The number of the messages that the writer has created.
+     * The number of messages that the writer has created.
      */
     private var created = 0
 
@@ -91,7 +91,7 @@ class InboxWriter(
      * Makes one round of changes.
      *
      * Writes, in one batch, two new messages to the [own] shard, one to the [next] shard, and
-     * another version of a written message. Then deletes a written message.
+     * a changed copy of a written message. Then deletes a written message.
      */
     fun round() {
         val batch = mutableListOf(create(own), create(own), create(next))
@@ -117,10 +117,10 @@ class InboxWriter(
     }
 
     /**
-     * Replaces a random written message with its version that has the other status, or that
-     * is received at another second.
+     * Replaces a random written message with a copy that has the other status, or with a copy
+     * received at a random second and having the next `version`.
      *
-     * @return The new version of the message.
+     * @return The copy.
      */
     private fun rewrite(): InboxMessage {
         val index = random.nextInt(written.size)

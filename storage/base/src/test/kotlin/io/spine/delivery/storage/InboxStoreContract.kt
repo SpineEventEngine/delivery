@@ -68,8 +68,8 @@ private const val LARGE_PAYLOAD = 3 * 1024 * 1024
 private const val LARGE_SHARD = 8_500
 
 /**
- * The number of threads that change the messages of a store at once, and of the shards
- * they change.
+ * The number of threads that change the messages of a store at once, which is also
+ * the number of shards they change.
  */
 private const val WRITERS = 6
 
@@ -84,7 +84,7 @@ private const val ROUNDS = 200
 private const val READ_PAGE_SIZE = 20
 
 /**
- * How long the threads that change and read a store may take together.
+ * How long to wait for each of the threads that change and read a store to finish.
  */
 private val CONCURRENCY_TIMEOUT: Duration = Duration.ofMinutes(1)
 
@@ -573,35 +573,48 @@ abstract class InboxStoreContract {
         }
 
         /**
-         * Runs the [ROUNDS] of a writer per shard, each on a thread of its own, while
+         * Runs [ROUNDS] rounds of a writer per shard, each on a thread of its own, while
          * the given number of other threads read the shards.
          *
          * Each writer adds messages to its own shard and to the next one, so that every shard
          * is changed by two writers.
          *
+         * If a thread fails, or doesn't finish in time, the other threads stop after their
+         * current round or read. The method waits for them to stop, for at most
+         * [CONCURRENCY_TIMEOUT], so that they don't change the data of the next test.
+         *
          * @return The writers, after their rounds.
          */
         private fun changeConcurrently(readers: Int): List<InboxWriter> {
             val writers = shards.mapIndexed { number, own ->
-                InboxWriter(store, number, own, shards[(number + 1) % shards.size])
+                InboxWriter(
+                    store,
+                    number = number,
+                    own = own,
+                    next = shards[(number + 1) % shards.size]
+                )
             }
             val start = CountDownLatch(1)
             val writing = AtomicBoolean(true)
             val pool = Executors.newFixedThreadPool(writers.size + readers)
             try {
                 val reads = (1..readers).map {
-                    pool.submit(Runnable {
+                    pool.submit {
                         start.await()
                         do {
                             shards.forEach(::checkReads)
                         } while (writing.get())
-                    })
+                    }
                 }
                 val writes = writers.map { writer ->
-                    pool.submit(Runnable {
+                    pool.submit {
                         start.await()
-                        repeat(ROUNDS) { writer.round() }
-                    })
+                        repeat(ROUNDS) {
+                            if (writing.get()) {
+                                writer.round()
+                            }
+                        }
+                    }
                 }
                 start.countDown()
                 writes.forEach { it.get(CONCURRENCY_TIMEOUT.seconds, SECONDS) }
@@ -610,6 +623,7 @@ abstract class InboxStoreContract {
             } finally {
                 writing.set(false)
                 pool.shutdownNow()
+                pool.awaitTermination(CONCURRENCY_TIMEOUT.seconds, SECONDS)
             }
             return writers
         }
@@ -621,7 +635,8 @@ abstract class InboxStoreContract {
         private fun checkReads(shard: ShardIndex) {
             checkPage(shard, store.page(shard, null, READ_PAGE_SIZE))
 
-            // The writers receive their messages at whole seconds.
+            // The writers receive their messages at whole seconds, so a message received
+            // after `since` has more seconds.
             val since = time(RECEIVE_SECONDS / 2)
             val later = store.page(shard, since, READ_PAGE_SIZE)
             checkPage(shard, later)
