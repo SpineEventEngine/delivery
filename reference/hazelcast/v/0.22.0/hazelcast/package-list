@@ -1,0 +1,34 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.delivery.storage.hazelcast////PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/index.html
+$dokka.location:io.spine.delivery.storage.hazelcast//INBOX_MAP/#/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-i-n-b-o-x_-m-a-p.html
+$dokka.location:io.spine.delivery.storage.hazelcast//SESSIONS_MAP/#/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-s-e-s-s-i-o-n-s_-m-a-p.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore///PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/index.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore/close/#/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/close.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore/count/#io.spine.server.delivery.ShardIndex/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/count.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore/count/#kotlin.collections.Collection[io.spine.server.delivery.ShardIndex]/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/count.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore/counts/#/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/counts.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore/delete/#kotlin.collections.Iterable[io.spine.server.delivery.InboxMessageId]/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/delete.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore/find/#io.spine.server.delivery.InboxMessageId/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/find.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore/newestToDeliver/#io.spine.server.delivery.ShardIndex/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/newest-to-deliver.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore/page/#io.spine.server.delivery.ShardIndex#com.google.protobuf.Timestamp?#kotlin.Int/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/page.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore/subscribe/#java.util.function.Consumer[io.spine.server.delivery.ShardIndex]/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/subscribe.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore/subscribeToMissedChanges/#java.lang.Runnable/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/subscribe-to-missed-changes.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastInboxStore/write/#kotlin.collections.Iterable[io.spine.server.delivery.InboxMessage]/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-inbox-store/write.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastShardSessionStore///PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-shard-session-store/index.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastShardSessionStore/close/#/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-shard-session-store/close.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastShardSessionStore/compareAndSet/#io.spine.server.delivery.ShardIndex#io.spine.delivery.storage.Stored?#io.spine.server.delivery.ShardSessionRecord#kotlin.uuid.Uuid/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-shard-session-store/compare-and-set.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastShardSessionStore/read/#io.spine.server.delivery.ShardIndex/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-shard-session-store/read.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastShardSessionStore/read/#kotlin.collections.Collection[io.spine.server.delivery.ShardIndex]/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-shard-session-store/read.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastShardSessionStore/readAll/#/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-shard-session-store/read-all.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastShardSessionStore/subscribe/#java.util.function.Consumer[io.spine.server.delivery.ShardIndex]/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-shard-session-store/subscribe.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastShardSessionStore/subscribeToMissedChanges/#java.lang.Runnable/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-shard-session-store/subscribe-to-missed-changes.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastStores.Companion///PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-stores/-companion/index.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastStores.Companion/configure/#com.hazelcast.config.Config/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-stores/-companion/configure.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastStores.Companion/start/#/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-stores/-companion/start.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastStores.Companion/start/#com.hazelcast.config.Config/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-stores/-companion/start.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastStores///PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-stores/index.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastStores/close/#/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-stores/close.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastStores/inbox/#/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-stores/inbox.html
+$dokka.location:io.spine.delivery.storage.hazelcast/HazelcastStores/sessions/#/PointingToDeclaration/hazelcast/io.spine.delivery.storage.hazelcast/-hazelcast-stores/sessions.html
+io.spine.delivery.storage.hazelcast
