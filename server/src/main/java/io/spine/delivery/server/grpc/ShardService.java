@@ -141,7 +141,7 @@ public final class ShardService extends ShardServiceGrpc.ShardServiceImplBase
      * passes, when its connection is reset, or when the server is forced to shut down. gRPC
      * cancels the context of such a call at once, even while the call waits. Serving the call
      * after that could harm the newer calls of the same worker. For example, a late release
-     * could end the session that the worker started after its release failed.
+     * could end the session that the worker started after it gave up on that release.
      *
      * @param action
      *         the requested action, to name in the log

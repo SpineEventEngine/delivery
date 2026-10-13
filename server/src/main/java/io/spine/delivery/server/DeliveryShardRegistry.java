@@ -280,9 +280,9 @@ public final class DeliveryShardRegistry implements WithLogging {
      * renews its session. If the session of another worker is not stale, the pick finishes
      * without a write, with the record of the session.
      *
-     * <p>A renewed session is logged at most once, after the store confirms the write. If a failed
-     * write proves to have been applied, nothing is logged. A stale session is logged each time
-     * the pick decides to take it over.
+     * <p>A renewed session is logged at most once, after the store confirms the write. If a
+     * failed write proves to have been applied, the renewal is not logged. A stale session is
+     * logged each time the pick decides to take it over.
      *
      * @param current
      *         the current record of the shard, or {@code null} if there is none
