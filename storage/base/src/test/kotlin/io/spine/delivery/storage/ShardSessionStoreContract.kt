@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test
  *
  * A subclass creates a new, empty store for each test.
  */
-public abstract class ShardSessionStoreContract {
+abstract class ShardSessionStoreContract {
 
     /**
      * Creates a new store that holds no records.
@@ -65,12 +65,12 @@ public abstract class ShardSessionStoreContract {
     private val third = shard(3)
 
     @BeforeEach
-    public fun createStore() {
+    fun createStore() {
         store = newStore()
     }
 
     @AfterEach
-    public fun closeStore() {
+    fun closeStore() {
         store.close()
     }
 
@@ -97,17 +97,17 @@ public abstract class ShardSessionStoreContract {
 
     @Nested
     @DisplayName("read records")
-    public inner class Read {
+    inner class Read {
 
         @Test
-        public fun `of an empty store`() {
+        fun `of an empty store`() {
             store.read(first).shouldBeNull()
             store.read(listOf(first, second)) shouldBe emptyMap()
             store.readAll().shouldBeEmpty()
         }
 
         @Test
-        public fun `of the given shards that have one`() {
+        fun `of the given shards that have one`() {
             val inFirst = session(first)
             val inSecond = session(second, worker = "other")
             create(inFirst)
@@ -123,10 +123,10 @@ public abstract class ShardSessionStoreContract {
 
     @Nested
     @DisplayName("compare and set a record")
-    public inner class CompareAndSet {
+    inner class CompareAndSet {
 
         @Test
-        public fun `creating it when none is expected`() {
+        fun `creating it when none is expected`() {
             val record = session(first)
             val writeId = newWriteId()
 
@@ -139,7 +139,7 @@ public abstract class ShardSessionStoreContract {
         }
 
         @Test
-        public fun `rejecting creation when there is a record`() {
+        fun `rejecting creation when there is a record`() {
             val existing = session(first)
             create(existing)
 
@@ -149,7 +149,7 @@ public abstract class ShardSessionStoreContract {
         }
 
         @Test
-        public fun `replacing the expected record`() {
+        fun `replacing the expected record`() {
             val stored = create(session(first))
             val replacement = session(first, worker = "other", pickedAt = 1)
 
@@ -160,7 +160,7 @@ public abstract class ShardSessionStoreContract {
         }
 
         @Test
-        public fun `rejecting a stale expected record`() {
+        fun `rejecting a stale expected record`() {
             val stale = create(session(first))
             val current = session(first, worker = "current", pickedAt = 1)
             store.compareAndSet(first, stale, current, newWriteId()) shouldBe CasOutcome.Applied
@@ -171,7 +171,7 @@ public abstract class ShardSessionStoreContract {
         }
 
         @Test
-        public fun `rejecting an expected record that an equal record of another write replaced`() {
+        fun `rejecting an expected record that an equal record of another write replaced`() {
             val record = session(first)
             val stale = create(record)
             store.compareAndSet(first, stale, record, newWriteId()) shouldBe CasOutcome.Applied
@@ -182,7 +182,7 @@ public abstract class ShardSessionStoreContract {
         }
 
         @Test
-        public fun `rejecting an expected record when there is none`() {
+        fun `rejecting an expected record when there is none`() {
             val stored = create(session(first))
 
             store.compareAndSet(second, stored, session(second), newWriteId())
@@ -191,7 +191,7 @@ public abstract class ShardSessionStoreContract {
         }
 
         @Test
-        public fun `executed twice in a row, recognizing its own write`() {
+        fun `executed twice in a row, recognizing its own write`() {
             val stored = create(session(first))
             val replacement = session(first, worker = "other", pickedAt = 1)
             val writeId = newWriteId()
@@ -209,19 +209,19 @@ public abstract class ShardSessionStoreContract {
 
     @Nested
     @DisplayName("report a change of a shard")
-    public inner class Changes {
+    inner class Changes {
 
         private lateinit var changes: ChangeRecorder
         private lateinit var subscription: Subscription
 
         @BeforeEach
-        public fun subscribe() {
+        fun subscribe() {
             changes = ChangeRecorder(changeTimeout, quietPeriod)
             subscription = store.subscribe(changes)
         }
 
         @Test
-        public fun `after an applied write`() {
+        fun `after an applied write`() {
             val stored = create(session(first))
             changes.expect(first)
 
@@ -230,7 +230,7 @@ public abstract class ShardSessionStoreContract {
         }
 
         @Test
-        public fun `only if the write is applied`() {
+        fun `only if the write is applied`() {
             create(session(first))
             changes.expect(first)
 
@@ -239,7 +239,7 @@ public abstract class ShardSessionStoreContract {
         }
 
         @Test
-        public fun `only while subscribed`() {
+        fun `only while subscribed`() {
             subscription.cancel()
 
             create(session(first))

@@ -30,7 +30,7 @@ import org.junit.jupiter.api.fail
  * @param quietPeriod How long to wait to make sure that no other change is reported;
  *   zero for a store that reports changes before its operation returns.
  */
-public class ChangeRecorder(
+class ChangeRecorder(
     private val changeTimeout: Duration,
     private val quietPeriod: Duration
 ) : Consumer<ShardIndex> {
@@ -51,7 +51,7 @@ public class ChangeRecorder(
      * A shard reported more than once counts once: a backend may report one change in
      * several parts.
      */
-    public fun expect(vararg shards: ShardIndex) {
+    fun expect(vararg shards: ShardIndex) {
         val expected = shards.toSet()
         val received = HashSet<ShardIndex>()
         val deadline = System.nanoTime() + changeTimeout.toNanos()
@@ -68,7 +68,7 @@ public class ChangeRecorder(
     /**
      * Checks that no shard is reported.
      */
-    public fun expectNone() {
+    fun expectNone() {
         drainAfterQuietPeriod().shouldBeEmpty()
     }
 
