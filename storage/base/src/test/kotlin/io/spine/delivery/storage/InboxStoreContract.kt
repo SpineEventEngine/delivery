@@ -18,11 +18,17 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.ints.shouldBeLessThan
+import io.kotest.matchers.ints.shouldBeLessThanOrEqual
+import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.shouldBe
+import io.spine.delivery.storage.given.InboxWriter
+import io.spine.delivery.storage.given.RECEIVE_SECONDS
 import io.spine.delivery.storage.given.id
 import io.spine.delivery.storage.given.message
+import io.spine.delivery.storage.given.orderKeys
 import io.spine.delivery.storage.given.receivedAt
 import io.spine.delivery.storage.given.shard
 import io.spine.delivery.storage.given.time
@@ -30,8 +36,15 @@ import io.spine.delivery.storage.given.withStatus
 import io.spine.server.delivery.InboxMessage
 import io.spine.server.delivery.InboxMessageStatus.DELIVERED
 import io.spine.server.delivery.InboxMessageStatus.TO_CATCH_UP
+import io.spine.server.delivery.InboxMessageStatus.TO_DELIVER
 import io.spine.server.delivery.ShardIndex
 import java.time.Duration
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
+import java.util.concurrent.TimeUnit.SECONDS
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.random.Random
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -57,11 +70,32 @@ private const val LARGE_PAYLOAD = 3 * 1024 * 1024
 private const val LARGE_SHARD = 8_500
 
 /**
+ * The number of threads that change the messages of a store at once, which is also
+ * the number of shards they change.
+ */
+private const val WRITERS = 6
+
+/**
+ * The number of rounds of changes made by each of the [WRITERS].
+ */
+private const val ROUNDS = 200
+
+/**
+ * The size of a page read while the messages change.
+ */
+private const val READ_PAGE_SIZE = 20
+
+/**
+ * How long to wait for each of the threads that change and read a store to finish.
+ */
+private val CONCURRENCY_TIMEOUT: Duration = Duration.ofMinutes(1)
+
+/**
  * The contract of [InboxStore], which every backend passes.
  *
  * A subclass creates a new, empty store for each test.
  */
-public abstract class InboxStoreContract {
+abstract class InboxStoreContract {
 
     /**
      * Creates a new store that holds no messages.
@@ -90,12 +124,12 @@ public abstract class InboxStoreContract {
     private val third = shard(3)
 
     @BeforeEach
-    public fun createStore() {
+    fun createStore() {
         store = newStore()
     }
 
     @AfterEach
-    public fun closeStore() {
+    fun closeStore() {
         store.close()
     }
 
@@ -111,10 +145,10 @@ public abstract class InboxStoreContract {
 
     @Nested
     @DisplayName("find a message")
-    public inner class Find {
+    inner class Find {
 
         @Test
-        public fun `by its ID`() {
+        fun `by its ID`() {
             val message = message(first)
             write(message, message(first), message(second))
 
@@ -122,7 +156,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `with an ID that is absent`() {
+        fun `with an ID that is absent`() {
             write(message(first))
 
             store.find(id(first)).shouldBeNull()
@@ -130,7 +164,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `only in the shard of its ID`() {
+        fun `only in the shard of its ID`() {
             val message = message(first)
             write(message)
 
@@ -140,10 +174,10 @@ public abstract class InboxStoreContract {
 
     @Nested
     @DisplayName("write messages")
-    public inner class Write {
+    inner class Write {
 
         @Test
-        public fun `replacing a message with the same ID`() {
+        fun `replacing a message with the same ID`() {
             val original = message(first, seconds = 10)
             val other = message(first, seconds = 20)
             write(original, other)
@@ -166,7 +200,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `keeping the last of the messages with the same ID in a batch`() {
+        fun `keeping the last of the messages with the same ID in a batch`() {
             val message = message(first, version = 1)
             val replacement = message.receivedAt(seconds = 5, version = 2)
             val other = message(second)
@@ -178,7 +212,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `of several shards in one batch`() {
+        fun `of several shards in one batch`() {
             val messages = listOf(message(first), message(second), message(first))
             store.write(messages)
 
@@ -187,7 +221,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `leaving the same state when written twice`() {
+        fun `leaving the same state when written twice`() {
             val messages = listOf(message(first, seconds = 2), message(first, seconds = 1))
             store.write(messages)
             store.write(messages)
@@ -197,7 +231,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `in a batch larger than one Redis chunk by count`() {
+        fun `in a batch larger than one Redis chunk by count`() {
             val messages = (1..LARGE_SHARD).map { message(first, seconds = it.toLong()) }
             store.write(messages)
 
@@ -205,7 +239,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `in a batch larger than one Redis chunk by size`() {
+        fun `in a batch larger than one Redis chunk by size`() {
             val messages = (1..4).map {
                 message(first, seconds = it.toLong(), payloadSize = LARGE_PAYLOAD)
             }
@@ -215,7 +249,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `close to the maximum size of an inbound message`() {
+        fun `close to the maximum size of an inbound message`() {
             val message = message(first, payloadSize = NEAR_MAX_PAYLOAD)
             write(message)
 
@@ -226,10 +260,10 @@ public abstract class InboxStoreContract {
 
     @Nested
     @DisplayName("delete messages")
-    public inner class Delete {
+    inner class Delete {
 
         @Test
-        public fun `by their IDs`() {
+        fun `by their IDs`() {
             val kept = message(first)
             val deleted = message(first)
             val other = message(second)
@@ -243,7 +277,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `ignoring absent and repeated IDs`() {
+        fun `ignoring absent and repeated IDs`() {
             val message = message(first)
             write(message)
 
@@ -254,7 +288,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `leaving the same state when deleted twice`() {
+        fun `leaving the same state when deleted twice`() {
             val kept = message(first)
             val deleted = message(first)
             write(kept, deleted)
@@ -268,10 +302,10 @@ public abstract class InboxStoreContract {
 
     @Nested
     @DisplayName("read a page of a shard")
-    public inner class Page {
+    inner class Page {
 
         @Test
-        public fun `ordered by the receive time, the version, and the UUID`() {
+        fun `ordered by the receive time, the version, and the UUID`() {
             val ordered = listOf(
                 message(first, seconds = 9, nanos = 999_999_999, version = 7, uuid = "z"),
                 message(first, seconds = 10, uuid = "b"),
@@ -286,7 +320,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `ordering UUIDs by Unicode code points`() {
+        fun `ordering UUIDs by Unicode code points`() {
             // In UTF-16, the surrogate pair of U+1F600 sorts before U+FFFF; in UTF-8 and by
             // code points, it sorts after.
             val ordered = listOf(
@@ -299,7 +333,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `received strictly after the given time`() {
+        fun `received strictly after the given time`() {
             val before = message(first, seconds = 10, nanos = 499)
             val exact = message(first, seconds = 10, nanos = 500)
             val exactNewer = message(first, seconds = 10, nanos = 500, version = 5)
@@ -314,7 +348,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `of at most the page size`() {
+        fun `of at most the page size`() {
             val messages = (1..5).map { message(first, seconds = it.toLong()) }
             store.write(messages)
 
@@ -324,7 +358,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `of a shard without messages`() {
+        fun `of a shard without messages`() {
             write(message(first))
 
             store.page(second, null, 10).shouldBeEmpty()
@@ -332,7 +366,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `rejecting a page size that is not positive`() {
+        fun `rejecting a page size that is not positive`() {
             write(message(first))
 
             shouldThrow<IllegalArgumentException> { store.page(first, null, 0) }
@@ -341,7 +375,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `comparing timestamps and versions as plain numbers`() {
+        fun `comparing timestamps and versions as plain numbers`() {
             val ordered = listOf(
                 message(
                     first,
@@ -377,7 +411,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `of a shard with more messages than one Redis script returns at once`() {
+        fun `of a shard with more messages than one Redis script returns at once`() {
             val messages = (1..LARGE_SHARD).map { message(first, seconds = it.toLong()) }
             store.write(messages.shuffled(Random(3)))
 
@@ -388,10 +422,10 @@ public abstract class InboxStoreContract {
 
     @Nested
     @DisplayName("find the newest message to deliver")
-    public inner class NewestToDeliver {
+    inner class NewestToDeliver {
 
         @Test
-        public fun `among the messages of the shard`() {
+        fun `among the messages of the shard`() {
             val older = message(first, seconds = 10)
             val newer = message(first, seconds = 20)
             val delivered = message(first, seconds = 30, status = DELIVERED)
@@ -409,7 +443,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `breaking a tie by the version and the UUID`() {
+        fun `breaking a tie by the version and the UUID`() {
             val lower = message(first, seconds = 10, version = 1, uuid = "z")
             val higher = message(first, seconds = 10, version = 2, uuid = "a")
             val higherUuid = message(first, seconds = 10, version = 2, uuid = "b")
@@ -419,7 +453,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `in a shard without messages`() {
+        fun `in a shard without messages`() {
             write(message(first))
 
             store.newestToDeliver(second).shouldBeNull()
@@ -428,17 +462,17 @@ public abstract class InboxStoreContract {
 
     @Nested
     @DisplayName("count messages")
-    public inner class Count {
+    inner class Count {
 
         @Test
-        public fun `of an empty store`() {
+        fun `of an empty store`() {
             store.count(first) shouldBe 0
             store.count(listOf(first, second)) shouldBe mapOf(first to 0, second to 0)
             store.counts().shouldBeEmpty()
         }
 
         @Test
-        public fun `after every kind of change`() {
+        fun `after every kind of change`() {
             val inFirst = (1..3).map { message(first, seconds = it.toLong()) }
             val inSecond = message(second)
             store.write(inFirst + inSecond)
@@ -464,19 +498,19 @@ public abstract class InboxStoreContract {
 
     @Nested
     @DisplayName("report a change of a shard")
-    public inner class Changes {
+    inner class Changes {
 
         private lateinit var changes: ChangeRecorder
         private lateinit var subscription: Subscription
 
         @BeforeEach
-        public fun subscribe() {
+        fun subscribe() {
             changes = ChangeRecorder(changeTimeout, quietPeriod)
             subscription = store.subscribe(changes)
         }
 
         @Test
-        public fun `after a write`() {
+        fun `after a write`() {
             val message = message(first)
             write(message)
             changes.expect(first)
@@ -489,7 +523,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `after a delete that removes a message`() {
+        fun `after a delete that removes a message`() {
             val inFirst = message(first)
             val inSecond = message(second)
             write(inFirst, inSecond)
@@ -500,7 +534,7 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `only if a delete removes a message`() {
+        fun `only if a delete removes a message`() {
             write(message(first))
             changes.expect(first)
 
@@ -509,11 +543,154 @@ public abstract class InboxStoreContract {
         }
 
         @Test
-        public fun `only while subscribed`() {
+        fun `only while subscribed`() {
             subscription.cancel()
 
             write(message(first))
             changes.expectNone()
+        }
+    }
+
+    @Nested
+    @DisplayName("handle concurrent changes")
+    inner class Concurrency {
+
+        /**
+         * The shards changed by the writers.
+         */
+        private val shards = (0 until WRITERS).map { shard(it) }
+
+        @Test
+        fun `of several shards`() {
+            val writers = changeConcurrently(readers = 0)
+
+            checkHeld(writers)
+        }
+
+        @Test
+        fun `while the shards are read`() {
+            val writers = changeConcurrently(readers = 2)
+
+            checkHeld(writers)
+        }
+
+        /**
+         * Runs [ROUNDS] rounds of a writer per shard, each on a thread of its own, while
+         * the given number of other threads read the shards.
+         *
+         * Each writer adds messages to its own shard and to the next one, so that every shard
+         * is changed by two writers.
+         *
+         * If a thread fails, or doesn't finish in time, the other threads stop after their
+         * current round or read. The method waits for them to stop, for at most
+         * [CONCURRENCY_TIMEOUT], so that they don't change the data of the next test.
+         *
+         * @return The writers, after their rounds.
+         */
+        private fun changeConcurrently(readers: Int): List<InboxWriter> {
+            val writers = shards.mapIndexed { number, own ->
+                InboxWriter(
+                    store,
+                    number = number,
+                    own = own,
+                    next = shards[(number + 1) % shards.size]
+                )
+            }
+            val start = CountDownLatch(1)
+            val writing = AtomicBoolean(true)
+            val pool = Executors.newFixedThreadPool(writers.size + readers)
+            try {
+                val reads = (1..readers).map {
+                    pool.submitStopping(writing) {
+                        start.await()
+                        do {
+                            shards.forEach(::checkReads)
+                        } while (writing.get())
+                    }
+                }
+                val writes = writers.map { writer ->
+                    pool.submitStopping(writing) {
+                        start.await()
+                        repeat(ROUNDS) {
+                            if (writing.get()) {
+                                writer.round()
+                            }
+                        }
+                    }
+                }
+                start.countDown()
+                writes.forEach { it.get(CONCURRENCY_TIMEOUT.seconds, SECONDS) }
+                writing.set(false)
+                reads.forEach { it.get(CONCURRENCY_TIMEOUT.seconds, SECONDS) }
+            } finally {
+                writing.set(false)
+                pool.shutdownNow()
+                pool.awaitTermination(CONCURRENCY_TIMEOUT.seconds, SECONDS)
+            }
+            return writers
+        }
+
+        /**
+         * Submits the task, so that if it fails, it clears the [writing] flag at once, and
+         * the other threads stop after their current round or read.
+         */
+        private fun ExecutorService.submitStopping(
+            writing: AtomicBoolean,
+            task: () -> Unit
+        ): Future<*> = submit {
+            try {
+                task()
+            } catch (e: Throwable) {
+                writing.set(false)
+                throw e
+            }
+        }
+
+        /**
+         * Reads the shard as a client does, and checks that what is read is consistent,
+         * whatever is changed meanwhile.
+         */
+        private fun checkReads(shard: ShardIndex) {
+            checkPage(shard, store.page(shard, null, READ_PAGE_SIZE))
+
+            // The writers receive their messages at whole seconds, so a message received
+            // after `since` has more seconds.
+            val since = time(RECEIVE_SECONDS / 2)
+            val later = store.page(shard, since, READ_PAGE_SIZE)
+            checkPage(shard, later)
+            later.forEach { it.whenReceived.seconds shouldBeGreaterThan since.seconds }
+
+            val newest = store.newestToDeliver(shard) ?: return
+            newest.id.index shouldBe shard
+            newest.status shouldBe TO_DELIVER
+        }
+
+        /**
+         * Checks that the page holds messages of the shard, in the ascending order of their
+         * order keys, and no more than [READ_PAGE_SIZE] of them.
+         */
+        private fun checkPage(shard: ShardIndex, page: List<InboxMessage>) {
+            page.size shouldBeLessThanOrEqual READ_PAGE_SIZE
+            page.forEach { it.id.index shouldBe shard }
+            page.zipWithNext().forEach { (earlier, later) ->
+                orderKeys.compare(earlier, later) shouldBeLessThan 0
+            }
+        }
+
+        /**
+         * Checks that the store holds exactly the messages that the writers left in it.
+         */
+        private fun checkHeld(writers: List<InboxWriter>) {
+            val expected = writers.flatMap { it.messages }
+                .groupBy { it.id.index }
+                .mapValues { (_, messages) -> messages.sortedWith(orderKeys) }
+            for (shard in shards) {
+                val messages = expected[shard].orEmpty()
+                all(shard) shouldContainExactly messages
+                store.newestToDeliver(shard) shouldBe
+                        messages.lastOrNull { it.status == TO_DELIVER }
+            }
+            store.counts() shouldBe expected.mapValues { (_, messages) -> messages.size }
         }
     }
 }
