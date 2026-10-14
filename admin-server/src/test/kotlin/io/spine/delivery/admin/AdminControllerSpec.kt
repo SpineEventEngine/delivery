@@ -17,7 +17,7 @@ package io.spine.delivery.admin
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 import io.grpc.Server
-import io.grpc.ServerBuilder
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
@@ -27,6 +27,7 @@ import io.spine.delivery.admin.grpc.ShardInfoList
 import io.spine.delivery.admin.grpc.ShardInfoUpdate
 import io.spine.delivery.admin.grpc.SubscriptionResponse
 import io.spine.type.toCompactJson
+import java.net.InetSocketAddress
 import java.time.Duration
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
@@ -49,9 +50,14 @@ internal class AdminControllerSpec {
     /**
      * Creates a controller connected to the given service running
      * on a gRPC server with an ephemeral port.
+     *
+     * The server binds the loopback address that the channel connects to, rather than
+     * all interfaces. On macOS, a server listening on all interfaces can share its port
+     * with a server of another process that listens on the loopback address. That other
+     * server then receives the channel's connections.
      */
     private fun controllerBackedBy(service: LocalAdminService): AdminController {
-        server = ServerBuilder.forPort(0)
+        server = NettyServerBuilder.forAddress(InetSocketAddress(LOCALHOST, 0))
             .addService(service)
             .build()
             .start()

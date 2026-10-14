@@ -14,6 +14,7 @@
 
 package io.spine.delivery.server;
 
+import com.google.common.net.InetAddresses;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.Time;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkState;
@@ -39,13 +41,18 @@ import static com.google.common.base.Preconditions.checkState;
 public abstract class WithApp {
 
     /**
-     * The app under test, bound to an ephemeral port.
+     * The app under test, bound to an ephemeral port of the loopback address.
      *
      * <p>Port zero makes the operating system assign a free port while the server binds it,
      * so that concurrently running servers — such as another module's app during a parallel
      * build — never clash, and no other process can take the port in between.
+     *
+     * <p>The app binds {@link DeliveryServerApp#HOST}, the address that
+     * {@link #newServerChannel()} connects to, so that the channel's connections reach this
+     * app rather than another process that listens on the same port at that address.
      */
-    private final DeliveryServerApp app = new DeliveryServerApp(0);
+    private final DeliveryServerApp app = new DeliveryServerApp(
+            new InetSocketAddress(InetAddresses.forString(DeliveryServerApp.HOST), 0));
 
     /**
      * The port the {@link #app} listens on, known only once it has started.
