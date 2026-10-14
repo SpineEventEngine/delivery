@@ -15,7 +15,7 @@
 package io.spine.delivery.admin;
 
 import io.grpc.Server;
-import io.grpc.ServerBuilder;
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import io.grpc.stub.StreamObserver;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.http.HttpRequest;
@@ -37,6 +37,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 
 import static io.micronaut.http.HttpStatus.OK;
 import static io.micronaut.http.HttpStatus.UNAUTHORIZED;
@@ -52,6 +53,17 @@ class ShardInfoSecurityTest {
     @Client("/admin/shardInfo")
     HttpClient client;
 
+    /**
+     * The address of the Delivery server, which {@link AdminServiceFactory} connects to.
+     *
+     * <p>The gRPC server binds this loopback address rather than all interfaces.
+     * On macOS, a server listening on all interfaces can share its port with a server of
+     * another process that listens on the loopback address. That other server then receives
+     * the connections of the factory's channel.
+     */
+    private static final InetSocketAddress DELIVERY_SERVER =
+            new InetSocketAddress("127.0.0.1", 8484);
+
     private Server grpcServer;
 
     private static final String username = "testUsername";
@@ -60,8 +72,8 @@ class ShardInfoSecurityTest {
 
     @BeforeEach
     void startGrpc() throws IOException {
-        grpcServer = ServerBuilder
-                .forPort(8484)
+        grpcServer = NettyServerBuilder
+                .forAddress(DELIVERY_SERVER)
                 .addService(LocalAdminService.onGetShardInfo(ShardInfoSecurityTest::successEmpty))
                 .build()
                 .start();

@@ -18,6 +18,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 import java.io.IOException
+import java.net.InetAddress
+import java.net.InetSocketAddress
 import java.net.ServerSocket
 import java.util.concurrent.TimeUnit.MILLISECONDS
 import org.junit.jupiter.api.DisplayName
@@ -53,8 +55,11 @@ internal class DeliveryServerStartupSpec {
     @Timeout(5)
     @DisplayName("report the cause rather than waiting for the startup timeout")
     fun reportStartupFailure() {
-        ServerSocket(0).use { occupied ->
-            val app = DeliveryServerApp(occupied.localPort)
+        // The socket occupies the exact address that the app binds. On macOS, a socket
+        // listening on all interfaces would not stop the app from binding the loopback one.
+        val loopback = InetAddress.getByName(DeliveryServerApp.HOST)
+        ServerSocket(0, 0, loopback).use { occupied ->
+            val app = DeliveryServerApp(InetSocketAddress(loopback, occupied.localPort))
             val serverThread = Thread(app::initAndStart)
             serverThread.start()
 
@@ -77,7 +82,7 @@ internal class DeliveryServerStartupSpec {
     @DisplayName("report the timeout when the server does not start at all")
     fun reportStartupTimeout() {
         // The app is never started, so the port is never assigned.
-        val app = DeliveryServerApp(0)
+        val app = DeliveryServerApp(InetSocketAddress(DeliveryServerApp.HOST, 0))
 
         val error = assertThrows<IllegalStateException> {
             app.awaitPort(50, MILLISECONDS)

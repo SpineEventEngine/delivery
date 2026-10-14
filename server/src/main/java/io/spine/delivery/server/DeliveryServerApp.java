@@ -18,7 +18,7 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.protobuf.Duration;
 import com.google.protobuf.util.Durations;
 import io.grpc.Server;
-import io.grpc.ServerBuilder;
+import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import io.spine.delivery.server.grpc.AdminService;
 import io.spine.delivery.server.grpc.HealthService;
 import io.spine.delivery.server.grpc.InboxService;
@@ -28,6 +28,7 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -103,7 +104,7 @@ public final class DeliveryServerApp implements WithLogging {
             java.time.Duration.ofMillis(25);
 
     /**
-     * A host to use for a gRPC server.
+     * The loopback address that tests bind the gRPC server to and their clients connect to.
      */
     @VisibleForTesting
     public static final String HOST = "127.0.0.1";
@@ -159,12 +160,12 @@ public final class DeliveryServerApp implements WithLogging {
     private @MonotonicNonNull HealthService healthService;
 
     /**
-     * The port at which the gRPC server is exposed.
+     * The address at which the gRPC server is exposed.
      *
-     * <p>Zero asks the operating system to assign a free port when the server starts.
+     * <p>Port zero asks the operating system to assign a free port when the server starts.
      * The assigned port is then available via {@link #awaitPort()}.
      */
-    private final int port;
+    private final InetSocketAddress address;
 
     /**
      * Completes with the port the gRPC server listens on once it has started, or
@@ -173,22 +174,29 @@ public final class DeliveryServerApp implements WithLogging {
     private final CompletableFuture<Integer> boundPort = new CompletableFuture<>();
 
     /**
-     * Creates a new instance of the application exposed at the {@linkplain #PORT default port}.
+     * Creates a new instance of the application exposed on all interfaces
+     * at the {@linkplain #PORT default port}.
      */
     public DeliveryServerApp() {
-        this(PORT);
+        this(new InetSocketAddress(PORT));
     }
 
     /**
-     * Creates a new instance of the application exposed at the given {@code port}.
+     * Creates a new instance of the application exposed at the given {@code address}.
      *
      * <p>Intended for tests, which bind an ephemeral port so that concurrently running
      * servers — such as the {@code server} module's app during a parallel build — do not
      * clash on a shared fixed port.
+     *
+     * <p>Tests bind the {@linkplain #HOST loopback address} that their clients connect to,
+     * rather than all interfaces. On macOS, a server listening on all interfaces can share
+     * its port with a server of another process that listens on {@value #HOST}. The latter
+     * receives the connections to that address instead of this app. When this app binds
+     * port zero, the operating system may even assign it a port that such a server holds.
      */
     @VisibleForTesting
-    DeliveryServerApp(int port) {
-        this.port = port;
+    DeliveryServerApp(InetSocketAddress address) {
+        this.address = address;
     }
 
     /**
@@ -242,8 +250,8 @@ public final class DeliveryServerApp implements WithLogging {
                 .register(inboxService)
                 .register(shardService)
                 .register(adminService);
-        this.server = ServerBuilder
-                .forPort(port)
+        this.server = NettyServerBuilder
+                .forAddress(address)
                 .executor(executor)
                 .addService(inboxService)
                 .addService(shardService)
@@ -268,7 +276,8 @@ public final class DeliveryServerApp implements WithLogging {
         var assignedPort = server.getPort();
         boundPort.complete(assignedPort);
         logger().atInfo().log(() -> format(
-                "gRPC server started at host '%s' and port '%d'.", HOST, assignedPort));
+                "gRPC server started at host '%s' and port '%d'.",
+                address.getHostString(), assignedPort));
         server.awaitTermination();
     }
 

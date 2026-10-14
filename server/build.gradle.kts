@@ -31,14 +31,11 @@ dependencies {
     implementation(project(":storage:hazelcast"))
     implementation(Grpc.core)
     implementation(Grpc.inProcess)
+    implementation(Grpc.nettyShaded)
     implementation(CoreJvm.server)
     testImplementation(project(":fixtures"))
     testImplementation(project(path = ":grpc-api", configuration = "testArtifacts"))
     testImplementation(project(path = ":storage:base", configuration = "testArtifacts"))
     testImplementation(Kotest.assertions)
     testImplementation(Time.testLib)
-    testRuntimeOnly(Grpc.nettyShaded)
-
-    // Use this one to run the app locally.
-//    implementation(Grpc.nettyShaded)
 }
