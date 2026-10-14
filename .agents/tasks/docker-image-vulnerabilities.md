@@ -55,7 +55,7 @@ Delivery server image
   artifact at 4.2.17.Final.
 - Build passes; dependency reports regenerated.
 
-## Netty 4.2.19.Final (2026-10-14, version 0.23.2)
+## Netty 4.2.19.Final (2026-10-14, version 0.24.0)
 
 Netty [4.2.18.Final][netty-4.2.18] (2026-09-09, 30 advisories) and
 [4.2.19.Final][netty-4.2.19] (2026-10-06, 16 advisories) are security releases.
@@ -86,7 +86,7 @@ the 4.2.18.Final fixes, and grpc-java's `master` is at 4.2.17.Final too.
 **Do not bump gRPC for Netty's sake until a release bundles 4.2.18.Final or newer.**
 Re-check grpc-java releases.
 
-## Other dependency updates (2026-10-14, version 0.23.2)
+## Other dependency updates (2026-10-14, version 0.24.0)
 
 - `config` pulled from `3409e7dd` to `a0cbbbfe` (config PRs #792 and #795).
   In the image this brings gRPC 1.85.0, Protobuf 4.36.2, Kotlin 2.4.21,
@@ -122,13 +122,13 @@ Re-check grpc-java releases.
   Newer Commons Compress pulls Commons Lang 3 and Commons Codec onto that
   classpath, so each of them would need its own forced version.
 
-## Verification (version 0.23.2, after all the updates above)
+## Verification (version 0.24.0, after all the updates above)
 
 - `:delivery-server-cloud-run` runtime classpath resolves 16 `io.netty` modules,
   `netty-bom` among them, at 4.2.19.Final. None of the 93 `io.netty` entries of
   the dependency tree resolves to another version. `:admin-server` resolves its
   55 `io.netty` entries at 4.2.19.Final as well.
-- A local `jibDockerBuild` image (`v0.23.2`) holds 15 `netty-*-4.2.19.Final.jar`
+- A local `jibDockerBuild` image (`v0.24.0`) holds 15 `netty-*-4.2.19.Final.jar`
   files in `/app/libs`, one per module except the BOM, and no 4.2.16 or 4.2.17
   JAR. Beside them sits `grpc-netty-shaded-1.85.0.jar` with its relocated
   4.2.17 copy, as listed in grpc-java's version catalog at `v1.85.0`. The image
