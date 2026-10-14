@@ -21,7 +21,8 @@ package io.spine.dependency.web
  * The version stays on the Jetty 10 line, the last one built on the `javax.servlet`
  * API that the `client:demo` servlets and the App Engine Java runtime use. Jetty 11
  * moved to `jakarta.servlet`, and Jetty 12 serves `javax.servlet` only through its
- * EE8 environment. Jetty 10 reached its
+ * EE8 environment, so leaving Jetty 10 means porting the demo to that environment.
+ * Jetty 10 reached its
  * [end of life](https://github.com/jetty/jetty.project/issues/10485) in January 2025.
  *
  * This file is owned by this repository — the `config` distribution
