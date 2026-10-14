@@ -75,7 +75,7 @@ final class WorkRegistryTest {
         }
 
         @Test
-        @DisplayName("returning a `ShardProcessingSession`")
+        @DisplayName("returning a `ShardSessionRecord`")
         void session() {
             var shardPickedUp = ShardPickedUp.newBuilder()
                     .setShard(shard)
