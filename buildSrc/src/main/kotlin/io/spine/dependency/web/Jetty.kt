@@ -18,8 +18,11 @@ package io.spine.dependency.web
  * [Eclipse Jetty](https://jetty.org/) — the servlet container embedded by
  * the `demo-appengine-11` deployment module.
  *
- * The version stays on the Jetty 10 line — the last one serving the `javax.servlet`
- * API used by the `client:demo` servlets and the App Engine Java runtime.
+ * The version stays on the Jetty 10 line, the last one built on the `javax.servlet`
+ * API that the `client:demo` servlets and the App Engine Java runtime use. Jetty 11
+ * moved to `jakarta.servlet`, and Jetty 12 serves `javax.servlet` only through its
+ * EE8 environment. Jetty 10 reached its
+ * [end of life](https://github.com/jetty/jetty.project/issues/10485) in January 2025.
  *
  * This file is owned by this repository — the `config` distribution
  * does not declare Jetty.
@@ -27,7 +30,7 @@ package io.spine.dependency.web
 @Suppress("unused", "ConstPropertyName")
 object Jetty {
     // https://central.sonatype.com/artifact/org.eclipse.jetty/jetty-server
-    private const val version = "10.0.6"
+    private const val version = "10.0.26"
     const val server = "org.eclipse.jetty:jetty-server:$version"
     const val servlet = "org.eclipse.jetty:jetty-servlet:$version"
     const val webapp = "org.eclipse.jetty:jetty-webapp:$version"

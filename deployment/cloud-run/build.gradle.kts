@@ -35,7 +35,8 @@ alignMicronautPlatform()
 // The fat-JAR classpath is the first place where the graph of `server`
 // (Redisson, Hazelcast, Log4j2) meets the Micronaut platform of `admin-server`.
 // Under `failOnVersionConflict()` each cross-graph disagreement is settled
-// explicitly below, taking the newest version requested in the merged graph.
+// explicitly below, taking the newest version requested in the merged graph
+// unless a rule below says otherwise.
 configurations.all {
     resolutionStrategy.eachDependency {
         when (requested.group) {
@@ -45,7 +46,8 @@ configurations.all {
             "io.netty" -> if (!requested.name.contains("tcnative")) {
                 useVersion(Micronaut.nettyVersion)
             }
-            // Pinned by the Micronaut platform; Redisson requests older patches.
+            // The Micronaut platform's Reactor Core wins over the newer one Redisson
+            // requests; see the KDoc of `Micronaut.reactorCoreVersion` for why.
             // `reactor-bom` is versioned by release train, not by core version.
             "io.projectreactor" -> if (!requested.name.endsWith("-bom")) {
                 useVersion(Micronaut.reactorCoreVersion)
