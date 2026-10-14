@@ -19,5 +19,6 @@ With a single implementation, the abstraction has nothing to abstract over.
    and drop the downcasts in `DeliveryShardRegistrySpec`.
 3. Rename the display name of `WorkRegistryTest.PickUp.session()`, which checks
    a `ShardSessionRecord`.
-4. Bump the version to `0.22.2`.
+4. Bump the version to `0.23.0`. `pickUp()` changes its return type, and `docs/project.md`
+   classifies signature changes to `server` as breaking.
 5. Verify with `./gradlew build dokkaGenerate`.
