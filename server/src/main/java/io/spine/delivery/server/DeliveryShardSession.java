@@ -14,15 +14,22 @@
 
 package io.spine.delivery.server;
 
-import io.spine.server.delivery.ShardProcessingSession;
+import io.spine.server.delivery.ShardIndex;
 import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.delivery.WorkerId;
 
 /**
- * Implementation of the shard processing session, completed by releasing its shard
- * if its worker still holds it.
+ * The session of processing the messages, which reside in a shard.
+ *
+ * <p>Starts by {@linkplain DeliveryShardRegistry#pickUp(ShardIndex, WorkerId) picking up}
+ * the shard to process. Completes by releasing the shard, if its worker still holds it.
  */
-public final class DeliveryShardSession extends ShardProcessingSession {
+public final class DeliveryShardSession {
+
+    /**
+     * The index of the shard of the session.
+     */
+    private final ShardIndex index;
 
     /**
      * The registry that picked the shard of the session and releases it.
@@ -38,13 +45,20 @@ public final class DeliveryShardSession extends ShardProcessingSession {
      * Creates the session described by the given record, picked by the given registry.
      */
     DeliveryShardSession(ShardSessionRecord record, DeliveryShardRegistry registry) {
-        super(record);
+        this.index = record.getIndex();
         this.registry = registry;
         this.worker = record.getWorker();
     }
 
     /**
-     * Releases the shard of the session, if its worker still holds it.
+     * Returns the index of the shard, to which this session relates.
+     */
+    public ShardIndex shardIndex() {
+        return index;
+    }
+
+    /**
+     * Completes this session by releasing its shard, if its worker still holds it.
      *
      * <p>The release itself leaves intact both the session of another worker and a session
      * that the same worker started while the release was in progress. So its outcome needs
@@ -54,9 +68,8 @@ public final class DeliveryShardSession extends ShardProcessingSession {
      * worker. So if the worker picked the shard again before the release reads the record,
      * completing this session ends the renewed one.
      */
-    @Override
     @SuppressWarnings("ResultOfMethodCallIgnored" /* The outcome is informational. */)
-    protected void complete() {
-        registry.releaseShard(shardIndex(), worker);
+    void complete() {
+        registry.releaseShard(index, worker);
     }
 }
