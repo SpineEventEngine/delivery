@@ -47,9 +47,9 @@ public abstract class WithApp {
      * so that concurrently running servers — such as another module's app during a parallel
      * build — never clash, and no other process can take the port in between.
      *
-     * <p>The app binds {@link DeliveryServerApp#HOST}, the very address that
-     * {@link #newServerChannel()} connects to, so that the connections reach this app
-     * rather than another process that listens on the same port at that address.
+     * <p>The app binds {@link DeliveryServerApp#HOST}, the address that
+     * {@link #newServerChannel()} connects to, so that the channel's connections reach this
+     * app rather than another process that listens on the same port at that address.
      */
     private final DeliveryServerApp app = new DeliveryServerApp(
             new InetSocketAddress(InetAddresses.forString(DeliveryServerApp.HOST), 0));

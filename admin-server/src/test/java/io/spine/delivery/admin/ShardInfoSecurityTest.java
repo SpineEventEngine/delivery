@@ -59,12 +59,13 @@ class ShardInfoSecurityTest {
     HttpClient client;
 
     /**
-     * The loopback address of the stand-in for the Delivery server.
+     * The loopback address that the stand-in for the Delivery server binds and its channel
+     * dials.
      *
-     * <p>The server binds this address, rather than all interfaces, because its channel
-     * connects to it. On macOS, a server listening on all interfaces can share its port with
-     * a server of another process that listens on the loopback address. That other server
-     * then receives the connections of the channel.
+     * <p>The server binds this address, rather than all interfaces. On macOS, a server
+     * listening on all interfaces can share its port with a server of another process that
+     * listens on the loopback address. That other server then receives the channel's
+     * connections.
      */
     private static final String LOCALHOST = "127.0.0.1";
 
@@ -130,13 +131,13 @@ class ShardInfoSecurityTest {
     }
 
     /**
-     * Starts the stand-in for the Delivery server, which serves an empty list of shards.
+     * Starts the Delivery server stand-in, which serves an empty list of shards.
      *
      * <p>As a bean of the application context, the server starts once for all the tests
      * of the class, at a port that the operating system assigns. Binding a fixed port
-     * before each test failed on Windows: there, a server binds its port exclusively, so
-     * a connection of the previous server, lingering in {@code TIME_WAIT}, kept the next
-     * server from binding the same port.
+     * before each test fails on Windows, where a server binds its port exclusively:
+     * a connection that the previous server accepted, lingering in {@code TIME_WAIT},
+     * keeps the next server from binding the same port.
      */
     @Singleton
     @Bean(preDestroy = "shutdownNow")
@@ -161,8 +162,9 @@ class ShardInfoSecurityTest {
     }
 
     /**
-     * Provides the {@code AdminService} reached through the given channel, instead of the one
-     * that {@link AdminServiceFactory} connects to at the port of the production server.
+     * Provides the {@code AdminServiceBlockingStub} that calls the stand-in through the given
+     * channel, in place of the stub that {@link AdminServiceFactory} creates for the port of
+     * the Delivery server.
      */
     @Singleton
     @Replaces(value = AdminServiceBlockingStub.class, factory = AdminServiceFactory.class)

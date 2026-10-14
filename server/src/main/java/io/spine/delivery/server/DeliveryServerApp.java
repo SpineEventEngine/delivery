@@ -189,10 +189,10 @@ public final class DeliveryServerApp implements WithLogging {
      * clash on a shared fixed port.
      *
      * <p>Tests bind the {@linkplain #HOST loopback address} that their clients connect to,
-     * rather than all interfaces. On macOS, a server listening on all interfaces can share
-     * its port with a server of another process that listens on {@value #HOST}. The latter
-     * receives the connections to that address instead of this app. When this app binds
-     * port zero, the operating system may even assign it a port that such a server holds.
+     * rather than all interfaces. On macOS, an app that listens on all interfaces can share
+     * its port with a server of another process that listens on {@value #HOST}, and that
+     * server then receives the connections to that address. If such an app binds port zero,
+     * the operating system may even assign it a port that the other server already holds.
      */
     @VisibleForTesting
     DeliveryServerApp(InetSocketAddress address) {
