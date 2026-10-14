@@ -1,0 +1,19 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.delivery.demo.command/GreetAnArmy.Builder///PointingToDeclaration/io/spine/delivery/demo/command/GreetAnArmy.Builder.html
+$dokka.location:io.spine.delivery.demo.command/PersonAlreadyGreeted.Builder///PointingToDeclaration/io/spine/delivery/demo/command/PersonAlreadyGreeted.Builder.html
+$dokka.location:io.spine.delivery.demo.command/Rejections.PersonAlreadyGreeted.Builder///PointingToDeclaration/io/spine/delivery/demo/command/Rejections.PersonAlreadyGreeted.Builder.html
+$dokka.location:io.spine.delivery.demo.command/Rejections.PersonAlreadyGreeted.Field///PointingToDeclaration/io/spine/delivery/demo/command/Rejections.PersonAlreadyGreeted.Field.html
+$dokka.location:io.spine.delivery.demo.command/Rejections.PersonAlreadyGreeted///PointingToDeclaration/io/spine/delivery/demo/command/Rejections.PersonAlreadyGreeted.html
+$dokka.location:io.spine.delivery.demo.command/Rejections.PersonAlreadyGreetedOrBuilder///PointingToDeclaration/io/spine/delivery/demo/command/Rejections.PersonAlreadyGreetedOrBuilder.html
+$dokka.location:io.spine.delivery.demo.command/SayHello.Builder///PointingToDeclaration/io/spine/delivery/demo/command/SayHello.Builder.html
+$dokka.location:io.spine.delivery.demo.event/SaidHello.Builder///PointingToDeclaration/io/spine/delivery/demo/event/SaidHello.Builder.html
+$dokka.location:io.spine.delivery.demo.event/SaidHello.Field///PointingToDeclaration/io/spine/delivery/demo/event/SaidHello.Field.html
+$dokka.location:io.spine.delivery.demo/Greeter.Builder///PointingToDeclaration/io/spine/delivery/demo/Greeter.Builder.html
+$dokka.location:io.spine.delivery.demo/Greeter.Column///PointingToDeclaration/io/spine/delivery/demo/Greeter.Column.html
+$dokka.location:io.spine.delivery.demo/Greeter.Field///PointingToDeclaration/io/spine/delivery/demo/Greeter.Field.html
+$dokka.location:io.spine.delivery.demo/Greeter.Query///PointingToDeclaration/io/spine/delivery/demo/Greeter.Query.html
+$dokka.location:io.spine.delivery.demo/Greeter.QueryBuilder///PointingToDeclaration/io/spine/delivery/demo/Greeter.QueryBuilder.html
+io.spine.delivery.demo
+io.spine.delivery.demo.command
+io.spine.delivery.demo.event
