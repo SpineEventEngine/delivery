@@ -45,7 +45,7 @@
         </button>
         <div class="navigation-controls--break ui-kit_mobile-only"></div>
         <div class="library-version" id="library-version">
-0.22.1        </div>
+0.23.0        </div>
         <div class="navigation-controls">
         <ul class="filter-section filter-section_loading" id="filter-section" aria-label="Target filter">
                 <button class="platform-tag platform-selector jvm-like" data-active="" aria-pressed="true"
@@ -109,24 +109,24 @@
   <div class="breadcrumbs"><a href="../../../index.html">delivery-server</a><span class="delimiter">/</span><a href="../index.html">io.spine.delivery.server</a><span class="delimiter">/</span><span class="current">DeliveryShardSession</span></div>
   <div class="cover ">
     <h1 class="cover"><span>Delivery</span><wbr></wbr><span>Shard</span><wbr></wbr><span><span>Session</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":delivery-server/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">DeliveryShardSession</a> : <span data-unresolved-link="io.spine.server.delivery/ShardProcessingSession///PointingToDeclaration/">ShardProcessingSession</span></div><p class="paragraph">Implementation of the shard processing session, completed by releasing its shard if its worker still holds it.</p></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":delivery-server/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">DeliveryShardSession</a></div><p class="paragraph">The session of processing the messages, which reside in a shard. </p><p class="paragraph">Starts by <a href="../-delivery-shard-registry/pick-up.html">picking up</a> the shard to process. Completes by releasing the shard, if its worker still holds it.</p></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
     <div class="tabs-section-body">
       <div data-togglable="FUNCTION">
         <h2 class="tableheader">Functions</h2>
-        <div class="table"><a data-name="-1015889434%2FFunctions%2F803260522" anchor-label="complete" id="-1015889434%2FFunctions%2F803260522" data-filterable-set=":delivery-server/main"></a>
+        <div class="table"><a data-name="-1927916693%2FFunctions%2F803260522" anchor-label="shardIndex" id="-1927916693%2FFunctions%2F803260522" data-filterable-set=":delivery-server/main"></a>
           <div class="table-row table-row_content" data-filterable-current=":delivery-server/main" data-filterable-set=":delivery-server/main">
             <div class="main-subrow keyValue ">
               <div class=""><span class="inline-flex">
-                  <div><a href="complete.html"><span><span>complete</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1015889434%2FFunctions%2F803260522"></span>
+                  <div><a href="shard-index.html"><span>shard</span><wbr></wbr><span><span>Index</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1927916693%2FFunctions%2F803260522"></span>
                     <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                   </span></span></div>
               <div>
                 <div class="title">
-                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":delivery-server/main"><div class="symbol monospace"><span class="token keyword">protected </span><span class="token keyword">open </span><span class="token keyword">fun </span><a href="complete.html"><span class="token function">complete</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">Releases the shard of the session, if its worker still holds it.</div></div></div>
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":delivery-server/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">fun </span><a href="shard-index.html"><span class="token function">shardIndex</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="io.spine.server.delivery/ShardIndex///PointingToDeclaration/">ShardIndex</span></div><div class="brief ">Returns the index of the shard, to which this session relates.</div></div></div>
                 </div>
               </div>
             </div>
