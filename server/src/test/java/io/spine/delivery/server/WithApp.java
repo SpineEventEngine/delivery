@@ -14,6 +14,7 @@
 
 package io.spine.delivery.server;
 
+import com.google.common.net.InetAddresses;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.spine.base.Time;
@@ -50,8 +51,8 @@ public abstract class WithApp {
      * {@link #newServerChannel()} connects to, so that the connections reach this app
      * rather than another process that listens on the same port at that address.
      */
-    private final DeliveryServerApp app =
-            new DeliveryServerApp(new InetSocketAddress(DeliveryServerApp.HOST, 0));
+    private final DeliveryServerApp app = new DeliveryServerApp(
+            new InetSocketAddress(InetAddresses.forString(DeliveryServerApp.HOST), 0));
 
     /**
      * The port the {@link #app} listens on, known only once it has started.

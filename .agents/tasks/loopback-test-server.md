@@ -35,6 +35,12 @@ production already runs on.
 - `server` depends on `grpc-netty-shaded` at compile time.
 - `WithApp`, `DeliveryServerStartupSpec`, and `admin-server`'s `AdminControllerSpec`
   and `ShardInfoSecurityTest` bind the loopback address.
+- `ShardInfoSecurityTest` starts its stand-in for the Delivery server once per class,
+  as a bean of the application context, at an ephemeral port, and replaces the
+  `AdminServiceBlockingStub` bean with one connected to it. It used to bind the fixed
+  port `8484` before each test. On Windows, the JDK binds server sockets exclusively,
+  so a connection of the previous server lingering in `TIME_WAIT` made the next bind
+  fail with `Address already in use`.
 
 ## Tests
 

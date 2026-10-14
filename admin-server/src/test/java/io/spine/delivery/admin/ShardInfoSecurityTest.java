@@ -14,9 +14,13 @@
 
 package io.spine.delivery.admin;
 
+import com.google.common.net.InetAddresses;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 import io.grpc.stub.StreamObserver;
+import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
@@ -27,12 +31,13 @@ import io.micronaut.http.client.annotation.Client;
 import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.spine.delivery.admin.given.LocalAdminService;
+import io.spine.delivery.admin.grpc.AdminServiceGrpc;
+import io.spine.delivery.admin.grpc.AdminServiceGrpc.AdminServiceBlockingStub;
 import io.spine.delivery.admin.grpc.ShardInfoList;
 import io.spine.delivery.admin.security.HttpBasicAuthCredentials;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -54,36 +59,18 @@ class ShardInfoSecurityTest {
     HttpClient client;
 
     /**
-     * The address of the Delivery server, which {@link AdminServiceFactory} connects to.
+     * The loopback address of the stand-in for the Delivery server.
      *
-     * <p>The gRPC server binds this loopback address rather than all interfaces.
-     * On macOS, a server listening on all interfaces can share its port with a server of
-     * another process that listens on the loopback address. That other server then receives
-     * the connections of the factory's channel.
+     * <p>The server binds this address, rather than all interfaces, because its channel
+     * connects to it. On macOS, a server listening on all interfaces can share its port with
+     * a server of another process that listens on the loopback address. That other server
+     * then receives the connections of the channel.
      */
-    private static final InetSocketAddress DELIVERY_SERVER =
-            new InetSocketAddress("127.0.0.1", 8484);
-
-    private Server grpcServer;
+    private static final String LOCALHOST = "127.0.0.1";
 
     private static final String username = "testUsername";
 
     private static final String password = "testPassword";
-
-    @BeforeEach
-    void startGrpc() throws IOException {
-        grpcServer = NettyServerBuilder
-                .forAddress(DELIVERY_SERVER)
-                .addService(LocalAdminService.onGetShardInfo(ShardInfoSecurityTest::successEmpty))
-                .build()
-                .start();
-    }
-
-    @AfterEach
-    void stopGrpc() throws InterruptedException {
-        grpcServer.shutdown()
-                  .awaitTermination();
-    }
 
     @AfterEach
     void refreshClient() {
@@ -140,6 +127,47 @@ class ShardInfoSecurityTest {
     @Replaces(HttpBasicAuthCredentials.class)
     HttpBasicAuthCredentials credentials() {
         return new HttpBasicAuthCredentials(username, password);
+    }
+
+    /**
+     * Starts the stand-in for the Delivery server, which serves an empty list of shards.
+     *
+     * <p>As a bean of the application context, the server starts once for all the tests
+     * of the class, at a port that the operating system assigns. Binding a fixed port
+     * before each test failed on Windows: there, a server binds its port exclusively, so
+     * a connection of the previous server, lingering in {@code TIME_WAIT}, kept the next
+     * server from binding the same port.
+     */
+    @Singleton
+    @Bean(preDestroy = "shutdownNow")
+    Server deliveryServer() throws IOException {
+        return NettyServerBuilder
+                .forAddress(new InetSocketAddress(InetAddresses.forString(LOCALHOST), 0))
+                .addService(LocalAdminService.onGetShardInfo(ShardInfoSecurityTest::successEmpty))
+                .build()
+                .start();
+    }
+
+    /**
+     * Provides a channel to the given stand-in for the Delivery server.
+     */
+    @Singleton
+    @Bean(preDestroy = "shutdownNow")
+    ManagedChannel deliveryChannel(Server deliveryServer) {
+        return ManagedChannelBuilder
+                .forAddress(LOCALHOST, deliveryServer.getPort())
+                .usePlaintext()
+                .build();
+    }
+
+    /**
+     * Provides the {@code AdminService} reached through the given channel, instead of the one
+     * that {@link AdminServiceFactory} connects to at the port of the production server.
+     */
+    @Singleton
+    @Replaces(value = AdminServiceBlockingStub.class, factory = AdminServiceFactory.class)
+    AdminServiceBlockingStub blockingAdminService(ManagedChannel deliveryChannel) {
+        return AdminServiceGrpc.newBlockingStub(deliveryChannel);
     }
 
     /**
