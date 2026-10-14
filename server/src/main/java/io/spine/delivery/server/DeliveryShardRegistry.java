@@ -26,7 +26,6 @@ import io.spine.delivery.storage.ShardSessionStore;
 import io.spine.delivery.storage.Stored;
 import io.spine.logging.WithLogging;
 import io.spine.server.delivery.ShardIndex;
-import io.spine.server.delivery.ShardProcessingSession;
 import io.spine.server.delivery.ShardSessionRecord;
 import io.spine.server.delivery.WorkerId;
 import kotlin.uuid.Uuid;
@@ -102,7 +101,7 @@ public final class DeliveryShardRegistry implements WithLogging {
      * the same across a restart for the worker to recover its shards. Each unit of work that may
      * run concurrently needs its own ID, because pick-ups under one ID never exclude each other.
      *
-     * <p>In case of a successful operation, an instance of {@link ShardProcessingSession}
+     * <p>In case of a successful operation, an instance of {@link DeliveryShardSession}
      * is returned. There are three options when it is successful:
      *
      * <ol>
@@ -131,7 +130,7 @@ public final class DeliveryShardRegistry implements WithLogging {
      * @throws ShardAlreadyPickedUp
      *         if another worker holds the shard, and its session is not stale
      */
-    public ShardProcessingSession pickUp(ShardIndex index, WorkerId worker)
+    public DeliveryShardSession pickUp(ShardIndex index, WorkerId worker)
             throws ShardAlreadyPickedUp {
         var picked = ShardSessionRecord.newBuilder()
                 .setIndex(index)

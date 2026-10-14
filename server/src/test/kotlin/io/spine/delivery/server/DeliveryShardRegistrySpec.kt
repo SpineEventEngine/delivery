@@ -24,7 +24,6 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.types.shouldBeInstanceOf
 import io.spine.base.Time
 import io.spine.delivery.rejection.ShardAlreadyPickedUp
 import io.spine.delivery.server.ReleaseOutcome.HELD_BY_ANOTHER_WORKER
@@ -259,7 +258,7 @@ internal class DeliveryShardRegistrySpec {
 
     @Test
     fun `complete a session by releasing its shard`() {
-        val session = registry.pickUp(first, worker("w")).shouldBeInstanceOf<DeliveryShardSession>()
+        val session = registry.pickUp(first, worker("w"))
 
         session.complete()
 
@@ -268,7 +267,7 @@ internal class DeliveryShardRegistrySpec {
 
     @Test
     fun `not release the shard of another worker when completing a session`() {
-        val session = registry.pickUp(first, worker("a")).shouldBeInstanceOf<DeliveryShardSession>()
+        val session = registry.pickUp(first, worker("a"))
         registry.releaseShard(first, worker("a"))
         registry.pickUp(first, worker("b"))
 
