@@ -24,7 +24,7 @@ package io.spine.dependency.storage
 @Suppress("unused", "ConstPropertyName")
 object Redisson {
     // https://central.sonatype.com/artifact/org.redisson/redisson
-    const val version = "4.7.0"
+    const val version = "4.8.0"
     const val lib = "org.redisson:redisson:$version"
 
     /**

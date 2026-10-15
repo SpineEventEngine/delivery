@@ -47,17 +47,19 @@ object Micronaut {
     const val group = "io.micronaut"
 
     /**
-     * The version of the Micronaut Platform, and the highest one this project can run.
+     * The version of the Micronaut Platform. It belongs to the 4.x line, the highest
+     * one this project can run.
      *
-     * 4.10.17 is the last release of the 4.x line. The 5.x line is compiled for JVM 25
-     * — `micronaut-core:5.1.10` is a class-file of major version 69 — while this project
-     * targets Java 17 (`BuildSettings.javaVersion`). Moving to 5.x therefore requires
-     * raising the project's toolchain first, together with
-     * [the Gradle plugin][GradlePlugin], which is compiled for JVM 25 as well.
+     * The 4.x line still receives patch releases; check for a newer patch release when
+     * updating this version. The 5.x line is compiled for JVM 25 — `micronaut-core:5.1.10`
+     * is a class file of major version 69 — while this project targets Java 17
+     * (`BuildSettings.javaVersion`). Moving to 5.x therefore requires raising the
+     * project's toolchain first, together with [the Gradle plugin][GradlePlugin],
+     * which is compiled for JVM 25 as well.
      *
      * @see <a href="https://repo1.maven.org/maven2/io/micronaut/platform/micronaut-platform/">Micronaut Platform releases at Maven Central</a>
      */
-    const val version = "4.10.17"
+    const val version = "4.10.21"
     const val bom = "$group.platform:micronaut-platform:$version"
 
     /**
@@ -69,7 +71,7 @@ object Micronaut {
      * The `alignMicronautPlatform()` extension (see `MicronautAlignment.kt`) aligns
      * each group to the platform's pick. Update together with [version].
      */
-    const val coreVersion = "4.10.26"
+    const val coreVersion = "4.10.31"
     const val reactorVersion = "3.9.1"
     const val serdeVersion = "2.16.2"
     const val sourcegenVersion = "1.8.5"
@@ -80,16 +82,44 @@ object Micronaut {
      * the cross-stack conflicts on the `delivery-server-cloud-run` classpath, where
      * the Micronaut graph meets the Redisson one. Update together with [version].
      *
-     * [nettyVersion] settles the Netty conflicts. The platform pins `4.2.16.Final`,
-     * whose `netty-codec-http` carries CVE-2026-59903; the launcher takes the fixed
-     * `4.2.17.Final` instead, so that the published image stays clear of the finding.
-     * It is kept equal to the version of the [Netty] catalog object, so that a module
-     * depending on Netty directly resolves what the launcher forces. The two remain
-     * separate constants because a future platform may pin a Netty other than the
-     * catalog's.
+     * [nettyVersion] settles the Netty conflicts. As of platform 4.10.21, it equals
+     * the platform's pin, `4.2.19.Final`. That release and `4.2.18.Final` before it
+     * are security releases; their fixes include those for HTTP/1 request smuggling
+     * and resource exhaustion in `netty-codec-http`, the codec behind the HTTP port
+     * of the `admin-server` module. See the release notes of
+     * [4.2.18.Final](https://github.com/netty/netty/releases/tag/netty-4.2.18.Final)
+     * and [4.2.19.Final](https://github.com/netty/netty/releases/tag/netty-4.2.19.Final).
+     *
+     * The launcher forces [nettyVersion] onto every `io.netty` artifact of the published
+     * image except `netty-tcnative-*`, including those Redisson requests. The Netty copy
+     * relocated inside `grpc-netty-shaded` is not covered by this pin; its version
+     * follows `grpc-netty-shaded`. When the platform lags behind a Netty security
+     * release, raise [nettyVersion] and the [Netty] catalog above the platform's pin
+     * until the platform catches up.
+     *
+     * [nettyVersion] is kept equal to the version of the [Netty] catalog object, so
+     * that a module depending on Netty directly resolves what the launcher forces.
+     * The two remain separate constants because a future platform may pin a Netty
+     * other than the catalog's.
      */
-    const val nettyVersion = "4.2.17.Final"
+    const val nettyVersion = "4.2.19.Final"
+
+    /**
+     * The Reactor Core version the launcher takes even though Redisson requests
+     * a newer one (`3.8.5` as of Redisson 4.8.0).
+     *
+     * This is an exception to the launcher's rule of taking the newest version
+     * requested in the merged graph. Micronaut and the `admin-server` module built
+     * on it, the only code in the image that runs on Reactor Core, are built against
+     * the platform's pin. Redisson uses Reactor Core only in its reactive API
+     * (`RedissonReactiveClient` and the `org.redisson.reactive` package). This project
+     * calls only `RedissonClient`, so its code paths never reach that API. Revisit when
+     * code starts using Redisson's reactive API, or when the platform moves to
+     * Reactor Core 3.8.
+     */
     const val reactorCoreVersion = "3.7.12"
+
+    /** The RxJava 3 version pinned by the platform; Redisson requests the same one. */
     const val rxJavaVersion = "3.1.12"
 
     const val runtime = "$group:micronaut-runtime"
