@@ -1,0 +1,31 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:io.spine.delivery.storage.redis////PointingToDeclaration/redis/io.spine.delivery.storage.redis/index.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore///PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/index.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore/close/#/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/close.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore/count/#io.spine.server.delivery.ShardIndex/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/count.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore/count/#kotlin.collections.Collection[io.spine.server.delivery.ShardIndex]/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/count.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore/counts/#/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/counts.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore/delete/#kotlin.collections.Iterable[io.spine.server.delivery.InboxMessageId]/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/delete.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore/find/#io.spine.server.delivery.InboxMessageId/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/find.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore/newestToDeliver/#io.spine.server.delivery.ShardIndex/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/newest-to-deliver.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore/page/#io.spine.server.delivery.ShardIndex#com.google.protobuf.Timestamp?#kotlin.Int/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/page.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore/subscribe/#java.util.function.Consumer[io.spine.server.delivery.ShardIndex]/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/subscribe.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore/subscribeToMissedChanges/#java.lang.Runnable/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/subscribe-to-missed-changes.html
+$dokka.location:io.spine.delivery.storage.redis/RedisInboxStore/write/#kotlin.collections.Iterable[io.spine.server.delivery.InboxMessage]/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-inbox-store/write.html
+$dokka.location:io.spine.delivery.storage.redis/RedisShardSessionStore///PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-shard-session-store/index.html
+$dokka.location:io.spine.delivery.storage.redis/RedisShardSessionStore/close/#/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-shard-session-store/close.html
+$dokka.location:io.spine.delivery.storage.redis/RedisShardSessionStore/compareAndSet/#io.spine.server.delivery.ShardIndex#io.spine.delivery.storage.Stored?#io.spine.server.delivery.ShardSessionRecord#kotlin.uuid.Uuid/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-shard-session-store/compare-and-set.html
+$dokka.location:io.spine.delivery.storage.redis/RedisShardSessionStore/read/#io.spine.server.delivery.ShardIndex/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-shard-session-store/read.html
+$dokka.location:io.spine.delivery.storage.redis/RedisShardSessionStore/read/#kotlin.collections.Collection[io.spine.server.delivery.ShardIndex]/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-shard-session-store/read.html
+$dokka.location:io.spine.delivery.storage.redis/RedisShardSessionStore/readAll/#/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-shard-session-store/read-all.html
+$dokka.location:io.spine.delivery.storage.redis/RedisShardSessionStore/subscribe/#java.util.function.Consumer[io.spine.server.delivery.ShardIndex]/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-shard-session-store/subscribe.html
+$dokka.location:io.spine.delivery.storage.redis/RedisShardSessionStore/subscribeToMissedChanges/#java.lang.Runnable/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-shard-session-store/subscribe-to-missed-changes.html
+$dokka.location:io.spine.delivery.storage.redis/RedisStores.Companion///PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-stores/-companion/index.html
+$dokka.location:io.spine.delivery.storage.redis/RedisStores.Companion/start/#/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-stores/-companion/start.html
+$dokka.location:io.spine.delivery.storage.redis/RedisStores.Companion/start/#org.redisson.config.Config/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-stores/-companion/start.html
+$dokka.location:io.spine.delivery.storage.redis/RedisStores///PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-stores/index.html
+$dokka.location:io.spine.delivery.storage.redis/RedisStores/close/#/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-stores/close.html
+$dokka.location:io.spine.delivery.storage.redis/RedisStores/inbox/#/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-stores/inbox.html
+$dokka.location:io.spine.delivery.storage.redis/RedisStores/sessions/#/PointingToDeclaration/redis/io.spine.delivery.storage.redis/-redis-stores/sessions.html
+io.spine.delivery.storage.redis
