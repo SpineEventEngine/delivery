@@ -46,6 +46,8 @@ buildscript {
                 io.spine.dependency.lib.JacksonV2.Module.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.JacksonV2.Junior.forceArtifacts(project, cfg, rs)
                 io.spine.dependency.lib.Grpc.forceArtifacts(project, cfg, rs)
+                // The published CoreJvm Compiler floor requests the previous Compiler.
+                io.spine.dependency.local.Compiler.forceArtifacts(project, cfg, rs)
                 force(
                     jackson.annotations,
                     jackson.bom,
@@ -68,6 +70,7 @@ buildscript {
                     base.lib,
                     base.environment,
                     base.format,
+                    io.spine.dependency.local.Reflect.lib,
                     io.spine.dependency.local.Compiler.pluginLib,
                     logging.lib,
                     io.spine.dependency.local.Validation.runtime,
