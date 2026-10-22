@@ -113,7 +113,7 @@ project.run {
     defineDependencies()
 
     setupTestTasks()
-    configureApiDocs()
+    setupPublishing()
     configureTaskDependencies()
 }
 
@@ -381,13 +381,9 @@ fun Module.forceConfigurations() {
 }
 
 /**
- * Applies the plugin that registers the `publishApiDocs` task of this module.
- *
- * The `publish-api-docs.yml` workflow runs the task through `publishAllApiDocs` of
- * the root project, which depends on it for the published modules only. It is not
- * a part of `publish`.
+ * Configures publishing for this subproject.
  */
-fun Module.configureApiDocs() {
+fun Module.setupPublishing() {
     publishApiDocs {
         rootFolder.set(rootDir)
     }
