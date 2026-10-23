@@ -1,6 +1,6 @@
 
 
-# Dependencies of `io.spine.delivery:spine-admin-server:0.24.0`
+# Dependencies of `io.spine.delivery:spine-admin-server:0.24.1`
 
 ## Runtime
 1.  **Group** : com.amazonaws. **Name** : aws-java-sdk-bom. **Version** : 1.12.787.
@@ -688,15 +688,15 @@
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -990,7 +990,7 @@
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -1031,11 +1031,11 @@
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -1877,43 +1877,43 @@
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -1921,31 +1921,35 @@
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -1957,15 +1961,15 @@
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2204,14 +2208,14 @@
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-admin-ui:0.24.0`
+# Dependencies of `io.spine.delivery:spine-admin-ui:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -2320,15 +2324,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2561,7 +2565,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -2598,11 +2602,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2845,43 +2849,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2889,31 +2893,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -2925,15 +2933,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3127,14 +3135,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-client:0.24.0`
+# Dependencies of `io.spine.delivery:spine-client:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -3186,15 +3194,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3365,7 +3373,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -3390,11 +3398,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3583,43 +3591,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3627,31 +3635,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3663,15 +3675,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -3814,14 +3826,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:23 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-model:0.24.0`
+# Dependencies of `io.spine.delivery:spine-delivery-model:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -3930,15 +3942,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4171,7 +4183,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -4208,11 +4220,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4463,43 +4475,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4507,31 +4519,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4543,15 +4559,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -4745,14 +4761,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-server:0.24.0`
+# Dependencies of `io.spine.delivery:spine-delivery-server:0.24.1`
 
 ## Runtime
 1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.7.0.
@@ -4978,15 +4994,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5276,7 +5292,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -5318,11 +5334,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5688,43 +5704,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5732,31 +5748,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -5768,15 +5788,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -6018,14 +6038,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-server-cloud-run:0.24.0`
+# Dependencies of `io.spine.delivery:spine-delivery-server-cloud-run:0.24.1`
 
 ## Runtime
 1.  **Group** : com.amazonaws. **Name** : aws-java-sdk-bom. **Version** : 1.12.787.
@@ -6782,15 +6802,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -7102,7 +7122,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -7148,11 +7168,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -7974,43 +7994,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -8018,31 +8038,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -8054,15 +8078,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -8285,14 +8309,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-demo-appengine-11:0.24.0`
+# Dependencies of `io.spine.delivery:spine-demo-appengine-11:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -8509,15 +8533,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -8773,7 +8797,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -8810,11 +8834,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -9165,43 +9189,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -9209,31 +9233,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -9245,15 +9273,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -9447,14 +9475,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-fixtures:0.24.0`
+# Dependencies of `io.spine.delivery:spine-fixtures:0.24.1`
 
 ## Runtime
 1.  **Group** : com.fasterxml.jackson.core. **Name** : jackson-annotations. **Version** : 2.22.
@@ -9673,15 +9701,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -9974,7 +10002,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -10011,11 +10039,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -10283,43 +10311,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -10327,31 +10355,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -10363,15 +10395,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -10573,14 +10605,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:23 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-grpc-api:0.24.0`
+# Dependencies of `io.spine.delivery:spine-grpc-api:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -10689,15 +10721,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -10930,7 +10962,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -10967,11 +10999,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -11222,43 +11254,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -11266,31 +11298,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -11302,15 +11338,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -11504,14 +11540,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-storage:0.24.0`
+# Dependencies of `io.spine.delivery:spine-storage:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.code.findbugs. **Name** : jsr305. **Version** : 3.0.2.
@@ -11563,15 +11599,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -11742,7 +11778,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -11767,11 +11803,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -11960,43 +11996,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12004,31 +12040,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12040,15 +12080,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12191,14 +12231,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:23 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-client:0.24.0`
+# Dependencies of `io.spine.delivery:spine-delivery-client:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -12307,15 +12347,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12560,7 +12600,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -12597,11 +12637,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12877,43 +12917,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12921,31 +12961,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -12957,15 +13001,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -13171,14 +13215,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-delivery-client-base:0.24.0`
+# Dependencies of `io.spine.delivery:spine-delivery-client-base:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -13287,15 +13331,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -13528,7 +13572,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -13565,11 +13609,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -13812,43 +13856,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -13856,31 +13900,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -13892,15 +13940,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -14094,14 +14142,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-demo:0.24.0`
+# Dependencies of `io.spine.delivery:spine-demo:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -14218,15 +14266,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -14459,7 +14507,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -14496,11 +14544,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -14756,43 +14804,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -14800,31 +14848,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -14836,15 +14888,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -15038,14 +15090,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-integration-test:0.24.0`
+# Dependencies of `io.spine.delivery:spine-integration-test:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -15154,15 +15206,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -15407,7 +15459,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -15444,11 +15496,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -15724,43 +15776,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -15768,31 +15820,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -15804,15 +15860,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -16018,14 +16074,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-base:0.24.0`
+# Dependencies of `io.spine.delivery:spine-base:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -16134,15 +16190,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -16375,7 +16431,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -16412,11 +16468,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -16659,43 +16715,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -16703,31 +16759,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -16739,15 +16799,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -16941,14 +17001,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-hazelcast:0.24.0`
+# Dependencies of `io.spine.delivery:spine-hazelcast:0.24.1`
 
 ## Runtime
 1.  **Group** : com.google.android. **Name** : annotations. **Version** : 4.1.1.4.
@@ -17062,15 +17122,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -17303,7 +17363,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -17345,11 +17405,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -17592,43 +17652,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -17636,31 +17696,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -17672,15 +17736,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -17874,14 +17938,14 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
 
 
 
 
-# Dependencies of `io.spine.delivery:spine-redis:0.24.0`
+# Dependencies of `io.spine.delivery:spine-redis:0.24.1`
 
 ## Runtime
 1.  **Group** : com.esotericsoftware. **Name** : kryo. **Version** : 5.7.0.
@@ -18086,15 +18150,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/JetBrains/java-annotations](https://github.com/JetBrains/java-annotations)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -18380,7 +18444,7 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **License:** [https://opensource.org/licenses/BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
 
-1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.0.
+1.  **Group** : com.google.protobuf. **Name** : protoc. **Version** : 4.36.2.
      * **Project URL:** [https://developers.google.com/protocol-buffers/](https://developers.google.com/protocol-buffers/)
      * **License:** [BSD-3-Clause](https://opensource.org/licenses/BSD-3-Clause)
      * **License:** [The Apache Software License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
@@ -18417,11 +18481,11 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/korlibs/korge-next](https://github.com/korlibs/korge-next)
      * **License:** [MIT](https://raw.githubusercontent.com/korlibs/korge-next/master/korge/LICENSE.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.4.0.
+1.  **Group** : com.squareup. **Name** : kotlinpoet-jvm. **Version** : 2.3.0.
      * **Project URL:** [https://github.com/square/kotlinpoet](https://github.com/square/kotlinpoet)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -18771,43 +18835,43 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://github.com/Kotlin/dokka](https://github.com/Kotlin/dokka)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-bom. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache Software License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-api. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-compat. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-cri-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-build-tools-impl. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-compiler-runner. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-client. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-daemon-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-klib-commonizer-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -18815,31 +18879,35 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [The Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-reflect. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-script-runtime. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-common. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-compiler-impl-embeddable. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-scripting-jvm. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.2.20.
+     * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
+     * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -18851,15 +18919,15 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk7. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-stdlib-jdk8. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
-1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.21.
+1.  **Group** : org.jetbrains.kotlin. **Name** : kotlin-tooling-core. **Version** : 2.4.10.
      * **Project URL:** [https://kotlinlang.org/](https://kotlinlang.org/)
      * **License:** [Apache-2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
@@ -19083,6 +19151,6 @@ This report was generated on **Wed Oct 14 20:59:28 WEST 2026** using
 
 The dependencies distributed under several licenses, are used according their commercial-use-friendly license.
 
-This report was generated on **Wed Oct 14 20:59:29 WEST 2026** using 
+This report was generated on **Thu Oct 22 21:48:24 WEST 2026** using 
 [Gradle-License-Report plugin](https://github.com/jk1/Gradle-License-Report) by Evgeny Naumenko, licensed under 
 [Apache 2.0 License](https://github.com/jk1/Gradle-License-Report/blob/master/LICENSE).
